@@ -1,3 +1,285 @@
-p {
-    color: red;
+@import "reset.css";
+
+@font-face {
+    font-family: "Playfair Display", serif;
+    src: url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Wittgenstein:ital,wght@0,400..900;1,400..900&display=swap");
+    font-weight: 400;
+    font-style: normal;
 }
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+:root {
+    --background-color: #FCF9F6;
+    --font-color: #2B2928;
+    --footer-color: #E7DBCD;
+    --footer-divider-color: #D0C5B7;
+    --footer-font-color: #6A6054;
+    --font-grey-color: #828282;
+}
+
+
+body {
+    background-color: var(--background-color);
+    font-family: Pretendard-Regular;
+    font-size: 0.7rem;
+    color: var(--font-color);
+}
+
+hr {
+    border: 1px var(--footer-divider-color) solid;
+    border-radius: 1rem;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+.header {
+    display: flex;
+    width: 1280px;
+    padding-top: 1rem;
+}
+
+
+.leftHeader {
+    display: flex;
+    width: 50%;
+    color: black;
+    align-items: center;
+}
+
+.leftHeader > ul > li > .home {
+    font-family: "Playfair Display", serif;
+    font-size: x-large;
+}
+
+.leftHeader > ul {
+    display: flex;
+    list-style: none;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+    font-size: 0.8rem;
+}
+
+.rightHeader {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 50%;
+}
+
+.searchContainer {
+    width: 70%;
+}
+
+.searchBox {
+    border-radius: 0.7rem;
+    /*border: black 1px solid;*/
+    padding: 0.7rem;
+    background-color: #EFECE8;
+    display: flex;
+    justify-content: space-between;
+}
+
+.searchBox > * {
+    border: none;
+}
+
+.searchText {
+    background-color: #EFECE8;
+    width: 80%;
+    outline: none;
+    font-size: 0.7rem;
+}
+
+.searchBox > button {
+    background-color: transparent;
+}
+
+.memberContainer {
+    width: 25%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.memberContainer > button {
+    border: none;
+    background-color: transparent;
+    font-size: 0.8rem;
+    color: var(--font-grey-color);
+    cursor: pointer;
+}
+
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.banner {
+    width: 100vw;
+}
+
+.content {
+    width: 1280px;
+}
+
+footer {
+    background-color: var(--footer-color);
+    display: flex;
+    justify-content: center;
+    color: var(--footer-font-color);
+}
+
+.footerContainer > h3 {
+    color: black;
+}
+
+.footerContainer {
+    width: 1280px;
+    padding: 1rem;
+}
+
+.footerContainer > .contact {
+    color: black;
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding-bottom: 0.7rem;
+}
+
+.companyInfo {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.rightInfo {
+    display: flex;
+    width: 50%;
+    justify-content: flex-end;
+}
+
+.rightInfo > ul {
+    padding-left: 2rem;
+    text-align: end;
+}
+
+.rightInfo > ul > li {
+    padding-bottom: 0.5rem;
+}
+
+.rightInfo > ul > li > a {
+    color: var(--footer-font-color);
+}
+
+.companyInfo > .leftInfo > * {
+    padding-bottom: 0.5rem;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.companyInfo > .leftInfo > .companyName {
+    font-weight: bold;
+    padding-bottom: 0.5rem;
+}
+
+.bannerContainer {
+    margin-top: 1rem;
+}
+
+.imgWrap {
+    position: relative;
+    opacity: 70%;
+}
+
+.bannerImg {
+    border-radius: 1rem;
+    vertical-align: middle;
+}
+
+.banner {
+    overflow: hidden;
+}
+
+.bannerTxtContainer {
+    position: absolute;
+    top: 65%;
+    left: 5%;
+    width: 100%;
+    font-weight: bolder;
+}
+
+.bannerArrow {
+    width: 3rem;
+    padding: 0.5rem;
+    background-color: #000000;
+    opacity: 30%;
+    border-radius: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    align-items: center;
+}
+
+.bannerArrow > button {
+    border: none;
+    background-color: transparent;
+    font-size: 0.8rem;
+    color: var(--font-grey-color);
+    cursor: pointer;
+}
+
+
+.bannerTxt {
+    font-size: 2.7rem;
+    background: -webkit-linear-gradient(#34e89e, #0f3443);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.bannerTxtDetail {
+    font-size: 0.9rem;
+}
+
+.bannerContainer {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    left: calc((100% - 1280px) / 2 + (1280px * -3));
+}
+
+.bannerMain {
+    opacity: 100%;
+}
+
+.mainImg {
+    height: 418px;
+}
+

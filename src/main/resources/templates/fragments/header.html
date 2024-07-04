@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<nav th:fragment="headerFragment" class="header">
+    <div class="leftHeader">
+
+        <ul class="">
+            <li><a class="home" href="#" th:href="@{/}">Lumit</a></li>
+            <li class="">
+                <a class="" href="#" th:href="@{/}">인테리어</a>
+            </li>
+            <li class="">
+                <a class="" href="#">스튜디오</a>
+            </li>
+            <li class="">
+                <a class="" href="#">Q&A</a>
+            </li>
+            <li class="">
+                <a class="" href="#">공지사항</a>
+            </li>
+        </ul>
+    </div>
+    <div class="rightHeader">
+        <div class="searchContainer">
+            <form class="searchBox" action="" method="get">
+                <input class="searchText" type="text" name="searchText" placeholder="여름 해변 분위기의 선셋 조명 출시!">
+                <button type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+        </div>
+        <div class="memberContainer">
+            <button type="button">로그인</button>
+            <button type="button">회원가입</button>
+        </div>
+    </div>
+</nav>
+</html>
