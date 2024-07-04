@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class UserController {
-    @Autowired
     private final UserService userService;
 
     @GetMapping("/hello")
@@ -31,7 +30,7 @@ public class UserController {
 
     @GetMapping("/user/detail")
     public ResponseEntity user(@AuthenticationPrincipal UserDetails userDetails) {
-        return new ResponseEntity<>(userDetails.getUsername() + " / " +userDetails.getPassword(), HttpStatus.OK);
+        return new ResponseEntity<>(userDetails.getUsername() + " / " + userDetails.getPassword(), HttpStatus.OK);
     }
 
     @GetMapping("/api1")

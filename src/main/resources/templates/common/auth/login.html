@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/head :: headFragment}"></th:block>
+    <title>로그인 | LUMIT</title>
+</head>
+
+<body>
+<div class="loginBg">
+    <div class="loginFormWrapper">
+        <p>LUMIT</p>
+        <form action="" method="post">
+            <input type="email" name="username" autocomplete="username" placeholder="아이디를 입력해주세요.(이메일 형식)"/>
+            <div class="passwordWrapper">
+                <input id="password" type="password" name="password" placeholder="비밀번호를 입력해주세요."
+                       autocomplete="current-password"/>
+                <button id="hide" onclick="togglePwd(event)"><i class="fa-regular fa-eye-slash"></i>
+                </button>
+                <button id="show" class="hide" onclick="togglePwd(event)"><i class="fa-regular fa-eye"></i></button>
+            </div>
+            <button type="submit">로그인</button>
+        </form>
+    </div>
+</div>
+<script th:inline="javascript">
+    function textChange() {
+
+    }
+
+    function togglePwd(event) {
+        event.preventDefault();
+        const pwd = document.getElementById("password");
+        const state = pwd.getAttribute("type");
+        if (state === "password") {
+            document.getElementById("hide").setAttribute("class", "hide");
+            document.getElementById("show").removeAttribute("class");
+            pwd.setAttribute("type", "text")
+        } else {
+            document.getElementById("show").setAttribute("class", "hide");
+            document.getElementById("hide").removeAttribute("class");
+            pwd.setAttribute("type", "password")
+        }
+        return false;
+    }
+</script>
+</body>
+</html>

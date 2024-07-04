@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <nav th:fragment="headerFragment" class="header">
     <div class="leftHeader">
@@ -29,10 +29,21 @@
                 </button>
             </form>
         </div>
-        <div class="memberContainer">
-            <button type="button">로그인</button>
-            <button type="button">회원가입</button>
-        </div>
+        <form class="memberContainer" form-method="post" th:action="@{/logout}">
+            <button sec:authorize="isAuthenticated()" class="btn btn-outline-danger my-2 my-sm-0 btn-sm" type="submit">
+                내 정보
+            </button>
+            <button sec:authorize="isAuthenticated()" class="btn btn-outline-danger my-2 my-sm-0 btn-sm" type="submit">
+                로그아웃
+            </button>
+            <button sec:authorize="isAnonymous()" th:href="@{/login}" class="btn btn-outline-info my-2 my-sm-0 btn-sm"
+                    type="submit">로그인
+            </button>
+            <button sec:authorize="isAnonymous()" th:href="@{/register}"
+                    class="btn btn-outline-info my-2 my-sm-0 btn-sm"
+                    type="submit">회원가입
+            </button>
+        </form>
     </div>
 </nav>
 </html>

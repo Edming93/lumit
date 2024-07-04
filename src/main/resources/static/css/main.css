@@ -61,7 +61,6 @@ hr {
     padding-top: 1rem;
 }
 
-
 .leftHeader {
     display: flex;
     width: 50%;
@@ -209,6 +208,12 @@ footer {
 
 .bannerContainer {
     margin-top: 1rem;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    left: calc((100% - 1280px) / 2 + (1280px * -3));
 }
 
 .imgWrap {
@@ -244,6 +249,8 @@ footer {
     justify-content: space-between;
     color: white;
     align-items: center;
+    transition: all;
+    transition-duration: 1000s;
 }
 
 .bannerArrow > button {
@@ -254,25 +261,15 @@ footer {
     cursor: pointer;
 }
 
-
 .bannerTxt {
     font-size: 2.7rem;
-    background: -webkit-linear-gradient(#34e89e, #0f3443);
+    background: -webkit-linear-gradient(#200122, #6f0000);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .bannerTxtDetail {
     font-size: 0.9rem;
-}
-
-.bannerContainer {
-    width: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    left: calc((100% - 1280px) / 2 + (1280px * -3));
 }
 
 .bannerMain {
@@ -283,3 +280,66 @@ footer {
     height: 418px;
 }
 
+.loginBg {
+    background: linear-gradient(#FFEEEE, #DDEFBB);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loginFormWrapper {
+    background-color: var(--background-color);
+    width: 27rem;
+    height: 45rem;
+    border-radius: 2rem;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.loginFormWrapper > p {
+    height: 17%;
+    text-align: center;
+    font-weight: 700;
+    font-size: 3rem;
+    color: var(--font-color);
+    padding-top: 5%;
+}
+
+.loginFormWrapper > form {
+    height: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 2rem;
+}
+
+.loginFormWrapper > form > input, .passwordWrapper > input {
+    width: 80%;
+    border: 1px solid var(--font-grey-color);
+    margin: 1rem;
+    border-radius: 0.3rem;
+    padding: 0.7rem;
+}
+
+.passwordWrapper {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center
+}
+
+.passwordWrapper > button {
+    position: absolute;
+    z-index: 2;
+    right: 3rem;
+    border: none;
+    background-color: transparent;
+}
+
+.hide {
+    display: none;
+}
