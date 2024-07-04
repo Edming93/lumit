@@ -9,7 +9,7 @@
 <div class="loginBg">
     <div class="loginFormWrapper">
         <p>LUMIT</p>
-        <form action="" method="post">
+        <form th:action="@{/login}" method="post">
             <input type="email" name="username" autocomplete="username" placeholder="아이디를 입력해주세요.(이메일 형식)"/>
             <div class="passwordWrapper">
                 <input id="password" type="password" name="password" placeholder="비밀번호를 입력해주세요."
