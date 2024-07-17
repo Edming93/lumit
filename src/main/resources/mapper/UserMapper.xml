@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.lumit.shop.admin.repository.UserMapper">
+<mapper namespace="com.lumit.shop.common.repository.UserRepository">
     <select id="getUserList" resultType="com.lumit.shop.common.model.User">
         SELECT * FROM TB_LOGIN
     </select>

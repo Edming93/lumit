@@ -11,14 +11,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Autowired
-    private UserDetailsService userDetailsService;
+    private CustomUserDetailsService userDetailsService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-
+        System.out.println(authentication);
         String username = authentication.getName();
+        System.out.println(username);
+
         String password = (String) authentication.getCredentials();
 
         UserContext userContext = (UserContext) userDetailsService.loadUserByUsername(username);
