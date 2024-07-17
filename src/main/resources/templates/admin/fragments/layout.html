@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"><!--/*  layout 선언부 추가    */-->
+<head>
+    <th:block th:replace="~{admin/fragments/head :: headFragment}"></th:block>
+</head>
+<body>
+<div class="wrapper">
+    <div class="container">
+        <div th:replace="~{admin/fragments/nav :: headerFragment}"></div>
+    </div>
+    <div class="container">
+        <div class="content" layout:fragment="content"></div>
+    </div>
+</div>
+</body>
+</html>
