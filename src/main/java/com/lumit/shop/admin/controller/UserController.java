@@ -1,9 +1,8 @@
 package com.lumit.shop.admin.controller;
 
-import com.lumit.shop.admin.model.user;
-import com.lumit.shop.admin.service.UserService;
+import com.lumit.shop.common.model.User;
+import com.lumit.shop.common.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public List<user> user() {
+    public List<User> user() {
         return userService.getUserList();
     }
 
