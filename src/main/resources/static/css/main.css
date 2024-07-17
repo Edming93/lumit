@@ -123,12 +123,16 @@ hr {
     justify-content: space-evenly;
 }
 
-.memberContainer > button {
+.memberContainer > button, .memberContainer > form > button {
     border: none;
     background-color: transparent;
     font-size: 0.8rem;
     color: var(--font-grey-color);
     cursor: pointer;
+}
+
+.memberContainer > button > a {
+    color: var(--font-grey-color);
 }
 
 
@@ -219,11 +223,14 @@ footer {
 .imgWrap {
     position: relative;
     opacity: 70%;
+    padding: 1rem;
+    width: 70%;
 }
 
 .bannerImg {
     border-radius: 1rem;
     vertical-align: middle;
+
 }
 
 .banner {
@@ -274,6 +281,7 @@ footer {
 
 .bannerMain {
     opacity: 100%;
+    width: 100%;
 }
 
 .mainImg {
