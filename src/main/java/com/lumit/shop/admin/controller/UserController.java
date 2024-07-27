@@ -5,6 +5,7 @@ import com.lumit.shop.common.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequestMapping("/admin")
 @Controller
 @RequiredArgsConstructor
+@PreAuthorize("hasAnyAuthority('1', '2')")
 public class UserController {
     private final UserService userService;
 
@@ -31,6 +33,7 @@ public class UserController {
         return "Hello World";
     }
 
+    @PreAuthorize("hasAuthority('1')")
     @GetMapping("/user")
     public List<User> user() {
         return userService.getUserList();

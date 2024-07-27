@@ -9,8 +9,11 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -26,14 +29,9 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http.authorizeHttpRequests((authorizeRequests) ->
                 authorizeRequests.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                		.requestMatchers("/admin").authenticated()
                         .requestMatchers("/", "/login", "/lumit/**").permitAll()
-                        .requestMatchers("/mypage").hasRole("3")
-                        .requestMatchers("/messages").hasRole("2")
-                        .requestMatchers("/config").hasRole("1")
                         .anyRequest().authenticated()
 
         ).formLogin((formLogin) ->
@@ -53,9 +51,8 @@ public class WebSecurityConfig {
 //        manager.createUser(User.withUsername("user1").password("1234").roles("user").build());
 //        return manager;
 //    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 }

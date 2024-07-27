@@ -6,9 +6,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.Iterator;
+
+@Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -17,10 +23,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        System.out.println(authentication);
         String username = authentication.getName();
-        System.out.println(username);
-
         String password = (String) authentication.getCredentials();
 
         UserContext userContext = (UserContext) userDetailsService.loadUserByUsername(username);
