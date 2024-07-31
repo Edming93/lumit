@@ -15,43 +15,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RequestMapping("/admin")
+@RequestMapping("/user")
 @Controller
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyAuthority('1', '2')")
 public class UserController {
     private final UserService userService;
-
-
-    @GetMapping("")
-    public String index() {
-        return "admin/index";
-    }
-
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello World";
-    }
-
     @PreAuthorize("hasAuthority('1')")
-    @GetMapping("/user")
+    @GetMapping("")
     public List<User> user() {
         return userService.getUserList();
     }
 
-    @GetMapping("/user/detail")
+    @GetMapping("/detail")
     public ResponseEntity user(@AuthenticationPrincipal UserDetails userDetails) {
         return new ResponseEntity<>(userDetails.getUsername() + " / " + userDetails.getPassword(), HttpStatus.OK);
     }
-
-    @GetMapping("/api1")
-    public ResponseEntity api1() {
-        return new ResponseEntity<>("api1 입니다.", HttpStatus.OK);
-    }
-
-    @GetMapping("/api2")
-    public ResponseEntity api2() {
-        return new ResponseEntity<>("api2 입니다.", HttpStatus.OK);
-    }
+//
+//    @GetMapping("/api1")
+//    public ResponseEntity api1() {
+//        return new ResponseEntity<>("api1 입니다.", HttpStatus.OK);
+//    }
+//
+//    @GetMapping("/api2")
+//    public ResponseEntity api2() {
+//        return new ResponseEntity<>("api2 입니다.", HttpStatus.OK);
+//    }
 
 }

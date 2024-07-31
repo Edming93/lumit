@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                 formLogin.loginPage("/login")
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/", true)
+//                        .defaultSuccessUrl("/", true)
                         .successHandler(getSuccessHandler())
         );
         http.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).deleteCookies("JSESSIONID").logoutSuccessUrl("/"));

@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class User implements UserDetails {
     private String userId;
-    private String userName;
+    private String name;
     private String roleId;
     private String password;
     private String address;
@@ -40,6 +40,10 @@ public class User implements UserDetails {
 
     public void addAuthority (TbMenu menu) {
         authorities.add(menu);
+    }
+
+    public List<TbMenu> getMenuAuthorities() {
+        return authorities;
     }
 
     @Override

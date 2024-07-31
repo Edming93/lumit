@@ -3,7 +3,7 @@
 
 <mapper namespace="com.lumit.shop.common.repository.MenuRepository">
     <select id="getMenuList" resultType="com.lumit.shop.common.model.TbMenu">
-        SELECT a.*
+        SELECT a.* , b.MAIN_YN
         FROM TB_MENU a
         LEFT JOIN
             TB_ROLE_MENU b

@@ -21,8 +21,11 @@ public class TbMenu implements GrantedAuthority {
     private String menuUrl;
     private String menuDefaultUrl;
 
+    private String mainYn;
+
     @Override
     public String getAuthority() {
         return menuUrl;
     }
+
 }
