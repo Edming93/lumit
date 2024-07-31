@@ -21,11 +21,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("loadUserByUsername :: "+username);
+        System.out.println("loadUserByUsername :: " + username);
         // DB에서 User 객체 조회
         User user = userRepository.selectByUserName(username);
 
-        if(user == null) {
+        if (user == null) {
             throw new UsernameNotFoundException("UsernameNotFoundException");
         }
 
@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         roles.add(new SimpleGrantedAuthority(user.getRoleId()));
 
         // AccountContext 생성자로 UserDetails 타입 생성
-        UserContext userContext = new UserContext(user,roles);
+        UserContext userContext = new UserContext(user, roles);
 
         return userContext;
 
