@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lumit.shop.common.repository.MenuRepository">
+    <select id="getMenuList" resultType="com.lumit.shop.common.model.TbMenu">
+        SELECT a.*
+        FROM TB_MENU a
+        LEFT JOIN
+            TB_ROLE_MENU b
+        ON
+            a.MENU_CD = b.MENU_CD
+        LEFT JOIN
+            TB_LOGIN c
+        ON
+            b.ROLE_ID = c.ROLE_ID
+        WHERE
+            c.USER_ID= #{userId}
+    </select>
+
+
+</mapper>
