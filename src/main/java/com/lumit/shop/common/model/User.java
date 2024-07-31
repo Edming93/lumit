@@ -18,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails {
+public class User {
     private String userId;
     private String userName;
     private String roleId;
@@ -32,48 +32,5 @@ public class User implements UserDetails {
     private Timestamp modDt;
     private String modId;
 
-    private List<TbMenu> authorities = new ArrayList<>();
-
-    public void setAuthorities (List<TbMenu> authorities) {
-        this.authorities = authorities;
-    }
-
-    public void addAuthority (TbMenu menu) {
-        authorities.add(menu);
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.<GrantedAuthority> unmodifiableCollection(authorities);
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-    public String getUserName() {
-        return userId;
-    }
 
 }
