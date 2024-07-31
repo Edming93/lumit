@@ -20,4 +20,9 @@ public class TbMenu implements GrantedAuthority {
     private String menuName;
     private String menuUrl;
     private String menuDefaultUrl;
+
+    @Override
+    public String getAuthority() {
+        return menuUrl;
+    }
 }
