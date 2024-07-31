@@ -26,11 +26,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("loadUserByUsername :: "+username);
+        System.out.println("loadUserByUsername :: " + username);
         // DB에서 User 객체 조회
         User user = userRepository.selectByUserName(username);
 
-        if(user == null) {
+        if (user == null) {
             throw new UsernameNotFoundException("UsernameNotFoundException");
         }
 

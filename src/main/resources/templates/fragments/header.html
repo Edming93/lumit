@@ -3,9 +3,8 @@
 
 <nav th:fragment="headerFragment" class="header">
     <div class="leftHeader">
-
         <ul class="">
-            <li><a class="home" href="#" th:href="@{/}">Lumit</a></li>
+            <li class="logo"><a class="home" href="#" th:href="@{/}">Lumit</a></li>
             <li class="">
                 <a class="" href="#" th:href="@{/}">인테리어</a>
             </li>
@@ -15,8 +14,12 @@
             <li class="">
                 <a class="" href="#">Q&A</a>
             </li>
+
             <li class="">
                 <a class="" href="#">공지사항</a>
+            </li>
+            <li sec:authorize="hasAnyAuthority('1','2')" class="only-admin">
+                <a class="" href="/admin">관리자페이지로</a>
             </li>
         </ul>
     </div>

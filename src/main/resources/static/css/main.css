@@ -73,13 +73,29 @@ hr {
     font-size: x-large;
 }
 
+.home_admin {
+    font-family: "Playfair Display", serif;
+    font-size: large;
+}
+
+.home_admin > span {
+    font-family: "Playfair Display", serif;
+    font-size: x-small;
+}
+
+
 .leftHeader > ul {
     display: flex;
     list-style: none;
     justify-content: space-between;
     align-items: center;
-    width: 50%;
+    width: 80%;
     font-size: 0.8rem;
+}
+
+.logo {
+    max-width: 75px;
+    min-width: 75px;
 }
 
 .rightHeader {
@@ -87,6 +103,10 @@ hr {
     align-items: center;
     justify-content: flex-end;
     width: 50%;
+}
+
+.rightHeader > ul {
+    width: 80%;
 }
 
 .searchContainer {
@@ -217,14 +237,14 @@ footer {
     display: flex;
     flex-direction: row;
     align-items: center;
-    left: calc((100% - 1280px) / 2 + (1280px * -3));
+    left: calc((100% - 1280px) / 2 + (1280px * -3) + (2rem * -4))
 }
 
 .imgWrap {
     position: relative;
     opacity: 70%;
-    padding: 1rem;
-    width: 70%;
+    margin: 1rem;
+    width: 100%;
 }
 
 .bannerImg {
@@ -235,6 +255,7 @@ footer {
 
 .banner {
     overflow: hidden;
+    width: 100%;
 }
 
 .bannerTxtContainer {
@@ -340,7 +361,7 @@ footer {
     justify-content: center
 }
 
-.passwordWrapper > button {
+.passwordWrapper > div {
     position: absolute;
     z-index: 2;
     right: 3rem;
@@ -350,4 +371,14 @@ footer {
 
 .hide {
     display: none;
+}
+
+.only-admin {
+    background-color: #6f0000;
+    padding: 0.4rem;
+    border-radius: 0.2rem;
+}
+
+.only-admin > * {
+    color: white;
 }

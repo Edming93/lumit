@@ -3,20 +3,22 @@
 
 <nav th:fragment="headerFragment" class="header">
     <div class="leftHeader">
-
         <ul class="">
-            <li><a class="home" href="#" th:href="@{/}">Lumit</a></li>
+            <li class="logo"><a class="home_admin" href="#" th:href="@{/}">Lumit<span>admin</span></a></li>
             <li class="">
-                <a class="" href="#" th:href="@{/}">인테리어</a>
+                <a class="" href="#" th:href="@{/}">회원관리</a>
             </li>
             <li class="">
-                <a class="" href="#">스튜디오</a>
+                <a class="" href="#">주문관리</a>
             </li>
             <li class="">
-                <a class="" href="#">Q&A</a>
+                <a class="" href="#">배송관리</a>
             </li>
             <li class="">
-                <a class="" href="#">공지사항</a>
+                <a class="" href="#">전달사항</a>
+            </li>
+            <li>
+                <a class="adminDefault" th:href="@{/}">기본 페이지로</a>
             </li>
         </ul>
     </div>
