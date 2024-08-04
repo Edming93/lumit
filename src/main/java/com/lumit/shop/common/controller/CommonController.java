@@ -10,15 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class CommonController {
 
+    @GetMapping("")
+    public String home() {
+        return "lumit/index";
+    }
+
     @GetMapping("/login")
     public String showLoginForm() {
         return "common/auth/login";
     }
 
-    @GetMapping("/admin")
-    public String getAdminMain() {
-        return "admin/index";
-    }
 
     @GetMapping("/lumit")
     public String getLumitMain() {

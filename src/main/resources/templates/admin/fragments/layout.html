@@ -8,9 +8,7 @@
 </head>
 <body>
 <div class="wrapper">
-    <div class="container">
-        <div th:replace="~{admin/fragments/header :: headerFragment}"></div>
-    </div>
+    <div th:replace="~{admin/fragments/nav-tab :: navFragment}"></div>
     <div class="container">
         <div class="content" layout:fragment="content"></div>
     </div>

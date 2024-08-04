@@ -22,6 +22,8 @@ public class TbMenu implements GrantedAuthority {
     private String menuDefaultUrl;
 
     private String mainYn;
+    private boolean isAdmin;
+    private String iconHtml;
 
     @Override
     public String getAuthority() {

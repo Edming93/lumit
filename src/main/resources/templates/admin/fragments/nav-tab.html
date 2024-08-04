@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<nav th:id="sidebar" th:fragment="navFragment" th:class="nav-tab">
+    <div th:class="logo">
+        <a th:class="wide" th:href="@{/admin}"><span>ADMIN</span></a>
+        <button th:type="button" th:onclick="sideBar.toggleSidebar()"><i class="fa-solid fa-angles-left"></i></button>
+    </div>
+    <ul>
+        <li th:class="nav-list"
+            th:classappend="${request.getRequestURL().toString().split('localhost')[1] == '/admin/dashboard' ? 'active' : null}">
+            <a th:class="nav-link"
+               th:href="@{/admin/dashboard}">
+                <i class="fa-solid fa-house"></i>
+                <span th:class="wide">홈</span>
+            </a></li>
+        <li th:class="nav-list" th:each="menu : ${session.menuList}" th:if="${menu.isAdmin()}"
+            th:classappend="${request.getRequestURL().toString().split('localhost')[1] == menu.getMenuUrl().split('/\*')[0] ? 'active' : null}">
+            <a th:class="nav-link"
+               th:href="${menu.getMenuUrl().split('/\*')[0]}">
+                <th:block th:if="${!menu.getIconHtml().equals(null)}" th:utext="${menu.getIconHtml()}"></th:block>
+                <span th:class="wide" th:text="${menu.menuName}"></span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+    });
+</script>
+</html>

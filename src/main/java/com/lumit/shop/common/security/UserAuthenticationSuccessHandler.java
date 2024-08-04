@@ -6,6 +6,7 @@ import com.lumit.shop.common.service.SecurityUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -27,24 +28,23 @@ public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
         System.out.println("----------------------------");
 
 
-
         for (GrantedAuthority authority : user.getAuthorities()) {
             System.out.println("Authority: " + authority.getAuthority());
         }
         List<TbMenu> menuList = user.getMenuAuthorities();
         String defaultUrl = "";
-        for(TbMenu menu : menuList) {
-            if(StringUtils.equals(menu.getMenuDefaultUrl(),"")) {
-                if(StringUtils.equals(menu.getMainYn(),"Y")) {
+        for (TbMenu menu : menuList) {
+            if (StringUtils.equals(menu.getMenuDefaultUrl(), "")) {
+                if (StringUtils.equals(menu.getMainYn(), "Y")) {
                     defaultUrl = menu.getMenuUrl().replace("/**", "");
                 }
             }
         }
+        HttpSession session = request.getSession();
+        session.setAttribute("menuList", menuList);
 
-        System.out.println(defaultUrl);
         super.setDefaultTargetUrl(defaultUrl);
         super.onAuthenticationSuccess(request, response, authentication);
-
 
 
     }

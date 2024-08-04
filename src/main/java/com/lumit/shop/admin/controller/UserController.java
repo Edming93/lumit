@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,12 +22,7 @@ import java.util.List;
 @PreAuthorize("hasAnyAuthority('1', '2')")
 public class UserController {
     private final UserService userService;
-    @PreAuthorize("hasAuthority('1')")
-    @GetMapping("")
-    public List<User> user() {
-        return userService.getUserList();
-    }
-
+    
     @GetMapping("/detail")
     public ResponseEntity user(@AuthenticationPrincipal UserDetails userDetails) {
         return new ResponseEntity<>(userDetails.getUsername() + " / " + userDetails.getPassword(), HttpStatus.OK);
