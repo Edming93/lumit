@@ -7,10 +7,11 @@ function hideMenuText() {
 
 function showMenuText() {
     const menuList = document.getElementsByClassName("wide");
-    console.log(menuList.length);
-    for (let i = 0; i < menuList.length; i++) {
-        menuList.item(i).classList.remove('hidden');
-    }
+    setTimeout(function () {
+        for (let i = 0; i < menuList.length; i++) {
+            menuList.item(i).classList.remove('hidden');
+        }
+    }, 170)
 }
 
 let sideBar = {
@@ -32,6 +33,7 @@ let sideBar = {
             sidebar.classList.add("sb_hidden");
             hideMenuText();
         }
+        this.buttonControl();
     },
     toggleSidebar() {
         let state = this.getState();
@@ -47,6 +49,15 @@ let sideBar = {
             cookie.deleteCookie("sb_hidden");
             cookie.setCookie("sb_hidden", "T", 14);
         }
+        this.buttonControl();
+    },
+    buttonControl() {
+        const toggleBtn = document.getElementById("toggleBtnId");
+        if (this.getState() == 'T') {
+            toggleBtn.innerHTML = '<i class="fa-solid fa-angles-right"></i>';
+        } else {
+            toggleBtn.innerHTML = '<i class="fa-solid fa-angles-left"></i>';
+        }
     }
 }
 
@@ -58,7 +69,6 @@ let cookie = {
     },
     getCookie(name) {
         var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-        console.log(value);
         return value ? value[2] : null;
     },
     deleteCookie(name) {
