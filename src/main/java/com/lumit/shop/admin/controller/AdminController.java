@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,22 +52,28 @@ public class AdminController {
     }
 
     @PostMapping("/manager/new")
-    public String newManager(@Valid UserDto userDto, BindingResult bindingResult, Model model, HttpServletRequest request) {
+    public String newManager(@Valid @ModelAttribute("userDto") UserDto userDto, BindingResult bindingResult, Model model, HttpServletRequest request) {
+        model.addAttribute("request", request);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        com.lumit.shop.common.model.User user = (com.lumit.shop.common.model.User) authentication.getPrincipal();
+
+        userDto.setRegAdmin(user.getUserId());
         if (bindingResult.hasErrors()) {
-            model.addAttribute("request", request);
-            model.addAttribute("userDto", new UserDto());
+            for (int i = 0; i < bindingResult.getAllErrors().size(); i++) {
+                System.out.println(bindingResult.getAllErrors().get(i));
+            }
+//            model.addAttribute("userDto", new UserDto());
             return NEW_MANAGER_FORM;
         }
         try {
             User manager = User.createAdmin(userDto, passwordEncoder);
             userService.addNewUser(manager);
         } catch (Exception e) {
-            model.addAttribute("request", request);
+            System.out.println(e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("userDto", new UserDto());
             return NEW_MANAGER_FORM;
         }
-        model.addAttribute("request", request);
         return "redirect:/admin";
     }
 
