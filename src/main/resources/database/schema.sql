@@ -167,7 +167,7 @@ create table if not exists TB_LOGIN
     USER_ID   varchar(50)  not null
         primary key,
     ROLE_ID   int          not null,
-    PASSWORD  varchar(100) null,
+    PASSWORD  varchar(100) not null,
     USER_NAME varchar(30)  not null,
     GENDER_CD varchar(2)   not null comment '1: 여, 2: 남',
     EMAIL     varchar(30)  not null,

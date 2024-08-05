@@ -40,7 +40,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 //            user.addAuthority(menu);
 //        }
 
-        for(Iterator<TbMenu> iterator = menuList.iterator(); iterator.hasNext();) {
+
+        for (Iterator<TbMenu> iterator = menuList.iterator(); iterator.hasNext(); ) {
             user.addAuthority(iterator.next());
         }
 

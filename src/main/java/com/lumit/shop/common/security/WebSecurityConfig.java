@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,18 +26,22 @@ public class WebSecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((authorizeRequests) ->
-                authorizeRequests.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers(WHITE_LIST).permitAll()
-                        .anyRequest().authenticated()
+    public WebSecurityCustomizer securityCustomizer() {
+        return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
 
-        ).formLogin((formLogin) ->
-                formLogin.loginPage("/login")
-                        .usernameParameter("username")
-                        .passwordParameter("password")
-                        .successHandler(getSuccessHandler())
-        );
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests.requestMatchers(WHITE_LIST).permitAll()
+                                .anyRequest().authenticated())
+                .formLogin((formLogin) ->
+                        formLogin.loginPage("/login")
+                                .usernameParameter("username")
+                                .passwordParameter("password")
+                                .successHandler(getSuccessHandler())
+                );
         http.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).deleteCookies("JSESSIONID").logoutSuccessUrl("/"));
         return http.build();
     }

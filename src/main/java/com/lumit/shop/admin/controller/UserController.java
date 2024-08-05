@@ -19,14 +19,17 @@ import java.util.List;
 @RequestMapping("/user")
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyAuthority('1', '2')")
+//@PreAuthorize("hasAnyAuthority('1', '2')")
 public class UserController {
     private final UserService userService;
-    
+
+
     @GetMapping("/detail")
     public ResponseEntity user(@AuthenticationPrincipal UserDetails userDetails) {
         return new ResponseEntity<>(userDetails.getUsername() + " / " + userDetails.getPassword(), HttpStatus.OK);
     }
+
+
 //
 //    @GetMapping("/api1")
 //    public ResponseEntity api1() {

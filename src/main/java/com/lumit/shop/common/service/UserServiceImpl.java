@@ -11,8 +11,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+
     @Override
     public List<User> getUserList() {
         return userRepository.getUserList();
+    }
+
+    @Override
+    public int addNewUser(com.lumit.shop.admin.model.User user) {
+        return userRepository.addNewUser(user);
     }
 }

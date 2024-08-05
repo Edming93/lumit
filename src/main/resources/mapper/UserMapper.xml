@@ -3,14 +3,20 @@
 
 <mapper namespace="com.lumit.shop.common.repository.UserRepository">
     <select id="getUserList" resultType="com.lumit.shop.common.model.User">
-        SELECT * FROM TB_LOGIN
+        SELECT *
+        FROM TB_LOGIN
     </select>
 
     <select id="selectByUserName" resultType="com.lumit.shop.common.model.User">
         SELECT *
-        FROM
-            TB_LOGIN
-        WHERE
-            USER_ID = #{username}
+        FROM TB_LOGIN
+        WHERE USER_ID = #{username}
     </select>
+
+    <insert id="addNewUser" parameterType="com.lumit.shop.admin.model.User">
+        INSERT INTO `TB_LOGIN`
+        VALUES (#{userId}, #{roleId}, #{password}, #{name}, #{genderCd},
+                #{email},
+                #{phone}, #{address}, #{regId}, now(), NULL, NULL);
+    </insert>
 </mapper>

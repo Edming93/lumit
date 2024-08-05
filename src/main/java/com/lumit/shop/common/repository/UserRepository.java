@@ -14,4 +14,5 @@ public interface UserRepository {
 
     User selectByUserName(String username);
 
+    int addNewUser(com.lumit.shop.admin.model.User user);
 }

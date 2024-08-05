@@ -77,6 +77,5 @@ let cookie = {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log(cookie.getCookie("sb_hidden"));
     sideBar.setting();
 })
