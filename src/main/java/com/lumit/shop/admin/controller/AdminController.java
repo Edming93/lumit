@@ -20,6 +20,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@PreAuthorize("hasAnyAuthority('1', '2')")
 @RequestMapping(value = "/admin")
 public class AdminController {
     private final MenuService menuService;
