@@ -21,20 +21,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebSecurityConfig {
     private final UserDetailsService userDetailsService;
     private static final String[] WHITE_LIST = {
-            "/", "/login", "/lumit/**", "/error/**"
+            "/", "/login", "/member/createUser", "/lumit/**", "/error/**"
     };
-
-
-    @Bean
-    public WebSecurityCustomizer securityCustomizer() {
-        return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-    }
-
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.requestMatchers(WHITE_LIST).permitAll()
+                        authorizeRequests.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().requestMatchers(WHITE_LIST).permitAll()
                                 .anyRequest().authenticated())
                 .formLogin((formLogin) ->
                         formLogin.loginPage("/login")
@@ -42,7 +35,7 @@ public class WebSecurityConfig {
                                 .passwordParameter("password")
                                 .successHandler(getSuccessHandler())
                 );
-        http.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).deleteCookies("JSESSIONID").logoutSuccessUrl("/"));
+        http.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).deleteCookies("JSESSIONID").invalidateHttpSession(false).logoutSuccessUrl("/"));
         return http.build();
     }
 

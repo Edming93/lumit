@@ -5,7 +5,7 @@
         xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{admin/fragments/layout}">
 <div layout:fragment="content">
-    <form action="/admin/manager/new" method="post" th:object="${userDto}">
+    <form action="/admin/member/newManager" method="post" th:object="${userDto}">
         <fieldset>
             <legend>관리자의 권한 레벨을 설정해주세요.</legend>
             <div>

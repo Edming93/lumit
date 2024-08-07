@@ -18,6 +18,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public com.lumit.shop.admin.model.User findUserById(String userId) {
+        return userRepository.findUserById(userId);
+    }
+
+    @Override
     public int addNewUser(com.lumit.shop.admin.model.User user) {
         return userRepository.addNewUser(user);
     }

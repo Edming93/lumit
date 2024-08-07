@@ -309,7 +309,7 @@ footer {
     height: 418px;
 }
 
-.loginBg {
+.userFormBg {
     background: linear-gradient(#FFEEEE, #DDEFBB);
     width: 100vw;
     height: 100vh;
@@ -318,7 +318,7 @@ footer {
     justify-content: center;
 }
 
-.loginFormWrapper {
+.userFormWrapper {
     background-color: var(--background-color);
     width: 27rem;
     height: 45rem;
@@ -326,7 +326,17 @@ footer {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
-.loginFormWrapper > p {
+.formContainer {
+    display: grid;
+
+}
+
+.userFormWrapper input {
+    border: 1px solid black;
+    border-radius: 0.3rem;
+}
+
+.userFormWrapper > p {
     height: 17%;
     text-align: center;
     font-weight: 700;
@@ -335,20 +345,14 @@ footer {
     padding-top: 5%;
 }
 
-.loginFormWrapper > form {
-    height: 80%;
-    width: 100%;
+.formContainer {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    border-radius: 2rem;
 }
 
-.loginFormWrapper > form > input, .passwordWrapper > input {
+.userFormWrapper > form > input, .passwordWrapper > input {
     width: 80%;
-    border: 1px solid var(--font-grey-color);
     margin: 1rem;
-    border-radius: 0.3rem;
     padding: 0.7rem;
 }
 
@@ -367,6 +371,10 @@ footer {
     right: 3rem;
     border: none;
     background-color: transparent;
+}
+
+.helpLink {
+    text-decoration: underline;
 }
 
 .hide {

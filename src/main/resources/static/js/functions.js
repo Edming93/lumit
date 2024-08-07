@@ -1,19 +1,3 @@
-function hideMenuText() {
-    const menuList = document.getElementsByClassName("wide");
-    for (let i = 0; i < menuList.length; i++) {
-        menuList.item(i).classList.add('hidden');
-    }
-}
-
-function showMenuText() {
-    const menuList = document.getElementsByClassName("wide");
-    setTimeout(function () {
-        for (let i = 0; i < menuList.length; i++) {
-            menuList.item(i).classList.remove('hidden');
-        }
-    }, 170)
-}
-
 let sideBar = {
     getState() {
         let state = cookie.getCookie("sb_hidden");
@@ -28,24 +12,40 @@ let sideBar = {
         const sidebar = document.getElementById("sidebar");
         if (state == "F") {
             sidebar.classList.remove("sb_hidden");
-            showMenuText();
+            this.showMenuText();
         } else {
             sidebar.classList.add("sb_hidden");
-            hideMenuText();
+            this.hideMenuText();
         }
         this.buttonControl();
+    },
+    open() {
+        if (this.getState() == "F") {
+            return;
+        }
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.remove("sb_hidden");
+        this.showMenuText();
+    },
+    close() {
+        if (this.getState() == "F") {
+            return;
+        }
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.add("sb_hidden");
+        this.hideMenuText();
     },
     toggleSidebar() {
         let state = this.getState();
         const sidebar = document.getElementById("sidebar");
         if (state == "T") {
             sidebar.classList.remove("sb_hidden");
-            showMenuText();
+            this.showMenuText();
             cookie.deleteCookie("sb_hidden");
             cookie.setCookie("sb_hidden", "F", 14);
         } else {
             sidebar.classList.add("sb_hidden");
-            hideMenuText();
+            this.hideMenuText();
             cookie.deleteCookie("sb_hidden");
             cookie.setCookie("sb_hidden", "T", 14);
         }
@@ -53,10 +53,24 @@ let sideBar = {
     },
     buttonControl() {
         const toggleBtn = document.getElementById("toggleBtnId");
-        if (this.getState() == 'T') {
-            toggleBtn.innerHTML = '<i class="fa-solid fa-angles-right"></i>';
+        if (this.getState() == "T") {
+            toggleBtn.classList.add("rotateArrow");
         } else {
-            toggleBtn.innerHTML = '<i class="fa-solid fa-angles-left"></i>';
+            toggleBtn.classList.remove("rotateArrow")
+        }
+    },
+    showMenuText() {
+        const menuList = document.getElementsByClassName("wide");
+        setTimeout(function () {
+            for (let i = 0; i < menuList.length; i++) {
+                menuList.item(i).classList.remove('hidden');
+            }
+        }, 170)
+    },
+    hideMenuText() {
+        const menuList = document.getElementsByClassName("wide");
+        for (let i = 0; i < menuList.length; i++) {
+            menuList.item(i).classList.add('hidden');
         }
     }
 }
@@ -73,6 +87,13 @@ let cookie = {
     },
     deleteCookie(name) {
         document.cookie = name + "=; expires=Thu, 01 Jan 1999 00:00:10 GMT;";
+    }
+}
+
+let formControl = {
+    phoneNumCorrection() {
+        const phoneInput = document.getElementById("phone");
+
     }
 }
 

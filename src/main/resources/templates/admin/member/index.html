@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{admin/fragments/layout}">
+<div layout:fragment="content">
+    <div>
+        <p class="title">멤버 메인 페이지</p>
+        <a class="linkBtn" th:href="@{/admin/member/newManager}">새로운 관리자 생성하기</a>
+        <a class="linkBtn" th:href="@{/admin/member/user}">일반 회원 관리하기</a>
+    </div>
+</div>
+</html>

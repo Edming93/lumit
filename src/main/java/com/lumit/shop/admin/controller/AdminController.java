@@ -29,8 +29,9 @@ public class AdminController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final String BASE_URL = "/admin";
+    private final String MEMBER_PATH = "/member";
+    private final String NEW_MANAGER_FORM = BASE_URL + MEMBER_PATH + "/adminForm";
 
-    private final String NEW_MANAGER_FORM = BASE_URL + "/manager/managerForm";
 
     @GetMapping("")
     public String adminHome(Model model, HttpServletRequest request, HttpServletResponse response) {
@@ -44,14 +45,22 @@ public class AdminController {
         return BASE_URL + "/dashboard/index";
     }
 
-    @GetMapping("/manager/new")
+
+    @GetMapping(MEMBER_PATH)
+    public String memberDashboard(Model model, HttpServletRequest request) {
+        model.addAttribute("request", request);
+        return BASE_URL + MEMBER_PATH + "/index";
+    }
+
+    @GetMapping(MEMBER_PATH + "/newManager")
     public String newManager(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
         model.addAttribute("userDto", new UserDto());
         return NEW_MANAGER_FORM;
     }
 
-    @PostMapping("/manager/new")
+
+    @PostMapping(MEMBER_PATH + "/newManager")
     public String newManager(@Valid @ModelAttribute("userDto") UserDto userDto, BindingResult bindingResult, Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -59,10 +68,6 @@ public class AdminController {
 
         userDto.setRegAdmin(user.getUserId());
         if (bindingResult.hasErrors()) {
-            for (int i = 0; i < bindingResult.getAllErrors().size(); i++) {
-                System.out.println(bindingResult.getAllErrors().get(i));
-            }
-//            model.addAttribute("userDto", new UserDto());
             return NEW_MANAGER_FORM;
         }
         try {
@@ -78,9 +83,9 @@ public class AdminController {
     }
 
     //    @PreAuthorize("hasAnyAuthority('1', '2')")
-    @GetMapping("/user")
+    @GetMapping(MEMBER_PATH + "/user")
     public String user(Model model, HttpServletRequest request, HttpServletResponse response) {
         model.addAttribute("request", request);
-        return BASE_URL + "/user/index";
+        return BASE_URL + MEMBER_PATH + "/user/dashboard";
     }
 }

@@ -13,6 +13,12 @@
         WHERE USER_ID = #{username}
     </select>
 
+    <select id="findUserById" resultType="com.lumit.shop.admin.model.User">
+        SELECT *
+        FROM TB_LOGIN
+        WHERE USER_ID = #{userId}
+    </select>
+
     <insert id="addNewUser" parameterType="com.lumit.shop.admin.model.User">
         INSERT INTO `TB_LOGIN`
         VALUES (#{userId}, #{roleId}, #{password}, #{name}, #{genderCd},

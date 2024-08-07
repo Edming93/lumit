@@ -1,6 +1,7 @@
 package com.lumit.shop.admin.model;
 
 import com.lumit.shop.admin.dto.UserDto;
+import com.lumit.shop.common.dto.SignUpDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,7 +16,7 @@ import java.util.Date;
 public class User {
     private String userId;
     private Integer roleId;
-    private String name;
+    private String userName;
     private String password;
     private String address;
     private String email;
@@ -29,7 +30,7 @@ public class User {
     public static User createAdmin(UserDto userDto, PasswordEncoder passwordEncoder) {
         User user = new User();
         user.setUserId(userDto.getUserId());
-        user.setName(userDto.getName());
+        user.setUserName(userDto.getName());
         user.setEmail(userDto.getEmail());
         user.setAddress(userDto.getAddress());
         switch (userDto.getRole()) {
@@ -51,6 +52,22 @@ public class User {
         user.setPhone(userDto.getPhone());
         user.setRegDt(new Timestamp(new Date().getTime()));
         user.setRegId(userDto.getRegAdmin());
+        return user;
+    }
+
+    public static User createUser(UserDto userDto, PasswordEncoder passwordEncoder) {
+        User user = new User();
+        user.setUserId(userDto.getUserId());
+        user.setUserName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setAddress(userDto.getAddress());
+        user.setRegId(userDto.getName());
+        user.setGenderCd(userDto.getGenderCd());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setPhone(userDto.getPhone());
+        user.setRegDt(new Timestamp(new Date().getTime()));
+        user.setRegId(userDto.getName());
+        user.setRoleId(3);
         return user;
     }
 }

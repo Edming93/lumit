@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <nav th:id="sidebar" th:fragment="navFragment" th:class="nav-tab">
-    <ul>
-        <div th:class="logo">
-            <a th:class="wide" th:href="@{/admin}"><span th:text="ADMIN"></span></a>
-            <button th:id="toggleBtnId" th:class="toggleBtn" th:type="button" th:onclick="sideBar.toggleSidebar()"
-            >
+    <div th:class="logo">
+        <a th:class="wide" th:href="@{/admin}">ADMIN</a>
+        <div th:class="btnWrapper">
+            <button
+                    th:id="toggleBtnId" th:class="toggleBtn" th:type="button"
+                    onclick="sideBar.toggleSidebar()"
+            ><i class="fa-solid fa-angles-left"></i>
             </button>
         </div>
-        <li th:class="nav-list"
-        >
-
+    </div>
+    <ul onmouseenter="sideBar.open()"
+        onmouseleave="sideBar.close()">
+        <li th:class="nav-list">
             <a th:class="nav-link"
                th:classappend="${request.getRequestURL().toString().split('localhost')[1] == '/admin/dashboard' ? 'active' : null}"
                th:href="@{/admin/dashboard}">
