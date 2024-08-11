@@ -173,6 +173,7 @@ create table if not exists TB_LOGIN
     EMAIL     varchar(30)  not null,
     PHONE     varchar(14)  not null,
     ADDRESS   varchar(30)  not null,
+    KAKAO_ID  varchar(15)  null,
     REG_ID    varchar(50)  null,
     REG_DT    timestamp    null,
     MOD_ID    varchar(50)  null,

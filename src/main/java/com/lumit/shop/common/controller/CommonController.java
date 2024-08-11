@@ -6,6 +6,7 @@ import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,12 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class CommonController {
     private final PasswordEncoder passwordEncoder;
+    @Autowired
     private final UserService userService;
 
     /**
      * GET Mapping Returns
      * <p>
-     * GET / -> /lumit/index
+     * GET /lumit -> /lumit/index
      * GET /login -> /common/auth/login
      * GET /member/createUser -> /common/auth/signupForm
      */
@@ -35,7 +37,7 @@ public class CommonController {
 
     private final String MEMBER_PATH = "/member";
 
-    @GetMapping("")
+    @GetMapping("/lumit")
     public String home() {
         return LUMIT_INDEX;
     }
@@ -44,6 +46,9 @@ public class CommonController {
     public String showLoginForm() {
         return LOGIN_FORM;
     }
+
+    @GetMapping("/get/signUp")
+    public String moveSignUp() { return "/common/auth/signupForm"; }
 
     @GetMapping(MEMBER_PATH + "/createUser")
     public String signUp(Model model) {

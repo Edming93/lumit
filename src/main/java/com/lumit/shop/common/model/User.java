@@ -27,6 +27,7 @@ public class User implements UserDetails {
     private String email;
     private String genderCd;
     private String phone;
+    private String kakaoId;
     private Timestamp regDt;
     private String regId;
     private Timestamp modDt;

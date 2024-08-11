@@ -20,9 +20,47 @@
             </div>
             <button type="submit">로그인</button>
         </form>
+        <a id="kakao-login-btn"></a>
     </div>
 </div>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script th:inline="javascript">
+$(document).ready(function() {
+    Kakao.init('355ec8bd4f1c26ad784bf8599d0ba6a8');
+
+    Kakao.Auth.createLoginButton({
+        container: '#kakao-login-btn',
+        success: function (authObj) {
+            // 로그인 성공시
+            console.log('로그인 성공:', authObj);
+            sendTokenToServer(authObj.access_token);
+        },
+        fail: function (err) {
+            alert("카카오 로그인 실패" + JSON.stringify(err));
+            console.log('Login error:' , err); // 디버깅 로그
+        }
+    });
+});
+
+    function sendTokenToServer(accessToken) {
+        fetch('/kakaoCallback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ access_token: accessToken })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect) {
+                window.location.href = data.redirect;
+            }
+        })
+        .catch(error => {
+            console.error('서버 요청 오류:', error);
+        });
+    }
+
     function textChange() {
 
     }
@@ -42,6 +80,8 @@
         }
         return false;
     }
+
+
 </script>
 </body>
 </html>
