@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/head :: headFragment}"></th:block>
+    <title>로그인 | LUMIT</title>
+</head>
+
+<body>
+<div class="userFormBg">
+    <div class="userFormWrapper">
+        <p>LUMIT</p>
+        <form class="formContainer" th:action="@{/login}" method="post">
+            <input type="text" name="username" autocomplete="username" placeholder="아이디를 입력해주세요."/>
+            <div class="passwordWrapper">
+                <input id="password" type="password" name="password" placeholder="비밀번호를 입력해주세요."
+                       autocomplete="current-password"/>
+                <div id="hide" onclick="togglePwd(event)"><i class="fa-regular fa-eye-slash"></i>
+                </div>
+                <div id="show" class="hide" onclick="togglePwd(event)"><i class="fa-regular fa-eye"></i></div>
+            </div>
+            <button type="submit">로그인</button>
+        </form>
+        <a id="kakao-login-btn"></a>
+    </div>
+</div>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script th:inline="javascript">
+$(document).ready(function() {
+    Kakao.init('355ec8bd4f1c26ad784bf8599d0ba6a8');
+
+    Kakao.Auth.createLoginButton({
+        container: '#kakao-login-btn',
+        success: function (authObj) {
+            // 로그인 성공시
+            console.log('로그인 성공:', authObj);
+            sendTokenToServer(authObj.access_token);
+        },
+        fail: function (err) {
+            alert("카카오 로그인 실패" + JSON.stringify(err));
+            console.log('Login error:' , err); // 디버깅 로그
+        }
+    });
+});
+
+    function sendTokenToServer(accessToken) {
+        fetch('/kakaoCallback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ access_token: accessToken })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect) {
+                window.location.href = data.redirect;
+            }
+        })
+        .catch(error => {
+            console.error('서버 요청 오류:', error);
+        });
+    }
+
+    function textChange() {
+
+    }
+
+    function togglePwd(event) {
+        event.preventDefault();
+        const pwd = document.getElementById("password");
+        const state = pwd.getAttribute("type");
+        if (state === "password") {
+            document.getElementById("hide").setAttribute("class", "hide");
+            document.getElementById("show").removeAttribute("class");
+            pwd.setAttribute("type", "text")
+        } else {
+            document.getElementById("show").setAttribute("class", "hide");
+            document.getElementById("hide").removeAttribute("class");
+            pwd.setAttribute("type", "password")
+        }
+        return false;
+    }
+
+
+</script>
+</body>
+</html>

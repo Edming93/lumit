@@ -21,7 +21,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebSecurityConfig {
     private final UserDetailsService userDetailsService;
     private static final String[] WHITE_LIST = {
-            "/", "/login", "/member/createUser", "/lumit/**", "/error/**"
+            "/", "/login/**", "/member/createUser", "/lumit/**", "/error/**", "/signup"
     };
 
     @Bean

@@ -39,7 +39,7 @@ public class UserDto extends User {
     @NotBlank(message = "전화번호는 필수 입력 값입니다.")
     private String phone;
 
-    @NotNull(message = "권한 설정은 필수 입력 값입니다.")
+//    @NotNull(message = "권한 설정은 필수 입력 값입니다.")
     private Role role;
 
 

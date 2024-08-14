@@ -1,56 +1,184 @@
 package com.lumit.shop.common.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.lumit.shop.common.model.KakaoUser;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class KakaoLoginServiceImpl implements KakaoLoginService {
+    @Value("${kakao.api_key}")
+    private String kakaoApiKey;
+    @Value("${kakao.redirect_uri}")
+    private String kakaoRedirectUri;
+
     @Autowired
     private UserRepository userRepository;
 
 
-    private final RestTemplate restTemplate;
-    private final ObjectMapper objectMapper;
-
-
-    public KakaoLoginServiceImpl() {
-        this.restTemplate = new RestTemplate();
-        this.objectMapper = new ObjectMapper();
-    }
-
-    @Override
-    public KakaoUser getKakaoUser(String accessToken) {
-        String url = "https://kapi.kakao.com/v2/user/me";
-
-        String response = restTemplate.getForObject(url + "?access_token=" + accessToken, String.class);
-
-        // TODO: JSON 응답을 User로 매핑하는 로직 추가
-        KakaoUser kakaoUserInfo = null;
-        try {
-            kakaoUserInfo = objectMapper.readValue(response, KakaoUser.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        return kakaoUserInfo;
-    }
-
-    @Override
-    public User handleKakaoUser(KakaoUser kakaoUser) {
-        User user = userRepository.countByKakaoId(kakaoUser.getId());
+    public User handleKakaoUser(Map<String, Object> kakaoUserInfo) {
+        User user = userRepository.selectUserByKakaoId((String) kakaoUserInfo.get("kakao_id"));
 
         return user;
-        // TODO :  로그인 처리 또는 세션 관리 로직 추가
+    }
+    public String getAccessToken(String code) {
+        String accessToken = "";
+        String refreshToken = "";
+        String reqUrl = "https://kauth.kakao.com/oauth/token";
+
+        try{
+            URL url = new URL(reqUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            //필수 헤더 세팅
+            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+            conn.setDoOutput(true); //OutputStream으로 POST 데이터를 넘겨주겠다는 옵션.
+
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+            StringBuilder sb = new StringBuilder();
+
+            //필수 쿼리 파라미터 세팅
+            sb.append("grant_type=authorization_code");
+            sb.append("&client_id=").append(kakaoApiKey);
+            sb.append("&redirect_uri=").append(kakaoRedirectUri);
+            sb.append("&code=").append(code);
+
+            bw.write(sb.toString());
+            bw.flush();
+
+            int responseCode = conn.getResponseCode();
+            // log.info("[KakaoApi.getAccessToken] responseCode = {}", responseCode);
+            System.out.println("[KakaoApi.getAccessToken] responseCode = {}" + responseCode);
+            BufferedReader br;
+            if (responseCode >= 200 && responseCode < 300) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+
+            String line = "";
+            StringBuilder responseSb = new StringBuilder();
+            while((line = br.readLine()) != null){
+                responseSb.append(line);
+            }
+            String result = responseSb.toString();
+            // log.info("responseBody = {}", result);
+            System.out.println("responseBody = {}" +  result);
+
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(result);
+            accessToken = element.getAsJsonObject().get("access_token").getAsString();
+            refreshToken = element.getAsJsonObject().get("refresh_token").getAsString();
+
+            br.close();
+            bw.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return accessToken;
     }
 
-    public int registUser(User user) {
-        return userRepository.registUser(user);
+    // 사용자 정보 요청
+    public HashMap<String, Object> getUserInfo(String accessToken) {
+        HashMap<String, Object> userInfo = new HashMap<>();
+        String reqUrl = "https://kapi.kakao.com/v2/user/me";
+        try{
+            URL url = new URL(reqUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+            int responseCode = conn.getResponseCode();
+            // log.info("[KakaoApi.getUserInfo] responseCode : {}",  responseCode);
+
+            BufferedReader br;
+            if (responseCode >= 200 && responseCode <= 300) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+
+            String line = "";
+            StringBuilder responseSb = new StringBuilder();
+            while((line = br.readLine()) != null){
+                responseSb.append(line);
+            }
+            String result = responseSb.toString();
+            // log.info("responseBody = {}", result);
+
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(result);
+
+            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+            JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+
+            String kakaoId = element.getAsJsonObject().get("id").getAsString();
+            String nickname = properties.getAsJsonObject().get("nickname").getAsString();
+            String email = kakaoAccount.has("email") ? kakaoAccount.get("email").getAsString() : "No email";
+
+            userInfo.put("kakao_id", kakaoId);
+            userInfo.put("nickname", nickname);
+            userInfo.put("email", email);
+
+            br.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return userInfo;
+    }
+
+    // 로그아웃
+    public void kakaoLogout(String accessToken) {
+        String reqUrl = "https://kapi.kakao.com/v1/user/logout";
+
+        try{
+            URL url = new URL(reqUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+            int responseCode = conn.getResponseCode();
+            // log.info("[KakaoApi.kakaoLogout] responseCode : {}",  responseCode);
+
+            BufferedReader br;
+            if (responseCode >= 200 && responseCode <= 300) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+
+            String line = "";
+            StringBuilder responseSb = new StringBuilder();
+            while((line = br.readLine()) != null){
+                responseSb.append(line);
+            }
+            String result = responseSb.toString();
+            // log.info("kakao logout - responseBody = {}", result);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

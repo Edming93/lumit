@@ -5,6 +5,7 @@ import com.lumit.shop.admin.model.Role;
 import com.lumit.shop.admin.model.User;
 import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,8 @@ public class UserTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    HttpSession session;
+
 
     public User createManager(String regAdmin) {
         UserDto userDto = new UserDto();
@@ -61,7 +64,7 @@ public class UserTest {
         userDto.setPhone("010-1234-1234");
         userDto.setGenderCd("1");
         userDto.setRole(Role.USER);
-        return User.createUser(userDto, passwordEncoder);
+        return User.createUser(userDto, passwordEncoder,session);
     }
 
     @Test

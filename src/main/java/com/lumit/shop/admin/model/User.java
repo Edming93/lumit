@@ -2,6 +2,7 @@ package com.lumit.shop.admin.model;
 
 import com.lumit.shop.admin.dto.UserDto;
 import com.lumit.shop.common.dto.SignUpDto;
+import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -26,6 +27,8 @@ public class User {
     private String regId;
     private Timestamp modDt;
     private String modId;
+
+    private String kakaoId;
 
     public static User createAdmin(UserDto userDto, PasswordEncoder passwordEncoder) {
         User user = new User();
@@ -55,7 +58,7 @@ public class User {
         return user;
     }
 
-    public static User createUser(UserDto userDto, PasswordEncoder passwordEncoder) {
+    public static User createUser(UserDto userDto, PasswordEncoder passwordEncoder, HttpSession session) {
         User user = new User();
         user.setUserId(userDto.getUserId());
         user.setUserName(userDto.getName());
@@ -63,6 +66,7 @@ public class User {
         user.setAddress(userDto.getAddress());
         user.setRegId(userDto.getName());
         user.setGenderCd(userDto.getGenderCd());
+        user.setKakaoId((String) session.getAttribute("kakao_id"));
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setPhone(userDto.getPhone());
         user.setRegDt(new Timestamp(new Date().getTime()));

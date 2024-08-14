@@ -22,6 +22,6 @@ public interface UserRepository {
 
     com.lumit.shop.admin.model.User findUserById(String userId);
 
-    User countByKakaoId(String id);
-    int registUser(User user);
+    User selectUserByKakaoId(String id);
+    int insertUser(com.lumit.shop.admin.model.User user);
 }

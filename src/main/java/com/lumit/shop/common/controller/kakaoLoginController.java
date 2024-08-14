@@ -4,27 +4,44 @@ import com.lumit.shop.common.model.KakaoUser;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.service.KakaoLoginService;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-@RestController
-@RequestMapping("/kakaoCallback")
+
+import java.util.Map;
+
+@Controller
+@RequiredArgsConstructor
 public class kakaoLoginController {
 
-    @Autowired
-    private KakaoLoginService kaKaoLoginService;
+    private final KakaoLoginService kakaoLoginService;
 
-    @PostMapping
-    public String kakaoCallback(@RequestParam("access_token") String accessToken, HttpSession session) {
-        KakaoUser kakaoUser = kaKaoLoginService.getKakaoUser(accessToken);
+    @RequestMapping("/login/oauth2/code/kakao") // 1. 인가 코드 받기 (@RequestParam String code)
+    public String kakaoLogin(@RequestParam("code") String code, HttpSession session) {
+        // 2. 토큰 받기
+        String accessToken = kakaoLoginService.getAccessToken(code);
+
+        // 3. 사용자 정보 받기
+        Map<String, Object> kakaoUserInfo = kakaoLoginService.getUserInfo(accessToken);
+        System.out.println(kakaoUserInfo);
+
+        String email = (String)kakaoUserInfo.get("email");
+        String nickname = (String)kakaoUserInfo.get("nickname");
+
+        System.out.println("3333333333333333333333333");
+        System.out.println("email = " + email);
+        System.out.println("nickname = " + nickname);
+        System.out.println("accessToken = " + accessToken);
+
+
         String result = "";
-        if (kakaoUser != null) {
-            User user = kaKaoLoginService.handleKakaoUser(kakaoUser);
+        if (kakaoUserInfo != null) {
+            User user = kakaoLoginService.handleKakaoUser(kakaoUserInfo);
             if(user == null) {
-                session.setAttribute("kakao_id", kakaoUser.getId());
-                result = "redirect:/get/signup"; // 회원가입 페이지로 리디렉션
+                session.setAttribute("kakao_id", (String) kakaoUserInfo.get("kakao_id"));
+                result = "redirect:/member/createUser"; // 회원가입 페이지로 리디렉션
             }else {
                 session.setAttribute("userId", user.getUserId());
                 session.setAttribute("userName", user.getUserName());

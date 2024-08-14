@@ -72,7 +72,7 @@ public class AdminController {
         }
         try {
             User manager = User.createAdmin(userDto, passwordEncoder);
-            userService.addNewUser(manager);
+            // userService.addNewUser(manager);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());

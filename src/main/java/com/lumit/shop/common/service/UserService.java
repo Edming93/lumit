@@ -10,4 +10,6 @@ public interface UserService {
     public com.lumit.shop.admin.model.User findUserById(String userId);
 
     public int addNewUser(com.lumit.shop.admin.model.User user);
+
+    int insertUser(com.lumit.shop.admin.model.User user);
 }

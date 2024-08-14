@@ -18,6 +18,10 @@ repositories {
     mavenCentral()
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['-parameters']
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -41,6 +45,8 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+    implementation 'com.google.code.gson:gson:2.8.9' // 최신 버전 확인 필요
 }
 
 tasks.named('test') {

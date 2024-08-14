@@ -14,8 +14,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private final UserRepository userRepository;
 
-
-
     @Override
     public List<User> getUserList() {
         return userRepository.getUserList();
@@ -30,4 +28,12 @@ public class UserServiceImpl implements UserService {
     public int addNewUser(com.lumit.shop.admin.model.User user) {
         return userRepository.addNewUser(user);
     }
+
+    @Override
+    public int insertUser(com.lumit.shop.admin.model.User user) {
+        System.out.println("쉬익");
+        System.out.println(user);
+        return userRepository.insertUser(user);
+    }
+
 }
