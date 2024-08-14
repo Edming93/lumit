@@ -3,6 +3,7 @@ package com.lumit.shop.common.controller;
 import com.lumit.shop.admin.dto.UserDto;
 import com.lumit.shop.admin.model.User;
 import com.lumit.shop.common.dto.SignUpDto;
+import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,27 +48,26 @@ public class CommonController {
 
     @GetMapping(MEMBER_PATH + "/createUser")
     public String signUp(Model model) {
-        model.addAttribute("userDto", new UserDto());
+        model.addAttribute("userDto", new TbLogin());
         return SIGNUP_FORM;
     }
 
     @PostMapping(MEMBER_PATH + "/createUser")
-    public String signUp(@Valid @ModelAttribute("userDto") UserDto userDto, BindingResult bindingResult, Model model) {
+    public String signUp(@Valid @ModelAttribute("userDto") TbLogin userDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return SIGNUP_FORM;
         }
         try {
-            User user = User.createUser(userDto, passwordEncoder);
-            User exists = userService.findUserById(user.getUserId());
+            TbLogin exists = userService.selectByUserId(userDto.getUserId());
             if (exists != null) {
                 model.addAttribute("errorMessage", "이미 존재하는 아이디입니다.");
                 return SIGNUP_FORM;
             }
-            userService.addNewUser(user);
+            userService.insertNewUser(userDto);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("userDto", new UserDto());
+            model.addAttribute("userDto", new TbLogin());
             return SIGNUP_FORM;
         }
         return "redirect:/";

@@ -1,5 +1,6 @@
 package com.lumit.shop.common.repository;
 
+import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -14,7 +15,7 @@ public interface UserRepository {
 
     User selectByUserName(String username);
 
-    int addNewUser(com.lumit.shop.admin.model.User user);
+    int insertNewUser(TbLogin tbLogin);
 
-    com.lumit.shop.admin.model.User findUserById(String userId);
+    TbLogin selectByUserId(String userId);
 }

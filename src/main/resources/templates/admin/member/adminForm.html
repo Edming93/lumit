@@ -9,14 +9,14 @@
         <fieldset>
             <legend>관리자의 권한 레벨을 설정해주세요.</legend>
             <div>
-                <input type="radio" id="super_admin" th:field="*{role}" value="SUPER_ADMIN" checked="checked"/>
+                <input type="radio" id="super_admin" th:field="*{roleId}" value="1" checked="checked"/>
                 <label th:for="super_admin">총괄 관리자</label>
             </div>
             <div>
-                <input type="radio" id="admin" th:field="*{role}" value="ADMIN"/>
+                <input type="radio" id="admin" th:field="*{roleId}" value="2"/>
                 <label th:for="admin">기본 관리자</label>
             </div>
-            <p th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="fieldError">Incorrect Data</p>
+            <p th:if="${#fields.hasErrors('roleId')}" th:errors="*{roleId}" class="fieldError">Incorrect Data</p>
         </fieldset>
         <div>
             <label id="userId" th:for="userId">관리자 아이디</label>

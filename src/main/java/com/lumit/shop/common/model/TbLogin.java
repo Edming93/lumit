@@ -41,5 +41,4 @@ public class TbLogin {
     private Timestamp modDt;
     private String modId;
 
-
 }
