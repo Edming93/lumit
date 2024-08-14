@@ -1,4 +1,4 @@
-package com.lumit.shop.common.dto;
+package com.lumit.shop.common.model;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -6,14 +6,15 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.sql.Timestamp;
 
-@Getter
 @Setter
-public class SignUpDto {
+@Getter
+public class TbLogin {
     @NotBlank(message = "아이디는 필수 입력 값입니다.")
     private String userId;
+
+    private int roleId;
 
     @NotBlank(message = "이름은 필수 입력 값입니다.")
     private String name;
@@ -35,17 +36,9 @@ public class SignUpDto {
     @NotBlank(message = "전화번호는 필수 입력 값입니다.")
     private String phone;
 
-    public List<String> getVariables() {
-        List<String> variableNames = new ArrayList<>();
-        List<Field> fields = Arrays.stream(getFields()).toList();
-        for (int i = 0; i < fields.size(); i++) {
-            variableNames.add(fields.get(i).getName());
-        }
-        return variableNames;
-    }
+    private Timestamp regDt;
+    private String regId;
+    private Timestamp modDt;
+    private String modId;
 
-
-    private Field[] getFields() {
-        return this.getClass().getDeclaredFields();
-    }
 }

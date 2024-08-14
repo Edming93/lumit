@@ -1,5 +1,6 @@
 package com.lumit.shop.common.service;
 
+import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public com.lumit.shop.admin.model.User findUserById(String userId) {
-        return userRepository.findUserById(userId);
+    public TbLogin selectByUserId(String userId) {
+        return userRepository.selectByUserId(userId);
     }
 
     @Override
-    public int addNewUser(com.lumit.shop.admin.model.User user) {
-        return userRepository.addNewUser(user);
+    public int insertNewUser(TbLogin user) {
+        user.setRoleId(3);
+        return userRepository.insertNewUser(user);
+    }
+
+    public int insertNewAdmin(TbLogin user) {
+        return userRepository.insertNewUser(user);
     }
 
     @Override

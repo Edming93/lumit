@@ -1,8 +1,7 @@
 package com.lumit.shop.admin.controller;
 
-
-import com.lumit.shop.admin.dto.UserDto;
-import com.lumit.shop.admin.model.User;
+import com.lumit.shop.common.model.User;
+import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,28 +54,28 @@ public class AdminController {
     @GetMapping(MEMBER_PATH + "/newManager")
     public String newManager(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
-        model.addAttribute("userDto", new UserDto());
+        model.addAttribute("userDto", new TbLogin());
         return NEW_MANAGER_FORM;
     }
 
 
     @PostMapping(MEMBER_PATH + "/newManager")
-    public String newManager(@Valid @ModelAttribute("userDto") UserDto userDto, BindingResult bindingResult, Model model, HttpServletRequest request) {
+    public String newManager(@Valid @ModelAttribute("userDto") TbLogin tbLogin, BindingResult bindingResult, Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        com.lumit.shop.common.model.User user = (com.lumit.shop.common.model.User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
-        userDto.setRegAdmin(user.getUserId());
+        tbLogin.setRegId(user.getUserId());
+        tbLogin.setPassword(passwordEncoder.encode(tbLogin.getPassword()));
         if (bindingResult.hasErrors()) {
             return NEW_MANAGER_FORM;
         }
         try {
-            User manager = User.createAdmin(userDto, passwordEncoder);
-            // userService.addNewUser(manager);
+            userService.insertNewAdmin(tbLogin);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("userDto", new UserDto());
+            model.addAttribute("userDto", new TbLogin());
             return NEW_MANAGER_FORM;
         }
         return "redirect:/admin";
