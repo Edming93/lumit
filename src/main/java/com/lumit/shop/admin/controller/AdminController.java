@@ -1,7 +1,5 @@
 package com.lumit.shop.admin.controller;
 
-
-import com.lumit.shop.admin.dto.UserDto;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.service.UserService;
