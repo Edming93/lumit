@@ -2,6 +2,7 @@ package com.lumit.shop.common.controller;
 
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,26 +55,33 @@ public class CommonController {
 
     @GetMapping(MEMBER_PATH + "/createUser")
     public String getSignUp(Model model) {
-        model.addAttribute("userDto", new TbLogin());
+        model.addAttribute("tbLogin", new TbLogin());
         return SIGNUP_FORM;
     }
 
     @PostMapping(MEMBER_PATH + "/createUser")
-    public String postSignUp(@Valid @ModelAttribute("userDto") TbLogin userDto, BindingResult bindingResult, Model model) {
+    public String postSignUp(@Valid @ModelAttribute("tbLogin") TbLogin tbLogin, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return SIGNUP_FORM;
         }
         try {
-            TbLogin exists = userService.selectByUserId(userDto.getUserId());
+            TbLogin exists = userService.selectByUserId(tbLogin.getUserId());
             if (exists != null) {
                 model.addAttribute("errorMessage", "이미 존재하는 아이디입니다.");
                 return SIGNUP_FORM;
             }
-            userService.insertNewUser(userDto);
+
+            tbLogin.setRegId((String) session.getAttribute("userId"));
+            System.out.println(session.getAttribute("userId"));
+            tbLogin.setModId((String) session.getAttribute("userId"));
+            tbLogin.setPassword(passwordEncoder.encode(tbLogin.getPassword()));
+            tbLogin.setKakaoId((String) session.getAttribute("kakao_id"));
+
+            userService.insertNewUser(tbLogin);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("userDto", new TbLogin());
+            model.addAttribute("tbLogin", new TbLogin());
             return SIGNUP_FORM;
         }
         return "redirect:/";

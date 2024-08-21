@@ -54,13 +54,13 @@ public class AdminController {
     @GetMapping(MEMBER_PATH + "/newManager")
     public String newManager(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
-        model.addAttribute("userDto", new TbLogin());
+        model.addAttribute("tbLogin", new TbLogin());
         return NEW_MANAGER_FORM;
     }
 
 
     @PostMapping(MEMBER_PATH + "/newManager")
-    public String newManager(@Valid @ModelAttribute("userDto") TbLogin tbLogin, BindingResult bindingResult, Model model, HttpServletRequest request) {
+    public String newManager(@Valid @ModelAttribute("tbLogin") TbLogin tbLogin, BindingResult bindingResult, Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
@@ -75,7 +75,7 @@ public class AdminController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("userDto", new TbLogin());
+            model.addAttribute("tbLogin", new TbLogin());
             return NEW_MANAGER_FORM;
         }
         return "redirect:/admin";

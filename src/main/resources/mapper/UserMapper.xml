@@ -20,10 +20,38 @@
     </select>
 
     <insert id="insertNewUser" parameterType="com.lumit.shop.common.model.TbLogin">
-        INSERT INTO `TB_LOGIN`
-        VALUES (#{userId}, #{roleId}, #{password}, #{name}, #{genderCd},
-                #{email},
-                #{phone}, #{address}, #{kakaoId}, #{regId}, now(), NULL, NULL);
+        INSERT INTO TB_LOGIN
+        (
+            USER_ID
+            , ROLE_ID
+            , PASSWORD
+            , NAME
+            , GENDER_CD
+            , EMAIL
+            , PHONE
+            , ADDRESS
+            , KAKAO_ID
+            , REG_ID
+            , REG_DT
+            , MOD_ID
+            , MOD_DT
+        )
+        VALUES
+        (
+            #{userId}
+            , #{roleId}
+            , #{password}
+            , #{name}
+            , #{genderCd}
+            , #{email}
+            , #{phone}
+            , #{address}
+            , #{kakaoId}
+            , #{regId}
+            , now()
+            , #{modId}
+            , now()
+        )
     </insert>
 
     <select id="selectUserByKakaoId" parameterType="String" resultType="com.lumit.shop.common.model.User">

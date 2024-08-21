@@ -42,11 +42,11 @@ VALUES (1, 'M100', 'N'),
 
 REPLACE INTO `TB_LOGIN`
 VALUES ('admin', 2, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'ssdd', '1', 'sadf@dfa.com',
-        '01030303848', 'dfjaksdf', 'afddasffd', now(), NULL, now()),
+        '01030303848', 'dfjaksdf', NULL , 'admin' , now(), 'admin', now()),
        ('user', 3, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'asdf', '1', 'asdf@asdf.asd',
-        '01012341234', 'asdf', 'asdf', now(), NULL, now()),
+        '01012341234', 'asdf', NULL , 'admin' , now(), 'admin', now()),
        ('dorong', 1, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'aaaa', '1', 'aaaa@aaa.com',
-        '01000000000', 'asdf', 'asdf', now(), NULL, now());
+        '01000000000', 'asdf', NULL , 'admin' , now(), 'admin', now());
 
 REPLACE INTO `TB_MENU`
 VALUES ('M100', 'M100', '메인', '/lumit/**', '', 0, NULL),
