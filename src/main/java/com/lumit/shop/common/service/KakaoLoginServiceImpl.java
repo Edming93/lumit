@@ -5,15 +5,21 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.repository.UserRepository;
+import com.lumit.shop.common.security.CustomAuthenticationProvider;
+import com.lumit.shop.common.security.UserAuthenticationSuccessHandler;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -29,6 +35,15 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
     @Autowired
     private UserRepository userRepository;
 
+    private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final UserAuthenticationSuccessHandler userAuthenticationSuccessHandler;
+
+    @Autowired
+    public KakaoLoginServiceImpl(CustomAuthenticationProvider customAuthenticationProvider, UserAuthenticationSuccessHandler userAuthenticationSuccessHandler) {
+        this.customAuthenticationProvider = customAuthenticationProvider;
+        this.userAuthenticationSuccessHandler = userAuthenticationSuccessHandler;
+    }
+
 
     public User selectUserByKakaoId(Map<String, Object> kakaoUserInfo) {
         User user = userRepository.selectUserByKakaoId((String) kakaoUserInfo.get("kakao_id"));
@@ -37,7 +52,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
     }
 
     // 1. 인가 코드 받기 (@RequestParam String code)
-    public String getKaKaoCheck(String code, HttpSession session) {
+    public String getKaKaoCheck(String code, HttpSession session , HttpServletRequest request , HttpServletResponse response ) {
         // 2. 토큰 받기
         String accessToken = this.getAccessToken(code);
 
@@ -57,14 +72,30 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
                 result = "redirect:/member/createUser"; // 회원가입 페이지로 리디렉션
             }else {
                 // TODO: 카카오로 로그인한 사용자의 권한 체크
+                Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword());
+                System.out.println("111111111");
+                System.out.println(authentication);
+                try {
+                    Authentication authenticated = customAuthenticationProvider.kakaoAuthenticate(authentication);
 
-                session.setAttribute("userId", user.getUserId());
-                session.setAttribute("userName", user.getUserName());
-                session.setAttribute("gender", user.getGenderCd());
-                session.setAttribute("address", user.getAddress());
-                session.setAttribute("email", user.getEmail());
+                    userAuthenticationSuccessHandler.onAuthenticationSuccess(request, response, authenticated);
 
-                result = "redirect:/lumit"; //  main 페이지로 리디렉션
+                } catch (AuthenticationException e) {
+                    // 인증 실패 시 처리 로직
+                    throw new RuntimeException("Authentication failed", e);
+                } catch (ServletException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+//                session.setAttribute("userId", user.getUserId());
+//                session.setAttribute("userName", user.getUserName());
+//                session.setAttribute("gender", user.getGenderCd());
+//                session.setAttribute("address", user.getAddress());
+//                session.setAttribute("email", user.getEmail());
+
+                // result = "redirect:/"; //  main 페이지로 리디렉션
             }
         } else {
             System.out.println("카카오 토큰 정보를 받아오지 못했습니다.");

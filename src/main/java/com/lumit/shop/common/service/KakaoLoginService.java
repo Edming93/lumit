@@ -1,6 +1,8 @@
 package com.lumit.shop.common.service;
 
 import com.lumit.shop.common.model.User;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.HashMap;
@@ -18,7 +20,7 @@ public interface KakaoLoginService {
     // 가입 된 유저정보 가져오기
     User selectUserByKakaoId(Map<String, Object> kakaoUserInfo);
 
-    String getKaKaoCheck(String code, HttpSession session);
+    String getKaKaoCheck(String code, HttpSession session, HttpServletRequest request, HttpServletResponse response);
 
 
 }

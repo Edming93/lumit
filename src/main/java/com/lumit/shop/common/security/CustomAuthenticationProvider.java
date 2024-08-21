@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,27 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+
+        // SecurityContext에 인증 정보 저장
+        // SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        return authenticationToken;
+    }
+
+    public Authentication kakaoAuthenticate(Authentication authentication) throws AuthenticationException {
+        String username = authentication.getName();
+        String password = (String) authentication.getCredentials();
+
+        User user = (User) userDetailsService.loadUserByUsername(username);
+
+        if (!password.equals(user.getPassword())) {
+            throw new BadCredentialsException("BadCredentialsException");
+        }
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+
+        // SecurityContext에 인증 정보 저장
+        // SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         return authenticationToken;
     }
