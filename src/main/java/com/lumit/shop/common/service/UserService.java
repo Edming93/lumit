@@ -14,5 +14,4 @@ public interface UserService {
 
     public int insertNewAdmin(TbLogin tbLogin);
 
-    int insertUser(TbLogin user);
 }

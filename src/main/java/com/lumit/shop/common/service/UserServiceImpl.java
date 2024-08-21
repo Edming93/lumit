@@ -27,16 +27,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int insertNewUser(TbLogin user) {
-        user.setRoleId(3);
         return userRepository.insertNewUser(user);
     }
 
     public int insertNewAdmin(TbLogin user) {
         return userRepository.insertNewUser(user);
-    }
-
-    @Override
-    public int insertUser(TbLogin user) {
-        return userRepository.insertUser(user);
     }
 }

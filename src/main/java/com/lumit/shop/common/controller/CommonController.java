@@ -4,6 +4,7 @@ import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,24 +34,32 @@ public class CommonController {
 
     private final String MEMBER_PATH = "/member";
 
+    @Value("${kakao.api_key}")
+    private String kakaoApiKey;
+    @Value("${kakao.redirect_uri}")
+    private String kakaoRedirectUri;
+
     @GetMapping("")
-    public String home() {
+    public String getHome() {
         return LUMIT_INDEX;
     }
 
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String getLoginForm(Model model) {
+        model.addAttribute("kakaoApiKey", kakaoApiKey);
+        model.addAttribute("redirectUri", kakaoRedirectUri);
+
         return LOGIN_FORM;
     }
 
     @GetMapping(MEMBER_PATH + "/createUser")
-    public String signUp(Model model) {
+    public String getSignUp(Model model) {
         model.addAttribute("userDto", new TbLogin());
         return SIGNUP_FORM;
     }
 
     @PostMapping(MEMBER_PATH + "/createUser")
-    public String signUp(@Valid @ModelAttribute("userDto") TbLogin userDto, BindingResult bindingResult, Model model) {
+    public String postSignUp(@Valid @ModelAttribute("userDto") TbLogin userDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return SIGNUP_FORM;
         }
