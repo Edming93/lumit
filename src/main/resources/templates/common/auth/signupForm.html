@@ -3,6 +3,12 @@
 <head>
     <th:block th:replace="~{fragments/head :: headFragment}"></th:block>
     <title>로그인 | LUMIT</title>
+    <script th:inline="javascript">
+        let errorMessage = [[${errorMessage}]];
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+    </script>
 </head>
 <div class="userFormBg">
     <div class="userFormWrapper">

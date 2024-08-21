@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -54,34 +57,29 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
     }
 
     // 1. 인가 코드 받기 (@RequestParam String code)
-    public String getKaKaoCheck(String code, HttpSession session , HttpServletRequest request , HttpServletResponse response ) {
+    public String getKaKaoCheck(String code, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         // 2. 토큰 받기
         String accessToken = this.getAccessToken(code);
 
         // 3. 사용자 정보 받기
         Map<String, Object> kakaoUserInfo = this.getUserInfo(accessToken);
-
-        String email = (String) kakaoUserInfo.get("email");
-        String nickname = (String) kakaoUserInfo.get("nickname");
-
-        String result = "";
-
         if (kakaoUserInfo != null) {
             User user = this.selectUserByKakaoId(kakaoUserInfo);
 
             if (user == null) {
                 session.setAttribute("kakao_id", (String) kakaoUserInfo.get("kakao_id"));
-                result = "redirect:/member/createUser"; // 회원가입 페이지로 리디렉션
+                return "redirect:/member/createUser"; // 회원가입 페이지로 리디렉션
             } else {
                 // TODO: 카카오로 로그인한 사용자의 권한 체크
                 Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword());
-                System.out.println("111111111");
-                System.out.println(authentication);
                 try {
                     Authentication authenticated = customAuthenticationProvider.kakaoAuthenticate(authentication);
-
+                    SecurityContext context = SecurityContextHolder.createEmptyContext();
+                    context.setAuthentication(authenticated);
+                    HttpSessionSecurityContextRepository secRepo = new HttpSessionSecurityContextRepository();
+                    secRepo.saveContext(context, request, response);
                     userAuthenticationSuccessHandler.onAuthenticationSuccess(request, response, authenticated);
-
+                    return null;
                 } catch (AuthenticationException e) {
                     // 인증 실패 시 처리 로직
                     throw new RuntimeException("Authentication failed", e);
@@ -90,20 +88,11 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-
-//                session.setAttribute("userId", user.getUserId());
-//                session.setAttribute("userName", user.getUserName());
-//                session.setAttribute("gender", user.getGenderCd());
-//                session.setAttribute("address", user.getAddress());
-//                session.setAttribute("email", user.getEmail());
-
-                // result = "redirect:/"; //  main 페이지로 리디렉션
             }
         } else {
             System.out.println("카카오 토큰 정보를 받아오지 못했습니다.");
         }
-
-        return result;
+        return "/login";
     }
 
     // 토큰 받기
@@ -134,7 +123,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
             int responseCode = conn.getResponseCode();
             // log.info("[KakaoApi.getAccessToken] responseCode = {}", responseCode);
-            System.out.println("[KakaoApi.getAccessToken] responseCode = {}" + responseCode);
+            System.out.println(String.format("[KakaoApi.getAccessToken] responseCode = %s", responseCode));
             BufferedReader br;
             if (responseCode >= 200 && responseCode < 300) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -149,7 +138,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
             }
             String result = responseSb.toString();
             // log.info("responseBody = {}", result);
-            System.out.println("responseBody = {}" + result);
+            System.out.println(String.format("responseBody = %s", result));
 
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);

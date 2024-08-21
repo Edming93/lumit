@@ -49,8 +49,9 @@ public class UserServiceImpl implements UserService {
         try {
             user.setRegId(user.getUserId());
             user.setModId(user.getUserId());
-            user.setPassword(passwordEncoder.encode(tbLogin.getPassword()));
-            insertUser(tbLogin);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            System.out.println(user);
+            insertUser(user);
         } catch (Exception e) {
             return ServiceCode.UNKNOWN;
         }
