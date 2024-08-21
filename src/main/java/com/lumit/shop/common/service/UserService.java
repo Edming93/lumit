@@ -10,8 +10,8 @@ public interface UserService {
 
     public TbLogin selectByUserId(String userId);
 
-    public int insertNewUser(TbLogin tbLogin);
+    public int insertUser(TbLogin tbLogin);
 
-    public int insertNewAdmin(TbLogin tbLogin);
+    public int insertAdmin(TbLogin tbLogin);
 
 }

@@ -71,7 +71,7 @@ public class AdminController {
             return NEW_MANAGER_FORM;
         }
         try {
-            userService.insertNewAdmin(tbLogin);
+            userService.insertAdmin(tbLogin);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());

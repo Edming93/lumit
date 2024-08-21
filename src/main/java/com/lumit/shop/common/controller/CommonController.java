@@ -77,7 +77,7 @@ public class CommonController {
             tbLogin.setPassword(passwordEncoder.encode(tbLogin.getPassword()));
             tbLogin.setKakaoId((String) session.getAttribute("kakao_id"));
 
-            userService.insertNewUser(tbLogin);
+            userService.insertUser(tbLogin);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());

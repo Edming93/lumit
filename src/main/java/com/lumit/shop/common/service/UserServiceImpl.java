@@ -27,11 +27,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int insertNewUser(TbLogin user) {
+    public int insertUser(TbLogin user) {
         return userRepository.insertNewUser(user);
     }
 
-    public int insertNewAdmin(TbLogin user) {
+    public int insertAdmin(TbLogin user) {
         return userRepository.insertNewUser(user);
     }
 
