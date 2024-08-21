@@ -2,8 +2,10 @@ package com.lumit.shop.common.controller;
 
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,38 +35,53 @@ public class CommonController {
 
     private final String MEMBER_PATH = "/member";
 
+    @Value("${kakao.api_key}")
+    private String kakaoApiKey;
+    @Value("${kakao.redirect_uri}")
+    private String kakaoRedirectUri;
+
     @GetMapping("")
-    public String home() {
+    public String getHome() {
         return LUMIT_INDEX;
     }
 
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String getLoginForm(Model model) {
+        model.addAttribute("kakaoApiKey", kakaoApiKey);
+        model.addAttribute("redirectUri", kakaoRedirectUri);
+
         return LOGIN_FORM;
     }
 
     @GetMapping(MEMBER_PATH + "/createUser")
-    public String signUp(Model model) {
-        model.addAttribute("userDto", new TbLogin());
+    public String getSignUp(Model model) {
+        model.addAttribute("tbLogin", new TbLogin());
         return SIGNUP_FORM;
     }
 
     @PostMapping(MEMBER_PATH + "/createUser")
-    public String signUp(@Valid @ModelAttribute("userDto") TbLogin userDto, BindingResult bindingResult, Model model) {
+    public String postSignUp(@Valid @ModelAttribute("tbLogin") TbLogin tbLogin, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return SIGNUP_FORM;
         }
         try {
-            TbLogin exists = userService.selectByUserId(userDto.getUserId());
+            TbLogin exists = userService.selectByUserId(tbLogin.getUserId());
             if (exists != null) {
                 model.addAttribute("errorMessage", "이미 존재하는 아이디입니다.");
                 return SIGNUP_FORM;
             }
-            userService.insertNewUser(userDto);
+
+            tbLogin.setRegId((String) session.getAttribute("userId"));
+            System.out.println(session.getAttribute("userId"));
+            tbLogin.setModId((String) session.getAttribute("userId"));
+            tbLogin.setPassword(passwordEncoder.encode(tbLogin.getPassword()));
+            tbLogin.setKakaoId((String) session.getAttribute("kakao_id"));
+
+            userService.insertNewUser(tbLogin);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("userDto", new TbLogin());
+            model.addAttribute("tbLogin", new TbLogin());
             return SIGNUP_FORM;
         }
         return "redirect:/";

@@ -168,7 +168,7 @@ create table if not exists TB_LOGIN
         primary key,
     ROLE_ID   int          not null,
     PASSWORD  varchar(100) not null,
-    USER_NAME varchar(30)  not null,
+    NAME varchar(30)  not null,
     GENDER_CD varchar(2)   not null comment '1: 여, 2: 남',
     EMAIL     varchar(30)  not null,
     PHONE     varchar(14)  not null,
@@ -185,7 +185,7 @@ create table if not exists TB_LOGIN_HIS
     LOGIN_HIS_ID int          not null comment 'AUTO_INCREMENT'
         primary key,
     USER_ID      varchar(255) null,
-    USER_NAME    varchar(30)  not null,
+    NAME    varchar(30)  not null,
     IP           varchar(20)  not null,
     REG_ID       varchar(50)  null,
     REG_DT       timestamp    null

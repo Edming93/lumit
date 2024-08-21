@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,11 +30,50 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
     private UserRepository userRepository;
 
 
-    public User handleKakaoUser(Map<String, Object> kakaoUserInfo) {
+    public User selectUserByKakaoId(Map<String, Object> kakaoUserInfo) {
         User user = userRepository.selectUserByKakaoId((String) kakaoUserInfo.get("kakao_id"));
 
         return user;
     }
+
+    // 1. 인가 코드 받기 (@RequestParam String code)
+    public String getKaKaoCheck(String code, HttpSession session) {
+        // 2. 토큰 받기
+        String accessToken = this.getAccessToken(code);
+
+        // 3. 사용자 정보 받기
+        Map<String, Object> kakaoUserInfo = this.getUserInfo(accessToken);
+
+        String email = (String)kakaoUserInfo.get("email");
+        String nickname = (String)kakaoUserInfo.get("nickname");
+
+        String result = "";
+
+        if (kakaoUserInfo != null) {
+            User user = this.selectUserByKakaoId(kakaoUserInfo);
+
+            if(user == null) {
+                session.setAttribute("kakao_id", (String) kakaoUserInfo.get("kakao_id"));
+                result = "redirect:/member/createUser"; // 회원가입 페이지로 리디렉션
+            }else {
+                // TODO: 카카오로 로그인한 사용자의 권한 체크
+
+                session.setAttribute("userId", user.getUserId());
+                session.setAttribute("userName", user.getUserName());
+                session.setAttribute("gender", user.getGenderCd());
+                session.setAttribute("address", user.getAddress());
+                session.setAttribute("email", user.getEmail());
+
+                result = "redirect:/lumit"; //  main 페이지로 리디렉션
+            }
+        } else {
+            System.out.println("카카오 토큰 정보를 받아오지 못했습니다.");
+        }
+
+        return result;
+    }
+
+    // 토큰 받기
     public String getAccessToken(String code) {
         String accessToken = "";
         String refreshToken = "";

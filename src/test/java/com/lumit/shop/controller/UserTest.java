@@ -36,31 +36,31 @@ public class UserTest {
 
 
     public TbLogin createManager(String regAdmin) {
-        TbLogin userDto = new TbLogin();
-        userDto.setUserId("manager1");
-        userDto.setEmail("asdf@asdf.com");
-        userDto.setPassword(passwordEncoder.encode("1234"));
-        userDto.setName("홍길동");
-        userDto.setAddress("서울시 은평구 구산동");
-        userDto.setRegId(regAdmin);
-        userDto.setPhone("0001111111");
-        userDto.setGenderCd("1");
-        userDto.setRoleId(1);
-        return userDto;
+        TbLogin tbLogin = new TbLogin();
+        tbLogin.setUserId("manager1");
+        tbLogin.setEmail("asdf@asdf.com");
+        tbLogin.setPassword(passwordEncoder.encode("1234"));
+        tbLogin.setName("홍길동");
+        tbLogin.setAddress("서울시 은평구 구산동");
+        tbLogin.setRegId(regAdmin);
+        tbLogin.setPhone("0001111111");
+        tbLogin.setGenderCd("1");
+        tbLogin.setRoleId(1);
+        return tbLogin;
     }
 
     public TbLogin createUser() {
-        TbLogin userDto = new TbLogin();
-        userDto.setUserId("asdf11");
-        userDto.setEmail("asdf@asdf.com");
-        userDto.setPassword(passwordEncoder.encode("1234"));
-        userDto.setName("홍길동");
-        userDto.setAddress("서울시 마포구 서교동");
-        userDto.setRegId(userDto.getUserId());
-        userDto.setPhone("010-1234-1234");
-        userDto.setGenderCd("1");
-        userDto.setRoleId(3);
-        return userDto;
+        TbLogin tbLogin = new TbLogin();
+        tbLogin.setUserId("asdf11");
+        tbLogin.setEmail("asdf@asdf.com");
+        tbLogin.setPassword(passwordEncoder.encode("1234"));
+        tbLogin.setName("홍길동");
+        tbLogin.setAddress("서울시 마포구 서교동");
+        tbLogin.setRegId(tbLogin.getUserId());
+        tbLogin.setPhone("010-1234-1234");
+        tbLogin.setGenderCd("1");
+        tbLogin.setRoleId(3);
+        return tbLogin;
     }
 
     @Test

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int insertNewUser(TbLogin user) {
-        user.setRoleId(3);
         return userRepository.insertNewUser(user);
     }
 
@@ -35,8 +35,5 @@ public class UserServiceImpl implements UserService {
         return userRepository.insertNewUser(user);
     }
 
-    @Override
-    public int insertUser(TbLogin user) {
-        return userRepository.insertUser(user);
-    }
+
 }
