@@ -330,13 +330,13 @@ footer {
     display: flex;
     align-items: center;
     accent-color: var(--brown-font);
-    margin-top: 1rem;
+    margin-top: 0.1rem;
     margin-bottom: 1rem;
 }
 
 .loginCheckbox > * {
     color: var(--brown-font);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .loginCheckbox > label {
