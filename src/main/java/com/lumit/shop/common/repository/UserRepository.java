@@ -18,4 +18,8 @@ public interface UserRepository {
     int insertNewUser(TbLogin tbLogin);
 
     TbLogin selectByUserId(String userId);
+
+    int insertUser(TbLogin user);
+
+    User selectUserByKakaoId (String kakaoId);
 }

@@ -36,6 +36,8 @@ public class TbLogin {
     @NotBlank(message = "전화번호는 필수 입력 값입니다.")
     private String phone;
 
+    private String kakaoId;
+
     private Timestamp regDt;
     private String regId;
     private Timestamp modDt;

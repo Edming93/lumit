@@ -1,19 +1,13 @@
 package com.lumit.shop.common.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.lumit.shop.common.model.KakaoUser;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.repository.UserRepository;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

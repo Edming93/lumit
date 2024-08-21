@@ -36,10 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int insertUser(com.lumit.shop.admin.model.User user) {
-        System.out.println("쉬익");
-        System.out.println(user);
+    public int insertUser(TbLogin user) {
         return userRepository.insertUser(user);
     }
-
 }

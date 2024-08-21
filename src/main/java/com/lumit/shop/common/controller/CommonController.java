@@ -1,8 +1,5 @@
 package com.lumit.shop.common.controller;
 
-import com.lumit.shop.admin.dto.UserDto;
-import com.lumit.shop.admin.model.User;
-import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.service.UserService;
 import jakarta.validation.Valid;
