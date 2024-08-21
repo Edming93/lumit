@@ -1,5 +1,6 @@
 package com.lumit.shop.common.service;
 
+import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 
@@ -10,8 +11,9 @@ public interface UserService {
 
     public TbLogin selectByUserId(String userId);
 
-    public int insertNewUser(TbLogin tbLogin);
+    public int insertUser(TbLogin tbLogin);
 
-    public int insertNewAdmin(TbLogin tbLogin);
+    public int insertAdmin(TbLogin tbLogin);
 
+    public ServiceCode insertUserControl(TbLogin tbLogin);
 }

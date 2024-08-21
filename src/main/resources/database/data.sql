@@ -42,18 +42,18 @@ VALUES (1, 'M100', 'N'),
 
 REPLACE INTO `TB_LOGIN`
 VALUES ('admin', 2, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'ssdd', '1', 'sadf@dfa.com',
-        '01030303848', 'dfjaksdf', NULL , 'admin' , now(), 'admin', now()),
+        '01030303848', 'dfjaksdf', NULL, 'admin', now(), 'admin', now()),
        ('user', 3, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'asdf', '1', 'asdf@asdf.asd',
-        '01012341234', 'asdf', NULL , 'admin' , now(), 'admin', now()),
+        '01012341234', 'asdf', NULL, 'admin', now(), 'admin', now()),
        ('dorong', 1, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'aaaa', '1', 'aaaa@aaa.com',
-        '01000000000', 'asdf', NULL , 'admin' , now(), 'admin', now());
+        '01000000000', 'asdf', NULL, 'admin', now(), 'admin', now());
 
 REPLACE INTO `TB_MENU`
-VALUES ('M100', 'M100', '메인', '/lumit/**', '', 0, NULL),
-       ('M110', 'M100', '인테리어', '/lumit/interior/**', 'list', 0, NULL),
-       ('M120', 'M100', '스튜디오', '/lumit/studio/**', 'list', 0, NULL),
-       ('M130', 'M100', '질문게시판', '/lumit/question/**', 'list', 0, NULL),
-       ('M140', 'M100', '공지사항', '/lumit/notice/**', 'list', 0, NULL),
+VALUES ('M100', 'M100', '메인', '/**', '', 0, NULL),
+       ('M110', 'M100', '인테리어', '/interior/**', 'list', 0, NULL),
+       ('M120', 'M100', '스튜디오', '/studio/**', 'list', 0, NULL),
+       ('M130', 'M100', '질문게시판', '/question/**', 'list', 0, NULL),
+       ('M140', 'M100', '공지사항', '/notice/**', 'list', 0, NULL),
        ('M200', 'M200', '메인', '/admin/**', '', 0, '<i class=\"fa-solid fa-house\"></i>'),
        ('M210', 'M200', '상품관리', '/admin/product/**', 'list', 1, '<i class=\"fa-solid fa-shirt\"></i>'),
        ('M220', 'M200', '회원관리', '/admin/member/**', 'list', 1, '<i class=\"fa-solid fa-user\"></i>'),

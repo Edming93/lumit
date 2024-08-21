@@ -7,24 +7,29 @@
     font-style: normal;
 }
 
+
 @font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 300;
+    font-family: 'Pretendard-lighter';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraLight.woff') format('woff');
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Pretendard-Regular';
     src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 700;
+    font-family: 'Pretendard-bold';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Pretendard-bolder';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraBold.woff') format('woff');
     font-style: normal;
 }
 
@@ -34,7 +39,11 @@
     --footer-color: #E7DBCD;
     --footer-divider-color: #D0C5B7;
     --footer-font-color: #6A6054;
+    --brown-font: #876453;
     --font-grey-color: #828282;
+    --input-border-color: #E0E0E0;
+    --black-color: #333333;
+    --grey-font-color: #767676;
 }
 
 
@@ -310,30 +319,94 @@ footer {
 }
 
 .userFormBg {
-    background: linear-gradient(#FFEEEE, #DDEFBB);
     width: 100vw;
-    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
-.userFormWrapper {
-    background-color: var(--background-color);
-    width: 27rem;
-    height: 45rem;
-    border-radius: 2rem;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+.loginCheckbox {
+    display: flex;
+    align-items: center;
+    accent-color: var(--brown-font);
+    margin-top: 0.1rem;
+    margin-bottom: 1rem;
+}
+
+.loginCheckbox > * {
+    color: var(--brown-font);
+    font-size: 0.8rem;
+}
+
+.loginCheckbox > label {
+    margin-left: 0.2rem;
+}
+
+.loginTitle {
+    font-family: "Playfair Display", serif;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10rem;
+    margin-bottom: 2rem;
+}
+
+.loginBtn {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--black-color);
+    border-radius: 0.7rem;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.kakaoBtn {
+    background-color: #f8e200;
+    padding: 0.85rem;
+    border-radius: 0.7rem;
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.helpNav {
+    text-align: center;
+}
+
+.helpNav > a:not(:last-child)::after {
+    margin-left: 0.5rem;
+    content: "|";
+    margin-right: 0.5rem;
+}
+
+.helpNav > a {
+    color: var(--grey-font-color);
+    font-size: 0.7rem;
+}
+
+.kakaoBtn img {
+    width: 1.4rem;
+    position: relative;
+}
+
+.kakaoBtn span {
+    width: 100%;
+    text-align: center;
+    font-size: larger;
+    font-family: Pretendard-Regular;
 }
 
 .formContainer {
     display: grid;
-
+    /*width: 100%;*/
 }
 
 .userFormWrapper input {
-    border: 1px solid black;
+    border: 1px solid var(--input-border-color);
     border-radius: 0.3rem;
+    height: 41px;
 }
 
 .userFormWrapper > p {
@@ -346,14 +419,16 @@ footer {
 }
 
 .formContainer {
+    width: 400px;
     display: flex;
     flex-direction: column;
 }
 
-.userFormWrapper > form > input, .passwordWrapper > input {
-    width: 80%;
-    margin: 1rem;
+.formContainer > input {
     padding: 0.7rem;
+    border-radius: 0.6rem;
+    margin-bottom: 0.3rem;
+    border: 1px solid var(--input-border-color);
 }
 
 .passwordWrapper {

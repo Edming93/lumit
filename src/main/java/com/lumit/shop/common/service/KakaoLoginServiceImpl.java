@@ -32,6 +32,8 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
     @Value("${kakao.redirect_uri}")
     private String kakaoRedirectUri;
 
+    private UserDetailsService uds;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -59,18 +61,18 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
         // 3. 사용자 정보 받기
         Map<String, Object> kakaoUserInfo = this.getUserInfo(accessToken);
 
-        String email = (String)kakaoUserInfo.get("email");
-        String nickname = (String)kakaoUserInfo.get("nickname");
+        String email = (String) kakaoUserInfo.get("email");
+        String nickname = (String) kakaoUserInfo.get("nickname");
 
         String result = "";
 
         if (kakaoUserInfo != null) {
             User user = this.selectUserByKakaoId(kakaoUserInfo);
 
-            if(user == null) {
+            if (user == null) {
                 session.setAttribute("kakao_id", (String) kakaoUserInfo.get("kakao_id"));
                 result = "redirect:/member/createUser"; // 회원가입 페이지로 리디렉션
-            }else {
+            } else {
                 // TODO: 카카오로 로그인한 사용자의 권한 체크
                 Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword());
                 System.out.println("111111111");
@@ -110,7 +112,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
         String refreshToken = "";
         String reqUrl = "https://kauth.kakao.com/oauth/token";
 
-        try{
+        try {
             URL url = new URL(reqUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -142,12 +144,12 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
             String line = "";
             StringBuilder responseSb = new StringBuilder();
-            while((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 responseSb.append(line);
             }
             String result = responseSb.toString();
             // log.info("responseBody = {}", result);
-            System.out.println("responseBody = {}" +  result);
+            System.out.println("responseBody = {}" + result);
 
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
@@ -156,7 +158,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
             br.close();
             bw.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return accessToken;
@@ -166,7 +168,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
     public HashMap<String, Object> getUserInfo(String accessToken) {
         HashMap<String, Object> userInfo = new HashMap<>();
         String reqUrl = "https://kapi.kakao.com/v2/user/me";
-        try{
+        try {
             URL url = new URL(reqUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
@@ -185,7 +187,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
             String line = "";
             StringBuilder responseSb = new StringBuilder();
-            while((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 responseSb.append(line);
             }
             String result = responseSb.toString();
@@ -207,7 +209,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
             br.close();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return userInfo;
@@ -217,7 +219,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
     public void kakaoLogout(String accessToken) {
         String reqUrl = "https://kapi.kakao.com/v1/user/logout";
 
-        try{
+        try {
             URL url = new URL(reqUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
@@ -235,13 +237,13 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
             String line = "";
             StringBuilder responseSb = new StringBuilder();
-            while((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 responseSb.append(line);
             }
             String result = responseSb.toString();
             // log.info("kakao logout - responseBody = {}", result);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

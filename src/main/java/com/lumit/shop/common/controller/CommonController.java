@@ -1,5 +1,6 @@
 package com.lumit.shop.common.controller;
 
+import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -64,26 +65,17 @@ public class CommonController {
         if (bindingResult.hasErrors()) {
             return SIGNUP_FORM;
         }
-        try {
-            TbLogin exists = userService.selectByUserId(tbLogin.getUserId());
-            if (exists != null) {
-                model.addAttribute("errorMessage", "이미 존재하는 아이디입니다.");
-                return SIGNUP_FORM;
-            }
-
-            tbLogin.setRegId((String) session.getAttribute("userId"));
-            System.out.println(session.getAttribute("userId"));
-            tbLogin.setModId((String) session.getAttribute("userId"));
-            tbLogin.setPassword(passwordEncoder.encode(tbLogin.getPassword()));
-            tbLogin.setKakaoId((String) session.getAttribute("kakao_id"));
-
-            userService.insertNewUser(tbLogin);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("tbLogin", new TbLogin());
-            return SIGNUP_FORM;
+        tbLogin.setKakaoId((String) session.getAttribute("kakao_id"));
+        ServiceCode sc = userService.insertUserControl(tbLogin);
+        if (sc == ServiceCode.SUCCESS) {
+            return "redirect:/";
         }
-        return "redirect:/";
+        if (sc == ServiceCode.CONFLICT) {
+            model.addAttribute("errorMessage", "이미 존재하는 아이디입니다.");
+        } else {
+            model.addAttribute("errorMessage", "알 수 없는 오류가 발생하였습니다.");
+        }
+        model.addAttribute("tbLogin", new TbLogin());
+        return SIGNUP_FORM;
     }
 }

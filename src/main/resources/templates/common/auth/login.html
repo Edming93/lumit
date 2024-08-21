@@ -1,39 +1,41 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout_header_footer}"
+>
 <head>
     <th:block th:replace="~{fragments/head :: headFragment}"></th:block>
     <title>로그인 | LUMIT</title>
 </head>
 
 <body>
-<div class="userFormBg">
-    <div class="userFormWrapper">
-        <p>LUMIT</p>
-        <form class="formContainer" th:action="@{/login}" method="post">
-            <input type="text" name="username" autocomplete="username" placeholder="아이디를 입력해주세요."/>
-            <div class="passwordWrapper">
-                <input id="password" type="password" name="password" placeholder="비밀번호를 입력해주세요."
-                       autocomplete="current-password"/>
-                <div id="hide" onclick="togglePwd(event)"><i class="fa-regular fa-eye-slash"></i>
-                </div>
-                <div id="show" class="hide" onclick="togglePwd(event)"><i class="fa-regular fa-eye"></i></div>
-            </div>
-            <button type="submit">로그인</button>
-        </form>
-
-        <!-- kakao button -->
-        <div class="text-center">
-            <a href="https://kauth.kakao.com/oauth/authorize"
-               th:href="@{https://kauth.kakao.com/oauth/authorize(client_id=${kakaoApiKey}, redirect_uri=${redirectUri}, response_type='code')}">
-                <img src="/images/kakao_login_medium_wide.png">
-            </a>
+<div layout:fragment="content" class="userFormBg">
+    <p class="loginTitle">Lumit</p>
+    <form class="formContainer" th:action="@{/login}" method="post">
+        <input type="text" name="username" autocomplete="username" placeholder="아이디"/>
+        <input id="password" type="password" name="password" placeholder="비밀번호"
+               autocomplete="current-password"/>
+        <div class="loginCheckbox">
+            <input id="keepLogin" name="keepLogin" type="checkbox"/><label for="keepLogin">로그인 상태 유지</label>
+        </div>
+        <button class="loginBtn" type="submit">로그인</button>
+        <div class="helpNav">
+            <a>아이디 찾기</a>
+            <a>비밀번호 찾기</a>
+            <a>회원가입</a>
         </div>
 
-    </div>
+        <a href="https://kauth.kakao.com/oauth/authorize"
+           th:href="@{https://kauth.kakao.com/oauth/authorize(client_id=${kakaoApiKey}, redirect_uri=${redirectUri}, response_type='code')}">
+            <div class="kakaoBtn">
+                <img src="/images/kakao.png"><span>카카오로 로그인하기</span></div>
+        </a>
+
+
+    </form>
+    <!-- kakao button -->
 </div>
 <script th:inline="javascript">
-
-
 </script>
 </body>
 </html>
