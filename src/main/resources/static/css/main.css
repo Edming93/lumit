@@ -7,24 +7,29 @@
     font-style: normal;
 }
 
+
 @font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 300;
+    font-family: 'Pretendard-lighter';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraLight.woff') format('woff');
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Pretendard-Regular';
     src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 700;
+    font-family: 'Pretendard-bold';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Pretendard-bolder';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraBold.woff') format('woff');
     font-style: normal;
 }
 
@@ -38,6 +43,7 @@
     --font-grey-color: #828282;
     --input-border-color: #E0E0E0;
     --black-color: #333333;
+    --grey-font-color: #767676;
 }
 
 
@@ -352,6 +358,44 @@ footer {
     background-color: var(--black-color);
     border-radius: 0.7rem;
     color: white;
+    margin-bottom: 1rem;
+}
+
+.kakaoBtn {
+    background-color: #f8e200;
+    padding: 0.85rem;
+    border-radius: 0.7rem;
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.helpNav {
+    text-align: center;
+}
+
+.helpNav > a:not(:last-child)::after {
+    margin-left: 0.5rem;
+    content: "|";
+    margin-right: 0.5rem;
+}
+
+.helpNav > a {
+    color: var(--grey-font-color);
+    font-size: 0.7rem;
+}
+
+.kakaoBtn img {
+    width: 1.4rem;
+    position: relative;
+}
+
+.kakaoBtn span {
+    width: 100%;
+    text-align: center;
+    font-size: larger;
+    font-family: Pretendard-Regular;
 }
 
 .formContainer {

@@ -1,2 +1,5 @@
-package com.lumit.shop.common.constants;public class ServiceCode {
+package com.lumit.shop.common.constants;
+
+public enum ServiceCode {
+    CONFLICT, UNKNOWN, SUCCESS
 }

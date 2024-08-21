@@ -17,11 +17,9 @@ public interface UserRepository {
 
     User selectByUserName(String username);
 
-    int insertNewUser(TbLogin tbLogin);
+    int insertUser(TbLogin tbLogin);
 
     TbLogin selectByUserId(String userId);
 
-    int insertUser(TbLogin user);
-
-    User selectUserByKakaoId (String kakaoId);
+    User selectUserByKakaoId(String kakaoId);
 }
