@@ -23,7 +23,7 @@
         INSERT INTO `TB_LOGIN`
         VALUES (#{userId}, #{roleId}, #{password}, #{name}, #{genderCd},
                 #{email},
-                #{phone}, #{address}, #{regId}, now(), NULL, NULL);
+                #{phone}, #{address}, #{kakaoId}, #{regId}, now(), NULL, NULL);
     </insert>
 
     <select id="selectUserByKakaoId" parameterType="String" resultType="com.lumit.shop.common.model.User">
@@ -31,39 +31,4 @@
         FROM TB_LOGIN
         WHERE KAKAO_ID = #{kakaoId}
     </select>
-
-    <insert id="insertUser" parameterType="com.lumit.shop.admin.model.User">
-        INSERT INTO TB_LOGIN
-        (
-            USER_ID,
-            ROLE_ID,
-            PASSWORD,
-            USER_NAME,
-            GENDER_CD,
-            EMAIL,
-            PHONE,
-            ADDRESS,
-            KAKAO_ID,
-            REG_ID,
-            REG_DT,
-            MOD_ID,
-            MOD_DT
-        )
-        VALUES
-        (
-            #{userId},
-            #{roleId},
-            #{password},
-            #{userName},
-            #{genderCd},
-            #{email},
-            #{phone},
-            #{address},
-            #{kakaoId},
-            #{reg_id},
-            #{reg_dt},
-            #{mod_id},
-            #{mod_dt}
-        )
-    </insert>
 </mapper>
