@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,15 +72,22 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
                 session.setAttribute("social_id", "KAKAO_" + (String) kakaoUserInfo.get("kakao_id"));
                 return "redirect:/member/createUser"; // 회원가입 페이지로 리디렉션
             } else {
-                // TODO: 카카오로 로그인한 사용자의 권한 체크
+
                 Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword());
                 System.out.println("요기를 탑니다.");
                 try {
+                    // 인증 객체 생성
                     Authentication authenticated = customAuthenticationProvider.kakaoAuthenticate(authentication);
+
+                    // SecurityContext 생성 및 인증 객체 설정
                     SecurityContext context = SecurityContextHolder.createEmptyContext();
                     context.setAuthentication(authenticated);
+
+                    // SecurityContext를 세션에 저장
                     HttpSessionSecurityContextRepository secRepo = new HttpSessionSecurityContextRepository();
                     secRepo.saveContext(context, request, response);
+
+                    // 성공시 핸들러 호출
                     userAuthenticationSuccessHandler.onAuthenticationSuccess(request, response, authenticated);
                     return null;
                 } catch (AuthenticationException e) {
