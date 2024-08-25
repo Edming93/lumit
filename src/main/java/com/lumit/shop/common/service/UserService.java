@@ -11,9 +11,14 @@ public interface UserService {
 
     public TbLogin selectByUserId(String userId);
 
+    public User selectByUsername(String username);
+
     public int insertUser(TbLogin tbLogin);
 
     public int insertAdmin(TbLogin tbLogin);
 
     public ServiceCode insertUserControl(TbLogin tbLogin);
+
+    public ServiceCode updateSocialUser(TbLogin tbLogin);
+
 }

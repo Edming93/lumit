@@ -1,9 +1,7 @@
 package com.lumit.shop.common.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.lumit.shop.common.constants.Role;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,16 +16,18 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class User implements UserDetails {
     private String userId;
     private String name;
     private String roleId;
+    private Role role;
     private String password;
     private String address;
     private String email;
     private String genderCd;
     private String phone;
-    private String kakaoId;
+    private String socialId;
     private Timestamp regDt;
     private String regId;
     private Timestamp modDt;
@@ -35,11 +35,11 @@ public class User implements UserDetails {
 
     private List<TbMenu> authorities = new ArrayList<>();
 
-    public void setAuthorities (List<TbMenu> authorities) {
+    public void setAuthorities(List<TbMenu> authorities) {
         this.authorities = authorities;
     }
 
-    public void addAuthority (TbMenu menu) {
+    public void addAuthority(TbMenu menu) {
         authorities.add(menu);
     }
 
@@ -49,7 +49,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.<GrantedAuthority> unmodifiableCollection(authorities);
+        return Collections.<GrantedAuthority>unmodifiableCollection(authorities);
     }
 
     @Override
@@ -79,6 +79,10 @@ public class User implements UserDetails {
 
     public String getUserName() {
         return userId;
+    }
+
+    public void setRole() {
+        this.role = roleId == "1" ? Role.SUPER_ADMIN : roleId == "2" ? Role.ADMIN : Role.USER;
     }
 
 }

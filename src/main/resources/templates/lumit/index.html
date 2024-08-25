@@ -5,6 +5,12 @@
         layout:decorate="~{fragments/layout}"
 >
 <div layout:fragment="content">
+    <div class="">
+        <div th:replace="~{fragments/banner :: bannerFragment}"></div>
+    </div>
+    <div class="container">
+        <div th:replace="~{fragments/tags :: tagsFragment}"></div>
+    </div>
     main1 입니다 <span>메세지</span>
     <a href="" th:href="@{/study13-2}">메인2로</a>
 </div>

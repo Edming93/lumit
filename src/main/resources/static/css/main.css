@@ -371,6 +371,10 @@ footer {
     margin-bottom: 1rem;
 }
 
+.googleBtn {
+    background-color: white;
+}
+
 .helpNav {
     text-align: center;
 }
@@ -386,7 +390,7 @@ footer {
     font-size: 0.7rem;
 }
 
-.kakaoBtn img {
+.social img {
     width: 1.4rem;
     position: relative;
 }

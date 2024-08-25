@@ -67,11 +67,12 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
             User user = this.selectUserByKakaoId(kakaoUserInfo);
 
             if (user == null) {
-                session.setAttribute("kakao_id", (String) kakaoUserInfo.get("kakao_id"));
+                session.setAttribute("social_id", "KAKAO_" + (String) kakaoUserInfo.get("kakao_id"));
                 return "redirect:/member/createUser"; // 회원가입 페이지로 리디렉션
             } else {
                 // TODO: 카카오로 로그인한 사용자의 권한 체크
                 Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword());
+                System.out.println("요기를 탑니다.");
                 try {
                     Authentication authenticated = customAuthenticationProvider.kakaoAuthenticate(authentication);
                     SecurityContext context = SecurityContextHolder.createEmptyContext();

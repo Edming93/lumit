@@ -29,7 +29,7 @@
         , EMAIL
         , PHONE
         , ADDRESS
-        , KAKAO_ID
+        , SOCIAL_ID
         , REG_ID
         , REG_DT
         , MOD_ID
@@ -42,7 +42,7 @@
                , #{email}
                , #{phone}
                , #{address}
-               , #{kakaoId}
+               , #{socialId}
                , #{regId}
                , now()
                , #{modId}
@@ -52,6 +52,27 @@
     <select id="selectUserByKakaoId" parameterType="String" resultType="com.lumit.shop.common.model.User">
         SELECT *
         FROM TB_LOGIN
-        WHERE KAKAO_ID = #{kakaoId}
+        WHERE SOCIAL_ID = #{socialId}
     </select>
+
+    <select id="selectUserBySocialId" parameterType="String" resultType="com.lumit.shop.common.model.User">
+        SELECT *
+        FROM TB_LOGIN
+        WHERE SOCIAL_ID = #{socialId}
+    </select>
+
+    <update id="updateSocialUser" parameterType="com.lumit.shop.common.model.TbLogin">
+        UPDATE TB_LOGIN
+        SET USER_ID   = #{userId},
+            ROLE_ID   = #{roleId},
+            PASSWORD  = #{password},
+            name=#{name},
+            GENDER_CD = #{genderCd},
+            EMAIL=#{email},
+            PHONE=#{phone},
+            ADDRESS=#{address},
+            MOD_ID=#{modId},
+            MOD_DT=now()
+        WHERE SOCIAL_ID = #{socialId};
+    </update>
 </mapper>

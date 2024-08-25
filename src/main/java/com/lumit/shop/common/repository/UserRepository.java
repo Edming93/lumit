@@ -22,4 +22,8 @@ public interface UserRepository {
     TbLogin selectByUserId(String userId);
 
     User selectUserByKakaoId(String kakaoId);
+
+    User selectUserBySocialId(String socialId);
+
+    int updateSocialUser(TbLogin tbLogin);
 }

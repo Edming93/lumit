@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{fragments/layout}">
+<div layout:fragment="content" style="text-align: center">
+    <div style="font-size: x-large">내 정보</div>
+    <div th:text="${user.userId}"></div>
+    <div th:text="${user.email}"></div>
+    <div th:text="${user.address}"></div>
+</div>

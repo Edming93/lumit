@@ -4,6 +4,7 @@ import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.repository.UserRepository;
+import com.lumit.shop.common.security.social.CustomOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
@@ -31,6 +32,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.selectByUserId(userId);
     }
 
+    public User selectByUsername(String username) {
+        return userRepository.selectByUserName(username);
+    }
+
     @Override
     public int insertUser(TbLogin user) {
         return userRepository.insertUser(user);
@@ -42,11 +47,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ServiceCode insertUserControl(TbLogin user) {
-        TbLogin tbLogin = selectByUserId(user.getUserId());
-        if (tbLogin != null) {
-            return ServiceCode.CONFLICT;
-        }
         try {
+            TbLogin tbLogin = selectByUserId(user.getUserId());
+            if (tbLogin != null) {
+                return ServiceCode.CONFLICT;
+            }
             user.setRegId(user.getUserId());
             user.setModId(user.getUserId());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -57,4 +62,17 @@ public class UserServiceImpl implements UserService {
         }
         return ServiceCode.SUCCESS;
     }
+
+    public ServiceCode updateSocialUser(TbLogin tbLogin) {
+        TbLogin user = userRepository.selectByUserId(tbLogin.getUserId());
+        if (user != null) {
+            return ServiceCode.CONFLICT;
+        }
+        int result = userRepository.updateSocialUser(tbLogin);
+        if (result > 0) {
+            return ServiceCode.UPDATED;
+        }
+        return ServiceCode.UNKNOWN;
+    }
+
 }

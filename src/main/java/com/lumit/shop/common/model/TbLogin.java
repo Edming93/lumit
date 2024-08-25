@@ -1,5 +1,6 @@
 package com.lumit.shop.common.model;
 
+import com.lumit.shop.common.constants.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -17,6 +18,7 @@ public class TbLogin {
     private String userId;
 
     private int roleId;
+
 
     @NotBlank(message = "이름은 필수 입력 값입니다.")
     private String name;
@@ -38,11 +40,10 @@ public class TbLogin {
     @NotBlank(message = "전화번호는 필수 입력 값입니다.")
     private String phone;
 
-    private String kakaoId;
+    private String socialId;
 
     private Timestamp regDt;
     private String regId;
     private Timestamp modDt;
     private String modId;
-
 }
