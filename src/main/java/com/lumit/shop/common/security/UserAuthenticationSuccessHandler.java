@@ -57,7 +57,7 @@ public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
         }
         HttpSession session = request.getSession();
         if (user.getSocialId() != null) {
-            if (user.getEmail().equals(user.getUserId())) {
+            if (user.getEmail().equals(user.getUserId()) || user.getUserId().equals(user.getSocialId())) {
                 session.setAttribute("social_id", user.getSocialId());
                 defaultUrl = "/member/createUser";
             }

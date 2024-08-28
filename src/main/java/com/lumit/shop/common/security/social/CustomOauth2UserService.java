@@ -52,7 +52,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
     private TbLogin createTempUser(String socialId, String email, String name) {
         TbLogin tbLogin = new TbLogin();
-        tbLogin.setUserId(email);
+        tbLogin.setUserId(email.equals("") ? socialId : email);
         tbLogin.setName(name);
         tbLogin.setSocialId(socialId);
         tbLogin.setAddress("");
