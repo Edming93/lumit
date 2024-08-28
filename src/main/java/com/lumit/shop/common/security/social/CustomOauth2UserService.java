@@ -25,9 +25,6 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         String provider = userRequest.getClientRegistration().getRegistrationId();
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> map = oAuth2User.getAttributes();
-        for (String key : map.keySet()) {
-            System.out.println(key + ":" + map.get(key));
-        }
         OAuth2UserInfo oAuth2UserInfo = null;
         if (provider.equals("google")) {
             oAuth2UserInfo = new GoogleUserDetails(oAuth2User.getAttributes());
