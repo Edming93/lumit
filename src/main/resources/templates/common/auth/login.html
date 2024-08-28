@@ -26,16 +26,20 @@
         </div>
 
         <a class="social" href="/oauth2/authorization/kakao">
-            <div class="kakaoBtn">
+            <div class="kakaoBtn socialBtn">
                 <img src="/images/kakao.png"><span>카카오로 로그인하기</span></div>
         </a>
-
-        <div th:text="${googleUri}"></div>
+        <a class="social"
+           href="/oauth2/authorization/naver">
+            <div class="naverBtn socialBtn">
+                <img src="/images/naver.png"><span>네이버로 로그인하기</span></div>
+        </a>
         <a class="social"
            href="/oauth2/authorization/google">
-            <div class="googleBtn">
-                <img src="/images/kakao.png"><span>구글로 로그인하기</span></div>
+            <div class="googleBtn socialBtn">
+                <img src="/images/google.png"><span>Google로 로그인하기</span></div>
         </a>
+
 
     </form>
     <!-- kakao button -->

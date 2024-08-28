@@ -361,19 +361,6 @@ footer {
     margin-bottom: 1rem;
 }
 
-.kakaoBtn {
-    background-color: #f8e200;
-    padding: 0.85rem;
-    border-radius: 0.7rem;
-    display: flex;
-    align-items: center;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-}
-
-.googleBtn {
-    background-color: white;
-}
 
 .helpNav {
     text-align: center;
@@ -395,12 +382,37 @@ footer {
     position: relative;
 }
 
-.kakaoBtn span {
+.social span {
     width: 100%;
     text-align: center;
     font-size: larger;
-    font-family: Pretendard-Regular;
+    font-family: Pretendard-bold;
 }
+
+
+.googleBtn {
+    background-color: white;
+    outline: 1px solid #E0E0E0;
+}
+
+.kakaoBtn {
+    background-color: #f8e200;
+}
+
+.naverBtn {
+    background-color: #0EC114;
+    color: white;
+}
+
+.socialBtn {
+    padding: 0.8rem;
+    border-radius: 0.7rem;
+    display: flex;
+    align-items: center;
+
+    margin-top: 1rem;
+}
+
 
 .formContainer {
     display: grid;

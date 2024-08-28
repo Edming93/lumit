@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping(value = "/member")
 @RequiredArgsConstructor
@@ -43,12 +45,21 @@ public class MemberController {
     }
 
     @GetMapping("/createUser")
-    public String getSignUp(HttpSession session, Model model) {
+    public String getSignUp(Principal principal, HttpSession session, Model model) {
         TbLogin tbLogin = new TbLogin();
-        String socialId = (String) session.getAttribute("social_id");
-        tbLogin.setSocialId(socialId);
-        model.addAttribute("message", "소셜 가입을 완료하기 위해 추가정보를 입력합니다.");
-        model.addAttribute("tbLogin", tbLogin);
+        TbLogin user = userService.selectByUserId(principal.getName());
+        if (user != null) {
+            System.out.println(user);
+            user.setPhone("");
+            user.setGenderCd("");
+            user.setUserId("");
+            user.setPassword("");
+            user.setAddress("");
+            model.addAttribute("tbLogin", user);
+            model.addAttribute("message", "소셜 가입을 완료하기 위해 추가정보를 입력합니다.");
+        } else {
+            model.addAttribute("tbLogin", tbLogin);
+        }
         return SIGNUP_FORM;
     }
 

@@ -1,6 +1,5 @@
 package com.lumit.shop.common.model;
 
-import com.lumit.shop.common.constants.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

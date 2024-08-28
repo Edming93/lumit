@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2AuthorizationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +24,18 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         String provider = userRequest.getClientRegistration().getRegistrationId();
         OAuth2User oAuth2User = super.loadUser(userRequest);
+        Map<String, Object> map = oAuth2User.getAttributes();
+        for (String key : map.keySet()) {
+            System.out.println(key + ":" + map.get(key));
+        }
         OAuth2UserInfo oAuth2UserInfo = null;
         if (provider.equals("google")) {
             oAuth2UserInfo = new GoogleUserDetails(oAuth2User.getAttributes());
         } else if (provider.equals("kakao")) {
             oAuth2UserInfo = new KakaoUserDetails(oAuth2User.getAttributes());
+        } else if (provider.equals("naver")) {
+            oAuth2UserInfo = new NaverUserDetails(oAuth2User.getAttributes());
         }
-
         String providerId = (String) oAuth2UserInfo.getProviderId();
         String email = oAuth2UserInfo.getEmail();
         String socialId = oAuth2UserInfo.getProvider() + "_" + providerId;
@@ -37,9 +43,9 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         User user = userRepository.selectUserBySocialId(socialId);
         if (user == null) {
             if (email == null) {
-                email = socialId;
+                email = "";
             }
-            TbLogin temp = createUser(socialId, email, name);
+            TbLogin temp = createTempUser(socialId, email, name);
             userRepository.insertUser(temp);
             user = userRepository.selectUserBySocialId(socialId);
         }
@@ -47,7 +53,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         return new CustomOauth2UserDetails(user, oAuth2User.getAttributes());
     }
 
-    public TbLogin createUser(String socialId, String email, String name) {
+    private TbLogin createTempUser(String socialId, String email, String name) {
         TbLogin tbLogin = new TbLogin();
         tbLogin.setUserId(email);
         tbLogin.setName(name);
