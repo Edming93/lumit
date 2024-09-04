@@ -23,7 +23,7 @@
         <li th:class="nav-list" th:each="menu : ${session.menuList}" th:if="${menu.isAdmin()}">
             <a th:class="nav-link"
                th:classappend="${request.getRequestURL().toString().split('localhost')[1] == menu.getMenuUrl().split('/\*')[0] ? 'active' : null}"
-               th:href="${menu.getMenuUrl().split('/\*')[0]}">
+               th:href="|${menu.getMenuUrl().split('\*')[0]}${menu.getMenuDefaultUrl()}|">
                 <th:block th:if="${!menu.getIconHtml().equals(null)}" th:utext="${menu.getIconHtml()}"></th:block>
                 <span th:class="wide" th:text="${menu.menuName}"></span>
             </a>
