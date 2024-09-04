@@ -30,15 +30,19 @@ create table if not exists TB_BOARD
 (
     BOARD_ID    int           not null comment 'AUTO_INCREMENT'
         primary key,
+    MENU_CD     varchar(4)    not null comment '메뉴 코드',
+    MENU_DV_CD  varchar(4)    null comment '메뉴구분코드',
     TITLE       varchar(255)  not null,
-    CONTENT     varchar(1000) null,
-    OPEN_YN     varchar(2)    not null comment 'Y',
+    CONTENT     text           null,
     PASSWORD    varchar(50)   null,
+    TOP_FIX     varchar(2)    null,
+    USE_YN      varchar(2)    not null comment '사용여부',
+    DEL_YN      varchar(2)    not null comment '삭제여부',
+    RPLY_YN     varchar(2)    null comment '회신여부',
     REG_ID      varchar(50)   not null,
     REG_DT      timestamp     not null,
     FILE_YN     varchar(2)    not null,
-    VIEW_COUNT  int           not null comment '0',
-    BOARD_STATE varchar(2)    not null comment '01:공지사항'
+    VIEW_COUNT  int            not null comment '0'
 );
 
 create table if not exists TB_CARTS
@@ -199,6 +203,7 @@ create table if not exists TB_MENU
     MENU_NAME        varchar(30)          not null,
     MENU_URL         varchar(100)         not null,
     MENU_DEFAULT_URL varchar(100)         null,
+    TMPL_CD          varchar(4)           null,
     IS_ADMIN         tinyint(1) default 0 not null,
     ICON_HTML        text                 null
 );

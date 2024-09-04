@@ -31,6 +31,8 @@ public class AdminController {
     private final String MEMBER_PATH = "/member";
     private final String NEW_MANAGER_FORM = BASE_URL + MEMBER_PATH + "/adminForm";
 
+    private final String BOARD_PATH = "/board";
+
 
     @GetMapping("")
     public String adminHome(Model model, HttpServletRequest request, HttpServletResponse response) {
@@ -45,11 +47,24 @@ public class AdminController {
     }
 
 
-    @GetMapping(MEMBER_PATH)
+    @GetMapping(MEMBER_PATH + "/list")
     public String memberDashboard(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
         return BASE_URL + MEMBER_PATH + "/index";
     }
+
+    @GetMapping(BOARD_PATH + "/M208/list")
+    public String noticeDashboard(Model model, HttpServletRequest request) {
+        model.addAttribute("request", request);
+        return BASE_URL + BOARD_PATH + "/list";
+    }
+
+    @GetMapping(BOARD_PATH + "/M208/regist")
+    public String noticeRegist(Model model, HttpServletRequest request) {
+        model.addAttribute("request", request);
+        return BASE_URL + BOARD_PATH + "/regist";
+    }
+
 
     @GetMapping(MEMBER_PATH + "/newManager")
     public String newManager(Model model, HttpServletRequest request) {
@@ -87,4 +102,4 @@ public class AdminController {
         model.addAttribute("request", request);
         return BASE_URL + MEMBER_PATH + "/user/dashboard";
     }
-}
+} 
