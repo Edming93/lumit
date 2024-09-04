@@ -40,6 +40,7 @@ public class MemberController {
             CustomOauth2UserDetails details = (CustomOauth2UserDetails) authentication.getPrincipal();
             user = (User) userDetailsService.loadUserByUsername(details.getUsername());
         }
+        model.addAttribute("hello", "hello");
         model.addAttribute("user", user);
         return "/member/userInfo";
     }
@@ -47,7 +48,10 @@ public class MemberController {
     @GetMapping("/createUser")
     public String getSignUp(Principal principal, HttpSession session, Model model) {
         TbLogin tbLogin = new TbLogin();
-        TbLogin user = userService.selectByUserId(principal.getName());
+        TbLogin user = null;
+        if (principal != null) {
+            user = userService.selectByUserId(principal.getName());
+        }
         if (user != null) {
             System.out.println(user);
             user.setPhone("");

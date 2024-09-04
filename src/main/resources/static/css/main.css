@@ -44,6 +44,9 @@
     --input-border-color: #E0E0E0;
     --black-color: #333333;
     --grey-font-color: #767676;
+    --form-required-color: #B84F03;
+    --divider-color: #4D4D4D;
+    --input-border-color: #D9D9D9;
 }
 
 
@@ -324,6 +327,7 @@ footer {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    margin: 2rem;
 }
 
 .loginCheckbox {
@@ -480,4 +484,81 @@ footer {
 
 .only-admin > * {
     color: white;
+}
+
+.formHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.divider {
+    width: 100%;
+    color: var(--divider-color);
+}
+
+.formInput {
+    width: 80%;
+    border: none !important;
+    background-color: transparent;
+    border-radius: 0rem;
+    border-bottom: 1px solid var(--input-border-color) !important;
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.7rem;
+}
+
+.requiredDot {
+    color: var(--form-required-color);
+}
+
+.radioContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 0.7rem;
+}
+
+.registerTitle {
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.phoneInput {
+    width: 80%;
+}
+
+.phoneInput > * {
+    width: 30%;
+}
+
+.radioInput {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    accent-color: var(--brown-font);
+}
+
+.radioBtn {
+    background-color: #E7DBCD;
+}
+
+.addressContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.checkBoxContainer {
+    text-align: center;
+    accent-color: var(--brown-font);
+    margin: 0 auto;
+}
+
+.checkBoxContainer > * {
+    color: var(--brown-font)
 }
