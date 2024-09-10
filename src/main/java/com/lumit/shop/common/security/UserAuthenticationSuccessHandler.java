@@ -2,27 +2,20 @@ package com.lumit.shop.common.security;
 
 import com.lumit.shop.common.model.TbMenu;
 import com.lumit.shop.common.model.User;
-import com.lumit.shop.common.repository.UserRepository;
 import com.lumit.shop.common.security.social.CustomOauth2UserDetails;
-import com.lumit.shop.common.security.social.OAuth2UserInfo;
-import com.lumit.shop.common.service.SecurityUtils;
-import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     @Autowired
@@ -37,12 +30,11 @@ public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
             CustomOauth2UserDetails details = (CustomOauth2UserDetails) authentication.getPrincipal();
             user = (User) userDetailsService.loadUserByUsername(details.getUsername());
         }
-        System.out.println(user.getUserId());
-        System.out.println(user.getName());
-        System.out.println(user.getEmail());
-        for (GrantedAuthority authority : user.getAuthorities()) {
-            System.out.println("Authority: " + authority.getAuthority());
-        }
+
+//        for (GrantedAuthority authority : user.getAuthorities()) {
+//            System.out.println("Authority: " + authority.getAuthority());
+//        }
+
         List<TbMenu> menuList = user.getMenuAuthorities();
         String defaultUrl = "";
         for (TbMenu menu : menuList) {

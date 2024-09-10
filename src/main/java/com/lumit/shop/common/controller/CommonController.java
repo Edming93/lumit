@@ -1,20 +1,13 @@
 package com.lumit.shop.common.controller;
 
-import com.lumit.shop.common.constants.ServiceCode;
-import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.security.social.CustomOauth2UserService;
 import com.lumit.shop.common.service.UserService;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -29,7 +22,7 @@ public class CommonController {
      * <p>
      * GET / -> /lumit/index
      * GET /login -> /common/auth/login
-     * GET /member/createUser -> /common/auth/signupForm
+     * GET /member/createUser -> /common/auth
      */
     private final String LUMIT_INDEX = "/lumit/index";
     private final String LOGIN_FORM = "/common/auth/login";
@@ -44,7 +37,7 @@ public class CommonController {
 
     // Todo
     // 정보 입력 덜 된 애들 회원가입 페이지로 넘겨주기
-    @GetMapping("")
+    @GetMapping("/main")
     public String getHome() {
         return LUMIT_INDEX;
     }

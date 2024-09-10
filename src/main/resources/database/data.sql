@@ -53,11 +53,11 @@ VALUES ('admin', 2, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW
         '01000000000', 'asdf', NULL, 'admin', now(), 'admin', now());
 
 REPLACE INTO `TB_MENU`
-VALUES ('M100', 'M100', '메인', '/**', '', '', 0, NULL),
-       ('M101', 'M100', '인테리어', '/interior/**', 'list', '', 0, NULL),
-       ('M102', 'M100', '스튜디오', '/studio/**', 'list', '', 0, NULL),
-       ('M103', 'M100', '질문게시판', '/question/**', 'list', '', 0, NULL),
-       ('M104', 'M100', '공지사항', '/notice/**', 'list', '', 0, NULL),
+VALUES ('M100', 'M100', '메인', '/main/**', '', '', 0, NULL),
+       ('M101', 'M100', '인테리어', '/main/interior/**', 'list', '', 0, NULL),
+       ('M102', 'M100', '스튜디오', '/main/studio/**', 'list', '', 0, NULL),
+       ('M103', 'M100', '질문게시판', '/main/question/**', 'list', '', 0, NULL),
+       ('M104', 'M100', '공지사항', '/main/notice/**', 'list', '', 0, NULL),
        ('M200', 'M200', '메인', '/admin/**', '', '', 0, '<i class=\"fa-solid fa-house\"></i>'),
        ('M201', 'M200', '상품관리', '/admin/product/**', 'list', '', 1, '<i class=\"fa-solid fa-shirt\"></i>'),
        ('M202', 'M200', '회원관리', '/admin/member/**', 'list', '', 1, '<i class=\"fa-solid fa-user\"></i>'),
