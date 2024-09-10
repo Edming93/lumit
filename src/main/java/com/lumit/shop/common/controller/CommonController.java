@@ -37,8 +37,9 @@ public class CommonController {
 
     // Todo
     // 정보 입력 덜 된 애들 회원가입 페이지로 넘겨주기
-    @GetMapping("/main")
-    public String getHome() {
+
+    @GetMapping("/")
+    public String getMain() {
         return LUMIT_INDEX;
     }
 

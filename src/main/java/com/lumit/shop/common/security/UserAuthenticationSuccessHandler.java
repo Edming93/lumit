@@ -41,7 +41,7 @@ public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
             if (StringUtils.equals(menu.getMenuDefaultUrl(), "")) {
                 if (StringUtils.equals(menu.getMainYn(), "Y")) {
                     defaultUrl = menu.getMenuUrl().replace("/**", "");
-                    if (defaultUrl.equals("")) {
+                    if (defaultUrl.equals("") || defaultUrl.equals("/main")) {
                         defaultUrl = "/";
                     }
                 }

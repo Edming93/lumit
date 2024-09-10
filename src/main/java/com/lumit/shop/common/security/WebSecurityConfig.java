@@ -23,7 +23,7 @@ public class WebSecurityConfig {
     private final UserDetailsService userDetailsService;
     private final OAuth2UserService oAuth2UserService;
     private static final String[] WHITE_LIST = {
-            "/main", "/login/**", "/main/member/createUser", "/lumit/**", "/error/**", "/signup"
+            "/", "/main", "/login/**", "/main/member/createUser", "/lumit/**", "/error/**", "/signup"
     };
     @Autowired
     private CustomAuthorizationManager customAuthorizationManager;
