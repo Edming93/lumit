@@ -40,6 +40,7 @@ public class MemberController {
             CustomOauth2UserDetails details = (CustomOauth2UserDetails) authentication.getPrincipal();
             user = (User) userDetailsService.loadUserByUsername(details.getUsername());
         }
+        model.addAttribute("hello", "hello");
         model.addAttribute("user", user);
         return "/member/userInfo";
     }
