@@ -77,9 +77,16 @@
         function checkPwd() {
             const pwd = document.getElementById("password");
             const pwdCheck = document.getElementById("passwordCheck");
-            if (pwd.value !== pwdCheck.value) {
-                pwdCheck.value = "";
-                alert("비밀번호가 일치하지 않습니다.")
+            const dest = document.getElementById("samePwdResult")
+            if (pwdCheck.value == "") {
+                resultProcessing(pwdCheck, dest, "reset")
+                return false;
+            } else if (pwd.value !== pwdCheck.value) {
+                resultProcessing(pwdCheck, dest, "fail")
+                return false;
+            } else {
+                resultProcessing(pwdCheck, dest, "success")
+                return true;
             }
         }
 
@@ -165,17 +172,21 @@
         }
 
         function resultProcessing(outside, inside, state) {
+            inside.innerHTML = "";
             if (state === "fail") {
+                inside.innerHTML += "<i class=\"fa-solid fa-x\"></i>"
                 outside.parentElement.classList.remove("success")
                 outside.parentElement.classList.add("failed")
                 inside.classList.remove("resultBoxSuccess")
                 inside.classList.add("resultBoxFail")
             } else if (state === "reset") {
+                inside.innerHTML = ""
                 outside.parentElement.classList.remove("failed")
                 outside.parentElement.classList.remove("success")
                 inside.classList.remove("resultBoxFail")
                 inside.classList.remove("resultBoxSuccess")
             } else {
+                inside.innerHTML += "<i class=\"fa-solid fa-check\"></i>"
                 outside.parentElement.classList.remove("failed")
                 outside.parentElement.classList.add("success")
                 inside.classList.remove("resultBoxFail")
@@ -188,26 +199,33 @@
 
             const regex = /^[0-9a-z]{4,16}$/;
             const dest = document.getElementById("idCheckResult");
-
             if (id.value == "") {
-                dest.innerHTML = "";
                 resultProcessing(id, dest, "reset")
                 return;
-            }
-            dest.innerHTML = ""
-            if (!regex.test(id.value)) {
-                dest.innerHTML += "<i class=\"fa-solid fa-x\"></i>"
+            } else if (!regex.test(id.value)) {
                 resultProcessing(id, dest, "fail")
                 return false;
             } else {
-                dest.innerHTML += "<i class=\"fa-solid fa-check\"></i>"
                 resultProcessing(id, dest, "success")
                 return true;
             }
         }
 
         function pwdValidate() {
-            
+            const pwd = document.getElementById("password");
+            const dest = document.getElementById("pwdCheckResult");
+
+            const regex = /(?:[a-zA-Z]+[0-9]+$)|(?:[a-zA-Z]+[^a-zA-Z0-9\n]+$)|(?:[0-9]+[a-zA-Z]+$)|(?:[0-9]+[!@#$%^&*-_]+$)|(?:[^a-zA-Z0-9\n]+[a-zA-Z0-9]+$)/;
+            if (pwd.value == "") {
+                resultProcessing(pwd, dest, "reset")
+                return false;
+            } else if (pwd.value.length < 8 || pwd.value.length > 16 || !regex.test(pwd.value)) {
+                resultProcessing(pwd, dest, "fail")
+                return false;
+            } else {
+                resultProcessing(pwd, dest, "success")
+                return true;
+            }
         }
     </script>
 </head>
@@ -247,7 +265,7 @@
                     <div class="requiredDot">&nbsp;&#8226;</div>
                 </div>
                 <div class="formInput validContainer">
-                    <input id="password" type="password" th:field="*{password}" name="password"
+                    <input id="password" type="password" oninput="pwdValidate()" th:field="*{password}" name="password"
                            placeholder="영문/숫자/특수문자 중 2가지 이상, 8~16자"
                            autocomplete="current-password" style="background: transparent; width: 80%;"/>
                     <div id="pwdCheckResult" class="resultBox">
@@ -260,7 +278,13 @@
                 <label for="password">비밀번호 확인</label>
                 <div class="requiredDot">&nbsp;&#8226;</div>
             </div>
-            <input id="passwordCheck" onblur="checkPwd()" class="formInput" type="password"/>
+            <div class="formInput validContainer">
+                <input id="passwordCheck" onblur="checkPwd()" style="background: transparent; width: 80%;"
+                       type="password"/>
+                <div id="samePwdResult" class="resultBox">
+                </div>
+            </div>
+
         </div>
         <div class="inputContainer">
             <div style="display: inline-flex">

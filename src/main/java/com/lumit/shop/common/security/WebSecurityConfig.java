@@ -23,10 +23,11 @@ public class WebSecurityConfig {
     private final UserDetailsService userDetailsService;
     private final OAuth2UserService oAuth2UserService;
     private static final String[] WHITE_LIST = {
-            "/", "/main", "/login/**", "/main/member/createUser", "/lumit/**", "/error/**", "/signup"
+            "/", "/main", "/login/**", "/main/member/createUser", "/lumit/**", "/error/**", "/signup", "/api/opened/**"
     };
     @Autowired
     private CustomAuthorizationManager customAuthorizationManager;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
