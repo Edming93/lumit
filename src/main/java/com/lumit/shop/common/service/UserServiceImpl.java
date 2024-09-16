@@ -46,6 +46,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isIdDuplicated(String id) {
+        TbLogin user = userRepository.selectByUserId(id);
+        if (user != null) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public ServiceCode insertUserControl(TbLogin user) {
         try {
             TbLogin tbLogin = selectByUserId(user.getUserId());

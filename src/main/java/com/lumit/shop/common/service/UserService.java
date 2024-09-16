@@ -17,6 +17,8 @@ public interface UserService {
 
     public int insertAdmin(TbLogin tbLogin);
 
+    public boolean isIdDuplicated(String id);
+
     public ServiceCode insertUserControl(TbLogin tbLogin);
 
     public ServiceCode updateSocialUser(TbLogin tbLogin);

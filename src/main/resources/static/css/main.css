@@ -57,11 +57,6 @@ body {
     color: var(--font-color);
 }
 
-hr {
-    border: 1px var(--footer-divider-color) solid;
-    border-radius: 1rem;
-}
-
 .container {
     display: flex;
     justify-content: center;
@@ -490,6 +485,7 @@ footer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 .divider {
@@ -498,11 +494,12 @@ footer {
 }
 
 .formInput {
-    width: 80%;
-    border: none !important;
+    width: 75%;
+    /*border: none !important;*/
     background-color: transparent;
     border-radius: 0rem;
-    border-bottom: 1px solid var(--input-border-color) !important;
+    border-bottom: 1px solid var(--input-border-color);
+    padding: 0.5rem
 }
 
 .inputContainer {
@@ -525,40 +522,203 @@ footer {
 }
 
 .registerTitle {
-    font-size: 42px;
+    font-size: 1.5rem;
     font-weight: bold;
+    margin-bottom: 3rem;
 }
 
 .phoneInput {
-    width: 80%;
+    width: 78%;
 }
 
 .phoneInput > * {
-    width: 30%;
+    width: 26.5%;
+    padding: 0.5rem;
+}
+
+.phoneInput input {
+    background-color: transparent;
+    border-bottom: 1px solid var(--input-border-color);
 }
 
 .radioInput {
     display: flex;
     flex-direction: row;
-    width: 80%;
+    width: 78%;
     accent-color: var(--brown-font);
+}
+
+.radioInput > * {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
 }
 
 .radioBtn {
     background-color: #E7DBCD;
 }
 
+.inputContainer, .addressContainer, .radioContainer {
+    margin-top: 1rem;
+}
+
 .addressContainer {
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 0.7rem;
+}
+
+.addressForm {
+    display: flex;
     flex-direction: column;
+    width: 79%;
 }
 
 .checkBoxContainer {
     text-align: center;
     accent-color: var(--brown-font);
-    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .checkBoxContainer > * {
-    color: var(--brown-font)
+    color: var(--brown-font);
+    margin-top: 0.7rem;
+}
+
+.addressForm input {
+    padding: 0.5rem;
+    margin-top: 0.2rem;
+    background-color: transparent;
+    border-bottom: 1px solid var(--input-border-color);
+}
+
+.addressForm button {
+    border: 1px solid #CAAB9C;
+    background-color: #E7DBCD;
+    color: #876453;
+    border-radius: 1rem;
+}
+
+.registerDivider {
+    width: 100%;
+    border-bottom: 1px solid #4D4D4D;
+}
+
+.agreement {
+    color: var(--brown-font);
+    margin-top: 2rem;
+}
+
+.agreement > h3, .formHeader > h3 {
+    color: #4D4D4D;
+    font-size: 0.9rem;
+}
+
+#allCheck {
+    cursor: pointer;
+}
+
+.agreementCheck {
+    accent-color: var(--brown-font);
+    vertical-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.insideDivider {
+    width: 100%;
+    opacity: 0.3;
+}
+
+.agreeInfo {
+    font-size: 0.6rem;
+    color: #B84F03;
+    border-bottom: 1px solid #B84F03;
+    margin-left: 0.2rem;
+}
+
+.btnContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+}
+
+.btnContainer > * {
+    border-radius: 0.7rem;
+    padding: 0.5rem;
+    width: 8rem;
+    margin: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.goBackBtn {
+    border: 1px solid #D9C1B5;
+    color: #D9C1B5;
+    background-color: transparent;
+}
+
+.submitBtn {
+    border: 1px solid #CAAB9C;
+    background-color: #E7DBCD;
+    color: #876453;
+    cursor: pointer;
+}
+
+.detailAddressContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.detailAddressContainer > * {
+    width: 40%;
+}
+
+.failed {
+    border-bottom: 1px solid red;
+}
+
+.success {
+    border-bottom: 1px solid green;
+}
+
+.validContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.resultBox {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.resultBoxFail {
+    border: 2px solid red;
+    -webkit-text-stroke: 1px red;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+}
+
+.resultBoxSuccess {
+    border: 2px solid green;
+    color: green;
+    -webkit-text-stroke: 1px green;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+}
+
+.vaildText {
+    text-align: end;
+    margin-top: 0.2rem;
+    opacity: 0.6;
 }
