@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.security.Principal;
 
 @Controller
-@RequestMapping(value = "/member")
+@RequestMapping(value = "/main/member")
 @RequiredArgsConstructor
 public class MemberController {
     private final String SIGNUP_FORM = "/common/auth/signupForm";
@@ -47,20 +47,27 @@ public class MemberController {
     @GetMapping("/createUser")
     public String getSignUp(Principal principal, HttpSession session, Model model) {
         TbLogin tbLogin = new TbLogin();
-        TbLogin user = null;
-        if (principal != null) {
-            user = userService.selectByUserId(principal.getName());
-        }
-        if (user != null) {
-            System.out.println(user);
-            user.setPhone("");
-            user.setGenderCd("");
-            user.setUserId("");
-            user.setPassword("");
-            user.setAddress("");
-            model.addAttribute("tbLogin", user);
-            model.addAttribute("message", "소셜 가입을 완료하기 위해 추가정보를 입력합니다.");
+        if(principal != null) {
+            TbLogin user = userService.selectByUserId(principal.getName());
+
+            if (user != null) {
+                System.out.println(user);
+                user.setPhone("");
+                user.setGenderCd("");
+                user.setUserId("");
+                user.setPassword("");
+                user.setAddress("");
+                model.addAttribute("tbLogin", user);
+                model.addAttribute("message", "소셜 가입을 완료하기 위해 추가정보를 입력합니다.");
+            } else {
+                model.addAttribute("tbLogin", tbLogin);
+            }
         } else {
+            tbLogin.setPhone("");
+            tbLogin.setGenderCd("");
+            tbLogin.setUserId("");
+            tbLogin.setPassword("");
+            tbLogin.setAddress("");
             model.addAttribute("tbLogin", tbLogin);
         }
         return SIGNUP_FORM;
