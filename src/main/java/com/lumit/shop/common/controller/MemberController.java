@@ -47,7 +47,7 @@ public class MemberController {
     @GetMapping("/createUser")
     public String getSignUp(Principal principal, HttpSession session, Model model) {
         TbLogin tbLogin = new TbLogin();
-        if(principal != null) {
+        if (principal != null) {
             TbLogin user = userService.selectByUserId(principal.getName());
 
             if (user != null) {

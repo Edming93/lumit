@@ -120,6 +120,12 @@ body {
     width: 70%;
 }
 
+.anonContainer {
+    width: 50%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
 .searchBox {
     border-radius: 0.7rem;
     /*border: black 1px solid;*/
@@ -145,8 +151,9 @@ body {
 }
 
 .memberContainer {
-    width: 25%;
+    /*width: 25%;*/
     display: flex;
+    margin-left: 1rem;
     justify-content: space-evenly;
 }
 
@@ -395,7 +402,7 @@ footer {
 }
 
 .kakaoBtn {
-    background-color: #f8e200;
+    background-color: #FEE500;
 }
 
 .naverBtn {

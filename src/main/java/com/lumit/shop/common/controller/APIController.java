@@ -13,6 +13,7 @@ public class APIController {
 
     private final UserService userService;
 
+    // 멤버 - 회원가입 - 중복체크api
     @GetMapping(value = "/opened/idCheck")
     public @ResponseBody ResponseDto<?> idDuplicateCheck(@RequestParam(value = "id") String id) {
         System.out.println(id);

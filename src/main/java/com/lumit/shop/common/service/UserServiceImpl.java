@@ -77,6 +77,7 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
             return ServiceCode.CONFLICT;
         }
+        tbLogin.setPassword(passwordEncoder.encode(tbLogin.getPassword()));
         int result = userRepository.updateSocialUser(tbLogin);
         if (result > 0) {
             return ServiceCode.UPDATED;
