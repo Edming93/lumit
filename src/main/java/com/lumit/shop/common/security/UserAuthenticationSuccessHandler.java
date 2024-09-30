@@ -57,6 +57,7 @@ public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
 
 
         session.setAttribute("menuList", menuList);
+        session.setAttribute("defaultUrl", defaultUrl);
         System.out.println("기본경로 ::");
         System.out.println(defaultUrl);
         super.setDefaultTargetUrl(defaultUrl);

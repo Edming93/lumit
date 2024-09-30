@@ -1,13 +1,13 @@
 package com.lumit.shop.common.repository;
 
-import com.lumit.shop.common.model.TbLogin;
-import com.lumit.shop.common.model.User;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.lumit.shop.common.model.TbLogin;
+import com.lumit.shop.common.model.User;
 
-;
 
 @Mapper
 @Repository

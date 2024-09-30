@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lumit.shop.common.repository.BoardRepository">
+    <select id="selectBoardList" resultType="com.lumit.shop.common.model.TbBoard">
+        SELECT *
+        FROM TB_BOARD
+    </select>
+
+    <insert id="insertBoard" parameterType="com.lumit.shop.common.model.TbBoard" useGeneratedKeys="true" keyProperty="boardId">
+        INSERT INTO TB_BOARD
+        ( 	
+        	MENU_CD
+	        , MENU_DV_CD
+	        , TITLE
+	        , CONTENT
+	        , PASSWORD
+	        , TOP_FIX
+	        , USE_YN
+	        , DEL_YN
+	        , RPLY_YN
+	        , FILE_YN
+	        , VIEW_COUNT
+	        , REG_ID
+	        , REG_DT
+	        , MOD_ID
+	        , MOD_DT
+	    )
+        VALUES 
+        ( 	
+        	#{menuCd}
+            , #{menuDvCd}
+            , #{title}
+            , #{content}
+            , #{password}
+            , #{topFix}
+            , #{useYn}
+            , #{delYn}
+            , #{rplyYn}
+            , #{fileYn}
+            , #{viewCount}
+            , #{regId}
+            , now()
+            , #{modId}
+            , now()
+        )
+    </insert>
+
+</mapper>

@@ -47,8 +47,9 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
     implementation 'com.google.code.gson:gson:2.8.9' // 최신 버전 확인 필요
+    
+    implementation 'org.glassfish.jersey.core:jersey-server:3.0.0'
+	implementation 'org.glassfish.jersey.containers:jersey-container-servlet:3.0.0'
+	implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:3.0.0'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}

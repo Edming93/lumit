@@ -4,6 +4,8 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 ><!--/*  layout 선언부 추가    */-->
 <head>
+	<script th:src="@{/js/functions.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
     <th:block th:replace="~{admin/fragments/head :: headFragment}"></th:block>
 </head>
 <body>
@@ -13,5 +15,11 @@
         <div class="content" layout:fragment="content"></div>
     </div>
 </div>
+
 </body>
+
+<script th:inline="javascript">
+	let defaultUrl = [[${session.defaultUrl}]];
+	getSiteId(defaultUrl);
+</script>
 </html>

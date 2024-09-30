@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{admin/fragments/layout}">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    
+	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <style>
+        .comm_inp {
+            border:1px solid #e5e5e5;
+            width:100%;
+            height:30px;
+            padding:0px 10px;
+        }
+
+        #registTable > tbody > tr {
+            height: 60px;
+            line-height: 60px;
+        }
+
+        #btnArea {
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            margin-top:20px;
+        }
+    </style>
+</head>
+
+
+<div layout:fragment="content">
+    <div>
+        <p class="title">공지사항 등록</p>
+    </div>
+
+    <div id="container">
+        <form id="registForm"  method="post" entype="multipart/form-data">
+
+            <table id="registTable">
+                <colgroup>
+                    <col style="width: 10%;"/>
+                    <col style="width: 90%;"/>
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th>제목</th>
+                        <td>
+                            <input type="text" id="title" name="title" class="comm_inp" placeholder="제목을 입력해주세요.">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>파일첨부</th>
+                        <td>
+
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <textarea id="tiny"></textarea>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div id="btnArea">
+            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
+                <button type="button" id="registBtn" class="commBtn mgl10">작성 완료</button>
+            </div>
+        </form>
+    </div>
+</div>
+</html>
+
+<script th:inline="javascript">
+
+document.addEventListener("DOMContentLoaded", function () {
+
+	// 텍스트에디터 기초 세팅
+	tinymce.init({
+		language:"ko_KR",
+	    selector: 'textarea',
+	    height:500,
+	    plugins: [
+	      // Core editing features
+	      'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+	      // Your account includes a free trial of TinyMCE premium features
+	      // Try the most popular premium features until Oct 14, 2024:
+	      'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown',
+	    ],
+	    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+	    tinycomments_mode: 'embedded',
+	    tinycomments_author: 'Author name',
+	    mergetags_list: [
+	      { value: 'First.Name', title: 'First Name' },
+	      { value: 'Email', title: 'Email' },
+	    ],
+	    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+	});
+	
+	document.getElementById("registBtn").addEventListener("click", function() {
+	
+		let formData = new FormData(document.querySelector("#registForm"));
+		let params = {};
+	  
+		// 텍스트에디터 내용 가져오기
+		let tinyContent = tinymce.get("tiny").getContent();
+		
+		params['content'] = tinyContent;
+		
+		for(let [key,value] of formData.entries()) {
+			
+			params[key] = value;
+		};
+		
+		
+		setData(params);
+	});
+	
+  	
+  
+});
+
+let menuCd = [[${menuCd}]];
+
+// 비동기 통신
+function setData(formArr) {
+    fetch('/' + siteId + '/board/' + menuCd + '/regist', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formArr)
+    })
+    .then(function(response) {
+        if (!response.result) {
+            throw new Error('네트워크 응답 에러');
+        }
+        return response.json(); // JSON 데이터를 파싱
+    })
+    .then(function(result) {
+        console.log('success:', result);
+    })
+    .catch(function(error) {
+        console.log("error:", error);
+    });
+}
+</script>

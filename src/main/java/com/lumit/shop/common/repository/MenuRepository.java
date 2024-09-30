@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 @Repository
 public interface MenuRepository {
-    List<TbMenu> getMenuList(String userId);
-
+    List<TbMenu> selectMenuList(String userId);
+    public TbMenu selectMenuByMenuCd(String menuCd);
 
 }

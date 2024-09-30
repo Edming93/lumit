@@ -15,8 +15,13 @@ public class MenuServiceImpl implements MenuService {
     private final MenuRepository menuRepository;
 
     @Override
-    public List<TbMenu> getMenuList(String userId) {
-        return menuRepository.getMenuList(userId);
+    public List<TbMenu> selectMenuList(String userId) {
+        return menuRepository.selectMenuList(userId);
+    }
+    
+    @Override
+    public TbMenu selectMenuByMenuCd(String menuCd) {
+    	return menuRepository.selectMenuByMenuCd(menuCd);
     }
 
 }

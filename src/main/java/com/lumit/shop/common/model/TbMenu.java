@@ -20,7 +20,7 @@ public class TbMenu implements GrantedAuthority {
     private String menuName;
     private String menuUrl;
     private String menuDefaultUrl;
-
+    private String tmplCd;
     private String mainYn;
     private boolean isAdmin;
     private String iconHtml;

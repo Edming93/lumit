@@ -3,14 +3,26 @@
         xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{admin/fragments/layout}">
+<head>
+    <style>
+        #btnArea {
+            display:flex;
+            justify-content:end;
+            align-items:center;
+            margin-top:20px;
+        }
+    </style>
+</head>
 <div layout:fragment="content">
     <div>
         <p class="title">공지사항</p>
     </div>
 
     <div id="container">
-
-        <table style="border: 1px solid;">
+		<div id="btnArea">
+            <button type="button" id="registBtn" class="commBtn mgl10">등록</button>
+        </div>
+        <table style="border: 1px solid; width: 100%;">
             <colgroup>
                 <col style="width: 5%;"/>
                 <col style="width: 25%;"/>
@@ -36,5 +48,14 @@
             </tbody>
         </table>
     </div>
+<script th:inline="javascript">
+	document.addEventListener("DOMContentLoaded", function () {
+		let menuCd = [[${menuCd}]];
+		document.getElementById("registBtn").addEventListener("click",function() {
+			moveUrl("/"+siteId+"/board/"+menuCd+"/regist");
+		});
+	});
+</script>
 </div>
+
 </html>

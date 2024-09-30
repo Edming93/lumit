@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.lumit.shop.common.repository.MenuRepository">
-    <select id="getMenuList" resultType="com.lumit.shop.common.model.TbMenu">
+    <select id="selectMenuList" resultType="com.lumit.shop.common.model.TbMenu">
         SELECT a.* , b.MAIN_YN
         FROM TB_MENU a
         LEFT JOIN
@@ -16,6 +16,13 @@
         WHERE
             c.USER_ID= #{userId}
     </select>
-
+    
+    <select id="selectMenuByMenuCd" resultType="com.lumit.shop.common.model.TbMenu">
+    	SELECT 
+    		*
+    	FROM TB_MENU
+    	WHERE
+    		MENU_CD = #{menuCd}
+    </select>
 
 </mapper>

@@ -34,7 +34,6 @@ public class AuthorizationChecker {
                 }
 
                 for(GrantedAuthority authority : principalObj.getAuthorities()) {
-                    System.out.println("authority.getAuthority ::: " + authority.getAuthority());
                     if (antPathMatcher.match(authority.getAuthority(), request.getServletPath())) {
 
                         result = true;

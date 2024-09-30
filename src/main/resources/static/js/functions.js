@@ -97,6 +97,51 @@ let formControl = {
     }
 }
 
+
+/**
+ * URL 이동을 위한 공통 함수
+ * @param {string} url - 이동할 URL
+ * @param {Object} params - (선택) 쿼리 파라미터 객체 (ex. {id: 1, name: "test"})
+ * @param {boolean} replace - (선택) true면 현재 히스토리의 URL을 대체하고, false면 새로운 기록을 남김 (기본값: false)
+ */
+
+function moveUrl(url, params = {}, replace = false) {
+	// 쿼리 파라미터가 있는 경우 처리
+    if (params && Object.keys(params).length > 0) {
+        const queryString = new URLSearchParams(params).toString();
+        url += `?${queryString}`;
+    }
+
+    // replace가 true이면 현재 URL을 대체, false이면 새로운 URL로 이동
+    if (replace) {
+        window.location.replace(url);
+    } else {
+        window.location.assign(url);
+    }
+};
+
+let siteId = '';
+
+// siteId 가져오기
+function getSiteId (defaultUrl) {
+    if(!defaultUrl) {
+		console.log("세션 Item 키값 없음");
+	}
+	
+	console.log(defaultUrl);
+	
+	let urlSegments = defaultUrl.split('/');
+
+	console.log("segments ::" +  urlSegments[1]);
+	// siteId 부분만 추출
+	if(urlSegments.length > 1) {
+		siteId = urlSegments[1];
+	}else {
+		console.log("Invalid URL format");
+	}
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     sideBar.setting();
+    
 })

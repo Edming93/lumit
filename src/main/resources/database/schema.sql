@@ -28,7 +28,7 @@ drop table if exists TB_TAG_MAP cascade;
 
 create table if not exists TB_BOARD
 (
-    BOARD_ID    int           not null comment 'AUTO_INCREMENT'
+    BOARD_ID    int           AUTO_INCREMENT  not null comment 'AUTO_INCREMENT'
         primary key,
     MENU_CD     varchar(4)    not null comment '메뉴 코드',
     MENU_DV_CD  varchar(4)    null comment '메뉴구분코드',
@@ -39,10 +39,12 @@ create table if not exists TB_BOARD
     USE_YN      varchar(2)    not null comment '사용여부',
     DEL_YN      varchar(2)    not null comment '삭제여부',
     RPLY_YN     varchar(2)    null comment '회신여부',
+    FILE_YN     varchar(2)    not null,
+    VIEW_COUNT  int           DEFAULT 0	null,
     REG_ID      varchar(50)   not null,
     REG_DT      timestamp     not null,
-    FILE_YN     varchar(2)    not null,
-    VIEW_COUNT  int            not null comment '0'
+    MOD_ID      varchar(50)   not null,
+    MOD_DT      timestamp     not null
 );
 
 create table if not exists TB_CARTS

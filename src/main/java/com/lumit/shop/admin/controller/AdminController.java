@@ -1,12 +1,5 @@
 package com.lumit.shop.admin.controller;
 
-import com.lumit.shop.common.model.User;
-import com.lumit.shop.common.model.TbLogin;
-import com.lumit.shop.common.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.lumit.shop.common.model.TbLogin;
+import com.lumit.shop.common.model.User;
+import com.lumit.shop.common.service.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,9 +32,6 @@ public class AdminController {
     private final String BASE_URL = "/admin";
     private final String MEMBER_PATH = "/member";
     private final String NEW_MANAGER_FORM = BASE_URL + MEMBER_PATH + "/adminForm";
-
-    private final String BOARD_PATH = "/board";
-
 
     @GetMapping("")
     public String adminHome(Model model, HttpServletRequest request, HttpServletResponse response) {
@@ -51,18 +50,6 @@ public class AdminController {
     public String memberDashboard(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
         return BASE_URL + MEMBER_PATH + "/index";
-    }
-
-    @GetMapping(BOARD_PATH + "/M208/list")
-    public String noticeDashboard(Model model, HttpServletRequest request) {
-        model.addAttribute("request", request);
-        return BASE_URL + BOARD_PATH + "/list";
-    }
-
-    @GetMapping(BOARD_PATH + "/M208/regist")
-    public String noticeRegist(Model model, HttpServletRequest request) {
-        model.addAttribute("request", request);
-        return BASE_URL + BOARD_PATH + "/regist";
     }
 
 

@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("UsernameNotFoundException");
         }
 
-        List<TbMenu> menuList = menuRepository.getMenuList(username);
+        List<TbMenu> menuList = menuRepository.selectMenuList(username);
 
 //        for (TbMenu menu : menuList) {
 //            user.addAuthority(menu);
