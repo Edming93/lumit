@@ -5,7 +5,27 @@
         layout:decorate="~{fragments/layout}">
 <div layout:fragment="content" style="text-align: center">
     <div style="font-size: x-large">내 개인 정보</div>
+    <div>
+        <h3 style="font-size: large">배송지 목록</h3>
+    </div>
     <div th:text="${user.userId}"></div>
     <div th:text="${user.email}"></div>
     <div th:text="${user.address}"></div>
+    <script th:inline="javascript">
+        const userId = [[${user.userId}]]
+        let xhr = new XMLHttpRequest();
+        xhr.responseType = "json"
+        xhr.open("GET", `/api/opened/addressList?userId=${userId}`, true);
+        xhr.send();
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === xhr.DONE) {
+                const res = xhr.response;
+                if (res.data) {
+                    for (let i = 0; i < res.data.length; i++) {
+                        console.log(res.data[i]);
+                    }
+                }
+            }
+        }
+    </script>
 </div>

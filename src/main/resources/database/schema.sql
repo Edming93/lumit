@@ -174,20 +174,21 @@ create table if not exists TB_LIKE
 
 create table if not exists TB_LOGIN
 (
-    USER_ID   varchar(50)  not null
+    USER_ID      varchar(50)  not null
         primary key,
-    ROLE_ID   int          not null,
-    PASSWORD  varchar(100) not null,
-    NAME      varchar(30)  not null,
-    GENDER_CD varchar(2)   not null comment '1: 여, 2: 남',
-    EMAIL     varchar(30)  not null,
-    PHONE     varchar(14)  not null,
-    ADDRESS   varchar(30)  not null,
-    SOCIAL_ID varchar(100) null,
-    REG_ID    varchar(50)  null,
-    REG_DT    timestamp    null,
-    MOD_ID    varchar(50)  null,
-    MOD_DT    timestamp    null
+    ROLE_ID      int          not null,
+    PASSWORD     varchar(100) not null,
+    NAME         varchar(30)  not null,
+    GENDER_CD    varchar(2)   not null comment '1: 여, 2: 남',
+    EMAIL        varchar(30)  not null,
+    PHONE        varchar(14)  not null,
+    ADDRESS      varchar(30)  not null,
+    SOCIAL_ID    varchar(100) null,
+    DEFAULT_ADDR int          null,
+    REG_ID       varchar(50)  null,
+    REG_DT       timestamp    null,
+    MOD_ID       varchar(50)  null,
+    MOD_DT       timestamp    null
 );
 
 create table if not exists TB_LOGIN_HIS
@@ -375,14 +376,15 @@ create table if not exists TB_TAG_MAP
 
 CREATE TABLE `TB_ADDRESS`
 (
-    `ADDR_ID`      int          NOT NULL primary key,
-    `ADDR_NAME`    varchar(100) NOT NULL,
-    `RECIEVER`     varchar(50)  NOT NULL,
-    `PHONE_NUMBER` varchar(14)  NOT NULL,
-    `ZIP_CD`       int          NOT NULL,
-    `BASE_ADDR`    varchar(100) NOT NULL,
-    `DETAIL_ADDR`  varchar(50)  NOT NULL,
-    `USER_ID`      varchar(50)  NOT NULL
+    `ADDR_ID`      int AUTO_INCREMENT NOT NULL primary key,
+    `ADDR_NAME`    varchar(100)       NOT NULL,
+    `RECEIVER`     varchar(50)        NOT NULL,
+    `PHONE_NUMBER` varchar(14)        NOT NULL,
+    `ZIP_CD`       int                NOT NULL,
+    `BASE_ADDR`    varchar(100)       NOT NULL,
+    `DETAIL_ADDR`  varchar(50)        NOT NULL,
+    `REG_DT`       timestamp          NOT NULL,
+    `USER_ID`      varchar(50)        NOT NULL
 );
 
 

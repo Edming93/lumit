@@ -19,7 +19,6 @@ public class AuthorizationChecker {
 
             if (authentication.getPrincipal() instanceof User) {
                 principalObj = (User) authentication.getPrincipal();
-
             }
 
             if (principalObj != null) {
@@ -29,11 +28,11 @@ public class AuthorizationChecker {
                 String menu = variables.get("menu");
 
                 // 나중에 공통으로 쓸 메뉴가 생길 경우 /common ~~으로 생성
-                if("common".equals(menu)) {
+                if ("common".equals(menu)) {
                     return true;
                 }
 
-                for(GrantedAuthority authority : principalObj.getAuthorities()) {
+                for (GrantedAuthority authority : principalObj.getAuthorities()) {
                     if (antPathMatcher.match(authority.getAuthority(), request.getServletPath())) {
 
                         result = true;

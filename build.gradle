@@ -34,7 +34,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
@@ -47,9 +47,9 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
     implementation 'com.google.code.gson:gson:2.8.9' // 최신 버전 확인 필요
-    
+
     implementation 'org.glassfish.jersey.core:jersey-server:3.0.0'
-	implementation 'org.glassfish.jersey.containers:jersey-container-servlet:3.0.0'
-	implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:3.0.0'
+    implementation 'org.glassfish.jersey.containers:jersey-container-servlet:3.0.0'
+    implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:3.0.0'
 }
 

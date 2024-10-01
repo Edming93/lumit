@@ -21,13 +21,11 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
-    private final UserDetailsService userDetailsService;
     private final OAuth2UserService oAuth2UserService;
     private static final String[] WHITE_LIST = {
-            "/", "/main", "/login/**", "/main/member/createUser", "/lumit/**", "/error/**", "/signup", "/api/opened/**"
+            "/favicon**", "/", "/main", "/login/**", "/main/member/createUser", "/lumit/**", "/error/**", "/signup", "/api/opened/**"
     };
-    @Autowired
-    private CustomAuthorizationManager customAuthorizationManager;
+    private final CustomAuthorizationManager customAuthorizationManager;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,7 +33,7 @@ public class WebSecurityConfig {
                         authorizeRequests.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().requestMatchers(WHITE_LIST).permitAll()
                                 .anyRequest().access(customAuthorizationManager)
                 )
-        		.csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable())
                 .formLogin((formLogin) ->
                         formLogin.loginPage("/login")
                                 .usernameParameter("username")

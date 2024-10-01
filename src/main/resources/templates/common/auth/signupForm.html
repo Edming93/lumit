@@ -5,53 +5,205 @@
         layout:decorate="~{fragments/layout}"
 >
 <head>
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <script>
-        function daumPostcode() {
-            new daum.Postcode({
-                oncomplete: function (data) {
 
-                    let addr = ''; //
-                    let extraAddr = '';
-
-                    if (data.userSelectedType === 'R') {
-                        addr = data.roadAddress;
-                    } else {
-                        addr = data.jibunAddress;
-                    }
-
-                    if (data.userSelectedType == 'R') {
-                        // 건물명이 있고, 공동주택일 경우 추가한다.
-                        if (data.buildingName !== '' && data.apartment === 'Y') {
-                            extraAddr += "(" + data.buildingName + ")";
-                        }
-                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-                        addr += " " + extraAddr
-                    }
-
-                    document.getElementById('zonecode').value = data.zonecode;
-                    document.getElementById("address").value = addr;
-                    document.getElementById("detailAddress").focus();
-                }
-            }).open();
-        }
-    </script>
     <th:block th:replace="~{fragments/head :: headFragment}"></th:block>
     <title>로그인 | LUMIT</title>
-    <script th:inline="javascript">
-        document.addEventListener("DOMContentLoaded", function () {
-            const agreeChildren = document.getElementsByClassName("agreementChild")
-            for (let i = 0; i < agreeChildren.length; i++) {
-                agreeChildren[i].addEventListener('click', function () {
-                    if (agreeChildren[i].checked === false) {
-                        const checkAll = document.getElementById("checkAll")
-                        checkAll.checked = false
-                    }
-                    isAll()
-                })
-            }
-        })
 
+</head>
+<div class="userFormBg" layout:fragment="content">
+    <p class="registerTitle">회원가입</p>
+    <form class="formContainer" id="form" action="/main/member/createUser" method="post"
+          th:object="${signUpDto}">
+        <input type="hidden" name="roleId" value="3">
+        <input type="hidden" th:field="*{socialId}">
+        <input type="hidden" id="fullphone" th:field="*{phone}">
+        <div class="formHeader">
+            <h3>기본정보</h3>
+            <div class="requiredDot">&#8226;&nbsp;필수 입력 사항</div>
+        </div>
+        <hr class="registerDivider">
+        <div>
+            <div class="inputContainer">
+                <div style="display: inline-flex">
+                    <label id="userId" th:for="userId">아이디</label>
+                    <div class="requiredDot">&nbsp;&#8226;</div>
+                </div>
+                <div class="formInput validContainer">
+                    <input id="id" type="text"
+                           th:field="*{userId}"
+                           placeholder="영문 소문자/숫자, 4~16자"
+                           style="background: transparent; width: 80%;">
+                    <div id="idCheckResult" class="resultBox">
+                    </div>
+                </div>
+            </div>
+            <div id="idResultText" class="vaildText"></div>
+        </div>
+
+        <div>
+            <div class="inputContainer">
+                <div style="display: inline-flex">
+                    <label for="password">비밀번호</label>
+                    <div class="requiredDot">&nbsp;&#8226;</div>
+                </div>
+                <div class="formInput validContainer">
+                    <input id="password" type="password" th:field="*{password}" name="password"
+                           placeholder="영문/숫자/특수문자 중 2가지 이상, 8~16자"
+                           autocomplete="current-password" style="background: transparent; width: 80%;"/>
+                    <div id="pwdCheckResult" class="resultBox">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="inputContainer">
+            <div style="display: inline-flex">
+                <label for="password">비밀번호 확인</label>
+                <div class="requiredDot">&nbsp;&#8226;</div>
+            </div>
+            <div class="formInput validContainer">
+                <input id="passwordCheck" style="background: transparent; width: 80%;"
+                       type="password"/>
+                <div id="samePwdResult" class="resultBox">
+                </div>
+            </div>
+
+        </div>
+        <div class="inputContainer">
+            <div style="display: inline-flex">
+                <label th:for="name">이름</label>
+                <div class="requiredDot">&nbsp;&#8226;</div>
+            </div>
+            <input id="name" type="text" th:field="*{name}" class="formInput" placeholder="이름을 입력해주세요.">
+            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError">Incorrect Data</p>
+        </div>
+
+        <fieldset class="radioContainer">
+            <div style="display: inline-flex">
+                <legend for="genderCd">성별</legend>
+                <div class="requiredDot">&nbsp;&#8226;</div>
+            </div>
+            <div class="radioInput">
+                <div>
+                    <input class="radioBtn" type="radio" th:field="*{genderCd}" value="2"
+                           checked="checked"/>
+                    <span>남자</span>
+                </div>
+                <div>
+                    <input class="radioBtn" type="radio" th:field="*{genderCd}" value="1"/>
+                    <span for="male">여자</span>
+                </div>
+            </div>
+            <p th:if="${#fields.hasErrors('genderCd')}" th:errors="*{genderCd}" class="fieldError">Incorrect
+                Data</p>
+        </fieldset>
+        <div class="inputContainer">
+            <div style="display: inline-flex">
+                <label>휴대폰</label>
+                <div class="requiredDot">&nbsp;&#8226;</div>
+            </div>
+            <div class="phoneInput">
+                <select id="phoneFirst">
+                    <option value="010">010</option>
+                    <option value="011">011</option>
+                    <option value="016">016</option>
+                    <option value="017">017</option>
+                    <option value="019">019</option>
+                </select>&nbsp;-&nbsp;
+                <input type="text" id="phoneSecond">&nbsp;-&nbsp;
+                <input type="text" id="phoneThird">
+            </div>
+            <!--            <input id="phone" type="tel" th:field="*{phone}" placeholder="연락처를 입력해주세요.">-->
+            <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="fieldError">Incorrect Data</p>
+        </div>
+        <div class="inputContainer">
+            <div style="display: inline-flex">
+                <label for="email">이메일</label>
+                <div class="requiredDot">&nbsp;&#8226;</div>
+            </div>
+            <input id="email" type="email" class="formInput" th:field="*{email}"
+                   placeholder="이메일 주소를 입력해주세요.">
+            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">Incorrect Data</p>
+        </div>
+        <div>
+            <div class="addressContainer">
+                <label for="address">주소</label>
+                <div class="addressForm">
+                    <input type="hidden" id="fullAddress" th:field="*{address}">
+                    <div style="display: flex; flex-direction: row">
+                        <input
+                                type="text"
+                                placeholder=""
+                                disabled
+                                id="zonecode"
+                        />
+                        <button style="cursor: pointer" type="button" id="searchBtn">
+                            우편번호
+                        </button>
+                    </div>
+                    <input
+                            type="text"
+                            disabled
+                            id="address"
+                            placeholder="기본 주소"
+                    />
+                    <input
+                            type="text"
+                            id="detailAddress"
+                            placeholder="상세 주소"
+                    />
+                </div>
+            </div>
+            <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">Incorrect Data</p>
+            <div class="checkBoxContainer">
+                <input id="defaultDeliveryAddr" th:field="*{defaultDeliveryAddr}"
+                       type="checkbox"><span>기본 배송지로 저장</span>
+            </div>
+        </div>
+        <div class="agreement">
+            <h3>약관동의</h3>
+            <hr class="registerDivider">
+            <div class="agreementCheck" id="allCheck">
+                <input type="checkbox" id="checkAll">
+                <span>모든 약관에 동의합니다. (필수 및 선택 정보)</span>
+            </div>
+            <hr class="insideDivider">
+            <div class="agreementCheck">
+                <input type="checkbox" class="agreementChild requiredCheck">
+                <span>이용약관(필수)</span>
+                <a class="agreeInfo">내용보기</a>
+            </div>
+            <div class="agreementCheck ">
+                <input type="checkbox" class="agreementChild requiredCheck">
+                <span>개인정보 수집 및 이용 안내(필수)</span>
+                <a class="agreeInfo">내용보기</a>
+            </div>
+            <div class="agreementCheck ">
+                <input type="checkbox" class="agreementChild">
+                <span>SMS 수신 동의(선택)</span>
+            </div>
+            <div class="agreementCheck ">
+                <input type="checkbox" class="agreementChild">
+                <span>이메일 수신 동의(선택)</span>
+            </div>
+        </div>
+        <hr>
+        <div class="btnContainer">
+            <button class="goBackBtn" type="button" onclick="history.back()">이전으로</button>
+            <button class="submitBtn" id="submitBtn" type="button">회원가입</button>
+        </div>
+        <a class="helpLink" th:href="@{/login}">이미 가입하셨나요?</a>
+        <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}">
+    </form>
+    <script th:inline="javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script th:inline="javascript">
+        let message = [[${message}]];
+        if (message) {
+            alert(message);
+        }
+        let errorMessage = [[${errorMessage}]];
+        if (errorMessage) {
+            alert(errorMessage);
+        }
         const isAll = () => {
             const agreeChildren = document.getElementsByClassName("agreementChild")
             let count = 0
@@ -64,14 +216,6 @@
                 const checkAll = document.getElementById("checkAll")
                 checkAll.checked = true;
             }
-        }
-        let message = [[${message}]];
-        if (message) {
-            alert(message);
-        }
-        let errorMessage = [[${errorMessage}]];
-        if (errorMessage) {
-            alert(errorMessage);
         }
 
         function checkPwd() {
@@ -119,7 +263,7 @@
             const zonecode = document.getElementById("zonecode")
             const addr = document.getElementById("address")
             const detail = document.getElementById("detailAddress")
-            dest.value = `(${zonecode.value}) ${addr.value} ${detail.value}`
+            dest.value = `${zonecode.value}, ${addr.value}, ${detail.value}`
             console.log(dest.value)
         }
 
@@ -232,192 +376,69 @@
                 return true;
             }
         }
+
+        function daumPostcode() {
+            new daum.Postcode({
+                oncomplete: function (data) {
+
+                    let addr = ''; //
+                    let extraAddr = '';
+
+                    if (data.userSelectedType === 'R') {
+                        addr = data.roadAddress;
+                    } else {
+                        addr = data.jibunAddress;
+                    }
+
+                    if (data.userSelectedType == 'R') {
+                        // 건물명이 있고, 공동주택일 경우 추가한다.
+                        if (data.buildingName !== '' && data.apartment === 'Y') {
+                            extraAddr += "(" + data.buildingName + ")";
+                        }
+                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                        addr += " " + extraAddr
+                    }
+
+                    document.getElementById('zonecode').value = data.zonecode;
+                    document.getElementById("address").value = addr;
+                    document.getElementById("detailAddress").focus();
+                }
+            }).open();
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const agreeChildren = document.getElementsByClassName("agreementChild")
+            for (let i = 0; i < agreeChildren.length; i++) {
+                agreeChildren[i].addEventListener('click', function () {
+                    if (agreeChildren[i].checked === false) {
+                        const checkAll = document.getElementById("checkAll")
+                        checkAll.checked = false
+                    }
+                    isAll()
+                })
+            }
+            const id = document.getElementById("id");
+            id.addEventListener("input", idDuplicateCheck);
+            const pwd = document.getElementById("password");
+            pwd.addEventListener("input", pwdValidate);
+            const pwdCheck = document.getElementById("passwordCheck");
+            pwdCheck.addEventListener("blur", checkPwd);
+            const phoneSecond = document.getElementById("phoneSecond");
+            phoneSecond.addEventListener("input", checkPhone);
+            const phoneThird = document.getElementById("phoneThird");
+            phoneThird.addEventListener("input", checkPhone);
+            const searchBtn = document.getElementById("searchBtn");
+            searchBtn.addEventListener("click", daumPostcode);
+            const detailAddr = document.getElementById("detailAddress");
+            detailAddr.addEventListener("change", getFullAddr);
+            const allCheck = document.getElementById("allCheck");
+            allCheck.addEventListener("click", toggleAgree);
+            const checkAll = document.getElementById("checkAll");
+            checkAll.addEventListener("click", toggleAgree);
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.addEventListener("click", formSubmit);
+        })
+
     </script>
-</head>
-<div class="userFormBg" layout:fragment="content">
-    <p class="registerTitle">회원가입</p>
-    <form class="formContainer" id="form" action="/main/member/createUser" method="post"
-          th:object="${tbLogin}">
-        <input type="hidden" name="roleId" value="3">
-        <input type="hidden" th:field="*{socialId}">
-        <input type="hidden" id="fullphone" th:field="*{phone}">
-        <div class="formHeader">
-            <h3>기본정보</h3>
-            <div class="requiredDot">&#8226;&nbsp;필수 입력 사항</div>
-        </div>
-        <hr class="registerDivider">
-        <div>
-            <div class="inputContainer">
-                <div style="display: inline-flex">
-                    <label id="userId" th:for="userId">아이디</label>
-                    <div class="requiredDot">&nbsp;&#8226;</div>
-                </div>
-                <div class="formInput validContainer">
-                    <input id="id" type="text" oninput="idDuplicateCheck()"
-                           th:field="*{userId}"
-                           placeholder="영문 소문자/숫자, 4~16자"
-                           style="background: transparent; width: 80%;">
-                    <div id="idCheckResult" class="resultBox">
-                    </div>
-                </div>
-            </div>
-            <div id="idResultText" class="vaildText"></div>
-        </div>
-
-        <div>
-            <div class="inputContainer">
-                <div style="display: inline-flex">
-                    <label for="password">비밀번호</label>
-                    <div class="requiredDot">&nbsp;&#8226;</div>
-                </div>
-                <div class="formInput validContainer">
-                    <input id="password" type="password" oninput="pwdValidate()" th:field="*{password}" name="password"
-                           placeholder="영문/숫자/특수문자 중 2가지 이상, 8~16자"
-                           autocomplete="current-password" style="background: transparent; width: 80%;"/>
-                    <div id="pwdCheckResult" class="resultBox">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="inputContainer">
-            <div style="display: inline-flex">
-                <label for="password">비밀번호 확인</label>
-                <div class="requiredDot">&nbsp;&#8226;</div>
-            </div>
-            <div class="formInput validContainer">
-                <input id="passwordCheck" onblur="checkPwd()" style="background: transparent; width: 80%;"
-                       type="password"/>
-                <div id="samePwdResult" class="resultBox">
-                </div>
-            </div>
-
-        </div>
-        <div class="inputContainer">
-            <div style="display: inline-flex">
-                <label th:for="name">이름</label>
-                <div class="requiredDot">&nbsp;&#8226;</div>
-            </div>
-            <input id="name" type="text" th:field="*{name}" class="formInput" placeholder="이름을 입력해주세요.">
-            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError">Incorrect Data</p>
-        </div>
-
-        <fieldset class="radioContainer">
-            <div style="display: inline-flex">
-                <legend for="genderCd">성별</legend>
-                <div class="requiredDot">&nbsp;&#8226;</div>
-            </div>
-            <div class="radioInput">
-                <div>
-                    <input class="radioBtn" type="radio" th:field="*{genderCd}" value="2"
-                           checked="checked"/>
-                    <span>남자</span>
-                </div>
-                <div>
-                    <input class="radioBtn" type="radio" th:field="*{genderCd}" value="1"/>
-                    <span for="male">여자</span>
-                </div>
-            </div>
-            <p th:if="${#fields.hasErrors('genderCd')}" th:errors="*{genderCd}" class="fieldError">Incorrect
-                Data</p>
-        </fieldset>
-        <div class="inputContainer">
-            <div style="display: inline-flex">
-                <label>휴대폰</label>
-                <div class="requiredDot">&nbsp;&#8226;</div>
-            </div>
-            <div class="phoneInput">
-                <select id="phoneFirst">
-                    <option value="010">010</option>
-                    <option value="011">011</option>
-                    <option value="016">016</option>
-                    <option value="017">017</option>
-                    <option value="019">019</option>
-                </select>&nbsp;-&nbsp;
-                <input type="text" id="phoneSecond" oninput={checkPhone(event)}>&nbsp;-&nbsp;
-                <input type="text" id="phoneThird" oninput={checkPhone(event)}>
-            </div>
-            <!--            <input id="phone" type="tel" th:field="*{phone}" placeholder="연락처를 입력해주세요.">-->
-            <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="fieldError">Incorrect Data</p>
-        </div>
-        <div class="inputContainer">
-            <div style="display: inline-flex">
-                <label for="email">이메일</label>
-                <div class="requiredDot">&nbsp;&#8226;</div>
-            </div>
-            <input id="email" type="email" class="formInput" th:field="*{email}"
-                   placeholder="이메일 주소를 입력해주세요.">
-            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">Incorrect Data</p>
-        </div>
-        <div>
-            <div class="addressContainer">
-                <label for="address">주소</label>
-                <div class="addressForm">
-                    <input type="hidden" id="fullAddress" th:field="*{address}">
-                    <div style="display: flex; flex-direction: row">
-                        <input
-                                type="text"
-                                placeholder=""
-                                disabled
-                                id="zonecode"
-                        />
-                        <button onclick="daumPostcode()" style="cursor: pointer" type="button" id="searchBtn">
-                            우편번호
-                        </button>
-                    </div>
-                    <input
-                            type="text"
-                            disabled
-                            id="address"
-                            placeholder="기본 주소"
-                    />
-                    <input
-                            type="text"
-                            id="detailAddress"
-                            placeholder="상세 주소"
-                            onchange="getFullAddr()"
-                    />
-                </div>
-            </div>
-            <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">Incorrect Data</p>
-            <div class="checkBoxContainer">
-                <input id="defaultDeliveryAddr" type="checkbox"><span>기본 배송지로 저장</span>
-            </div>
-        </div>
-        <div class="agreement">
-            <h3>약관동의</h3>
-            <hr class="registerDivider">
-            <div class="agreementCheck" id="allCheck" onclick="toggleAgree()">
-                <input type="checkbox" onclick="toggleAgree()" id="checkAll">
-                <span>모든 약관에 동의합니다. (필수 및 선택 정보)</span>
-            </div>
-            <hr class="insideDivider">
-            <div class="agreementCheck">
-                <input type="checkbox" class="agreementChild requiredCheck">
-                <span>이용약관(필수)</span>
-                <a class="agreeInfo">내용보기</a>
-            </div>
-            <div class="agreementCheck ">
-                <input type="checkbox" class="agreementChild requiredCheck">
-                <span>개인정보 수집 및 이용 안내(필수)</span>
-                <a class="agreeInfo">내용보기</a>
-            </div>
-            <div class="agreementCheck ">
-                <input type="checkbox" class="agreementChild">
-                <span>SMS 수신 동의(선택)</span>
-            </div>
-            <div class="agreementCheck ">
-                <input type="checkbox" class="agreementChild">
-                <span>이메일 수신 동의(선택)</span>
-            </div>
-        </div>
-        <hr>
-        <div class="btnContainer">
-            <button class="goBackBtn" type="button" onclick="history.back()">이전으로</button>
-            <button class="submitBtn" onclick="formSubmit()" type="button">회원가입</button>
-        </div>
-        <a class="helpLink" th:href="@{/login}">이미 가입하셨나요?</a>
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-    </form>
 </div>
-
 </html>

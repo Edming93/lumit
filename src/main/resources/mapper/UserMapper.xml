@@ -75,4 +75,23 @@
             MOD_DT=now()
         WHERE SOCIAL_ID = #{socialId};
     </update>
+
+    <insert id="insertAddress" parameterType="com.lumit.shop.common.model.TbAddress">
+        INSERT INTO TB_ADDRESS (ADDR_NAME, RECEIVER, PHONE_NUMBER, ZIP_CD, BASE_ADDR, DETAIL_ADDR, REG_DT, USER_ID)
+        VALUES (#{addrName}, #{receiver}, #{phoneNumber}, #{zipCd}, #{baseAddr}, #{detailAddr}, now(), #{userId});
+    </insert>
+
+    <select id="selectAddressListByUserId" parameterType="java.lang.String"
+            resultType="com.lumit.shop.common.model.TbAddress">
+        SELECT *
+        FROM TB_ADDRESS
+        WHERE USER_ID = #{userId}
+        ORDER BY `REG_DT` DESC
+    </select>
+
+    <update id="updateDefaultAddr" parameterType="com.lumit.shop.common.model.TbLogin">
+        UPDATE TB_LOGIN
+        SET DEFAULT_ADDR=#{defaultAddr}
+        WHERE USER_ID = #{userId}
+    </update>
 </mapper>

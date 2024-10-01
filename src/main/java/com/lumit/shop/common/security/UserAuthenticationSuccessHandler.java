@@ -2,7 +2,6 @@ package com.lumit.shop.common.security;
 
 import com.lumit.shop.common.model.TbMenu;
 import com.lumit.shop.common.model.User;
-import com.lumit.shop.common.security.social.CustomOauth2UserDetails;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,7 +9,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.thymeleaf.util.StringUtils;
 
@@ -24,13 +22,9 @@ public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         User user = null;
-        if (authentication.getPrincipal() instanceof User) {
-            user = (User) authentication.getPrincipal();
-        } else if (authentication.getPrincipal() instanceof OAuth2User) {
-            CustomOauth2UserDetails details = (CustomOauth2UserDetails) authentication.getPrincipal();
-            user = (User) userDetailsService.loadUserByUsername(details.getUsername());
-        }
 
+        System.out.println(authentication.getPrincipal());
+        user = (User) authentication.getPrincipal();
 //        for (GrantedAuthority authority : user.getAuthorities()) {
 //            System.out.println("Authority: " + authority.getAuthority());
 //        }

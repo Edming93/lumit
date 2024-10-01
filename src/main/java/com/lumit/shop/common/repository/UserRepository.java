@@ -1,7 +1,9 @@
 package com.lumit.shop.common.repository;
 
+import java.math.BigInteger;
 import java.util.List;
 
+import com.lumit.shop.common.model.TbAddress;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -26,4 +28,10 @@ public interface UserRepository {
     User selectUserBySocialId(String socialId);
 
     int updateSocialUser(TbLogin tbLogin);
+
+    int insertAddress(TbAddress tbAddress);
+
+    List<TbAddress> selectAddressListByUserId(String userId);
+
+    int updateDefaultAddr(TbLogin tbLogin);
 }

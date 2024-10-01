@@ -1,5 +1,6 @@
 package com.lumit.shop.common.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
@@ -10,9 +11,10 @@ import org.springframework.stereotype.Component;
 import java.util.function.Supplier;
 
 @Component
+@RequiredArgsConstructor
 public class CustomAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
-    @Autowired
-    private AuthorizationChecker authorizationChecker;
+
+    private final AuthorizationChecker authorizationChecker;
 
     @Override
     public void verify(Supplier<Authentication> authentication, RequestAuthorizationContext object) {

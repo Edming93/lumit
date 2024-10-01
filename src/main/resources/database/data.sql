@@ -6,11 +6,11 @@ VALUES (1, 'SUPER_ADMIN', 'R100', '슈퍼관리자', 'admin', '2024-07-17 10:32:
 
 REPLACE INTO `TB_LOGIN`
 VALUES ('admin', 2, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'ssdd', '1', 'sadf@dfa.com',
-        '01030303848', 'dfjaksdf', NULL, 'admin', now(), 'admin', now()),
+        '01030303848', 'dfjaksdf', NULL, NULL, 'admin', now(), 'admin', now()),
        ('user', 3, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'asdf', '1', 'asdf@asdf.asd',
-        '01012341234', 'asdf', NULL, 'admin', now(), 'admin', now()),
+        '01012341234', 'asdf', NULL, NULL, 'admin', now(), 'admin', now()),
        ('dorong', 1, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'aaaa', '1', 'aaaa@aaa.com',
-        '01000000000', 'asdf', NULL, 'admin', now(), 'admin', now());
+        '01000000000', 'asdf', NULL, NULL, 'admin', now(), 'admin', now());
 
 REPLACE INTO `TB_MENU`
 VALUES ('M100', 'M100', '메인', '/main/**', '', '', 0, NULL),
@@ -18,6 +18,7 @@ VALUES ('M100', 'M100', '메인', '/main/**', '', '', 0, NULL),
        ('M102', 'M100', '스튜디오', '/main/studio/**', 'list', '', 0, NULL),
        ('M103', 'M100', '질문게시판', '/main/board/M209/**', 'list', '', 0, NULL),
        ('M104', 'M100', '공지사항', '/main/board/M208/**', 'list', '', 0, NULL),
+       ('M105', 'M100', '회원정보', '/main/member/**', '', '', 0, NULL),
        ('M200', 'M200', '메인', '/admin/**', '', '', 0, '<i class=\"fa-solid fa-house\"></i>'),
        ('M201', 'M200', '상품관리', '/admin/product/**', 'list', '', 1, '<i class=\"fa-solid fa-shirt\"></i>'),
        ('M202', 'M200', '회원관리', '/admin/member/**', 'list', '', 1, '<i class=\"fa-solid fa-user\"></i>'),
@@ -71,4 +72,5 @@ VALUES (1, 'M100', 'N'),
        (3, 'M101', 'N'),
        (3, 'M102', 'N'),
        (3, 'M103', 'N'),
-       (3, 'M104', 'N');
+       (3, 'M104', 'N'),
+       (3, 'M105', 'N');

@@ -1,9 +1,12 @@
 package com.lumit.shop.common.controller;
 
 import com.lumit.shop.common.dto.ResponseDto;
+import com.lumit.shop.common.model.TbAddress;
 import com.lumit.shop.common.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -25,5 +28,11 @@ public class APIController {
         } else {
             return new ResponseDto<>("사용가능한 아이디입니다.", true);
         }
+    }
+
+    @GetMapping(value = "/opened/addressList")
+    public @ResponseBody ResponseDto<?> addressList(@RequestParam(value = "userId") String userId) {
+        List<TbAddress> addressList = userService.selectAddressListByUserId(userId);
+        return new ResponseDto<>("", addressList);
     }
 }

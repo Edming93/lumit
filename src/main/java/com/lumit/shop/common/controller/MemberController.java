@@ -1,6 +1,7 @@
 package com.lumit.shop.common.controller;
 
 import com.lumit.shop.common.constants.ServiceCode;
+import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.security.social.CustomOauth2UserDetails;
@@ -46,10 +47,9 @@ public class MemberController {
 
     @GetMapping("/createUser")
     public String getSignUp(Principal principal, HttpSession session, Model model) {
-        TbLogin tbLogin = new TbLogin();
+        SignUpDto signUpDto = new SignUpDto();
         if (principal != null) {
             TbLogin user = userService.selectByUserId(principal.getName());
-
             if (user != null) {
                 System.out.println(user);
                 user.setPhone("");
@@ -57,33 +57,34 @@ public class MemberController {
                 user.setUserId("");
                 user.setPassword("");
                 user.setAddress("");
-                model.addAttribute("tbLogin", user);
+                signUpDto = SignUpDto.of(user);
+                model.addAttribute("signUpDto", signUpDto);
                 model.addAttribute("message", "소셜 가입을 완료하기 위해 추가정보를 입력합니다.");
             } else {
-                model.addAttribute("tbLogin", tbLogin);
+                model.addAttribute("signUpDto", signUpDto);
             }
         } else {
-            tbLogin.setPhone("");
-            tbLogin.setGenderCd("");
-            tbLogin.setUserId("");
-            tbLogin.setPassword("");
-            tbLogin.setAddress("");
-            model.addAttribute("tbLogin", tbLogin);
+            signUpDto.setPhone("");
+            signUpDto.setGenderCd("");
+            signUpDto.setUserId("");
+            signUpDto.setPassword("");
+            signUpDto.setAddress("");
+            model.addAttribute("signUpDto", signUpDto);
         }
         return SIGNUP_FORM;
     }
 
     @PostMapping("/createUser")
-    public String postSignUp(@Valid @ModelAttribute("tbLogin") TbLogin tbLogin, BindingResult bindingResult, Model model, HttpSession session) {
+    public String postSignUp(@Valid @ModelAttribute("signUpDto") SignUpDto signUpDto, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return SIGNUP_FORM;
         }
-        tbLogin.setSocialId((String) session.getAttribute("social_id"));
+        signUpDto.setSocialId((String) session.getAttribute("social_id"));
         ServiceCode sc;
-        if (tbLogin.getSocialId() != null) {
-            sc = userService.updateSocialUser(tbLogin);
+        if (signUpDto.getSocialId() != null) {
+            sc = userService.updateSocialUser(signUpDto);
         } else {
-            sc = userService.insertUserControl(tbLogin);
+            sc = userService.insertUserControl(signUpDto);
         }
         if (sc == ServiceCode.SUCCESS) {
             return "redirect:/";
@@ -96,7 +97,7 @@ public class MemberController {
         } else {
             model.addAttribute("errorMessage", "알 수 없는 오류가 발생하였습니다.");
         }
-        model.addAttribute("tbLogin", new TbLogin());
+        model.addAttribute("signUpDto", new SignUpDto());
         return SIGNUP_FORM;
     }
 }

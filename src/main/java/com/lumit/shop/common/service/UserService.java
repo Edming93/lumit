@@ -1,6 +1,8 @@
 package com.lumit.shop.common.service;
 
 import com.lumit.shop.common.constants.ServiceCode;
+import com.lumit.shop.common.dto.SignUpDto;
+import com.lumit.shop.common.model.TbAddress;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 
@@ -19,8 +21,13 @@ public interface UserService {
 
     public boolean isIdDuplicated(String id);
 
-    public ServiceCode insertUserControl(TbLogin tbLogin);
+    public ServiceCode insertUserControl(SignUpDto signUpDto);
 
-    public ServiceCode updateSocialUser(TbLogin tbLogin);
+    public ServiceCode updateSocialUser(SignUpDto signUpDto);
 
+    public int insertAddress(TbAddress tbAddress);
+
+    public int updateDefaultAddr(TbLogin tbLogin);
+
+    public List<TbAddress> selectAddressListByUserId(String userId);
 }
