@@ -2,9 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.lumit.shop.common.repository.BoardRepository">
+	<sql id="searchWhere">
+		WHERE 1=1
+		<if test="title != '' and title neq null">
+			AND TITLE = #{title}
+		</if>
+		<if test="content != '' and content neq null">
+			AND CONTENT = #{content}
+		</if>
+	</sql>
     <select id="selectBoardList" resultType="com.lumit.shop.common.model.TbBoard">
         SELECT *
         FROM TB_BOARD
+        <include refid="searchWhere"></include>
+        ORDER BY REG_DT DESC
     </select>
 
     <insert id="insertBoard" parameterType="com.lumit.shop.common.model.TbBoard" useGeneratedKeys="true" keyProperty="boardId">

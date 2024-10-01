@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.model.TbBoard;
 import com.lumit.shop.common.repository.BoardRepository;
 import com.lumit.shop.common.repository.MenuRepository;
@@ -20,8 +21,8 @@ public class BoardServiceImpl implements BoardService {
 	private final BoardRepository boardRepository;
 	
 	@Override
-	public List<TbBoard> selectBoardList() {
-		return boardRepository.selectBoardList();
+	public List<TbBoard> selectBoardList(SearchDto search) {
+		return boardRepository.selectBoardList(search);
 	}
 	@Override
 	public Map<String,Object> insertBoard(String menuCd, TbBoard board) {

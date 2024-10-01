@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lumit.shop.board.service.BoardService;
+import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.model.TbBoard;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,10 +29,11 @@ public class BoardController {
 
 
     @GetMapping("/{menuCd}/list")
-    public String selectBoardList(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd) {
+    public String selectBoardList(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd,SearchDto search) {
     	map.addAttribute("menuCd", menuCd);
     	map.addAttribute("request", request);
-    	map.addAttribute("boardList",boardService.selectBoardList());
+    	map.addAttribute("title", search.getTitle());
+    	map.addAttribute("boardList",boardService.selectBoardList(search));
         return BOARD_PATH + "/list";
     }
 

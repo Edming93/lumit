@@ -21,7 +21,7 @@
     <div id="container">
 
 		<div id="btnArea">
-			<input type="text" placeholder="게시글 제목 검색" class="comm_inp size300">
+			<input type="text" id="searchInp" placeholder="게시글 제목 검색" th:value="${title}" class="comm_inp size300">
             <button type="button" id="registBtn" class="commBtn mgl10">글쓰기</button>
         </div>
         
@@ -56,8 +56,21 @@
 <script th:inline="javascript">
 	document.addEventListener("DOMContentLoaded", function () {
 		let menuCd = [[${menuCd}]];
+		
 		document.getElementById("registBtn").addEventListener("click",function() {
 			moveUrl("/"+siteId+"/board/"+menuCd+"/regist");
+		});
+		
+		document.getElementById("searchInp").addEventListener('keydown', function(event) {
+			if(event.key === 'Enter') {
+				const query = event.target.value;
+				
+				let params = {};
+				
+				params['title'] = encodeURIComponent(query);
+				
+				moveUrl("/"+siteId+"/board/"+menuCd+"/list",params);
+			}
 		});
 	});
 </script>
