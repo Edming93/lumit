@@ -31,6 +31,7 @@ public class BoardController {
     public String selectBoardList(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd) {
     	map.addAttribute("menuCd", menuCd);
     	map.addAttribute("request", request);
+    	map.addAttribute("boardList",boardService.selectBoardList());
         return BOARD_PATH + "/list";
     }
 
@@ -44,7 +45,6 @@ public class BoardController {
     @ResponseBody
     @PostMapping("/{menuCd}/regist")
     public  ResponseEntity<Map<String,Object>> insertBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestBody TbBoard board) {
-    	System.out.println(board);
     	return new ResponseEntity<>(boardService.insertBoard(menuCd,board),HttpStatus.OK);
     }
 
