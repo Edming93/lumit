@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 drop table if exists TB_BOARD cascade;
 drop table if exists TB_CARTS cascade;
 drop table if exists TB_CATEGORY cascade;
@@ -25,26 +27,28 @@ drop table if exists TB_ROLE cascade;
 drop table if exists TB_ROLE_MENU cascade;
 drop table if exists TB_TAG cascade;
 drop table if exists TB_TAG_MAP cascade;
+drop table if exists TB_ADDRESS cascade;
+SET FOREIGN_KEY_CHECKS = 1;
 
 create table if not exists TB_BOARD
 (
-    BOARD_ID    int           AUTO_INCREMENT  not null comment 'AUTO_INCREMENT'
+    BOARD_ID   int AUTO_INCREMENT not null comment 'AUTO_INCREMENT'
         primary key,
-    MENU_CD     varchar(4)    not null comment '메뉴 코드',
-    MENU_DV_CD  varchar(4)    null comment '메뉴구분코드',
-    TITLE       varchar(255)  not null,
-    CONTENT     text           null,
-    PASSWORD    varchar(50)   null,
-    TOP_FIX     varchar(2)    null,
-    USE_YN      varchar(2)    not null comment '사용여부',
-    DEL_YN      varchar(2)    not null comment '삭제여부',
-    RPLY_YN     varchar(2)    null comment '회신여부',
-    FILE_YN     varchar(2)    not null,
-    VIEW_COUNT  int           DEFAULT 0	null,
-    REG_ID      varchar(50)   not null,
-    REG_DT      timestamp     not null,
-    MOD_ID      varchar(50)   not null,
-    MOD_DT      timestamp     not null
+    MENU_CD    varchar(4)         not null comment '메뉴 코드',
+    MENU_DV_CD varchar(4)         null comment '메뉴구분코드',
+    TITLE      varchar(255)       not null,
+    CONTENT    text               null,
+    PASSWORD   varchar(50)        null,
+    TOP_FIX    varchar(2)         null,
+    USE_YN     varchar(2)         not null comment '사용여부',
+    DEL_YN     varchar(2)         not null comment '삭제여부',
+    RPLY_YN    varchar(2)         null comment '회신여부',
+    FILE_YN    varchar(2)         not null,
+    VIEW_COUNT int DEFAULT 0      null,
+    REG_ID     varchar(50)        not null,
+    REG_DT     timestamp          not null,
+    MOD_ID     varchar(50)        not null,
+    MOD_DT     timestamp          not null
 );
 
 create table if not exists TB_CARTS
@@ -199,8 +203,7 @@ create table if not exists TB_LOGIN_HIS
 
 create table if not exists TB_MENU
 (
-    MENU_CD          varchar(8)           not null
-        primary key,
+    MENU_CD          varchar(8)           not null primary key,
     MENU_GROUP_CD    varchar(8)           not null,
     MENU_NAME        varchar(30)          not null,
     MENU_URL         varchar(100)         not null,
@@ -369,3 +372,250 @@ create table if not exists TB_TAG_MAP
     PRODUCT_ID int    not null comment 'AUTO_INCREMENT',
     TAG_ID     bigint not null
 );
+
+CREATE TABLE `TB_ADDRESS`
+(
+    `ADDR_ID`      int          NOT NULL primary key,
+    `ADDR_NAME`    varchar(100) NOT NULL,
+    `RECIEVER`     varchar(50)  NOT NULL,
+    `PHONE_NUMBER` varchar(14)  NOT NULL,
+    `ZIP_CD`       int          NOT NULL,
+    `BASE_ADDR`    varchar(100) NOT NULL,
+    `DETAIL_ADDR`  varchar(50)  NOT NULL,
+    `USER_ID`      varchar(50)  NOT NULL
+);
+
+
+ALTER TABLE `TB_LOGIN`
+    ADD CONSTRAINT `FK_TB_ROLE_TO_TB_LOGIN_1` FOREIGN KEY (
+                                                           `ROLE_ID`
+        )
+        REFERENCES `TB_ROLE` (
+                              `ROLE_ID`
+            );
+
+ALTER TABLE `TB_LIKE`
+    ADD CONSTRAINT `FK_TB_LOGIN_TO_TB_LIKE_1` FOREIGN KEY (
+                                                           `USER_ID`
+        )
+        REFERENCES `TB_LOGIN` (
+                               `USER_ID`
+            );
+
+ALTER TABLE `TB_TAG`
+    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_TAG_1` FOREIGN KEY (
+                                                            `PRODUCT_ID`
+        )
+        REFERENCES `TB_PRODUCT` (
+                                 `PRODUCT_ID`
+            );
+
+ALTER TABLE `TB_ROLE_MENU`
+    ADD CONSTRAINT `FK_TB_MENU_TO_TB_ROLE_MENU_1` FOREIGN KEY (
+                                                               `MENU_CD`
+        )
+        REFERENCES `TB_MENU` (
+                              `MENU_CD`
+            );
+
+ALTER TABLE `TB_COLOR`
+    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_COLOR_1` FOREIGN KEY (
+                                                              `PRODUCT_ID`
+        )
+        REFERENCES `TB_PRODUCT` (
+                                 `PRODUCT_ID`
+            );
+
+ALTER TABLE `TB_COUPON`
+    ADD CONSTRAINT `FK_TB_LOGIN_TO_TB_COUPON_1` FOREIGN KEY (
+                                                             `USER_ID`
+        )
+        REFERENCES `TB_LOGIN` (
+                               `USER_ID`
+            );
+
+ALTER TABLE `TB_CARTS`
+    ADD CONSTRAINT `FK_TB_LOGIN_TO_TB_CARTS_1` FOREIGN KEY (
+                                                            `USER_ID`
+        )
+        REFERENCES `TB_LOGIN` (
+                               `USER_ID`
+            );
+
+ALTER TABLE `TB_CARTS`
+    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_CARTS_1` FOREIGN KEY (
+                                                              `PRODUCT_ID`
+        )
+        REFERENCES `TB_PRODUCT` (
+                                 `PRODUCT_ID`
+            );
+
+ALTER TABLE `TB_CARTS`
+    ADD CONSTRAINT `FK_TB_PRODUCT_OPTION_TO_TB_CARTS_1` FOREIGN KEY (
+                                                                     `OPTION_ID`
+        )
+        REFERENCES `TB_PRODUCT_OPTION` (
+                                        `OPTION_ID`
+            );
+
+ALTER TABLE `TB_PRODUCT_OPTION`
+    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_PRODUCT_OPTION_1` FOREIGN KEY (
+                                                                       `PRODUCT_ID`
+        )
+        REFERENCES `TB_PRODUCT` (
+                                 `PRODUCT_ID`
+            );
+
+ALTER TABLE `TB_FILE`
+    ADD CONSTRAINT `FK_TB_BOARD_TO_TB_FILE_1` FOREIGN KEY (
+                                                           `BOARD_ID`
+        )
+        REFERENCES `TB_BOARD` (
+                               `BOARD_ID`
+            );
+
+ALTER TABLE `TB_ORDER`
+    ADD CONSTRAINT `FK_TB_LOGIN_TO_TB_ORDER_1` FOREIGN KEY (
+                                                            `USER_ID`
+        )
+        REFERENCES `TB_LOGIN` (
+                               `USER_ID`
+            );
+
+ALTER TABLE `TB_ORDER`
+    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_ORDER_1` FOREIGN KEY (
+                                                              `PRODUCT_ID`
+        )
+        REFERENCES `TB_PRODUCT` (
+                                 `PRODUCT_ID`
+            );
+
+ALTER TABLE `TB_ORDER`
+    ADD CONSTRAINT `FK_TB_COUPON_TO_TB_ORDER_1` FOREIGN KEY (
+                                                             `COUPON_ID`
+        )
+        REFERENCES `TB_COUPON` (
+                                `COUPON_ID`
+            );
+
+ALTER TABLE `TB_ORDER`
+    ADD CONSTRAINT `FK_TB_PAYMENT_PLAN_TO_TB_ORDER_1` FOREIGN KEY (
+                                                                   `PP_ID`
+        )
+        REFERENCES `TB_PAYMENT_PLAN` (
+                                      `PP_ID`
+            );
+
+ALTER TABLE `TB_REVIEW`
+    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_REVIEW_1` FOREIGN KEY (
+                                                               `PRODUCT_ID`
+        )
+        REFERENCES `TB_PRODUCT` (
+                                 `PRODUCT_ID`
+            );
+
+ALTER TABLE `TB_REVIEW`
+    ADD CONSTRAINT `FK_TB_LOGIN_TO_TB_REVIEW_1` FOREIGN KEY (
+                                                             `USER_ID`
+        )
+        REFERENCES `TB_LOGIN` (
+                               `USER_ID`
+            );
+
+ALTER TABLE `TB_ORDER_DETAIL`
+    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_ORDER_DETAIL_1` FOREIGN KEY (
+                                                                     `PRODUCT_ID`
+        )
+        REFERENCES `TB_PRODUCT` (
+                                 `PRODUCT_ID`
+            );
+
+ALTER TABLE `TB_ORDER_DETAIL`
+    ADD CONSTRAINT `FK_TB_ORDER_TO_TB_ORDER_DETAIL_1` FOREIGN KEY (
+                                                                   `ORDER_ID`
+        )
+        REFERENCES `TB_ORDER` (
+                               `ORDER_ID`
+            );
+
+ALTER TABLE `TB_DELIVERY`
+    ADD CONSTRAINT `FK_TB_INVOICE_TO_TB_DELIVERY_1` FOREIGN KEY (
+                                                                 `INVOICE_ID`
+        )
+        REFERENCES `TB_INVOICE` (
+                                 `INVOICE_ID`
+            );
+
+ALTER TABLE `TB_INVOICE`
+    ADD CONSTRAINT `FK_TB_ORDER_TO_TB_INVOICE_1` FOREIGN KEY (
+                                                              `ORDER_ID`
+        )
+        REFERENCES `TB_ORDER` (
+                               `ORDER_ID`
+            );
+
+
+ALTER TABLE `TB_COUPON_USE_HIS`
+    ADD CONSTRAINT `FK_TB_COUPON_TO_TB_COUPON_USE_HIS_1` FOREIGN KEY (
+                                                                      `COUPON_ID`
+        )
+        REFERENCES `TB_COUPON` (
+                                `COUPON_ID`
+            );
+
+ALTER TABLE `TB_PRODUCT_QNA`
+    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_PRODUCT_QNA_1` FOREIGN KEY (
+                                                                    `PRODUCT_ID`
+        )
+        REFERENCES `TB_PRODUCT` (
+                                 `PRODUCT_ID`
+            );
+
+ALTER TABLE `TB_PRODUCT_QNA`
+    ADD CONSTRAINT `FK_TB_LOGIN_TO_TB_PRODUCT_QNA_1` FOREIGN KEY (
+                                                                  `USER_ID`
+        )
+        REFERENCES `TB_LOGIN` (
+                               `USER_ID`
+            );
+
+ALTER TABLE `TB_CATEGORY_MAP`
+    ADD CONSTRAINT `FK_TB_CATEGORY_TO_TB_CATEGORY_MAP_1` FOREIGN KEY (
+                                                                      `CATEGORY_ID`
+        )
+        REFERENCES `TB_CATEGORY` (
+                                  `CATEGORY_ID`
+            );
+
+ALTER TABLE `TB_CATEGORY_MAP`
+    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_CATEGORY_MAP_1` FOREIGN KEY (
+                                                                     `PRODUCT_ID`
+        )
+        REFERENCES `TB_PRODUCT` (
+                                 `PRODUCT_ID`
+            );
+
+ALTER TABLE `TB_TAG_MAP`
+    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_TAG_MAP_1` FOREIGN KEY (
+                                                                `PRODUCT_ID`
+        )
+        REFERENCES `TB_PRODUCT` (
+                                 `PRODUCT_ID`
+            );
+
+ALTER TABLE `TB_TAG_MAP`
+    ADD CONSTRAINT `FK_TB_TAG_TO_TB_TAG_MAP_1` FOREIGN KEY (
+                                                            `TAG_ID`
+        )
+        REFERENCES `TB_TAG` (
+                             `TAG_ID`
+            );
+
+ALTER TABLE `TB_ADDRESS`
+    ADD CONSTRAINT `FK_TB_LOGIN_TO_TB_ADDRESS_1` FOREIGN KEY (
+                                                              `USER_ID`
+        )
+        REFERENCES `TB_LOGIN` (
+                               `USER_ID`
+            );
+

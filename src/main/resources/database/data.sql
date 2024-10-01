@@ -3,6 +3,35 @@ VALUES (1, 'SUPER_ADMIN', 'R100', '슈퍼관리자', 'admin', '2024-07-17 10:32:
        (2, 'ADMIN', 'R100', '관리자', 'admin', '2024-07-17 10:32:09', 'admin', '2024-07-17 10:32:09'),
        (3, 'USER', 'R100', '일반사용자', 'admin', '2024-07-17 10:32:09', 'admin', '2024-07-17 10:32:09');
 
+
+REPLACE INTO `TB_LOGIN`
+VALUES ('admin', 2, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'ssdd', '1', 'sadf@dfa.com',
+        '01030303848', 'dfjaksdf', NULL, 'admin', now(), 'admin', now()),
+       ('user', 3, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'asdf', '1', 'asdf@asdf.asd',
+        '01012341234', 'asdf', NULL, 'admin', now(), 'admin', now()),
+       ('dorong', 1, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'aaaa', '1', 'aaaa@aaa.com',
+        '01000000000', 'asdf', NULL, 'admin', now(), 'admin', now());
+
+REPLACE INTO `TB_MENU`
+VALUES ('M100', 'M100', '메인', '/main/**', '', '', 0, NULL),
+       ('M101', 'M100', '인테리어', '/main/interior/**', 'list', '', 0, NULL),
+       ('M102', 'M100', '스튜디오', '/main/studio/**', 'list', '', 0, NULL),
+       ('M103', 'M100', '질문게시판', '/main/board/M209/**', 'list', '', 0, NULL),
+       ('M104', 'M100', '공지사항', '/main/board/M208/**', 'list', '', 0, NULL),
+       ('M200', 'M200', '메인', '/admin/**', '', '', 0, '<i class=\"fa-solid fa-house\"></i>'),
+       ('M201', 'M200', '상품관리', '/admin/product/**', 'list', '', 1, '<i class=\"fa-solid fa-shirt\"></i>'),
+       ('M202', 'M200', '회원관리', '/admin/member/**', 'list', '', 1, '<i class=\"fa-solid fa-user\"></i>'),
+       ('M203', 'M200', '배송지관리', '/admin/addr/**', 'list', '', 1, '<i class=\"fa-solid fa-location-dot\"></i>'),
+       ('M204', 'M200', '결제관리', '/admin/payment/**', 'list', '', 1, '<i class=\"fa-solid fa-wallet\"></i>'),
+       ('M205', 'M200', '환불관리', '/admin/refund/**', 'list', '', 1, '<i class=\"fa-solid fa-rotate-left\"></i>'),
+       ('M206', 'M200', '배송관리', '/admin/delivery/**', 'list', '', 1, '<i class=\"fa-solid fa-truck\"></i>'),
+       ('M207', 'M200', '쿠폰관리', '/admin/coupon/**', 'list', '', 1, '<i class=\"fa-solid fa-ticket-simple\"></i>'),
+       ('M208', 'M200', '공지사항', '/admin/board/M208/**', 'list', '0000', 1, '<i class="fa-regular fa-clipboard"></i>'),
+       ('M209', 'M200', 'Q&A', '/admin/board/M209/**', 'list', '0001', 1, '<i class="fa-regular fa-clipboard"></i>'),
+       ('M210', 'M200', 'FAQ', '/admin/board/M210/**', 'list', '0002', 1, '<i class="fa-regular fa-clipboard"></i>'),
+       ('M211', 'M200', '주문관리', '/admin/order/**', 'dashboard', '', 1, '<i class=\"fa-solid fa-cart-shopping\"></i>');
+
+
 REPLACE INTO `TB_ROLE_MENU`
 VALUES (1, 'M100', 'N'),
        (1, 'M101', 'N'),
@@ -43,30 +72,3 @@ VALUES (1, 'M100', 'N'),
        (3, 'M102', 'N'),
        (3, 'M103', 'N'),
        (3, 'M104', 'N');
-
-REPLACE INTO `TB_LOGIN`
-VALUES ('admin', 2, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'ssdd', '1', 'sadf@dfa.com',
-        '01030303848', 'dfjaksdf', NULL, 'admin', now(), 'admin', now()),
-       ('user', 3, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'asdf', '1', 'asdf@asdf.asd',
-        '01012341234', 'asdf', NULL, 'admin', now(), 'admin', now()),
-       ('dorong', 1, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'aaaa', '1', 'aaaa@aaa.com',
-        '01000000000', 'asdf', NULL, 'admin', now(), 'admin', now());
-
-REPLACE INTO `TB_MENU`
-VALUES ('M100', 'M100', '메인', '/main/**', '', '', 0, NULL),
-       ('M101', 'M100', '인테리어', '/main/interior/**', 'list', '', 0, NULL),
-       ('M102', 'M100', '스튜디오', '/main/studio/**', 'list', '', 0, NULL),
-       ('M103', 'M100', '질문게시판', '/main/board/M209/**', 'list', '', 0, NULL),
-       ('M104', 'M100', '공지사항', '/main/board/M208/**', 'list', '', 0, NULL),
-       ('M200', 'M200', '메인', '/admin/**', '', '', 0, '<i class=\"fa-solid fa-house\"></i>'),
-       ('M201', 'M200', '상품관리', '/admin/product/**', 'list', '', 1, '<i class=\"fa-solid fa-shirt\"></i>'),
-       ('M202', 'M200', '회원관리', '/admin/member/**', 'list', '', 1, '<i class=\"fa-solid fa-user\"></i>'),
-       ('M203', 'M200', '배송지관리', '/admin/addr/**', 'list', '', 1, '<i class=\"fa-solid fa-location-dot\"></i>'),
-       ('M204', 'M200', '결제관리', '/admin/payment/**', 'list', '', 1, '<i class=\"fa-solid fa-wallet\"></i>'),
-       ('M205', 'M200', '환불관리', '/admin/refund/**', 'list', '', 1, '<i class=\"fa-solid fa-rotate-left\"></i>'),
-       ('M206', 'M200', '배송관리', '/admin/delivery/**', 'list', '', 1, '<i class=\"fa-solid fa-truck\"></i>'),
-       ('M207', 'M200', '쿠폰관리', '/admin/coupon/**', 'list', '', 1, '<i class=\"fa-solid fa-ticket-simple\"></i>'),
-       ('M208', 'M200', '공지사항', '/admin/board/M208/**', 'list', '0000', 1, '<i class="fa-regular fa-clipboard"></i>'),
-       ('M209', 'M200', 'Q&A', '/admin/board/M209/**', 'list', '0001', 1, '<i class="fa-regular fa-clipboard"></i>'),
-       ('M210', 'M200', 'FAQ', '/admin/board/M210/**', 'list', '0002', 1, '<i class="fa-regular fa-clipboard"></i>'),
-       ('M211', 'M200', '주문관리', '/admin/order/**', 'dashboard', '', 1, '<i class=\"fa-solid fa-cart-shopping\"></i>');
