@@ -28,7 +28,14 @@ public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        User user = (User) authentication.getPrincipal();
+        User user = null;
+        Object obj = authentication.getPrincipal();
+        if (obj instanceof PrincipalDetails) {
+            user = ((PrincipalDetails) obj).getUser();
+        } else if (obj instanceof User) {
+            user = (User) obj;
+        }
+
         List<TbMenu> menuList = menuRepository.selectMenuList(user.getUserId());
         String defaultUrl = "";
         for (TbMenu menu : menuList) {

@@ -34,9 +34,14 @@ public class MemberController {
 
     @GetMapping("")
     public String userInfo(Model model) {
+        User user = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails pd = (PrincipalDetails) authentication.getPrincipal();
-        User user = pd.getUser();
+        Object obj = authentication.getPrincipal();
+        if (obj instanceof User) {
+            user = (User) obj;
+        } else if (obj instanceof PrincipalDetails) {
+            user = ((PrincipalDetails) obj).getUser();
+        }
         model.addAttribute("user", user);
         return "/member/userInfo";
     }
