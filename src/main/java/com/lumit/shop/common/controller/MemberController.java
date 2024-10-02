@@ -4,6 +4,7 @@ import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
+import com.lumit.shop.common.security.PrincipalDetails;
 import com.lumit.shop.common.security.social.CustomOauth2UserDetails;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -34,13 +35,8 @@ public class MemberController {
     @GetMapping("")
     public String userInfo(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = null;
-        if (authentication.getPrincipal() instanceof User) {
-            user = (User) authentication.getPrincipal();
-        } else if (authentication.getPrincipal() instanceof OAuth2User) {
-            CustomOauth2UserDetails details = (CustomOauth2UserDetails) authentication.getPrincipal();
-            user = (User) userDetailsService.loadUserByUsername(details.getUsername());
-        }
+        PrincipalDetails pd = (PrincipalDetails) authentication.getPrincipal();
+        User user = pd.getUser();
         model.addAttribute("user", user);
         return "/member/userInfo";
     }

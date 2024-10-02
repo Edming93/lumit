@@ -16,10 +16,8 @@ public class AuthorizationChecker {
 
         try {
             User principalObj = null;
-
-            if (authentication.getPrincipal() instanceof User) {
-                principalObj = (User) authentication.getPrincipal();
-            }
+            PrincipalDetails pd = (PrincipalDetails) authentication.getPrincipal();
+            principalObj = pd.getUser();
 
             if (principalObj != null) {
                 AntPathMatcher antPathMatcher = new AntPathMatcher();

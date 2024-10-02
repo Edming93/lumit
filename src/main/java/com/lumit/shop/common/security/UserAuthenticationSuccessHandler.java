@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.thymeleaf.util.StringUtils;
@@ -23,8 +24,9 @@ public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         User user = null;
 
-        System.out.println(authentication.getPrincipal());
-        user = (User) authentication.getPrincipal();
+        PrincipalDetails pd = (PrincipalDetails) authentication.getPrincipal();
+
+        user = pd.getUser();
 //        for (GrantedAuthority authority : user.getAuthorities()) {
 //            System.out.println("Authority: " + authority.getAuthority());
 //        }
