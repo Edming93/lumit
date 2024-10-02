@@ -15,9 +15,8 @@ public class AuthorizationChecker {
         boolean result = false;
 
         try {
-            User principalObj = null;
-            PrincipalDetails pd = (PrincipalDetails) authentication.getPrincipal();
-            principalObj = pd.getUser();
+            User principalObj = (User) authentication.getPrincipal();
+
 
             if (principalObj != null) {
                 AntPathMatcher antPathMatcher = new AntPathMatcher();
@@ -31,8 +30,8 @@ public class AuthorizationChecker {
                 }
 
                 for (GrantedAuthority authority : principalObj.getAuthorities()) {
+                    System.out.println(request.getServletPath() + " " + authority.getAuthority());
                     if (antPathMatcher.match(authority.getAuthority(), request.getServletPath())) {
-
                         result = true;
                         break;
                     }
@@ -41,6 +40,7 @@ public class AuthorizationChecker {
             }
 
         } catch (Exception exception) {
+            System.out.println(exception.getMessage());
             result = false;
         }
 

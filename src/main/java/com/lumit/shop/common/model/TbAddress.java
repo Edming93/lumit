@@ -21,6 +21,7 @@ public class TbAddress {
     private Timestamp regDt;
     private String userId;
 
+    
     public static TbAddress createAddrByUser(TbLogin user) {
         TbAddress tbAddress = new TbAddress();
         tbAddress.setUserId(user.getUserId());

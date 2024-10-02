@@ -39,7 +39,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
         for (Iterator<TbMenu> iterator = menuList.iterator(); iterator.hasNext(); ) {
-            user.addAuthority(iterator.next());
+            TbMenu menu = iterator.next();
+            user.addAuthority(menu);
         }
 
         // 권한 정보 등록
@@ -50,6 +51,5 @@ public class CustomUserDetailsService implements UserDetailsService {
 //        UserContext userContext = new UserContext(user,roles);
 
         return new PrincipalDetails(user);
-
     }
 }

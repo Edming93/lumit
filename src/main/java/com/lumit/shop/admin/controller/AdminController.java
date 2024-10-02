@@ -22,9 +22,6 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-// todo
-// authority가 TB_MENU 형태로 들어가서 사용이 안됨
-//@PreAuthorize("hasAnyAuthority('1', '2')")
 @RequestMapping(value = "/admin")
 public class AdminController {
     private final UserService userService;

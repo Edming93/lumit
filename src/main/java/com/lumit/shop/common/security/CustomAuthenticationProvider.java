@@ -21,8 +21,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = (String) authentication.getCredentials();
-
-        User user = (User) userDetailsService.loadUserByUsername(username);
+        PrincipalDetails pd = (PrincipalDetails) userDetailsService.loadUserByUsername(username);
+        User user = pd.getUser();
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("BadCredentialsException");
