@@ -17,7 +17,6 @@ public class AuthorizationChecker {
         try {
             User principalObj = (User) authentication.getPrincipal();
 
-
             if (principalObj != null) {
                 AntPathMatcher antPathMatcher = new AntPathMatcher();
                 Map<String, String> variables = antPathMatcher.extractUriTemplateVariables("/{menu}/**", request.getServletPath());
@@ -39,7 +38,6 @@ public class AuthorizationChecker {
             }
 
         } catch (Exception exception) {
-            System.out.println(exception.getMessage());
             result = false;
         }
 
