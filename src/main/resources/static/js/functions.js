@@ -120,6 +120,76 @@ let formControl = {
     }
 }
 
+function resultProcessing(outside, inside, state) {
+    inside.innerHTML = "";
+    if (state === "fail") {
+        inside.innerHTML += "<i class=\"fa-solid fa-x\"></i>"
+        outside.parentElement.classList.remove("success")
+        outside.parentElement.classList.add("failed")
+        inside.classList.remove("resultBoxSuccess")
+        inside.classList.add("resultBoxFail")
+    } else if (state === "reset") {
+        inside.innerHTML = ""
+        outside.parentElement.classList.remove("failed")
+        outside.parentElement.classList.remove("success")
+        inside.classList.remove("resultBoxFail")
+        inside.classList.remove("resultBoxSuccess")
+    } else {
+        inside.innerHTML += "<i class=\"fa-solid fa-check\"></i>"
+        outside.parentElement.classList.remove("failed")
+        outside.parentElement.classList.add("success")
+        inside.classList.remove("resultBoxFail")
+        inside.classList.add("resultBoxSuccess")
+    }
+}
+
+
+let validate = {
+    /**
+     *
+     * @param id : HTMLInputElement 중복체크할 input element
+     * @param dest : HTMLElement 체크 결과가 들어갈 element
+     * @param text : HTMLElement 체크 결과 메시지가 들어갈 element
+     * @returns {boolean}
+     *
+     */
+    idValidate(id, dest) {
+        const regex = /^[0-9a-z]{4,16}$/;
+        if (id.value == "") {
+            resultProcessing(id, dest, "reset")
+            return true;
+        } else if (!regex.test(id.value)) {
+            resultProcessing(id, dest, "fail")
+            return false;
+        } else {
+            resultProcessing(id, dest, "success")
+            return true;
+        }
+    },
+    idDuplicateCheck(id, dest, text) {
+        if (this.idValidate(id, dest) === false) {
+            text.innerText = "영문 소문자/숫자로 이루어진 4~16자를 입력해주세요."
+            return false;
+        }
+
+        let xhr = new XMLHttpRequest();
+        xhr.responseType = "json"
+        xhr.open("GET", `/api/opened/idCheck?id=${id.value}`, true);
+        xhr.send();
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === xhr.DONE) {
+                const res = xhr.response;
+                if (res.data === true) {
+                    resultProcessing(id, dest, "success")
+                } else if (res.data === false) {
+                    resultProcessing(id, dest, "fail")
+                }
+                text.innerText = res.msg
+                return;
+            }
+        }
+    }
+}
 
 /**
  * URL 이동을 위한 공통 함수

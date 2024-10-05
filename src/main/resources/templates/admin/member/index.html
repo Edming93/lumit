@@ -5,7 +5,8 @@
         layout:decorate="~{admin/fragments/layout}">
 <div layout:fragment="content">
     <div>
-        <p class="title">멤버 메인 페이지</p>
+        <p class="title">회원 관리</p>
+        <a class="linkBtn">관리자 편집</a>
         <a class="linkBtn" th:href="@{/admin/member/newManager}">새로운 관리자 생성하기</a>
         <a class="linkBtn" th:href="@{/admin/member/user}">일반 회원 관리하기</a>
     </div>

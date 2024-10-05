@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class WebSecurityConfig {
     private final OAuth2UserService oAuth2UserService;
     private static final String[] WHITE_LIST = {
-            "/favicon**", "/", "/main", "/login/**", "/main/member/createUser", "/lumit/**", "/error/**", "/signup", "/api/opened/**"
+            "/favicon**", "/", "/main", "/main/member/createUser", "/lumit/**", "/error/**", "/api/opened/**"
     };
     private final CustomAuthorizationManager customAuthorizationManager;
 
@@ -31,6 +31,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().requestMatchers(WHITE_LIST).permitAll()
+                                .requestMatchers("/login", "/signup").anonymous()
                                 .anyRequest().access(customAuthorizationManager)
                 )
                 .csrf(csrf -> csrf.disable())

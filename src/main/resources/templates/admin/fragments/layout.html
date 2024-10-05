@@ -9,13 +9,14 @@
     <th:block th:replace="~{admin/fragments/head :: headFragment}"></th:block>
 </head>
 <body>
-<div class="wrapper">
-    <div th:replace="~{admin/fragments/nav-tab :: navFragment}"></div>
+<div class="wrapper" style="position:fixed;">
+    <div style="position: sticky;top:0; bottom: 0">
+        <div th:replace="~{admin/fragments/nav-tab :: navFragment}"></div>
+    </div>
     <div class="container">
         <div class="content" layout:fragment="content"></div>
     </div>
 </div>
-
 </body>
 <script th:src="@{/js/functions.js}"></script>
 <script th:inline="javascript">

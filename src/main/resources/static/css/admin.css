@@ -69,11 +69,20 @@ a {
 .container {
     width: 100%;
     padding: 10px;
+    overflow-y: auto;
+    position: relative;
+    height: 100vh;
 }
 
 .wrapper {
     display: flex;
     flex-direction: row;
+    width: 100%;
+    overflow: hidden;
+}
+
+.formContainer * {
+    margin-bottom: 1rem;
 }
 
 .nav-tab {
@@ -85,7 +94,9 @@ a {
     color: var(--font-light-color);
     height: 100vh;
     transition: width 500ms;
-
+    position: sticky;
+    top: 0;
+    bottom: 0;
 }
 
 .nav-tab > ul {
@@ -164,9 +175,10 @@ i {
     display: flex;
     font-family: "Playfair Display", serif;
     font-size: var(--text-size-xlarge);
-    margin-top: var(--default-margin);
+    /*margin-top: var(--default-margin);*/
     /*margin-bottom: var(--default-margin);*/
     border-bottom: 1px solid grey;
+    padding-top: 0.7rem;
     padding-bottom: 0.7rem;
     transition: all 500ms;
     justify-content: space-around;
@@ -255,7 +267,6 @@ i {
 
 .content {
     margin: 1rem;
-    height: 100%;
 }
 
 .title {

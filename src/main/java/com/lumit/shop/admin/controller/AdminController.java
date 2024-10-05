@@ -65,6 +65,9 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
+        tbLogin.setEmail(tbLogin.getUserId() + "@lumit.com");
+        tbLogin.setPhone("추후 입력 요망");
+        tbLogin.setAddress("추후 입력 요망");
         tbLogin.setRegId(user.getUserId());
         tbLogin.setPassword(passwordEncoder.encode(tbLogin.getPassword()));
         if (bindingResult.hasErrors()) {
