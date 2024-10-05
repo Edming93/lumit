@@ -1,5 +1,6 @@
 package com.lumit.shop.admin.controller;
 
+import com.lumit.shop.common.repository.MenuRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;

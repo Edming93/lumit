@@ -67,8 +67,8 @@ a {
 }
 
 .container {
-	width:100%;
-	padding:10px;
+    width: 100%;
+    padding: 10px;
 }
 
 .wrapper {
@@ -179,21 +179,21 @@ i {
 }
 
 .commBtn {
-	border: 1px solid #CAAB9C;
-	cursor: pointer;
-	color: #876453;
-	background-color: #E7DBCD;
-	width:70px;
-	height:35px;
-	border-radius: 12px;
+    border: 1px solid #CAAB9C;
+    cursor: pointer;
+    color: #876453;
+    background-color: #E7DBCD;
+    width: 70px;
+    height: 35px;
+    border-radius: 12px;
 }
 
 .mgl10 {
-	margin-left : 10px;
+    margin-left: 10px;
 }
 
 .mgt20 {
-	margin-top : 20px;
+    margin-top: 20px;
 }
 
 .btnWrapper {
@@ -271,23 +271,23 @@ i {
 }
 
 .alCenter {
-	text-align : center;
+    text-align: center;
 }
 
 .alLeft {
-	text-align : left;
+    text-align: left;
 }
 
 .alRight {
-	text-align : right;
+    text-align: right;
 }
 
 .boardTable {
-	width: 100%;
+    width: 100%;
 }
 
 .boardTable thead {
-	height: 40px;
+    height: 40px;
     color: #CAAB9C;
     font-size: 14px;
     line-height: 40px;
@@ -296,7 +296,7 @@ i {
 }
 
 .boardTable tbody tr {
-	height: 45px;
+    height: 45px;
     line-height: 45px;
     color: #9F9F9F;
     font-size: 14px;
@@ -304,17 +304,40 @@ i {
 }
 
 .comm_inp {
-    border:1px solid #e5e5e5;
-    width:100%;
-    height:35px;
-    padding:0px 15px;
-    border-radius: 10px; 
+    border: 1px solid #e5e5e5;
+    width: 100%;
+    height: 35px;
+    padding: 0px 15px;
+    border-radius: 10px;
 }
 
 .size300 {
-	width:300px;
+    width: 300px;
 }
 
 .size100 {
-	width:100px;
+    width: 100px;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    max-width: 400px;
+}
+
+.inputContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+/*.inputContainer > * {*/
+/*    padding: 0.4rem;*/
+/*}*/
+
+.inputContainer > input {
+    border-bottom: 1px black solid;
+    width: 70%;
 }

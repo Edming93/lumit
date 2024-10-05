@@ -1,4 +1,13 @@
+/**
+ * admin nav-tab 조작 부분
+ * @type {{getState(): *|string, showMenuText(): void, buttonControl(): void, toggleSidebar(): void, hideMenuText(): void, close(): void, open(): void, setting(): void}}
+ */
+
 let sideBar = {
+    /**
+     * cookie에 sb_hidden 정보가 없다면 새로 설정해주고 있다면 상태를 가져온다.
+     * @returns {*|string}
+     */
     getState() {
         let state = cookie.getCookie("sb_hidden");
         if (!state) {
@@ -7,26 +16,30 @@ let sideBar = {
         }
         return state
     },
+    /**
+     * 쿠키에 세팅된 값으로 nav-bar를 작동시킨다.
+     */
     setting() {
-        let state = this.getState();
-        const sidebar = document.getElementById("sidebar");
-        if (state == "F") {
-            sidebar.classList.remove("sb_hidden");
-            this.showMenuText();
+        if (this.getState() == "T") {
+            this.close();
         } else {
-            sidebar.classList.add("sb_hidden");
-            this.hideMenuText();
+            this.open();
         }
-        this.buttonControl();
     },
+    /**
+     * sb_hidden이 T일 때, mouseenter되면 작동
+     */
     open() {
         if (this.getState() == "F") {
             return;
         }
         const sidebar = document.getElementById("sidebar");
         sidebar.classList.remove("sb_hidden");
-        this.showMenuText();
+        this.showMenuText()
     },
+    /**
+     * sb_hidden이 T일 때, mouseleave되면 작동
+     */
     close() {
         if (this.getState() == "F") {
             return;
@@ -35,12 +48,15 @@ let sideBar = {
         sidebar.classList.add("sb_hidden");
         this.hideMenuText();
     },
+    /**
+     * 토글 버튼이 눌렸을 때 작동
+     */
     toggleSidebar() {
         let state = this.getState();
         const sidebar = document.getElementById("sidebar");
         if (state == "T") {
             sidebar.classList.remove("sb_hidden");
-            this.showMenuText();
+            this.showMenuText()
             cookie.deleteCookie("sb_hidden");
             cookie.setCookie("sb_hidden", "F", 14);
         } else {
@@ -51,6 +67,9 @@ let sideBar = {
         }
         this.buttonControl();
     },
+    /**
+     * 토글 버튼 방향 바꾸기
+     */
     buttonControl() {
         const toggleBtn = document.getElementById("toggleBtnId");
         if (this.getState() == "T") {
@@ -59,14 +78,18 @@ let sideBar = {
             toggleBtn.classList.remove("rotateArrow")
         }
     },
+    /**
+     * 메뉴 텍스트 보여주기
+     */
     showMenuText() {
         const menuList = document.getElementsByClassName("wide");
-        setTimeout(function () {
-            for (let i = 0; i < menuList.length; i++) {
-                menuList.item(i).classList.remove('hidden');
-            }
-        }, 170)
+        for (let i = 0; i < menuList.length; i++) {
+            menuList.item(i).classList.remove('hidden');
+        }
     },
+    /**
+     * 메뉴 텍스트 숨기기
+     */
     hideMenuText() {
         const menuList = document.getElementsByClassName("wide");
         for (let i = 0; i < menuList.length; i++) {
@@ -77,12 +100,12 @@ let sideBar = {
 
 let cookie = {
     setCookie(name, value, exp) {
-        var date = new Date();
+        let date = new Date();
         date.setTime(date.getTime() + exp * 24 * 60 * 60 * 1000);
         document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/;`
     },
     getCookie(name) {
-        var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
         return value ? value[2] : null;
     },
     deleteCookie(name) {
@@ -106,7 +129,8 @@ let formControl = {
  */
 
 function moveUrl(url, params = {}, replace = false) {
-	// 쿼리 파라미터가 있는 경우 처리
+    console.log(url)
+    // 쿼리 파라미터가 있는 경우 처리
     if (params && Object.keys(params).length > 0) {
         const queryString = new URLSearchParams(params).toString();
         url += `?${queryString}`;
@@ -123,25 +147,25 @@ function moveUrl(url, params = {}, replace = false) {
 let siteId = '';
 
 // siteId 가져오기
-function getSiteId (defaultUrl) {
-    if(!defaultUrl) {
-		console.log("세션 Item 키값 없음");
-	}
-	
-	console.log(defaultUrl);
-	
-	let urlSegments = defaultUrl.split('/');
+function getSiteId(defaultUrl) {
+    if (!defaultUrl) {
+        console.log("세션 Item 키값 없음");
+    }
 
-	console.log("segments ::" +  urlSegments[1]);
-	// siteId 부분만 추출
-	if(urlSegments.length > 1) {
-		siteId = urlSegments[1];
-	}else {
-		console.log("Invalid URL format");
-	}
+    console.log(defaultUrl);
+
+    let urlSegments = defaultUrl.split('/');
+
+    console.log("segments ::" + urlSegments[1]);
+    // siteId 부분만 추출
+    if (urlSegments.length > 1) {
+        siteId = urlSegments[1];
+    } else {
+        console.log("Invalid URL format");
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
     sideBar.setting();
-    
+
 })

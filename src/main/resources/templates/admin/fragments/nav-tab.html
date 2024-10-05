@@ -13,6 +13,7 @@
     </div>
     <ul onmouseenter="sideBar.open()"
         onmouseleave="sideBar.close()">
+        <!-- todo 로컬호스트 적힌 부분 범용으로 변경하기 -->
         <li th:class="nav-list">
             <a th:class="nav-link"
                th:classappend="${request.getRequestURL().toString().split('localhost')[1] == '/admin/dashboard' ? 'active' : null}"
@@ -29,10 +30,10 @@
             </a>
         </li>
     </ul>
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            sideBar.setting();
+        });
+    </script>
 </nav>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-    });
-</script>
 </html>

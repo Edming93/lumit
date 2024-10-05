@@ -4,38 +4,22 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{admin/fragments/layout}">
-<div layout:fragment="content">
-    <form action="/admin/member/newManager" method="post" th:object="${tbLogin}">
-        <fieldset>
-            <legend>관리자의 권한 레벨을 설정해주세요.</legend>
-            <div>
-                <input type="radio" id="super_admin" th:field="*{roleId}" value="1" checked="checked"/>
-                <label th:for="super_admin">총괄 관리자</label>
-            </div>
-            <div>
-                <input type="radio" id="admin" th:field="*{roleId}" value="2"/>
-                <label th:for="admin">기본 관리자</label>
-            </div>
-            <p th:if="${#fields.hasErrors('roleId')}" th:errors="*{roleId}" class="fieldError">Incorrect Data</p>
-        </fieldset>
-        <div>
+<div layout:fragment="content"
+     style="display: flex; flex-direction: column;align-items: center; margin-top: 3rem; width: 100%">
+    <form class="formContainer" action="/admin/member/newManager" method="post" th:object="${tbLogin}">
+        <div class="inputContainer">
             <label id="userId" th:for="userId">관리자 아이디</label>
-            <input type="text" th:field="*{userId}" placeholder="관리자의 아이디를 입력해주세요.">
+            <input type="text" th:field="*{userId}">
             <p th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}" class="fieldError">Incorrect Data</p>
         </div>
-        <div>
+        <div class="inputContainer">
             <label id="name" th:for="name">관리자 이름</label>
-            <input type="text" th:field="*{name}" placeholder="관리자의 이름을 입력해주세요.">
+            <input type="text" th:field="*{name}">
             <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError">Incorrect Data</p>
         </div>
-        <div>
-            <label id="email" for="email">이메일</label>
-            <input type="email" th:field="*{email}" placeholder="관리자의 이메일 주소를 입력해주세요.">
-            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">Incorrect Data</p>
-        </div>
-        <div>
+        <div class="inputContainer">
             <label id="password" for="password">초기 비밀번호</label>
-            <input type="password" th:field="*{password}" placeholder="관리자의 초기 비밀번호를 입력해주세요.">
+            <input type="password" th:field="*{password}">
             <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError">Incorrect Data</p>
         </div>
         <fieldset>
@@ -51,16 +35,18 @@
             </div>
             <p th:if="${#fields.hasErrors('genderCd')}" th:errors="*{genderCd}" class="fieldError">Incorrect Data</p>
         </fieldset>
-        <div>
-            <label id="address" for="address">주소</label>
-            <input type="text" th:field="*{address}" placeholder="관리자의 주소를 입력해주세요.">
-            <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">Incorrect Data</p>
-        </div>
-        <div>
-            <label id="phone" for="phone">연락처</label>
-            <input type="tel" th:field="*{phone}" placeholder="관리자의 연락처를 입력해주세요.">
-            <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="fieldError">Incorrect Data</p>
-        </div>
+        <fieldset>
+            <legend>관리자의 권한 레벨</legend>
+            <div>
+                <input type="radio" id="super_admin" th:field="*{roleId}" value="1" checked="checked"/>
+                <label th:for="super_admin">총괄 관리자</label>
+            </div>
+            <div>
+                <input type="radio" id="admin" th:field="*{roleId}" value="2"/>
+                <label th:for="admin">기본 관리자</label>
+            </div>
+            <p th:if="${#fields.hasErrors('roleId')}" th:errors="*{roleId}" class="fieldError">Incorrect Data</p>
+        </fieldset>
         <button type="submit">등록하기</button>
         <p th:if="${errorMessage}" th:text="${errorMessage}"></p>
         <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}">
