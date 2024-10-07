@@ -34,6 +34,7 @@ public class BoardController {
     	map.addAttribute("request", request);
     	map.addAttribute("title", search.getTitle());
     	map.addAttribute("boardList",boardService.selectBoardList(search));
+    	
         return BOARD_PATH + "/list";
     }
 
@@ -41,7 +42,17 @@ public class BoardController {
     public String boardRegist(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd) {
     	map.addAttribute("menuCd", menuCd);
     	map.addAttribute("request", request);
+    	
         return BOARD_PATH + "/regist";
+    }
+    
+    @GetMapping("{menuCd}/detail/{boardId}")
+    public String boardDetail(ModelMap map, HttpServletRequest request, @PathVariable("boardId") String boardId) {
+    	System.out.println(boardService.selectBoardDetail(boardId));
+    	map.addAttribute("detail",boardService.selectBoardDetail(boardId));
+    	map.addAttribute("request", request);
+    	
+    	return BOARD_PATH + "/detail";
     }
     
     @ResponseBody

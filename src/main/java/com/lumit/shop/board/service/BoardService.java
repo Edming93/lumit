@@ -10,4 +10,5 @@ public interface BoardService {
 	
 	public List<TbBoard> selectBoardList(SearchDto search);
 	public Map<String,Object> insertBoard(String menuCd, TbBoard board);
+	public TbBoard selectBoardDetail(String boardId);
 }

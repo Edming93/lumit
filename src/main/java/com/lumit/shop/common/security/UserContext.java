@@ -1,10 +1,10 @@
 package com.lumit.shop.common.security;
 
-import com.lumit.shop.common.model.User;
+import java.util.Collection;
+
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
-import java.util.Iterator;
+import com.lumit.shop.common.model.User;
 
 public class UserContext extends org.springframework.security.core.userdetails.User {
     private final User user;

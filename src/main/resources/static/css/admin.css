@@ -198,6 +198,7 @@ i {
     width: 70px;
     height: 35px;
     border-radius: 12px;
+    font-size: 13px;
 }
 
 .mgl10 {
@@ -351,4 +352,17 @@ i {
 .inputContainer > input {
     border-bottom: 1px black solid;
     width: 70%;
+}
+
+.btnArea {
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    margin-top:20px;
+}
+
+.btnLeftArea {
+}
+
+.btnRightArea {
 }

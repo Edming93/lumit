@@ -2,16 +2,10 @@
 <html
         xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{admin/fragments/layout}">
+        layout:decorate="~{admin/fragments/layout}"
+>
 <head>
-    <style>
-        #btnArea {
-            display:flex;
-            justify-content:end;
-            align-items:center;
-            margin-top:20px;
-        }
-    </style>
+
 </head>
 <div layout:fragment="content">
     <div>
@@ -20,9 +14,12 @@
 
     <div id="container">
 
-		<div id="btnArea">
-			<input type="text" id="searchInp" placeholder="게시글 제목 검색" th:value="${title}" class="comm_inp size300">
-            <button type="button" id="registBtn" class="commBtn mgl10">글쓰기</button>
+		<div class="btnArea">
+			<div class="btnLeftArea"></div>
+			<div class="btnRightArea">
+				<input type="text" id="searchInp" placeholder="게시글 제목 검색" th:value="${title}" class="comm_inp size300">
+	            <button type="button" id="registBtn" class="commBtn mgl10">글쓰기</button>
+            </div>
         </div>
         
         <table class="boardTable mgt20">
@@ -44,18 +41,32 @@
             </thead>
             <tbody>
 	            <tr th:each="board, stat :${boardList}">
-	                <td class="alCenter" th:text="${stat.count}"></td>
-	                <td class="alLeft" th:text="${board.title}" style="color: #515151; font-size:17px;"></td>
-	                <td class="alCenter" th:text="${board.regId}" style="color: #515151; font-size:17px;"></td>
-	                <td class="alCenter" th:text="${board.regDt}"></td>
-	                <td class="alCenter" th:text="${board.viewCount}"></td>
+	                <td class="alCenter">
+	                	<span th:text="${stat.count}"></span>
+	                </td>
+	                <td class="alLeft" style="color: #515151; font-size:17px;">
+	                	<a href="javascript:void(0);" th:onClick="moveDetail([[${board.boardId}]]);">
+	                		<span th:text="${board.title}"></span>
+	                	</a>
+	                </td>
+	                <td class="alCenter" style="color: #515151; font-size:17px;">
+	                	<span th:text="${board.regId}"></span>
+	                </td>
+	                <td class="alCenter">
+	                	<span th:text="${@StringUtils.setDateFormat(board.regDt)}"></span>
+	                </td>
+	                <td class="alCenter">
+	                	<span th:text="${board.viewCount}"></span>
+	                </td>
 	            </tr>
             </tbody>
         </table>
     </div>
 <script th:inline="javascript">
-	document.addEventListener("DOMContentLoaded", function () {
-		let menuCd = [[${menuCd}]];
+	let menuCd = [[${menuCd}]];
+	console.log("menuCd ::: "+menuCd);
+	
+	document.addEventListener("DOMContentLoaded", function () {	
 		
 		document.getElementById("registBtn").addEventListener("click",function() {
 			moveUrl("/"+siteId+"/board/"+menuCd+"/regist");
@@ -67,12 +78,18 @@
 				
 				let params = {};
 				
-				params['title'] = encodeURIComponent(query);
+				params['title'] = query;
 				
 				moveUrl("/"+siteId+"/board/"+menuCd+"/list",params);
 			}
 		});
+		
 	});
+	
+	
+	function moveDetail(boardId) {
+		moveUrl("/"+siteId+"/board/"+menuCd+"/detail/"+boardId);
+	}
 </script>
 </div>
 

@@ -1,13 +1,15 @@
 package com.lumit.shop.common.security;
 
-import com.lumit.shop.common.model.User;
-import lombok.Data;
+import java.util.Collection;
+import java.util.Map;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.Collection;
-import java.util.Map;
+import com.lumit.shop.common.model.User;
+
+import lombok.Data;
 
 @Data
 public class PrincipalDetails implements UserDetails, OAuth2User {

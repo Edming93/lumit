@@ -5,15 +5,16 @@
 	<sql id="searchWhere">
 		WHERE 1=1
 		<if test="title != '' and title neq null">
-			AND TITLE = #{title}
+			AND TITLE LIKE CONCAT('%', #{title}, '%')
 		</if>
 		<if test="content != '' and content neq null">
-			AND CONTENT = #{content}
+			AND CONTENT LIKE CONCAT('%', #{content}, '%')
 		</if>
 	</sql>
     <select id="selectBoardList" resultType="com.lumit.shop.common.model.TbBoard">
         SELECT *
-        FROM TB_BOARD
+        FROM 
+        	TB_BOARD
         <include refid="searchWhere"></include>
         ORDER BY REG_DT DESC
     </select>
@@ -56,5 +57,13 @@
             , now()
         )
     </insert>
+	
+	<select id="selectBoardDetail" resultType="com.lumit.shop.common.model.TbBoard">
+        SELECT *
+        FROM 
+        	TB_BOARD
+        WHERE
+        	BOARD_ID = #{boardId}
+    </select>
 
 </mapper>

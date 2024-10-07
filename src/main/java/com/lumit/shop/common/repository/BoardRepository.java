@@ -15,4 +15,6 @@ public interface BoardRepository {
 
     public List<TbBoard> selectBoardList(SearchDto search);
 	public int insertBoard(TbBoard board);
+	public TbBoard selectBoardDetail(String boardId);
+	
 }

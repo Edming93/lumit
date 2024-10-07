@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{admin/fragments/layout}">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    
+	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <style>
+        #registTable > tbody > tr {
+            height: 60px;
+            line-height: 60px;
+        }
+
+    </style>
+</head>
+
+
+<div layout:fragment="content">
+    <div>
+        <p class="title">공지사항 상세</p>
+    </div>
+
+    <div id="container">
+		<table class="boardTable mgt20">
+		    <colgroup>
+		        <col style="width: 10%;"/>
+		        <col style="width: 90%;"/>
+		    </colgroup>
+		    <thead>
+		        <tr>
+		            <th><span th:text="${detail.title}"></span></th>
+		        </tr>
+		        <tr>
+		        	<td style="border-bottom:1px solid #e9e9e9"><span th:text="${detail.regId}"></span></td>
+		        </tr>
+		        <tr>
+		            <th>첨부 파일</th>
+		            <td>
+		
+		            </td>
+		        </tr>
+		    </thead>
+		    <tbody>
+		        <tr>
+		            <td colspan="2">
+		                <span th:text="${detail.content}"></span>
+		            </td>
+		        </tr>
+		    </tbody>
+		</table>
+		<div class="btnArea">
+			<div class="btnLeftArea">
+				<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn size100">목록보기 ></button>
+			</div>
+			<div class="btnRightArea">
+			    <button type="button" id="updateBtn" class="commBtn mgl10 size100">수정하기 ></button>
+			    <button type="button" id="deleteBtn" class="commBtn mgl10 size100">삭제하기 ></button>
+		    </div>
+		</div>
+    </div>
+</div>
+</html>
+
+<script th:inline="javascript">
+let menuCd = [[${menuCd}]];
+
+document.addEventListener("DOMContentLoaded", function () {
+	
+	// moveUrl("/"+siteId+"/board/"+menuCd+"/list");
+	
+});
+
+
+
+// 비동기 통신
+function setData(formArr) {
+    fetch('/' + siteId + '/board/' + menuCd + '/regist', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formArr)
+    })
+    .then(function(response) {
+        if (!response.result) {
+            throw new Error('네트워크 응답 에러');
+        }
+        return response.json(); // JSON 데이터를 파싱
+    })
+    .then(function(result) {
+        console.log('success:', result);
+    })
+    .catch(function(error) {
+        console.log("error:", error);
+    });
+}
+</script>

@@ -1,22 +1,22 @@
 package com.lumit.shop.common.security;
 
-import com.lumit.shop.common.model.TbMenu;
-import com.lumit.shop.common.model.User;
-import com.lumit.shop.common.repository.MenuRepository;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.thymeleaf.util.StringUtils;
 
-import java.io.IOException;
-import java.util.List;
+import com.lumit.shop.common.model.TbMenu;
+import com.lumit.shop.common.model.User;
+import com.lumit.shop.common.repository.MenuRepository;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 
 public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {

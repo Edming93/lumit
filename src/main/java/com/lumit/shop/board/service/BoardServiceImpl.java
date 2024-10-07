@@ -42,9 +42,11 @@ public class BoardServiceImpl implements BoardService {
 		
 		result.put("result", "success");
 		
-		System.out.println(result);
-		
 		return result;
 	}
 
+	@Override
+	public TbBoard selectBoardDetail(String boardId) {
+		return boardRepository.selectBoardDetail(boardId);
+	}
 }
