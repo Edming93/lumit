@@ -48,7 +48,6 @@ public class BoardController {
     
     @GetMapping("{menuCd}/detail/{boardId}")
     public String boardDetail(ModelMap map, HttpServletRequest request, @PathVariable("boardId") String boardId) {
-    	System.out.println(boardService.selectBoardDetail(boardId));
     	map.addAttribute("detail",boardService.selectBoardDetail(boardId));
     	map.addAttribute("request", request);
     	

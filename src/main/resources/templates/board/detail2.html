@@ -9,36 +9,15 @@
 	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 
     <style>
-        .boardTable > thead > tr > td,th , .boardTable > tbody > tr > td,th {
-        	padding: 5px 15px;
+        .boardTable > thead > tr > td {
+        	padding-left: 20px;
+            height: 60px;
+            line-height: 60px;
         }
-        
-        .boardTable thead {
-        	height: 0px;
-    		line-height: unset;
-    		border-bottom: 0px;
-        }
-        
-        .boardTable {
-        	border-bottom: 2px solid #CAAB9C;
-        }
-        
-        .boardTitle {
-        	color: #333333;
-        	font-weight: bold;
-        	font-size: 15px;
-        	font-family: 'Pretendard'
-        }
-        
-        .font {
-        	color: #767676;
-        	font-size:12px;
-        }
-        
-        .boardContent {
-        	color: #2B2928;
-        	font-size:14px;
-        	height:300px;
+        .boardTable > tbody > tr > td {
+        	padding-left: 20px;
+            height: 60px;
+            line-height: 60px;
         }
     </style>
 </head>
@@ -52,28 +31,26 @@
     <div id="container">
 		<table class="boardTable mgt20">
 		    <colgroup>
-		        <col style="width: 100%;"/>
+		        <col style="width: 10%;"/>
+		        <col style="width: 90%;"/>
 		    </colgroup>
 		    <thead>
 		        <tr>
-		            <th class="boardTitle">
-		            	<span th:text="${detail.title}"></span>
-		            </th>
-		        </tr>
-		        <tr style="border-bottom:1px solid #e9e9e9">
-		        	<td class="font">
-		        		<span class="mgr10" th:text="${detail.regId}"></span>
-		        		<span class="mgr10" th:text="${detail.regDt}"></span>
-		        		조회 : <span class="userInfo" th:text="${detail.viewCount}"></span>
-		        	</td>
+		            <th><span th:text="${detail.title}"></span></th>
 		        </tr>
 		        <tr>
-		            <td class="font" style="padding:10px 15px;">첨부 파일</td>
+		        	<td style="border-bottom:1px solid #e9e9e9"><span th:text="${detail.regId}"></span></td>
+		        </tr>
+		        <tr>
+		            <th>첨부 파일</th>
+		            <td>
+		
+		            </td>
 		        </tr>
 		    </thead>
 		    <tbody>
 		        <tr>
-		            <td class="boardContent">
+		            <td colspan="2">
 		                <span th:utext="${detail.content}"></span>
 		            </td>
 		        </tr>

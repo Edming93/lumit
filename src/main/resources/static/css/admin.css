@@ -205,6 +205,10 @@ i {
     margin-left: 10px;
 }
 
+.mgr10 {
+	margin-right: 10px;
+}
+
 .mgt20 {
     margin-top: 20px;
 }
@@ -358,7 +362,7 @@ i {
     display:flex;
     justify-content: space-between;
     align-items:center;
-    margin-top:20px;
+    margin-top:15px;
 }
 
 .btnLeftArea {
