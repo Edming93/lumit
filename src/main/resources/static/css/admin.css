@@ -201,6 +201,10 @@ i {
     font-size: 13px;
 }
 
+.commBtn:focus {
+	outline:none;
+}
+
 .mgl10 {
     margin-left: 10px;
 }

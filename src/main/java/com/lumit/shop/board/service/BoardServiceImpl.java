@@ -32,7 +32,7 @@ public class BoardServiceImpl implements BoardService {
 		board.setMenuDvCd(menuRepository.selectMenuByMenuCd(menuCd).getTmplCd());
 		board.setUseYn("Y");
 		board.setDelYn("N");
-		board.setRplyYn("Y");
+		board.setRplyYn("N");
 		board.setFileYn("N");
 		board.setViewCount("0");
 		board.setRegId(SecurityUtils.getPrincipal().getUserId());
@@ -46,7 +46,32 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public TbBoard selectBoardDetail(String boardId) {
-		return boardRepository.selectBoardDetail(boardId);
+	public TbBoard selectBoardDetail(String menuCd, String boardId) {
+		return boardRepository.selectBoardDetail(menuCd,boardId);
+	}
+	
+	@Override
+	public Map<String, Object> updateBoard(String menuCd, TbBoard board) {
+		Map<String, Object> result = new HashMap<String,Object>();
+		
+		board.setModId(SecurityUtils.getPrincipal().getUserId());
+		boardRepository.updateBoard(board);
+		
+		result.put("result", "success");
+		
+		return result;
+	}
+	
+	@Override
+	public Map<String, Object> deleteBoard(TbBoard board) {
+		Map<String, Object> result = new HashMap<String,Object>();
+		
+		board.setModId(SecurityUtils.getPrincipal().getUserId());
+		board.setDelYn("Y");
+		boardRepository.updateBoard(board);
+		
+		result.put("result", "success");
+		
+		return result;
 	}
 }

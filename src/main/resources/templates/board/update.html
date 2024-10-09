@@ -19,7 +19,7 @@
 
 <div layout:fragment="content">
     <div>
-        <p class="title">공지사항 등록</p>
+        <p class="title">공지사항 수정</p>
     </div>
 
     <div id="container">
@@ -34,19 +34,20 @@
                     <tr>
                         <th>제목</th>
                         <td>
-                            <input type="text" id="title" name="title" class="comm_inp" placeholder="제목을 입력해주세요.">
+                            <input type="text" id="title" name="title" class="comm_inp" placeholder="제목을 입력해주세요." th:value="${detail.title}">
                         </td>
                     </tr>
                     <tr>
                         <th>파일 첨부</th>
                         <td>
 
-
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <textarea id="tiny"></textarea>
+                            <textarea id="tiny">
+                            	<span th:utext="${detail.content}"></span>
+                            </textarea>
                         </td>
                     </tr>
                 </tbody>
@@ -54,7 +55,7 @@
 
             <div class="btnArea" style="justify-content: center;">
             	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
-                <button type="button" id="registBtn" class="commBtn mgl10 size100">작성 완료</button>
+                <button type="button" id="registBtn" class="commBtn mgl10 size100">수정 완료</button>
             </div>
         </form>
     </div>
@@ -62,6 +63,9 @@
 </html>
 
 <script th:inline="javascript">
+
+let menuCd = [[${detail.menuCd}]];
+let boardId = [[${detail.boardId}]];
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -80,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
 	    tinycomments_mode: 'embedded',
 	    tinycomments_author: 'Author name',
+	    forced_root_block : false,
 	    mergetags_list: [
 	      { value: 'First.Name', title: 'First Name' },
 	      { value: 'Email', title: 'Email' },
@@ -91,6 +96,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 		let formData = new FormData(document.querySelector("#registForm"));
 		let params = {};
+		
+		params['boardId'] = boardId;
+		params['menuCd'] = menuCd;
 		
 		for(let [key,value] of formData.entries()) {
 			params[key] = value;
@@ -123,11 +131,9 @@ document.addEventListener("DOMContentLoaded", function () {
   
 });
 
-let menuCd = [[${menuCd}]];
-
 // 비동기 통신
 function setData(formArr) {
-    fetch('/' + siteId + '/board/' + menuCd + '/regist', {
+    fetch('/' + siteId + '/board/' + menuCd + '/update', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -16,6 +16,8 @@
         FROM 
         	TB_BOARD
         <include refid="searchWhere"></include>
+        AND
+        	DEL_YN = 'N'
         ORDER BY REG_DT DESC
     </select>
 
@@ -64,6 +66,58 @@
         	TB_BOARD
         WHERE
         	BOARD_ID = #{boardId}
+        AND
+        	MENU_CD = #{menuCd}
+        AND
+        	DEL_YN = 'N'
     </select>
 
+    <update id="updateBoard" parameterType="com.lumit.shop.common.model.TbBoard">
+        UPDATE 
+        	TB_BOARD
+        SET 
+        	MOD_DT = NOW()
+        	, MOD_ID = #{modId}
+        	<if test="menuCd != '' and menuCd neq null">
+				, MENU_CD = #{menuCd}
+			</if>
+        	<if test="title != '' and title neq null">
+				, TITLE = #{title}
+			</if>
+			<if test="content != '' and content neq null">
+				, CONTENT = #{content}
+			</if>
+			<if test="password != '' and password neq null">
+				, PASSWORD = #{password}
+			</if>
+			<if test="topFix != '' and topFix neq null">
+				, TOP_FIX = #{topFix}
+			</if>
+			<if test="useYn!= '' and useYn neq null">
+				, USE_YN = #{useYn}
+			</if>
+			<if test="delYn != '' and delYn neq null">
+				, DEL_YN = #{delYn}
+			</if>
+			<if test="rplyYn != '' and rplyYn neq null">
+				, RPLY_YN = #{rplyYn}
+			</if>
+			<if test="fileYn != '' and fileYn neq null">
+				, FILE_YN = #{fileYn}
+			</if>
+			<if test="viewCount != '' and viewCount neq null">
+				, VIEW_COUNT = #{viewCount}
+			</if>
+			<if test="regId != '' and regId neq null">
+				, REG_ID = #{regId}
+			</if>
+			<if test="regDt != '' and regDt neq null">
+				, REG_DT = #{regDt}
+			</if>
+        WHERE 
+        	BOARD_ID = #{boardId}
+        AND
+        	MENU_CD = #{menuCd}
+    </update>
+    
 </mapper>

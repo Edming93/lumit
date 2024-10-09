@@ -47,8 +47,9 @@ public class BoardController {
     }
     
     @GetMapping("{menuCd}/detail/{boardId}")
-    public String boardDetail(ModelMap map, HttpServletRequest request, @PathVariable("boardId") String boardId) {
-    	map.addAttribute("detail",boardService.selectBoardDetail(boardId));
+    public String boardDetail(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
+    	map.addAttribute("detail",boardService.selectBoardDetail(menuCd,boardId));
+    	map.addAttribute("menuCd", menuCd);
     	map.addAttribute("request", request);
     	
     	return BOARD_PATH + "/detail";
@@ -60,5 +61,24 @@ public class BoardController {
     	return new ResponseEntity<>(boardService.insertBoard(menuCd,board),HttpStatus.OK);
     }
 
+    @GetMapping("/{menuCd}/update/{boardId}")
+    public String boardUpdate(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
+    	map.addAttribute("detail",boardService.selectBoardDetail(menuCd,boardId));
+    	map.addAttribute("request", request);
+    	
+        return BOARD_PATH + "/update";
+    }
+    
+    @ResponseBody
+    @PostMapping("/{menuCd}/update")
+    public  ResponseEntity<Map<String,Object>> updateBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestBody TbBoard board) {
+    	return new ResponseEntity<>(boardService.updateBoard(menuCd,board),HttpStatus.OK);
+    }
+    
+    @ResponseBody
+    @PostMapping("/{menuCd}/delete")
+    public  ResponseEntity<Map<String,Object>> deleteBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestBody TbBoard board) {
+    	return new ResponseEntity<>(boardService.deleteBoard(board),HttpStatus.OK);
+    }
 
 } 
