@@ -42,7 +42,7 @@
             <tbody>
 	            <tr th:each="board, stat :${boardList}">
 	                <td class="alCenter">
-	                	<span th:text="${stat.count}"></span>
+	                	<span th:text="${stat.size - stat.index}"></span>
 	                </td>
 	                <td class="alLeft" style="color: #515151; font-size:17px;">
 	                	<a href="javascript:void(0);" th:onClick="moveDetail([[${board.boardId}]]);">

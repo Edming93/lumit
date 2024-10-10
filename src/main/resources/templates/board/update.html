@@ -6,7 +6,7 @@
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
     
-	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 
     <style>
         #registTable > tbody > tr {
@@ -94,45 +94,45 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	document.getElementById("registBtn").addEventListener("click", function() {
 	
-		let formData = new FormData(document.querySelector("#registForm"));
-		let params = {};
+		if(confirm("수정 하시겠습니까?")) {
 		
-		params['boardId'] = boardId;
-		params['menuCd'] = menuCd;
-		
-		for(let [key,value] of formData.entries()) {
-			params[key] = value;
-		};
-		
-		// 텍스트에디터 내용 가져오기
-		let tinyContent = tinymce.get("tiny").getContent();
-		params['content'] = tinyContent;
-		
-		for(let key in params) {
-			console.log(key);
-			if(params[key].trim() == "" || params[key].trim() == undefined || params[key].trim() == null) {
-				if(key == "title") {
-					alert("제목을 입력해주세요.");
-					return;
-				}
-				
-				if(key == "content") {
-					alert("내용을 입력해주세요.");
-					return;
+			let formData = new FormData(document.querySelector("#registForm"));
+			let params = {};
+			
+			params['boardId'] = boardId;
+			params['menuCd'] = menuCd;
+			
+			for(let [key,value] of formData.entries()) {
+				params[key] = value;
+			};
+			
+			// 텍스트에디터 내용 가져오기
+			let tinyContent = tinymce.get("tiny").getContent();
+			params['content'] = tinyContent;
+			
+			for(let key in params) {
+				console.log(key);
+				if(params[key].trim() == "" || params[key].trim() == undefined || params[key].trim() == null) {
+					if(key == "title") {
+						alert("제목을 입력해주세요.");
+						return;
+					}
+					
+					if(key == "content") {
+						alert("내용을 입력해주세요.");
+						return;
+					}
 				}
 			}
+			let url = "/"+siteId+"/board/"+menuCd+"/list";
+			setData(params,url);
 		}
-		setData(params);
-		
-		moveUrl("/"+siteId+"/board/"+menuCd+"/list");
 	});
 	
-  	
-  
 });
 
 // 비동기 통신
-function setData(formArr) {
+function setData(formArr,url) {
     fetch('/' + siteId + '/board/' + menuCd + '/update', {
         method: 'POST',
         headers: {
@@ -141,7 +141,9 @@ function setData(formArr) {
         body: JSON.stringify(formArr)
     })
     .then(function(result) {
-        console.log('success:', result);
+        alert("수정이 완료되었습니다.");
+        
+		moveUrl(url);
     })
     .catch(function(error) {
         console.log("error:", error);
