@@ -74,6 +74,10 @@ a {
     height: 100vh;
 }
 
+.content {
+	padding: 3rem;
+}
+
 .wrapper {
     display: flex;
     flex-direction: row;
@@ -217,6 +221,10 @@ i {
     margin-top: 20px;
 }
 
+.bold {
+	font-weight: bold;
+}
+
 .btnWrapper {
     height: 100%;
     width: 60px;
@@ -274,10 +282,6 @@ i {
     opacity: 1 !important;
 }
 
-.content {
-    margin: 1rem;
-}
-
 .title {
     font-size: var(--text-size-xlarge);
     margin-bottom: 2rem;
@@ -323,12 +327,35 @@ i {
     border-bottom: 1px solid #D9D9D9;
 }
 
-.comm_inp {
+.commInp {
     border: 1px solid #e5e5e5;
     width: 100%;
     height: 35px;
     padding: 0px 15px;
     border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.boardContainer {
+	width: 70%;
+}
+
+.boardInp {
+	border-bottom: 1px solid #D9D9D9;
+	width:100%;
+	height: 35px;
+	padding: 0px 15px;
+	box-sizing: border-box;
+}
+
+.registTable {
+        	font-size: 16px;
+        	width: 100%;
+}
+
+.registTable > tbody > tr {
+    height: 60px;
+    line-height: 60px;
 }
 
 .size300 {

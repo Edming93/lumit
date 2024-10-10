@@ -4,10 +4,6 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{admin/fragments/layout}">
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
-    
-	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-
     <style>
         .boardTable > thead > tr > td,th , .boardTable > tbody > tr > td,th {
         	padding: 4px 15px;
@@ -39,6 +35,7 @@
         	color: #2B2928;
         	font-size:14px;
         	height:300px;
+        	padding: 5px 15px 50px 15px !important;
         }
     </style>
 </head>
@@ -49,16 +46,16 @@
         <p class="title">공지사항 상세</p>
     </div>
 
-    <div id="container">
+    <div class="boardContainer">
 		<table class="boardTable mgt20">
 		    <colgroup>
 		        <col style="width: 100%;"/>
 		    </colgroup>
 		    <thead>
 		        <tr>
-		            <th class="boardTitle" style="padding-top: 10px;">
+		            <td class="boardTitle" style="padding-top: 10px;">
 		            	<span th:text="${detail.title}"></span>
-		            </th>
+		            </td>
 		        </tr>
 		        <tr style="border-bottom:1px solid #e9e9e9;">
 		        	<td class="font" style="padding-bottom: 10px;">
