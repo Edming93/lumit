@@ -16,14 +16,14 @@
         <!-- todo 로컬호스트 적힌 부분 범용으로 변경하기 -->
         <li th:class="nav-list">
             <a th:class="nav-link"
-               th:classappend="${request.getRequestURL().toString().split('localhost')[1] == '/admin/dashboard' ? 'active' : null}"
+               th:classappend="${servletPath == '/admin/dashboard' ? 'active' : null}"
                th:href="@{/admin/dashboard}">
                 <i class="fa-solid fa-house"></i>
                 <span th:class="wide">홈</span>
             </a></li>
         <li th:class="nav-list" th:each="menu : ${session.menuList}" th:if="${menu.isAdmin()}">
             <a th:class="nav-link"
-               th:classappend="${request.getRequestURL().toString().split('localhost')[1] == menu.getMenuUrl().split('/\*')[0] ? 'active' : null}"
+               th:classappend="${servletPath.substring(0, servletPath.lastIndexOf('/')) == menu.getMenuUrl().split('/\*')[0] ? 'active' : null}"
                th:href="|${menu.getMenuUrl().split('\*')[0]}${menu.getMenuDefaultUrl()}|">
                 <th:block th:if="${!menu.getIconHtml().equals(null)}" th:utext="${menu.getIconHtml()}"></th:block>
                 <span th:class="wide" th:text="${menu.menuName}"></span>

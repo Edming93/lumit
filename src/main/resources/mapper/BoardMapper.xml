@@ -2,122 +2,145 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.lumit.shop.common.repository.BoardRepository">
-	<sql id="searchWhere">
-		WHERE 1=1
-		<if test="title != '' and title neq null">
-			AND TITLE LIKE CONCAT('%', #{title}, '%')
-		</if>
-		<if test="content != '' and content neq null">
-			AND CONTENT LIKE CONCAT('%', #{content}, '%')
-		</if>
-	</sql>
+    <sql id="searchWhere">
+        WHERE 1=1
+        <if test="title != '' and title neq null">
+            AND TITLE LIKE CONCAT('%', #{title}, '%')
+        </if>
+        <if test="content != '' and content neq null">
+            AND CONTENT LIKE CONCAT('%', #{content}, '%')
+        </if>
+    </sql>
     <select id="selectBoardList" resultType="com.lumit.shop.common.model.TbBoard">
         SELECT *
-        FROM 
-        	TB_BOARD
+        FROM
+        TB_BOARD
         <include refid="searchWhere"></include>
         AND
-        	DEL_YN = 'N'
+        DEL_YN = 'N'
         ORDER BY REG_DT DESC
     </select>
-
-    <insert id="insertBoard" parameterType="com.lumit.shop.common.model.TbBoard" useGeneratedKeys="true" keyProperty="boardId">
-        INSERT INTO TB_BOARD
-        ( 	
-        	MENU_CD
-	        , MENU_DV_CD
-	        , TITLE
-	        , CONTENT
-	        , PASSWORD
-	        , TOP_FIX
-	        , USE_YN
-	        , DEL_YN
-	        , RPLY_YN
-	        , FILE_YN
-	        , VIEW_COUNT
-	        , REG_ID
-	        , REG_DT
-	        , MOD_ID
-	        , MOD_DT
-	    )
-        VALUES 
-        ( 	
-        	#{menuCd}
-            , #{menuDvCd}
-            , #{title}
-            , #{content}
-            , #{password}
-            , #{topFix}
-            , #{useYn}
-            , #{delYn}
-            , #{rplyYn}
-            , #{fileYn}
-            , #{viewCount}
-            , #{regId}
-            , now()
-            , #{modId}
-            , now()
-        )
-    </insert>
-	
-	<select id="selectBoardDetail" resultType="com.lumit.shop.common.model.TbBoard">
+    <select id="selectPageableBoardList" parameterType="RequestList" resultType="TbBoard">
         SELECT *
-        FROM 
-        	TB_BOARD
-        WHERE
-        	BOARD_ID = #{boardId}
-        AND
-        	MENU_CD = #{menuCd}
-        AND
-        	DEL_YN = 'N'
+        FROM
+        TB_BOARD
+        <where>
+            <if test="data.title != '' and data.title neq null">
+                AND TITLE LIKE CONCAT('%', #{data.title}, '%')
+            </if>
+            <if test="data.content != '' and data.content neq null">
+                AND CONTENT LIKE CONCAT('%', #{data.content}, '%')
+            </if>
+            AND
+            DEL_YN = 'N'
+        </where>
+        ORDER BY REG_DT DESC
+        LIMIT #{pageable.offset}, 10
+    </select>
+
+    <select id="selectListBoardCount" parameterType="TbBoard" resultType="int">
+        SELECT COUNT(*) AS CNT
+        FROM TB_BOARD
+        <where>
+            <if test="title != null and title != ''">
+                AND TITLE LIKE '%' || #{title} || '%'
+            </if>
+            <if test="content != null and content != ''">
+                AND WRITER LIKE '%' || #{content} || '%'
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="insertBoard" parameterType="com.lumit.shop.common.model.TbBoard" useGeneratedKeys="true"
+            keyProperty="boardId">
+        INSERT INTO TB_BOARD
+        ( MENU_CD
+        , MENU_DV_CD
+        , TITLE
+        , CONTENT
+        , PASSWORD
+        , TOP_FIX
+        , USE_YN
+        , DEL_YN
+        , RPLY_YN
+        , FILE_YN
+        , VIEW_COUNT
+        , REG_ID
+        , REG_DT
+        , MOD_ID
+        , MOD_DT)
+        VALUES ( #{menuCd}
+               , #{menuDvCd}
+               , #{title}
+               , #{content}
+               , #{password}
+               , #{topFix}
+               , #{useYn}
+               , #{delYn}
+               , #{rplyYn}
+               , #{fileYn}
+               , #{viewCount}
+               , #{regId}
+               , now()
+               , #{modId}
+               , now())
+    </insert>
+
+    <select id="selectBoardDetail" resultType="com.lumit.shop.common.model.TbBoard">
+        SELECT *
+        FROM TB_BOARD
+        WHERE BOARD_ID = #{boardId}
+          AND MENU_CD = #{menuCd}
+          AND DEL_YN = 'N'
     </select>
 
     <update id="updateBoard" parameterType="com.lumit.shop.common.model.TbBoard">
-        UPDATE 
-        	TB_BOARD
-        SET 
-        	MOD_DT = NOW()
-        	, MOD_ID = #{modId}
-        	<if test="menuCd != '' and menuCd neq null">
-				, MENU_CD = #{menuCd}
-			</if>
-        	<if test="title != '' and title neq null">
-				, TITLE = #{title}
-			</if>
-			<if test="content != '' and content neq null">
-				, CONTENT = #{content}
-			</if>
-			<if test="password != '' and password neq null">
-				, PASSWORD = #{password}
-			</if>
-			<if test="topFix != '' and topFix neq null">
-				, TOP_FIX = #{topFix}
-			</if>
-			<if test="useYn!= '' and useYn neq null">
-				, USE_YN = #{useYn}
-			</if>
-			<if test="delYn != '' and delYn neq null">
-				, DEL_YN = #{delYn}
-			</if>
-			<if test="rplyYn != '' and rplyYn neq null">
-				, RPLY_YN = #{rplyYn}
-			</if>
-			<if test="fileYn != '' and fileYn neq null">
-				, FILE_YN = #{fileYn}
-			</if>
-			<if test="viewCount != '' and viewCount neq null">
-				, VIEW_COUNT = #{viewCount}
-			</if>
-			<if test="regId != '' and regId neq null">
-				, REG_ID = #{regId}
-			</if>
-			<if test="regDt != '' and regDt neq null">
-				, REG_DT = #{regDt}
-			</if>
-        WHERE 
-        	BOARD_ID = #{boardId}
+        UPDATE
+        TB_BOARD
+        SET
+        MOD_DT = NOW()
+        , MOD_ID = #{modId}
+        <if test="menuCd != '' and menuCd neq null">
+            , MENU_CD = #{menuCd}
+        </if>
+        <if test="title != '' and title neq null">
+            , TITLE = #{title}
+        </if>
+        <if test="content != '' and content neq null">
+            , CONTENT = #{content}
+        </if>
+        <if test="password != '' and password neq null">
+            , PASSWORD = #{password}
+        </if>
+        <if test="topFix != '' and topFix neq null">
+            , TOP_FIX = #{topFix}
+        </if>
+        <if test="useYn!= '' and useYn neq null">
+            , USE_YN = #{useYn}
+        </if>
+        <if test="delYn != '' and delYn neq null">
+            , DEL_YN = #{delYn}
+        </if>
+        <if test="rplyYn != '' and rplyYn neq null">
+            , RPLY_YN = #{rplyYn}
+        </if>
+        <if test="fileYn != '' and fileYn neq null">
+            , FILE_YN = #{fileYn}
+        </if>
+        <if test="viewCount != '' and viewCount neq null">
+            , VIEW_COUNT = #{viewCount}
+        </if>
+        <if test="regId != '' and regId neq null">
+            , REG_ID = #{regId}
+        </if>
+        <if test="regDt != '' and regDt neq null">
+            , REG_DT = #{regDt}
+        </if>
+        WHERE
+        BOARD_ID = #{boardId}
         AND
-        	MENU_CD = #{menuCd}
+        MENU_CD = #{menuCd}
     </update>
-    
+
 </mapper>

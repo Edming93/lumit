@@ -1,12 +1,18 @@
 package com.lumit.shop.common.controller;
 
+import com.lumit.shop.board.service.BoardService;
 import com.lumit.shop.common.dto.ResponseDto;
+import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.model.TbAddress;
+import com.lumit.shop.common.model.TbBoard;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.security.PrincipalDetails;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +27,7 @@ public class APIController {
 
 
     private final UserService userService;
+    private final BoardService boardService;
 
     // 멤버 - 회원가입 - 중복체크api
     @GetMapping(value = "/opened/idCheck")
@@ -57,5 +64,14 @@ public class APIController {
         }
         List<TbAddress> addressList = userService.selectAddressListByUserId(user.getUserId());
         return new ResponseDto<>("", addressList);
+    }
+
+    @GetMapping(value = "/opened/boardList")
+    public @ResponseBody ResponseEntity<?> boardList(String menuCd, SearchDto search, TbBoard board, @PageableDefault(size = 10) Pageable pageable) throws IOException {
+        board.setMenuCd(menuCd);
+        if (search.getTitle() != null) {
+            board.setTitle(search.getTitle());
+        }
+        return ResponseEntity.ok(boardService.selectPageableBoardList(board, pageable));
     }
 }

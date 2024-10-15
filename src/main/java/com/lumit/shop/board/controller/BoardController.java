@@ -2,6 +2,9 @@ package com.lumit.shop.board.controller;
 
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,61 +27,60 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping(value = "/{siteId}/board")
 public class BoardController {
-	private final BoardService boardService;
+    private final BoardService boardService;
     private final String BOARD_PATH = "/board";
 
 
     @GetMapping("/{menuCd}/list")
-    public String selectBoardList(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd,SearchDto search) {
-    	map.addAttribute("menuCd", menuCd);
-    	map.addAttribute("request", request);
-    	map.addAttribute("title", search.getTitle());
-    	map.addAttribute("boardList",boardService.selectBoardList(search));
-    	
+    public String selectBoardList(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd, SearchDto search) {
+        map.addAttribute("menuCd", menuCd);
+        map.addAttribute("title", search.getTitle());
+        map.addAttribute("boardList", boardService.selectBoardList(search));
+
         return BOARD_PATH + "/list";
+    }
+
+    @GetMapping("/{menuCd}/pageableList")
+    public String selectPageableBoardList(ModelMap map, @PathVariable("menuCd") String menuCd) {
+        map.addAttribute("menuCd", menuCd);
+        return BOARD_PATH + "/listPageable";
     }
 
     @GetMapping("/{menuCd}/regist")
     public String boardRegist(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd) {
-    	map.addAttribute("menuCd", menuCd);
-    	map.addAttribute("request", request);
-    	
+        map.addAttribute("menuCd", menuCd);
         return BOARD_PATH + "/regist";
     }
-    
+
     @GetMapping("{menuCd}/detail/{boardId}")
     public String boardDetail(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
-    	map.addAttribute("detail",boardService.selectBoardDetail(menuCd,boardId));
-    	map.addAttribute("menuCd", menuCd);
-    	map.addAttribute("request", request);
-    	
-    	return BOARD_PATH + "/detail";
+        map.addAttribute("detail", boardService.selectBoardDetail(menuCd, boardId));
+        map.addAttribute("menuCd", menuCd);
+        return BOARD_PATH + "/detail";
     }
-    
+
     @ResponseBody
     @PostMapping("/{menuCd}/regist")
-    public  ResponseEntity<Map<String,Object>> insertBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestBody TbBoard board) {
-    	return new ResponseEntity<>(boardService.insertBoard(menuCd,board),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> insertBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestBody TbBoard board) {
+        return new ResponseEntity<>(boardService.insertBoard(menuCd, board), HttpStatus.OK);
     }
 
     @GetMapping("/{menuCd}/update/{boardId}")
     public String boardUpdate(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
-    	map.addAttribute("detail",boardService.selectBoardDetail(menuCd,boardId));
-    	map.addAttribute("request", request);
-    	
+        map.addAttribute("detail", boardService.selectBoardDetail(menuCd, boardId));
         return BOARD_PATH + "/update";
     }
-    
+
     @ResponseBody
     @PostMapping("/{menuCd}/update")
-    public  ResponseEntity<Map<String,Object>> updateBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestBody TbBoard board) {
-    	return new ResponseEntity<>(boardService.updateBoard(menuCd,board),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> updateBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestBody TbBoard board) {
+        return new ResponseEntity<>(boardService.updateBoard(menuCd, board), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/{menuCd}/delete")
-    public  ResponseEntity<Map<String,Object>> deleteBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestBody TbBoard board) {
-    	return new ResponseEntity<>(boardService.deleteBoard(board),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> deleteBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestBody TbBoard board) {
+        return new ResponseEntity<>(boardService.deleteBoard(board), HttpStatus.OK);
     }
 
 } 
