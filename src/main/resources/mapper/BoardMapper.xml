@@ -129,7 +129,7 @@
             , FILE_YN = #{fileYn}
         </if>
         <if test="viewCount != '' and viewCount neq null">
-            , VIEW_COUNT = #{viewCount}
+            , VIEW_COUNT = VIEW_COUNT + 1
         </if>
         <if test="regId != '' and regId neq null">
             , REG_ID = #{regId}

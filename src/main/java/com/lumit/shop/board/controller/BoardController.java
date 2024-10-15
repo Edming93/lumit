@@ -2,6 +2,7 @@ package com.lumit.shop.board.controller;
 
 import java.util.Map;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -9,12 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.lumit.shop.board.service.BoardService;
 import com.lumit.shop.common.dto.SearchDto;
@@ -41,9 +37,9 @@ public class BoardController {
     }
 
     @GetMapping("/{menuCd}/pageableList")
-    public String selectPageableBoardList(ModelMap map, @PathVariable("menuCd") String menuCd) {
+    public String selectPageableBoardList(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestParam(required = false) String page) {
         map.addAttribute("menuCd", menuCd);
-        return BOARD_PATH + "/listPageable";
+        return page.isEmpty() ? BOARD_PATH + "/listPageable" : BOARD_PATH + "/listPageable?page=" + page;
     }
 
     @GetMapping("/{menuCd}/regist")
@@ -53,8 +49,8 @@ public class BoardController {
     }
 
     @GetMapping("{menuCd}/detail/{boardId}")
-    public String boardDetail(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
-        map.addAttribute("detail", boardService.selectBoardDetail(menuCd, boardId));
+    public String boardDetail(ModelMap map, HttpServletRequest request, HttpServletResponse response, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
+        map.addAttribute("detail", boardService.selectBoardDetail(menuCd, boardId, request, response));
         map.addAttribute("menuCd", menuCd);
         return BOARD_PATH + "/detail";
     }
@@ -66,8 +62,8 @@ public class BoardController {
     }
 
     @GetMapping("/{menuCd}/update/{boardId}")
-    public String boardUpdate(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
-        map.addAttribute("detail", boardService.selectBoardDetail(menuCd, boardId));
+    public String boardUpdate(ModelMap map, HttpServletRequest request, HttpServletResponse response, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
+        map.addAttribute("detail", boardService.selectBoardDetail(menuCd, boardId, request, response));
         return BOARD_PATH + "/update";
     }
 

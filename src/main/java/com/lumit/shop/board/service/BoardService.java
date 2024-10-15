@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.model.TbBoard;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -20,6 +22,6 @@ public interface BoardService {
 
     public Map<String, Object> deleteBoard(TbBoard board);
 
-    public TbBoard selectBoardDetail(String menuCd, String boardId);
+    public TbBoard selectBoardDetail(String menuCd, String boardId, HttpServletRequest request, HttpServletResponse response);
 
 }
