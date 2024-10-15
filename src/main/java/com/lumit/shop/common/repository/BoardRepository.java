@@ -17,6 +17,5 @@ public interface BoardRepository {
 	public int updateBoard(TbBoard board);
 	public int deleteBoard(@Param("menuCd")String menuCd, @Param("boardId") String boardId);
 	public TbBoard selectBoardDetail(@Param("menuCd")String menuCd, @Param("boardId") String boardId);
-	
 }
 

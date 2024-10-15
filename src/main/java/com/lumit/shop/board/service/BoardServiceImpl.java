@@ -12,6 +12,9 @@ import com.lumit.shop.common.repository.BoardRepository;
 import com.lumit.shop.common.repository.MenuRepository;
 import com.lumit.shop.common.service.SecurityUtils;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -46,7 +49,15 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public TbBoard selectBoardDetail(String menuCd, String boardId) {
+	public TbBoard selectBoardDetail(String menuCd, String boardId, HttpServletRequest request, HttpServletResponse response) {
+		TbBoard board = new TbBoard();
+		board.setBoardId(boardId);
+		board.setMenuCd(menuCd);
+		board.setModId(SecurityUtils.getPrincipal().getUserId());
+		board.setViewCount("set");
+		// 조회수 카운트
+		this.viewCount(board,request,response);
+		
 		return boardRepository.selectBoardDetail(menuCd,boardId);
 	}
 	
@@ -73,5 +84,46 @@ public class BoardServiceImpl implements BoardService {
 		result.put("result", "success");
 		
 		return result;
+	}
+	
+	// 조회수 카운트, 쿠키 중복 방지
+	private void viewCount(TbBoard board, HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("왜안타");
+		
+		
+		Cookie oldCookie = null;
+		
+		Cookie[] cookies = request.getCookies();
+		
+		if(cookies != null) {
+			for(Cookie cookie:cookies) {
+				if(cookie.getName().equals("postView")) {
+					oldCookie = cookie;
+				}
+			}
+		}
+		
+		// oldCookie에 값이 있다면, 즉 postView가 존재한다면 
+		// 해당 쿠키의 value가 현재 접근한 게시글의 번호(bbsNum)를 포함하고 있는지 검사한다.
+		if(oldCookie != null) {
+			// 단순히 숫자만 사용하면 문제가 생길 수 있어서 괄호로 감싸 숫자를 온전히 검사하고자 함
+			if(!oldCookie.getValue().contains("["+board.getBoardId()+ "]")) {
+				boardRepository.updateBoard(board);
+				oldCookie.setValue(oldCookie.getValue() + "_["+board.getBoardId()+"]");
+				oldCookie.setPath("/");
+				oldCookie.setMaxAge(1800);
+				response.addCookie(oldCookie);
+			}
+		// null이면 DB조회수 올리고
+		// 해당 게시글 id를 괄호로 감싼 새로운 쿠키 postView를 생성하여 HttpServletResponse에게 전달한다.
+		}else {
+			boardRepository.updateBoard(board);
+			
+			Cookie newCookie = new Cookie("postView","["+board.getBoardId()+"]");
+			newCookie.setPath("/");
+			newCookie.setMaxAge(1800);
+			response.addCookie(newCookie);
+		}
+		
 	}
 }

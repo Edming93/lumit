@@ -18,6 +18,7 @@ import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.model.TbBoard;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -47,8 +48,8 @@ public class BoardController {
     }
     
     @GetMapping("{menuCd}/detail/{boardId}")
-    public String boardDetail(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
-    	map.addAttribute("detail",boardService.selectBoardDetail(menuCd,boardId));
+    public String boardDetail(ModelMap map, HttpServletRequest request, HttpServletResponse response, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
+    	map.addAttribute("detail",boardService.selectBoardDetail(menuCd,boardId,request,response));
     	map.addAttribute("menuCd", menuCd);
     	map.addAttribute("request", request);
     	
@@ -62,8 +63,8 @@ public class BoardController {
     }
 
     @GetMapping("/{menuCd}/update/{boardId}")
-    public String boardUpdate(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
-    	map.addAttribute("detail",boardService.selectBoardDetail(menuCd,boardId));
+    public String boardUpdate(ModelMap map, HttpServletRequest request, HttpServletResponse response, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
+    	map.addAttribute("detail",boardService.selectBoardDetail(menuCd,boardId,request,response));
     	map.addAttribute("request", request);
     	
         return BOARD_PATH + "/update";
