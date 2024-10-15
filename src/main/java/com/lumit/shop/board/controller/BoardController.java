@@ -17,6 +17,7 @@ import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.model.TbBoard;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Controller

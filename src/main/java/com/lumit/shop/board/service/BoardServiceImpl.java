@@ -20,6 +20,9 @@ import com.lumit.shop.common.repository.BoardRepository;
 import com.lumit.shop.common.repository.MenuRepository;
 import com.lumit.shop.common.service.SecurityUtils;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 
 @Service
