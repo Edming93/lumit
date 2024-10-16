@@ -31,7 +31,11 @@
                     <tr>
                         <th class="alLeft bold">파일 첨부</th>
                         <td>
-
+							<div class="form__input--file_wrap">
+							  <input class="form__input--file" id="upload" type="file" multiple>
+							  <label class="form__label--file" for="upload">내PC</label>
+							  <span class="form__span--file">선택된 파일이 없습니다.</span>
+							</div>
 
                         </td>
                     </tr>
@@ -110,8 +114,29 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	});
 	
-  
-});
+	
+	// input file 커스텀 - 파일명 붙이기
+	const fileTarget = document.querySelector('.form__input--file_wrap input');
+	
+	fileTarget.addEventListener('change', function () { 
+		
+		var files = this.files;
+		var fileArr = [];
+		
+		for (var i = 0; i < files.length; i++) {
+			fileArr.push(files[i].name);
+		}
+		
+		// 파일명 노출방법2: 배열 값들을 줄바꿈하여 표시
+		var fileList = fileArr.join('<br>'); // 배열 값을 <br>로 연결
+	    
+		// 파일명 노출방법 : 배열 값들을 줄바꿈하여 표시
+		var fileSpan = this.parentNode.querySelector('.form__span--file');
+		if (fileSpan) {
+			fileSpan.innerHTML = fileList; // HTML로 줄바꿈 적용
+		};
+	  
+	});
 
 let menuCd = [[${menuCd}]];
 
@@ -133,4 +158,5 @@ function setData(formArr,url) {
         console.log("error:", error);
     });
 }
+
 </script>

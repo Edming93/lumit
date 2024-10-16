@@ -97,10 +97,11 @@
     document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("backBtn").addEventListener("click", function () {
-            console.log(boardId)
-            let page = boardId / 100
-            console.log(page)
-            // moveUrl("/" + siteId + "/board" + menuCd + "/pageableList")
+            console.log(boardId);
+            let page = boardId / 100;
+            console.log(page);
+            // moveUrl("/" + siteId + "/board/" + menuCd + "/pageableList");
+			moveUrl("/" + siteId + "/board/" + menuCd + "/list");
         })
 
         document.getElementById("updateBtn").addEventListener("click", function () {
