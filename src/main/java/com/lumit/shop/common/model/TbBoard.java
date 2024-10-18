@@ -24,7 +24,7 @@ public class TbBoard{
 	private String regDt;
 	private String modId;
 	private String modDt;
-	
+
 	@Override
 	public String toString() {
 		return "TbBoard [boardId=" + boardId + ", menuCd=" + menuCd + ", menuDvCd=" + menuDvCd + ", title=" + title

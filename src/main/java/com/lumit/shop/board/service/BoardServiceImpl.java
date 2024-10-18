@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lumit.shop.common.data.RequestList;
 import com.lumit.shop.common.dto.SearchDto;
@@ -49,7 +50,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Map<String, Object> insertBoard(String menuCd, TbBoard board) {
+    public Map<String, Object> insertBoard(String menuCd, TbBoard board, MultipartFile[] files) {
         Map<String, Object> result = new HashMap<String, Object>();
 
         board.setMenuCd(menuCd);
@@ -57,7 +58,11 @@ public class BoardServiceImpl implements BoardService {
         board.setUseYn("Y");
         board.setDelYn("N");
         board.setRplyYn("N");
-        board.setFileYn("N");
+//        if(files.length != 0) {
+//        	board.setFileYn("Y");
+//        }else {
+//        	board.setFileYn("N");
+//        }
         board.setViewCount("0");
         board.setRegId(SecurityUtils.getPrincipal().getUserId());
         board.setModId(SecurityUtils.getPrincipal().getUserId());

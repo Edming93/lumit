@@ -97,17 +97,22 @@ document.addEventListener("DOMContentLoaded", function () {
 			let formData = new FormData(document.querySelector("#registForm"));
 			let params = {};
 			
-			for(let [key,value] of formData.entries()) {
-				params[key] = value;
-			};
+			if(files.length === 0) {
+				formData.append('files',null);
+			}else {
+				formData.append('files',files);
+			}
+			
+			// for(let [key,value] of formData.entries()) {
+			//	params[key] = value;
+			// };
 			
 			// 텍스트에디터 내용 가져오기
 			let tinyContent = tinymce.get("tiny").getContent();
-			params['content'] = tinyContent;
+			formData.append('content',tinyContent);
 			
-			for(let key in params) {
-				console.log(key);
-				if(params[key].trim() == "" || params[key].trim() == undefined || params[key].trim() == null) {
+			for(let [key,value] of formData.entries()) {
+				if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
 					if(key == "title") {
 						alert("제목을 입력해주세요.");
 						return;
@@ -121,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			}
 			let url = "/"+siteId+"/board/"+menuCd+"/list";
 			
-			setData(params,url);
+			setData(formData,url);
 		}
 	});
 	
@@ -173,13 +178,10 @@ function deleteFileBtn(elem) {
 
 
 // 비동기 통신
-function setData(formArr,url) {
+function setData(formData,url) {
     fetch('/' + siteId + '/board/' + menuCd + '/regist', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formArr)
+        body: formData
     })
     .then(function(result) {
 		alert("등록이 완료되었습니다.");

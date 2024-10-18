@@ -1,5 +1,6 @@
 package com.lumit.shop.board.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lumit.shop.board.service.BoardService;
 import com.lumit.shop.common.dto.SearchDto;
@@ -58,8 +60,10 @@ public class BoardController {
 
     @ResponseBody
     @PostMapping("/{menuCd}/regist")
-    public ResponseEntity<Map<String, Object>> insertBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestBody TbBoard board) {
-        return new ResponseEntity<>(boardService.insertBoard(menuCd, board), HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> inertBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @ModelAttribute TbBoard board, @RequestParam(value = "files", required = false) MultipartFile[] files) {
+    	System.out.println(board);
+    	System.out.println(files);
+        return new ResponseEntity<>(boardService.insertBoard(menuCd, board, files), HttpStatus.OK);
     }
 
     @GetMapping("/{menuCd}/update/{boardId}")

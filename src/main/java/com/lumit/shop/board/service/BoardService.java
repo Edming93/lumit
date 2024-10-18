@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.model.TbBoard;
@@ -18,7 +19,7 @@ public interface BoardService {
 
     public Page<Map<String, Object>> selectPageableBoardList(TbBoard tbBoard, Pageable pageable);
 
-    public Map<String, Object> insertBoard(String menuCd, TbBoard board);
+    public Map<String, Object> insertBoard(String menuCd, TbBoard board, MultipartFile[] files);
 
     public Map<String, Object> updateBoard(String menuCd, TbBoard board);
 
