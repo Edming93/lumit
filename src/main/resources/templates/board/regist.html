@@ -7,7 +7,6 @@
 	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 
-
 <div layout:fragment="content">
     <div>
         <p class="title">공지사항 등록</p>
@@ -32,9 +31,14 @@
                         <th class="alLeft bold">파일 첨부</th>
                         <td>
 							<div class="form__input--file_wrap">
-							  <input class="form__input--file" id="upload" type="file" multiple>
-							  <label class="form__label--file" for="upload">내PC</label>
-							  <span class="form__span--file">선택된 파일이 없습니다.</span>
+								<div class="form__input--top_wrap">
+								  <input class="form__input--file" id="upload" type="file" multiple>
+								  <label class="form__label--file" for="upload">내PC</label>
+								  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
+							  	</div>
+								<div class="form__input--bottom_wrap">
+							  		<div class="form__div--file"></div>
+								</div>
 							</div>
 
                         </td>
@@ -56,10 +60,17 @@
 </div>
 </html>
 
+
+
+
 <script th:inline="javascript">
 
-document.addEventListener("DOMContentLoaded", function () {
+let menuCd = [[${menuCd}]];
+var files = []; // 실제 파일 담는 arr
+var fileIdx = 1;
+var beforeFiles = []; // 백업용
 
+document.addEventListener("DOMContentLoaded", function () {
 	// 텍스트에디터 기초 세팅
 	tinymce.init({
 		language:"ko_KR",
@@ -120,25 +131,46 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	fileTarget.addEventListener('change', function () { 
 		
-		var files = this.files;
-		var fileArr = [];
-		
-		for (var i = 0; i < files.length; i++) {
-			fileArr.push(files[i].name);
+		for(var i=0; i<this.files.length; i++){
+			console.log(this.files[i]);
+			if(files.length >= 5){
+				alert('최대 5개까지 첨부 가능합니다.');
+				break;
+			}
+			
+			var file = this.files[i];
+			file['idx'] = fileIdx;
+			files.push(file);
+			fileIdx++;
 		}
 		
-		// 파일명 노출방법2: 배열 값들을 줄바꿈하여 표시
-		var fileList = fileArr.join('<br>'); // 배열 값을 <br>로 연결
-	    
-		// 파일명 노출방법 : 배열 값들을 줄바꿈하여 표시
-		var fileSpan = this.parentNode.querySelector('.form__span--file');
-		if (fileSpan) {
-			fileSpan.innerHTML = fileList; // HTML로 줄바꿈 적용
-		};
-	  
+		setFiles();
+		
 	});
 
-let menuCd = [[${menuCd}]];
+});
+
+var fileDiv = document.querySelector('.form__div--file');
+
+// 파일 그리기
+function setFiles() {
+	var fileHtml = '';
+	_.forEach(files, function(file){
+		fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
+	})
+	
+	if (fileDiv) {
+		fileDiv.innerHTML = fileHtml;
+	};
+}
+
+function deleteFileBtn(elem) {
+	// 실제 파일 삭제
+	files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")})
+	console.log(files);
+	setFiles();
+};
+
 
 // 비동기 통신
 function setData(formArr,url) {
