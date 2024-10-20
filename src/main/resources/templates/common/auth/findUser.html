@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{fragments/layout}">
+<div layout:fragment="content" style="text-align: center; display: flex; justify-content: center">
+    <div class="findUserForm">
+        <p>계정 정보 찾기</p>
+        <div class="findUserTab">
+            <button id="idBtn">
+                아이디 찾기
+            </button>
+            <button id="pwdBtn">비밀번호 찾기</button>
+        </div>
+        <fieldset class="findUserRadio">
+            <div>
+                <label>
+                    <input id="phoneRadio" type="radio" name="verifyType" value="phone" checked>휴대전화로 인증</label>
+            </div>
+            <div>
+                <label>
+                    <input id="emailRadio" type="radio" name="verifyType" value="email">이메일로 인증</label>
+            </div>
+        </fieldset>
+        <div class="findUserInput">
+            <div id="phoneId">
+                <p>등록된 휴대전화로 아이디 찾기</p>
+                <hr>
+                <div>
+                    <input type="text" placeholder="이름">
+                </div>
+                <div>
+                    <input type="text" placeholder="등록된 휴대전화 (-없이)">
+                    <button id="id">인증번호 받기</button>
+                </div>
+                <div><input type="text" placeholder="인증번호 입력">
+                    <button>확인</button>
+                </div>
+            </div>
+            <div id="phonePwd">
+                <p>등록된 휴대전화로 비밀번호 찾기</p>
+                <hr>
+                <div>
+                    <input type="text" placeholder="아이디">
+                </div>
+                <div>
+                    <input type="text" placeholder="이름">
+                </div>
+                <div>
+                    <input type="text" placeholder="등록된 휴대전화 (-없이)">
+                    <button>인증번호 받기</button>
+                </div>
+                <div><input type="text" placeholder="인증번호 입력">
+                    <button>확인</button>
+                </div>
+            </div>
+            <div id="emailId">
+                <p>등록된 이메일로 아이디 찾기</p>
+                <hr>
+                <div>
+                    <input type="text" placeholder="이름">
+                </div>
+                <div>
+                    <input type="email" placeholder="등록된 이메일 주소">
+                    <button>인증번호 받기</button>
+                </div>
+                <div><input type="text" placeholder="인증번호 입력">
+                    <button>확인</button>
+                </div>
+            </div>
+            <div id="emailPwd">
+                <p>등록된 이메일로 비밀번호 찾기</p>
+                <hr>
+                <div>
+                    <input type="text" placeholder="아이디">
+                </div>
+                <div>
+                    <input type="text" placeholder="이름">
+                </div>
+                <div>
+                    <input type="email" placeholder="등록된 이메일 주소">
+                    <button>인증번호 받기</button>
+                </div>
+                <div><input type="text" placeholder="인증번호 입력">
+                    <button>확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" th:src="@{/js/firebase.js}"></script>
+    <script th:inline="javascript">
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let infoState = ""
+            let typeState = ""
+            resetState()
+            const info = [[${info}]]
+            const idBtn = document.querySelector("#idBtn")
+            const pwdBtn = document.querySelector("#pwdBtn")
+            const phoneRadio = document.querySelector("#phoneRadio")
+            const emailRadio = document.querySelector("#emailRadio")
+            idBtn.addEventListener("click", function () {
+                pwdBtn.classList.remove("highlight")
+                idBtn.classList.add("highlight")
+                infoState = "Id"
+                if (typeState == "") {
+                    changeState("phoneId")
+                } else {
+                    changeState(typeState + infoState)
+                }
+            })
+            pwdBtn.addEventListener("click", function () {
+                idBtn.classList.remove("highlight")
+                pwdBtn.classList.add("highlight")
+                infoState = "Pwd"
+                if (typeState == "") {
+                    changeState("phonePwd")
+                } else {
+                    changeState(typeState + infoState)
+                }
+            })
+            phoneRadio.addEventListener("change", function () {
+                typeState = "phone"
+                changeState(typeState + infoState)
+            })
+            emailRadio.addEventListener("change", function () {
+                typeState = "email"
+                changeState(typeState + infoState)
+            })
+            if (info == "pwd") {
+                pwdBtn.dispatchEvent(new Event("click"))
+            } else {
+                idBtn.dispatchEvent(new Event("click"))
+            }
+            history.replaceState({}, null, location.pathname)
+        })
+
+        function changeState(state) {
+            resetState()
+            const phoneId = document.querySelector("#phoneId")
+            const phonePwd = document.querySelector("#phonePwd")
+            const emailId = document.querySelector("#emailId")
+            const emailPwd = document.querySelector("#emailPwd")
+            if (state == "phoneId") {
+                console.log("요기")
+                phoneId.classList.remove("hide")
+            } else if (state == "phonePwd") {
+                phonePwd.classList.remove("hide")
+            } else if (state == "emailId") {
+                emailId.classList.remove("hide")
+            } else if (state == "emailPwd") {
+                emailPwd.classList.remove("hide")
+            }
+        }
+
+        function resetState() {
+            const phoneId = document.querySelector("#phoneId")
+            const phonePwd = document.querySelector("#phonePwd")
+            const emailId = document.querySelector("#emailId")
+            const emailPwd = document.querySelector("#emailPwd")
+            emailId.classList.add("hide")
+            emailPwd.classList.add("hide")
+            phoneId.classList.add("hide")
+            phonePwd.classList.add("hide")
+        }
+
+    </script>
+
+</div>

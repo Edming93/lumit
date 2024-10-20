@@ -5,7 +5,6 @@ import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.security.PrincipalDetails;
-import com.lumit.shop.common.security.social.CustomOauth2UserDetails;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -13,14 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -29,6 +24,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class MemberController {
     private final String SIGNUP_FORM = "/common/auth/signupForm";
+    private final String FIND_USER = "/common/auth/findUser";
     private final UserService userService;
     private final UserDetailsService userDetailsService;
 
@@ -101,4 +97,15 @@ public class MemberController {
         model.addAttribute("signUpDto", new SignUpDto());
         return SIGNUP_FORM;
     }
+
+    @GetMapping("/findUser")
+    public String findUser(Model model, @RequestParam(value = "info", required = false) String info) {
+        if ((info != null) && info.equals("pwd")) {
+            model.addAttribute("info", "pwd");
+        } else {
+            model.addAttribute("info", "id");
+        }
+        return FIND_USER;
+    }
+
 }

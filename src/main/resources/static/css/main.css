@@ -730,3 +730,99 @@ footer {
     opacity: 0.6;
 }
 
+/**
+/member/findUser
+ */
+
+.findUserForm {
+    margin-top: 5rem;
+    margin-bottom: 10rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+}
+
+.findUserForm > p {
+    font-family: Pretendard-bold;
+    color: #2B2928;
+    font-size: 1.7rem;
+}
+
+.findUserTab {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-evenly;
+    border: 1px solid #876453;
+    width: 100%;
+    border-radius: 0.7rem;
+    overflow: hidden
+}
+
+.findUserTab > * {
+    padding: 0.7rem;
+    font-size: 20px;
+    width: 50%;
+    color: #2B2928;
+}
+
+.findUserTab > .highlight {
+    background-color: #876453;
+    color: white;
+}
+
+.findUserRadio {
+    width: 100%;
+    display: flex;
+    margin-top: 1rem
+}
+
+.findUserRadio label {
+    display: flex;
+    align-items: flex-end;
+    margin-right: 0.7rem;
+}
+
+.findUserRadio input {
+    margin: 0 0.2rem 0 0;
+}
+
+.findUserInput {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 1.7rem
+}
+
+.findUserInput button {
+    border: 1px solid #CAAB9C;
+    background-color: #E7DBCD;
+    color: #876453;
+    border-radius: 0.6rem;
+    padding: 0.4rem 1rem 0.4rem 1rem;
+}
+
+
+.findUserInput p {
+    font-size: larger;
+    font-family: Pretendard-bold
+}
+
+.findUserInput hr {
+    width: 100%;
+}
+
+.findUserInput div {
+    width: 100%;
+    text-align: left
+}
+
+.findUserInput input {
+    background-color: inherit;
+    padding: 0.4rem;
+    border-bottom: 2px solid rgba(217, 217, 217, 0.7);
+    width: 60%;
+    margin-top: 1rem;
+}
+
