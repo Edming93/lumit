@@ -31,18 +31,9 @@ public class BoardController {
 
 
     @GetMapping("/{menuCd}/list")
-    public String selectBoardList(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd, SearchDto search) {
+    public String selectBoardList(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestParam(required = false) String page) {
         map.addAttribute("menuCd", menuCd);
-        map.addAttribute("title", search.getTitle());
-        map.addAttribute("boardList", boardService.selectBoardList(search));
-
-        return BOARD_PATH + "/list";
-    }
-
-    @GetMapping("/{menuCd}/pageableList")
-    public String selectPageableBoardList(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestParam(required = false) String page) {
-        map.addAttribute("menuCd", menuCd);
-        return page.isEmpty() ? BOARD_PATH + "/listPageable" : BOARD_PATH + "/listPageable?page=" + page;
+        return page.isEmpty() ? BOARD_PATH + "/list" : BOARD_PATH + "/list?page=" + page;
     }
 
     @GetMapping("/{menuCd}/regist")
@@ -61,8 +52,8 @@ public class BoardController {
     @ResponseBody
     @PostMapping("/{menuCd}/regist")
     public ResponseEntity<Map<String, Object>> inertBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @ModelAttribute TbBoard board, @RequestParam(value = "files", required = false) MultipartFile[] files) {
-    	System.out.println(board);
-    	System.out.println(files);
+        System.out.println(board);
+        System.out.println(files);
         return new ResponseEntity<>(boardService.insertBoard(menuCd, board, files), HttpStatus.OK);
     }
 

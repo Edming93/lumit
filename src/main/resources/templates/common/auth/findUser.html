@@ -4,6 +4,7 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{fragments/layout}">
 <div layout:fragment="content" style="text-align: center; display: flex; justify-content: center">
+    <script type="module" src="/js/firebase.js"></script>
     <div class="findUserForm">
         <p>계정 정보 찾기</p>
         <div class="findUserTab">
@@ -31,7 +32,7 @@
                 </div>
                 <div>
                     <input type="text" placeholder="등록된 휴대전화 (-없이)">
-                    <button id="id">인증번호 받기</button>
+                    <button onclick="makeVerify(this, 'phoneId')">인증번호 받기</button>
                 </div>
                 <div><input type="text" placeholder="인증번호 입력">
                     <button>확인</button>
@@ -85,9 +86,15 @@
                     <button>확인</button>
                 </div>
             </div>
+            <div
+                    id="recaptcha-container"
+                    class="justify-center flex"
+            >
+                <!-- Recaptcha Widget will be rendered here -->
+            </div>
         </div>
     </div>
-    <script type="module" th:src="@{/js/firebase.js}"></script>
+
     <script th:inline="javascript">
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -158,12 +165,24 @@
             const phonePwd = document.querySelector("#phonePwd")
             const emailId = document.querySelector("#emailId")
             const emailPwd = document.querySelector("#emailPwd")
+            resetInput(emailId)
+            resetInput(emailPwd)
+            resetInput(phoneId)
+            resetInput(phonePwd)
             emailId.classList.add("hide")
             emailPwd.classList.add("hide")
             phoneId.classList.add("hide")
             phonePwd.classList.add("hide")
+
         }
 
-    </script>
+        function resetInput(element) {
+            const input = element.querySelectorAll("input")
+            for (let i = 0; i < input.length; i++) {
+                input[i].value = ""
+            }
+        }
 
+
+    </script>
 </div>
