@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,9 @@ import lombok.AllArgsConstructor;
 public class BoardServiceImpl implements BoardService {
     private final MenuRepository menuRepository;
     private final BoardRepository boardRepository;
-
+    
+    @Value("${file.upload.path:}")
+    private String FILE_UPLOAD_PATH;
 
     @Override
     public List<TbBoard> selectBoardList(SearchDto search) {
@@ -58,11 +61,13 @@ public class BoardServiceImpl implements BoardService {
         board.setUseYn("Y");
         board.setDelYn("N");
         board.setRplyYn("N");
-//        if(files.length != 0) {
-//        	board.setFileYn("Y");
-//        }else {
-//        	board.setFileYn("N");
-//        }
+        if(files != null) {
+        	
+        	
+        	board.setFileYn("Y");
+        }else {
+        	board.setFileYn("N");
+        }
         board.setViewCount("0");
         board.setRegId(SecurityUtils.getPrincipal().getUserId());
         board.setModId(SecurityUtils.getPrincipal().getUserId());

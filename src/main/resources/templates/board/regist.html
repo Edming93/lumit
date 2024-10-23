@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			let params = {};
 			
 			if(files.length === 0) {
-				formData.append('files',null);
+				formData.append('files',[]);
 			}else {
 				formData.append('files',files);
 			}
@@ -184,9 +184,15 @@ function setData(formData,url) {
         body: formData
     })
     .then(function(result) {
-		alert("등록이 완료되었습니다.");
 		
-		moveUrl(url);
+		if(result.ok) {
+			alert("등록이 완료되었습니다.");
+					
+			moveUrl(url);
+		}else {
+			alert("등록에 실패하였습니다.");
+		}
+		
     })
     .catch(function(error) {
         console.log("error:", error);
