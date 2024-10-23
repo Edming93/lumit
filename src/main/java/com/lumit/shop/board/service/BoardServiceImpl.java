@@ -30,7 +30,7 @@ public class BoardServiceImpl implements BoardService {
     private final MenuRepository menuRepository;
     private final BoardRepository boardRepository;
     
-    @Value("${file.upload.path:}")
+    @Value("${file.upload.path}")
     private String FILE_UPLOAD_PATH;
 
     @Override
