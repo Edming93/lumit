@@ -36,5 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 application-private.properties
+application-local.properties
+application-dev.properties
 
 /src/main/resources/static/js/private-config.js
