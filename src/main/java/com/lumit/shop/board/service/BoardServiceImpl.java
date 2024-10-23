@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,12 +26,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
     private final MenuRepository menuRepository;
     private final BoardRepository boardRepository;
-    
-    @Value("${file.upload.path:}")
+
+    @Value("${file.upload.path}")
     private String FILE_UPLOAD_PATH;
 
     @Override
@@ -61,12 +62,12 @@ public class BoardServiceImpl implements BoardService {
         board.setUseYn("Y");
         board.setDelYn("N");
         board.setRplyYn("N");
-        if(files != null) {
-        	
-        	
-        	board.setFileYn("Y");
-        }else {
-        	board.setFileYn("N");
+        if (files != null) {
+
+
+            board.setFileYn("Y");
+        } else {
+            board.setFileYn("N");
         }
         board.setViewCount("0");
         board.setRegId(SecurityUtils.getPrincipal().getUserId());
