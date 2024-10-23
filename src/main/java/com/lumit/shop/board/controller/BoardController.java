@@ -31,7 +31,7 @@ public class BoardController {
 
 
     @GetMapping("/{menuCd}/list")
-    public String selectBoardList(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestParam(required = false) String page) {
+    public String selectBoardList(ModelMap map, @PathVariable("menuCd") String menuCd) {
         map.addAttribute("menuCd", menuCd);
         return BOARD_PATH + "/list";
     }

@@ -4,7 +4,9 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{fragments/layout}">
 <div layout:fragment="content" style="text-align: center; display: flex; justify-content: center">
-    <script type="module" src="/js/firebase.js"></script>
+    <script type="module" src="/js/firebase.js">
+        import {makeVerify} from "../../../static/js/firebase";
+    </script>
     <div class="findUserForm">
         <p>계정 정보 찾기</p>
         <div class="findUserTab">
@@ -32,7 +34,7 @@
                 </div>
                 <div>
                     <input type="text" placeholder="등록된 휴대전화 (-없이)">
-                    <button onclick="makeVerify(this, 'phoneId')">인증번호 받기</button>
+                    <button class="verifyPhone">인증번호 받기</button>
                 </div>
                 <div><input type="text" placeholder="인증번호 입력">
                     <button>확인</button>
@@ -49,7 +51,7 @@
                 </div>
                 <div>
                     <input type="text" placeholder="등록된 휴대전화 (-없이)">
-                    <button>인증번호 받기</button>
+                    <button class="verifyPhone">인증번호 받기</button>
                 </div>
                 <div><input type="text" placeholder="인증번호 입력">
                     <button>확인</button>
@@ -96,7 +98,7 @@
     </div>
 
     <script th:inline="javascript">
-
+        
         document.addEventListener("DOMContentLoaded", function () {
             let infoState = ""
             let typeState = ""
@@ -106,6 +108,12 @@
             const pwdBtn = document.querySelector("#pwdBtn")
             const phoneRadio = document.querySelector("#phoneRadio")
             const emailRadio = document.querySelector("#emailRadio")
+
+            const btns = document.querySelectorAll(".verifyPhone")
+            for (let i = 0; i < btns.length; i++) {
+                const id = btns[i].parentElement.parentElement.id;
+                btns[i].addEventListener("click", () => makeVerify(btns[i], id))
+            }
             idBtn.addEventListener("click", function () {
                 pwdBtn.classList.remove("highlight")
                 idBtn.classList.add("highlight")
@@ -149,7 +157,6 @@
             const emailId = document.querySelector("#emailId")
             const emailPwd = document.querySelector("#emailPwd")
             if (state == "phoneId") {
-                console.log("요기")
                 phoneId.classList.remove("hide")
             } else if (state == "phonePwd") {
                 phonePwd.classList.remove("hide")
@@ -182,7 +189,5 @@
                 input[i].value = ""
             }
         }
-
-
     </script>
 </div>

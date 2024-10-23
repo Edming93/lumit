@@ -14,16 +14,16 @@
     <select id="selectBoardList" resultType="com.lumit.shop.common.model.TbBoard">
         SELECT *
         FROM
-        TB_BOARD
+        	TB_BOARD
         <include refid="searchWhere"></include>
         AND
-        DEL_YN = 'N'
+        	DEL_YN = 'N'
         ORDER BY REG_DT DESC
     </select>
     <select id="selectPageableBoardList" parameterType="RequestList" resultType="TbBoard">
         SELECT *
         FROM
-        TB_BOARD
+        	TB_BOARD
         <where>
             <if test="data.title != '' and data.title neq null">
                 AND TITLE LIKE CONCAT('%', #{data.title}, '%')
@@ -55,52 +55,61 @@
     <insert id="insertBoard" parameterType="com.lumit.shop.common.model.TbBoard" useGeneratedKeys="true"
             keyProperty="boardId">
         INSERT INTO TB_BOARD
-        ( MENU_CD
-        , MENU_DV_CD
-        , TITLE
-        , CONTENT
-        , PASSWORD
-        , TOP_FIX
-        , USE_YN
-        , DEL_YN
-        , RPLY_YN
-        , FILE_YN
-        , VIEW_COUNT
-        , REG_ID
-        , REG_DT
-        , MOD_ID
-        , MOD_DT)
-        VALUES ( #{menuCd}
-               , #{menuDvCd}
-               , #{title}
-               , #{content}
-               , #{password}
-               , #{topFix}
-               , #{useYn}
-               , #{delYn}
-               , #{rplyYn}
-               , #{fileYn}
-               , #{viewCount}
-               , #{regId}
-               , now()
-               , #{modId}
-               , now())
+        ( 
+	        MENU_CD
+	        , MENU_DV_CD
+	        , TITLE
+	        , CONTENT
+	        , PASSWORD
+	        , TOP_FIX
+	        , USE_YN
+	        , DEL_YN
+	        , RPLY_YN
+	        , FILE_YN
+	        , VIEW_COUNT
+	        , REG_ID
+	        , REG_DT
+	        , MOD_ID
+	        , MOD_DT
+	    )
+        VALUES 
+        ( 
+        	#{menuCd}
+            , #{menuDvCd}
+            , #{title}
+            , #{content}
+            , #{password}
+            , #{topFix}
+            , #{useYn}
+            , #{delYn}
+            , #{rplyYn}
+            , #{fileYn}
+            , #{viewCount}
+            , #{regId}
+            , now()
+            , #{modId}
+            , now()
+        )
     </insert>
 
     <select id="selectBoardDetail" resultType="com.lumit.shop.common.model.TbBoard">
         SELECT *
-        FROM TB_BOARD
-        WHERE BOARD_ID = #{boardId}
-          AND MENU_CD = #{menuCd}
-          AND DEL_YN = 'N'
+        FROM 
+        	TB_BOARD
+        WHERE 
+        	BOARD_ID = #{boardId}
+        AND 
+        	MENU_CD = #{menuCd}
+        AND 
+        	DEL_YN = 'N'
     </select>
 
     <update id="updateBoard" parameterType="com.lumit.shop.common.model.TbBoard">
         UPDATE
-        TB_BOARD
+        	TB_BOARD
         SET
-        MOD_DT = NOW()
-        , MOD_ID = #{modId}
+        	MOD_DT = NOW()
+        	, MOD_ID = #{modId}
         <if test="menuCd != '' and menuCd neq null">
             , MENU_CD = #{menuCd}
         </if>
@@ -138,9 +147,9 @@
             , REG_DT = #{regDt}
         </if>
         WHERE
-        BOARD_ID = #{boardId}
+        	BOARD_ID = #{boardId}
         AND
-        MENU_CD = #{menuCd}
+        	MENU_CD = #{menuCd}
     </update>
 
 </mapper>

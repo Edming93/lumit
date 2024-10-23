@@ -22,15 +22,15 @@ import com.lumit.shop.common.service.SecurityUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
     private final MenuRepository menuRepository;
     private final BoardRepository boardRepository;
     
-    @Value("${file.upload.path}")
+    @Value("${file.upload.path:}")
     private String FILE_UPLOAD_PATH;
 
     @Override
@@ -63,11 +63,14 @@ public class BoardServiceImpl implements BoardService {
         board.setRplyYn("N");
         if(files != null) {
         	
+        	System.out.println(files);
         	
         	board.setFileYn("Y");
         }else {
         	board.setFileYn("N");
         }
+        
+        System.out.println(FILE_UPLOAD_PATH);
         board.setViewCount("0");
         board.setRegId(SecurityUtils.getPrincipal().getUserId());
         board.setModId(SecurityUtils.getPrincipal().getUserId());
