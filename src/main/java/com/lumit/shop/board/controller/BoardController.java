@@ -53,6 +53,7 @@ public class BoardController {
     @PostMapping("/{menuCd}/regist")
     public ResponseEntity<Map<String, Object>> inertBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @ModelAttribute TbBoard board, @RequestParam(value = "files", required = false) MultipartFile[] files) {
         System.out.println(board);
+        System.out.println("files ::: ");
         System.out.println(files);
         return new ResponseEntity<>(boardService.insertBoard(menuCd, board, files), HttpStatus.OK);
     }
