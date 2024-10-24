@@ -144,12 +144,17 @@ create table if not exists TB_DELIVERY
 
 create table if not exists TB_FILE
 (
-    FILE_ID   int          not null comment 'AUTO_INCREMENT'
+    FILE_ID   int AUTO_INCREMENT not null comment 'AUTO_INCREMENT'
         primary key,
-    BOARD_ID  int          not null comment 'AUTO_INCREMENT',
-    FILE_NAME varchar(30)  not null,
-    FILE_SIZE varchar(255) not null,
-    FILE_URL  varchar(255) null
+	MENU_CD	varchar(4)	NOT NULL comment '메뉴코드',
+	FILE_NEW_NAME	varchar(30)	NOT NULL,
+	FILE_NAME	varchar(30)	NOT NULL,
+	FILE_SIZE	varchar(255)	NOT NULL,
+	FILE_TYPE	varchar(2)	NOT NULL	COMMENT '01: 서버, 02: 스토리지서버, 03: blob',
+	FILE_PATH	varchar(255)	NULL,
+	FILE_EXTENSION	varchar(255)	NULL,
+	REG_ID		varchar(50)	not null,
+	REG_DT      timestamp   not null
 );
 
 create table if not exists TB_INVOICE

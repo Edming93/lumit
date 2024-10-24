@@ -1,9 +1,13 @@
 package com.lumit.shop.board.service;
 
+import java.io.File;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -18,6 +22,7 @@ import com.lumit.shop.common.model.TbBoard;
 import com.lumit.shop.common.repository.BoardRepository;
 import com.lumit.shop.common.repository.MenuRepository;
 import com.lumit.shop.common.service.SecurityUtils;
+import com.lumit.shop.common.service.StringUtils;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -62,10 +67,9 @@ public class BoardServiceImpl implements BoardService {
         board.setDelYn("N");
         board.setRplyYn("N");
         if(files != null) {
-        	
         	System.out.println(files);
-        	
         	board.setFileYn("Y");
+        	saveFiles(board,files);
         }else {
         	board.setFileYn("N");
         }
@@ -81,6 +85,38 @@ public class BoardServiceImpl implements BoardService {
 
         return result;
     }
+    
+    @Override
+    public void saveFiles(TbBoard board, MultipartFile[] files) {
+
+    	File uploadPath = new File(FILE_UPLOAD_PATH, StringUtils.getData());
+    	
+    	System.out.println("upload path: "+ uploadPath);
+    	
+    	if(uploadPath.exists() == false) {
+    		uploadPath.mkdirs();
+    	}
+    	
+    	for(MultipartFile file : files) {
+    		String oriFileName =  file.getOriginalFilename();
+    		
+    		UUID uuid = UUID.randomUUID(); // 랜덤 이름 생성
+    		
+    		String uploadFileName = uuid.toString() + "_" + oriFileName; //UUID(랜덤문자라생각하면편함) + 원본파일명
+    		
+    		File saveFile = new File(uploadPath, uploadFileName);
+    		
+    		try {
+    			file.transferTo(saveFile); //물리적인 파일을 해당경로에 저장한다.
+			}catch(Exception e) {
+				// log.error(e.getMessage());
+				// log.error("error : ",e);
+			}
+    		
+    	}
+    }
+    
+
 
     @Override
     public TbBoard selectBoardDetail(String menuCd, String boardId, HttpServletRequest request, HttpServletResponse response) {

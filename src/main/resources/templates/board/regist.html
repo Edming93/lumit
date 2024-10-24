@@ -102,11 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			}else {
 				formData.append('files',files);
 			}
-			
-			// for(let [key,value] of formData.entries()) {
-			//	params[key] = value;
-			// };
-			
+
 			// 텍스트에디터 내용 가져오기
 			let tinyContent = tinymce.get("tiny").getContent();
 			formData.append('content',tinyContent);
