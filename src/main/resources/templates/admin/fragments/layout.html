@@ -6,7 +6,7 @@
 <head>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
     <th:block th:replace="~{admin/fragments/head :: headFragment}"></th:block>
-	<script src="/js/underscore.js"></script>
+    <script src="/js/underscore.js"></script>
 </head>
 <body>
 <div class="wrapper" style="position:fixed;">
@@ -19,6 +19,7 @@
 </div>
 </body>
 <script th:src="@{/js/functions.js}"></script>
+<script th:src="@{/js/fetch.js}"></script>
 <script th:inline="javascript">
     let defaultUrl = [[${session.defaultUrl}]];
     getSiteId(defaultUrl);

@@ -20,6 +20,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(value = "/admin")
@@ -31,36 +33,29 @@ public class AdminController {
     private final String NEW_MANAGER_FORM = BASE_URL + MEMBER_PATH + "/adminForm";
 
     @GetMapping("")
-    public String adminHome(Model model, HttpServletRequest request, HttpServletResponse response) {
-        model.addAttribute("request", request);
+    public String adminHome(Model model) {
         return BASE_URL + "/index";
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model, HttpServletRequest request, HttpServletResponse response) {
-        model.addAttribute("request", request);
+    public String dashboard(Model model) {
         return BASE_URL + "/dashboard/index";
     }
 
-
     @GetMapping(MEMBER_PATH + "/list")
-    public String memberDashboard(Model model, HttpServletRequest request) {
-        model.addAttribute("request", request);
+    public String memberDashboard(Model model) {
         return BASE_URL + MEMBER_PATH + "/index";
     }
 
 
     @GetMapping(MEMBER_PATH + "/newManager")
-    public String newManager(Model model, HttpServletRequest request) {
-        model.addAttribute("request", request);
+    public String newManager(Model model) {
         model.addAttribute("tbLogin", new TbLogin());
         return NEW_MANAGER_FORM;
     }
 
-
     @PostMapping(MEMBER_PATH + "/newManager")
-    public String newManager(@Valid @ModelAttribute("tbLogin") TbLogin tbLogin, BindingResult bindingResult, Model model, HttpServletRequest request) {
-        model.addAttribute("request", request);
+    public String newManager(@Valid @ModelAttribute("tbLogin") TbLogin tbLogin, BindingResult bindingResult, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
@@ -83,10 +78,20 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    //    @PreAuthorize("hasAnyAuthority('1', '2')")
+    @GetMapping(MEMBER_PATH + "/updateUser")
+    public String updateUser(Model model) {
+        return BASE_URL + MEMBER_PATH + "/user/updateUser";
+    }
+
+    @GetMapping(MEMBER_PATH + "/updateManager")
+    public String updateManager(Model model) {
+        List<User> adminList = userService.selectAdminList();
+        model.addAttribute("adminList", adminList);
+        return BASE_URL + MEMBER_PATH + "/user/updateManager";
+    }
+
     @GetMapping(MEMBER_PATH + "/user")
-    public String user(Model model, HttpServletRequest request, HttpServletResponse response) {
-        model.addAttribute("request", request);
+    public String user(Model model) {
         return BASE_URL + MEMBER_PATH + "/user/dashboard";
     }
 } 

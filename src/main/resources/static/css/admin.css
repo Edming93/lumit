@@ -435,70 +435,134 @@ i {
 
 /* file 관련 */
 input[type='file'] {
-	display: block;
-	width: 0;
-	height: 0;
-	overflow: hidden;
+    display: block;
+    width: 0;
+    height: 0;
+    overflow: hidden;
 }
 
 .form__input--file_wrap {
-	display: flex;
-	flex-direction: column;
-	padding: 10px 0px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0px;
 }
 
 .form__label--file {
-	width: 60px;
-	line-height:25px;
-	background: #E7DBCD;
-	border-radius:5px;
-	color: #876453;;
-	border: 1px solid #CAAB9C;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
+    width: 60px;
+    line-height: 25px;
+    background: #E7DBCD;
+    border-radius: 5px;
+    color: #876453;;
+    border: 1px solid #CAAB9C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
-.form__input--top_wrap{
-	display: flex;
-	margin-bottom: 10px;
+.form__input--top_wrap {
+    display: flex;
+    margin-bottom: 10px;
 }
 
 .form__span--txt {
-	color: #CEB1A2;
-	padding: 0 5px 0 10px;
-	margin-left: 5px;
-	min-height: 30px;
-	line-height: 30px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+    color: #CEB1A2;
+    padding: 0 5px 0 10px;
+    margin-left: 5px;
+    min-height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.form__div--file { 
-	display: flex;
-	color: #999;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	box-sizing: border-box;
-	column-gap: 10px;
-	row-gap: 10px;
+.form__div--file {
+    display: flex;
+    color: #999;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+    column-gap: 10px;
+    row-gap: 10px;
 }
 
 .select_file_box {
-	border: 1px solid #DADADA;
-	background-color: #F5F5F5;
-	padding: 6px 18px 6px 10px;
-	border-radius: 7px;
-	height: 20px;
-	display: flex;
+    border: 1px solid #DADADA;
+    background-color: #F5F5F5;
+    padding: 6px 18px 6px 10px;
+    border-radius: 7px;
+    height: 20px;
+    display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .delete_file_btn {
-	color: #999;
-	font-size: 16px;
+    color: #999;
+    font-size: 16px;
+}
+
+/**
+admin/member/user/updateManager
+ */
+
+.adminTable {
+    width: 100%;
+    font-size: larger;
+    border-collapse: separate;
+    /*border-spacing: 0 1rem;*/
+    padding: 1rem;
+    border-radius: 0.2rem;
+}
+
+.adminTable th {
+    height: 3rem;
+    border-bottom: 1px solid #263458;
+    vertical-align: middle;
+}
+
+.adminTable td {
+    height: 3rem;
+    border-bottom: 1px solid #263458;
+}
+
+.adminTable tr {
+    text-align: center;
+}
+
+.adminTable > tbody > tr > td:nth-child(1) {
+    display: flex;
+    justify-content: center
+}
+
+.adminTable select {
+    border: none;
+    padding: 0.6rem;
+    text-align: center;
+}
+
+.adminTable select:focus {
+    outline: 0;
+}
+
+.editBtn {
+    background-color: #3c69dd;
+    color: white;
+    padding: 0.7rem;
+    border-radius: 0.3rem;
+
+}
+
+.editBtn:disabled,
+.editBtn[disabled] {
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
+    cursor: revert;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
 }

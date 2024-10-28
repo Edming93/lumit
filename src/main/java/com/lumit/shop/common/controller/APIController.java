@@ -1,5 +1,6 @@
 package com.lumit.shop.common.controller;
 
+import com.lumit.shop.admin.dto.RoleDto;
 import com.lumit.shop.board.service.BoardService;
 import com.lumit.shop.common.dto.ResponseDto;
 import com.lumit.shop.common.dto.SearchDto;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -73,5 +75,26 @@ public class APIController {
             board.setTitle(search.getTitle());
         }
         return ResponseEntity.ok(boardService.selectPageableBoardList(board, pageable));
+    }
+
+    @PatchMapping(value = "/admin/role/remove/{id}")
+    public @ResponseBody ResponseEntity<?> removeRole(@PathVariable("id") String id) {
+        int result = userService.removeAdminRole(id);
+        if (result <= 0) {
+            return ResponseEntity.badRequest().build();
+        } else {
+            return ResponseEntity.ok().build();
+        }
+    }
+
+    @PatchMapping(value = "/admin/role/update/{id}")
+    public @ResponseBody ResponseEntity<?> updateRole(@PathVariable("id") String id, @RequestBody RoleDto roleDto) {
+        roleDto.setUserId(id);
+        int result = userService.updateAdminRole(roleDto);
+        if (result <= 0) {
+            return ResponseEntity.badRequest().build();
+        } else {
+            return ResponseEntity.ok().build();
+        }
     }
 }
