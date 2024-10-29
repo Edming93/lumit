@@ -46,6 +46,7 @@ public class BoardController {
     @GetMapping("{menuCd}/detail/{boardId}")
     public String boardDetail(ModelMap map, HttpServletRequest request, HttpServletResponse response, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
         map.addAttribute("detail", boardService.selectBoardDetail(menuCd, boardId, request, response));
+        map.addAttribute("files", boardService.selectBoardDetail(menuCd, boardId, request, response));
         map.addAttribute("menuCd", menuCd);
         return BOARD_PATH + "/detail";
     }
@@ -56,11 +57,6 @@ public class BoardController {
     														, @PathVariable("menuCd") String menuCd 
     														, @ModelAttribute TbBoard board
     														, @RequestParam(value = "files", required = false) MultipartFile[] files) {
-    	System.out.println("controller -----------------------------------");
-    	System.out.println("board ::: ");
-        System.out.println(board);
-        System.out.println("files ::: ");
-        System.out.println(files);
         return new ResponseEntity<>(boardService.insertBoard(menuCd, board, files), HttpStatus.OK);
     }
 

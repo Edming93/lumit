@@ -147,8 +147,8 @@ create table if not exists TB_FILE
     FILE_ID   int AUTO_INCREMENT not null comment 'AUTO_INCREMENT'
         primary key,
 	MENU_CD	varchar(4)	NOT NULL comment '메뉴코드',
-	FILE_NEW_NAME	varchar(30)	NOT NULL,
-	FILE_NAME	varchar(30)	NOT NULL,
+	FILE_NEW_NAME	varchar(200)	NOT NULL,
+	FILE_NAME	varchar(200)	NOT NULL,
 	FILE_SIZE	varchar(255)	NOT NULL,
 	FILE_TYPE	varchar(2)	NOT NULL	COMMENT '01: 서버, 02: 스토리지서버, 03: blob',
 	FILE_PATH	varchar(255)	NULL,

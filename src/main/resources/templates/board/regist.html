@@ -32,7 +32,7 @@
                         <td>
 							<div class="form__input--file_wrap">
 								<div class="form__input--top_wrap">
-								  <input class="form__input--file" id="upload" type="file" multiple>
+								  <input class="form__input--file" id="upload" type="file" name="files" multiple>
 								  <label class="form__label--file" for="upload">내PC</label>
 								  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
 							  	</div>
@@ -108,15 +108,17 @@ document.addEventListener("DOMContentLoaded", function () {
 			formData.append('content',tinyContent);
 			
 			for(let [key,value] of formData.entries()) {
-				if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
-					if(key == "title") {
-						alert("제목을 입력해주세요.");
-						return;
-					}
-					
-					if(key == "content") {
-						alert("내용을 입력해주세요.");
-						return;
+				if(key != "files") {
+					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
+						if(key == "title") {
+							alert("제목을 입력해주세요.");
+							return;
+						}
+						
+						if(key == "content") {
+							alert("내용을 입력해주세요.");
+							return;
+						}
 					}
 				}
 			}
@@ -130,6 +132,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	// input file 커스텀 - 파일명 붙이기
 	const fileTarget = document.querySelector('.form__input--file_wrap input');
 	
+	var mb = 1024 * 1024; //1mb(메가)
+	var limitSize = mb * 10;
+	 
 	fileTarget.addEventListener('change', function () { 
 		
 		for(var i=0; i<this.files.length; i++){
@@ -139,10 +144,18 @@ document.addEventListener("DOMContentLoaded", function () {
 				break;
 			}
 			
+			var uploadSize = this.files[i].size;
+		
+			if(limitSize < uploadSize){
+			 alert('10MB 사이즈 미만의 파일만 \n업로드가 가능합니다.');
+			 return false;	 
+			}
+			
 			var file = this.files[i];
-			file['idx'] = fileIdx;
-			files.push(file);
-			fileIdx++;
+						file['idx'] = fileIdx;
+						files.push(file);
+						fileIdx++;
+			
 		}
 		
 		setFiles();

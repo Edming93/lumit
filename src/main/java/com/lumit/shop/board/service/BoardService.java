@@ -27,5 +27,7 @@ public interface BoardService {
 
     public TbBoard selectBoardDetail(String menuCd, String boardId, HttpServletRequest request, HttpServletResponse response);
 
-    public void saveFiles(TbBoard board, MultipartFile[] files);
+    public void uploadFiles(TbBoard board, MultipartFile[] files);
+    
+    public void downloadFiles();
 }
