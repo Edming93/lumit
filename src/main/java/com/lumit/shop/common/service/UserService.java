@@ -1,5 +1,6 @@
 package com.lumit.shop.common.service;
 
+import com.lumit.shop.admin.dto.RoleDto;
 import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.model.TbAddress;
@@ -10,6 +11,8 @@ import java.util.List;
 
 public interface UserService {
     public List<User> getUserList();
+
+    List<User> selectAdminList();
 
     public TbLogin selectByUserId(String userId);
 
@@ -30,4 +33,8 @@ public interface UserService {
     public int updateDefaultAddr(TbLogin tbLogin);
 
     public List<TbAddress> selectAddressListByUserId(String userId);
+
+    int removeAdminRole(String adminId);
+
+    int updateAdminRole(RoleDto roleDto);
 }

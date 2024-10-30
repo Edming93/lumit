@@ -33,17 +33,31 @@ public class User implements UserDetails {
     private Timestamp modDt;
     private String modId;
 
-    private List<TbMenu> authorities = new ArrayList<>();
+    private List<GrantedAuthority> authorities = new ArrayList<>();
 
-    public void setAuthorities(List<TbMenu> authorities) {
+    public void setAuthorities(List<GrantedAuthority> authorities) {
         this.authorities = authorities;
     }
 
-    public void addAuthority(TbMenu menu) {
-        authorities.add(menu);
+    public void addAuthority(GrantedAuthority grantedAuthority) {
+        authorities.add(grantedAuthority);
     }
 
-    public List<TbMenu> getMenuAuthorities() {
+    public void setRole(int roleId) {
+        switch (roleId) {
+            case 1:
+                this.role = Role.SUPER_ADMIN;
+                break;
+            case 2:
+                this.role = Role.ADMIN;
+                break;
+            case 3:
+                this.role = Role.USER;
+        }
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.role));
+    }
+
+    public List<GrantedAuthority> getMenuAuthorities() {
         return authorities;
     }
 

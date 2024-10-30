@@ -41,5 +41,12 @@ const FETCH = {
     },
     async delete(url) {
         return await fetch(url, {method: "DELETE"})
+    },
+    async patch(url, requestBody = null) {
+        return await fetch(url, {
+            method: "PATCH",
+            headers: {'Content-Type': 'application/json; charset=utf-8', 'dataType': 'json'},
+            body: JSON.stringify(requestBody)
+        }).then(res => res).then(res => res)
     }
 }

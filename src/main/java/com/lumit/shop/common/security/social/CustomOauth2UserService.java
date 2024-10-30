@@ -52,6 +52,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             for (Iterator<TbMenu> iterator = menuList.iterator(); iterator.hasNext(); ) {
                 user.addAuthority(iterator.next());
             }
+            user.setRole(Integer.parseInt(user.getRoleId()));
         }
         user.setRole();
         return new PrincipalDetails(user, oAuth2User.getAttributes());

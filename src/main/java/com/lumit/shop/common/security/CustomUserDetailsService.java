@@ -38,11 +38,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 //            user.addAuthority(menu);
 //        }
 
-
         for (Iterator<TbMenu> iterator = menuList.iterator(); iterator.hasNext(); ) {
             TbMenu menu = iterator.next();
             user.addAuthority(menu);
         }
+        user.setRole(Integer.parseInt(user.getRoleId()));
+
 
         // 권한 정보 등록
 //        List<GrantedAuthority> roles = new ArrayList<>();

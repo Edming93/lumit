@@ -1,5 +1,6 @@
 package com.lumit.shop.common.service;
 
+import com.lumit.shop.admin.dto.RoleDto;
 import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.model.TbAddress;
@@ -27,6 +28,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getUserList() {
         return userRepository.getUserList();
+    }
+
+    @Override
+    public List<User> selectAdminList() {
+        return userRepository.selectAdminList();
     }
 
     @Override
@@ -129,5 +135,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<TbAddress> selectAddressListByUserId(String userId) {
         return userRepository.selectAddressListByUserId(userId);
+    }
+
+    @Override
+    public int removeAdminRole(String adminId) {
+        return userRepository.removeAdminRole(adminId);
+    }
+
+    @Override
+    public int updateAdminRole(RoleDto roleDto) {
+        return userRepository.updateAdminRole(roleDto);
     }
 }
