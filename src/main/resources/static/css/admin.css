@@ -490,7 +490,7 @@ input[type='file'] {
 .select_file_box {
 	border: 1px solid #DADADA;
 	background-color: #F5F5F5;
-	padding: 6px 18px 6px 10px;
+	padding: 5px 18px 5px 10px;
 	border-radius: 7px;
 	height: 20px;
 	display: flex;

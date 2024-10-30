@@ -3,12 +3,15 @@ package com.lumit.shop.board.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.model.TbBoard;
+import com.lumit.shop.common.model.TbFile;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,8 +29,10 @@ public interface BoardService {
     public Map<String, Object> deleteBoard(TbBoard board);
 
     public TbBoard selectBoardDetail(String menuCd, String boardId, HttpServletRequest request, HttpServletResponse response);
+    
+    public List<TbFile> selectBoardFiles(String menuCd, String boardId);
 
     public void uploadFiles(TbBoard board, MultipartFile[] files);
     
-    public void downloadFiles();
+    public ResponseEntity<Resource> downloadFiles(String menuCd,String boardId, String fileId);
 }

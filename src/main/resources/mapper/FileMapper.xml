@@ -15,11 +15,23 @@
         SELECT *
         FROM
         	TB_FILE
-        <include refid="searchWhere"></include>
-        AND
+		WHERE
         	BOARD_ID = #{boardId}
         AND
         	MENU_CD = #{menuCd}
+        ORDER BY REG_DT DESC
+    </select>
+    
+    <select id="selectFile" resultType="com.lumit.shop.common.model.TbFile">
+        SELECT *
+        FROM
+        	TB_FILE
+        WHERE
+        	FILE_ID = #{fileId}
+        AND
+        	MENU_CD = #{menuCd}
+        AND
+        	BOARD_ID = #{boardId}
         ORDER BY REG_DT DESC
     </select>
 

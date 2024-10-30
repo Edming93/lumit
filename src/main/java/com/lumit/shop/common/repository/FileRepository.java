@@ -12,8 +12,11 @@ import com.lumit.shop.common.model.TbFile;
 public interface FileRepository {
     public List<TbFile> selectFileList(TbFile files);
 
+    public TbFile selectFile(TbFile files);
+    
     public int insertFiles(TbFile files);
     
     public int deleteFiles(TbFile files);
+    
 }
 

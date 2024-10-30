@@ -2,6 +2,9 @@ package com.lumit.shop.board.service;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,9 +13,14 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -136,9 +144,36 @@ public class BoardServiceImpl implements BoardService {
     }
     
     @Override
-    public void downloadFiles() {
-    	// TODO Auto-generated method stub
+    public ResponseEntity<Resource> downloadFiles(String menuCd, String boardId, String fileId) {
     	
+    	TbFile reqfile = new TbFile();
+    	reqfile.setFileId(fileId);
+    	reqfile.setBoardId(boardId);
+    	reqfile.setMenuCd(menuCd);
+    	
+    	TbFile resFile = fileRepository.selectFile(reqfile);
+    	
+    	try {
+	    	String fileName = resFile.getFileName();
+	    	String fileNewName = resFile.getFileNewName();
+	    	
+	    	String encodedFilename = URLEncoder.encode(fileName, "UTF-8");
+	    	
+	    	Path filePath = Paths.get(resFile.getFilePath()).resolve(fileNewName).normalize();
+	    	
+	    	Resource resource = new UrlResource(filePath.toUri());
+	        if (!resource.exists()) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	        }
+	    	
+	        return ResponseEntity.ok()
+	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"")
+	                .body(resource);
+    	
+    	} catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } 
+    			
     }
 
 
@@ -153,6 +188,16 @@ public class BoardServiceImpl implements BoardService {
         this.viewCount(board, request, response);
 
         return boardRepository.selectBoardDetail(menuCd, boardId);
+    }
+    
+    @Override
+    public List<TbFile> selectBoardFiles(String menuCd, String boardId) {
+    	
+    	TbFile tbFile = new TbFile();
+    	tbFile.setMenuCd(menuCd);
+    	tbFile.setBoardId(boardId);
+    	
+    	return fileRepository.selectFileList(tbFile);
     }
 
     @Override

@@ -32,7 +32,7 @@
                         <td>
 							<div class="form__input--file_wrap">
 								<div class="form__input--top_wrap">
-								  <input class="form__input--file" id="upload" type="file" name="files" multiple>
+								  <input class="form__input--file" id="upload" type="file" multiple>
 								  <label class="form__label--file" for="upload">내PC</label>
 								  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
 							  	</div>
@@ -100,7 +100,9 @@ document.addEventListener("DOMContentLoaded", function () {
 			if(files.length === 0) {
 				formData.append('files',[]);
 			}else {
-				formData.append('files',files);
+				for(var i=0; i<files.length; i++) {
+					formData.append('files',files[i]);
+				}
 			}
 
 			// 텍스트에디터 내용 가져오기
@@ -132,13 +134,12 @@ document.addEventListener("DOMContentLoaded", function () {
 	// input file 커스텀 - 파일명 붙이기
 	const fileTarget = document.querySelector('.form__input--file_wrap input');
 	
-	var mb = 1024 * 1024; //1mb(메가)
-	var limitSize = mb * 10;
-	 
+	const mb = 1024 * 1024; //1mb(메가)
+	const limitSize = mb * 10;
+	
 	fileTarget.addEventListener('change', function () { 
 		
-		for(var i=0; i<this.files.length; i++){
-			console.log(this.files[i]);
+		for(var i=0; i<this.files.length; i++) {
 			if(files.length >= 5){
 				alert('최대 5개까지 첨부 가능합니다.');
 				break;
@@ -146,16 +147,15 @@ document.addEventListener("DOMContentLoaded", function () {
 			
 			var uploadSize = this.files[i].size;
 		
-			if(limitSize < uploadSize){
-			 alert('10MB 사이즈 미만의 파일만 \n업로드가 가능합니다.');
-			 return false;	 
+			if(limitSize < uploadSize) {
+				alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
+			}else {
+				var file = this.files[i];
+							
+				file['idx'] = fileIdx;
+				files.push(file);
+				fileIdx++;
 			}
-			
-			var file = this.files[i];
-						file['idx'] = fileIdx;
-						files.push(file);
-						fileIdx++;
-			
 		}
 		
 		setFiles();
@@ -181,7 +181,6 @@ function setFiles() {
 function deleteFileBtn(elem) {
 	// 실제 파일 삭제
 	files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")})
-	console.log(files);
 	setFiles();
 };
 
