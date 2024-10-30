@@ -1,43 +1,5 @@
 @import "reset.css";
-
-@font-face {
-    font-family: "Playfair Display", serif;
-    src: url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Wittgenstein:ital,wght@0,400..900;1,400..900&display=swap");
-    font-weight: 400;
-    font-style: normal;
-}
-
-
-@font-face {
-    font-family: 'Pretendard-lighter';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraLight.woff') format('woff');
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Pretendard-Medium';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Pretendard-bold';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
-    font-style: normal;
-}
-
-
-@font-face {
-    font-family: 'Pretendard-bolder';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraBold.woff') format('woff');
-    font-style: normal;
-}
+@import "font.css";
 
 :root {
     --background-color: #FCF9F6;

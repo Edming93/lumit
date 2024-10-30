@@ -1,36 +1,5 @@
 @import "reset.css";
-
-@font-face {
-    font-family: "Playfair Display", serif;
-    src: url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Wittgenstein:ital,wght@0,400..900;1,400..900&display=swap");
-    font-weight: 400;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Pretendard-lighter';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraLight.woff') format('woff');
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Pretendard-bold';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
-    font-style: normal;
-}
-
-
-@font-face {
-    font-family: 'Pretendard-bolder';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraBold.woff') format('woff');
-    font-style: normal;
-}
+@import "font.css";
 
 :root {
     --background-color: #FFFFFF;
@@ -488,12 +457,12 @@ input[type='file'] {
 }
 
 .select_file_box {
-	border: 1px solid #DADADA;
-	background-color: #F5F5F5;
-	padding: 5px 18px 5px 10px;
-	border-radius: 7px;
-	height: 20px;
-	display: flex;
+    border: 1px solid #DADADA;
+    background-color: #F5F5F5;
+    padding: 5px 18px 5px 10px;
+    border-radius: 7px;
+    height: 20px;
+    display: flex;
     justify-content: center;
     align-items: center;
 }
