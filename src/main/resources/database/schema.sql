@@ -146,6 +146,7 @@ create table if not exists TB_FILE
 (
     FILE_ID   int AUTO_INCREMENT not null comment 'AUTO_INCREMENT'
         primary key,
+    BOARD_ID	int		NOT NULL,
 	MENU_CD	varchar(4)	NOT NULL comment '메뉴코드',
 	FILE_NEW_NAME	varchar(200)	NOT NULL,
 	FILE_NAME	varchar(200)	NOT NULL,
