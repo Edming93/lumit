@@ -9,69 +9,55 @@
         </if>
         <if test="content != '' and content neq null">
             AND CONTENT LIKE CONCAT('%', #{content}, '%')
-        </if>-->
+        </if>
     </sql>
     <select id="selectFileList" resultType="com.lumit.shop.common.model.TbFile">
         SELECT *
-        FROM
-        	TB_FILE
-		WHERE
-        	BOARD_ID = #{boardId}
-        AND
-        	MENU_CD = #{menuCd}
+        FROM TB_FILE
+        WHERE BOARD_ID = #{boardId}
+          AND MENU_CD = #{menuCd}
         ORDER BY REG_DT DESC
     </select>
-    
+
     <select id="selectFile" resultType="com.lumit.shop.common.model.TbFile">
         SELECT *
-        FROM
-        	TB_FILE
-        WHERE
-        	FILE_ID = #{fileId}
-        AND
-        	MENU_CD = #{menuCd}
-        AND
-        	BOARD_ID = #{boardId}
+        FROM TB_FILE
+        WHERE FILE_ID = #{fileId}
+          AND MENU_CD = #{menuCd}
+          AND BOARD_ID = #{boardId}
         ORDER BY REG_DT DESC
     </select>
 
     <insert id="insertFiles" parameterType="com.lumit.shop.common.model.TbFile" useGeneratedKeys="true"
             keyProperty="fileId">
         INSERT INTO TB_FILE
-        ( 	
-			BOARD_ID
-	        , MENU_CD
-	        , FILE_NEW_NAME
-	        , FILE_NAME
-	        , FILE_SIZE
-	        , FILE_PATH
-	        , FILE_TYPE
-	        , FILE_EXTENSION
-	        , REG_ID
-	        , REG_DT
-	    )
-        VALUES 
-        ( 
-            #{boardId}
-            , #{menuCd}
-            , #{fileNewName}
-            , #{fileName}
-            , #{fileSize}
-            , #{filePath}
-            , #{fileType}
-            , #{fileExtension}
-            , #{regId}
-            , now()
-        )
+        ( BOARD_ID
+        , MENU_CD
+        , FILE_NEW_NAME
+        , FILE_NAME
+        , FILE_SIZE
+        , FILE_PATH
+        , FILE_TYPE
+        , FILE_EXTENSION
+        , REG_ID
+        , REG_DT)
+        VALUES ( #{boardId}
+               , #{menuCd}
+               , #{fileNewName}
+               , #{fileName}
+               , #{fileSize}
+               , #{filePath}
+               , #{fileType}
+               , #{fileExtension}
+               , #{regId}
+               , now())
     </insert>
 
     <delete id="deleteFile" parameterType="com.lumit.shop.common.model.TbFile">
         DELETE
-        	TB_FILE
-        WHERE
-        	BOARD_ID = #{boardId}
-        AND
-        	MENU_CD = #{menuCd}
+            TB_FILE
+        WHERE BOARD_ID = #{boardId}
+          AND MENU_CD = #{menuCd}
     </delete>
 
 </mapper>
