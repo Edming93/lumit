@@ -1,5 +1,6 @@
 package com.lumit.shop.common.service;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,5 +22,26 @@ public class StringUtils {
     	
     	return outputFormatter.format(date);
 
+    }
+    
+    public static String getData() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		// 현재날짜를받아옴
+		Date date = new Date();
+		
+		String str = sdf.format(date);
+		
+		return str.replace("-", File.separator);
+        // "-" 를 운영체제에 맞게 / 또는 \\ 으로 변경한다.
+	}
+    
+    public static String getFileExtension(String fileName) {
+    	int index = fileName.lastIndexOf(".");
+    	String extension = "";
+    	
+    	if(index > 0) {
+    		extension = fileName.substring(index+1);
+    	}
+    	return extension;
     }
 }

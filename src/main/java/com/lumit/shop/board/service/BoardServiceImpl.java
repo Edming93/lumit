@@ -1,23 +1,39 @@
 package com.lumit.shop.board.service;
 
+import java.io.File;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.lumit.shop.common.data.RequestList;
 import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.model.TbBoard;
+import com.lumit.shop.common.model.TbFile;
 import com.lumit.shop.common.repository.BoardRepository;
+import com.lumit.shop.common.repository.FileRepository;
 import com.lumit.shop.common.repository.MenuRepository;
 import com.lumit.shop.common.service.SecurityUtils;
+import com.lumit.shop.common.service.StringUtils;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +45,7 @@ import lombok.RequiredArgsConstructor;
 public class BoardServiceImpl implements BoardService {
     private final MenuRepository menuRepository;
     private final BoardRepository boardRepository;
+    private final FileRepository fileRepository;
     
     @Value("${file.upload.path}")
     private String FILE_UPLOAD_PATH;
@@ -42,9 +59,9 @@ public class BoardServiceImpl implements BoardService {
     public Page<Map<String, Object>> selectPageableBoardList(TbBoard tbBoard, Pageable pageable) {
         RequestList<?> requestList = RequestList.builder().data(tbBoard).pageable(pageable).build();
         Field[] variables = requestList.getData().getClass().getDeclaredFields();
-        for (Field field : variables) {
-            System.out.println(field.getName());
-        }
+//        for (Field field : variables) {
+//            System.out.println(field.getName());
+//        }
 
         List<Map<String, Object>> content = boardRepository.selectPageableBoardList(requestList);
         int total = boardRepository.selectListBoardCount(tbBoard);
@@ -53,6 +70,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public Map<String, Object> insertBoard(String menuCd, TbBoard board, MultipartFile[] files) {
         Map<String, Object> result = new HashMap<String, Object>();
 
@@ -62,9 +80,6 @@ public class BoardServiceImpl implements BoardService {
         board.setDelYn("N");
         board.setRplyYn("N");
         if(files != null) {
-        	
-        	System.out.println(files);
-        	
         	board.setFileYn("Y");
         }else {
         	board.setFileYn("N");
@@ -76,11 +91,91 @@ public class BoardServiceImpl implements BoardService {
         board.setModId(SecurityUtils.getPrincipal().getUserId());
 
         boardRepository.insertBoard(board);
+        uploadFiles(board,files);
 
         result.put("result", "success");
 
         return result;
     }
+    
+    @Override
+    @Transactional
+    public void uploadFiles(TbBoard board, MultipartFile[] files) {
+
+    	File uploadPath = new File(FILE_UPLOAD_PATH, StringUtils.getData());
+    	
+    	System.out.println("upload path: "+ uploadPath);
+    	
+    	if(uploadPath.exists() == false) {
+    		uploadPath.mkdirs();
+    	}
+    	
+    	for(MultipartFile file : files) {
+    		String oriFileName =  file.getOriginalFilename();
+    		
+    		UUID uuid = UUID.randomUUID(); // 랜덤 이름 생성
+    		
+    		String uploadFileName = uuid.toString() + "_" + oriFileName; //UUID(랜덤문자라생각하면편함) + 원본파일명
+    		
+    		File saveFile = new File(uploadPath, uploadFileName);
+    		
+    		TbFile tbFile = new TbFile();
+    		tbFile.setBoardId(board.getBoardId());
+    		tbFile.setMenuCd(board.getMenuCd());
+    		tbFile.setFileName(oriFileName);
+    		tbFile.setFileNewName(uploadFileName);
+    		tbFile.setFileSize(file.getSize()+"");
+    		tbFile.setFilePath(uploadPath+"");
+    		// 01 : 서버
+    		tbFile.setFileType("01");
+    		tbFile.setFileExtension(StringUtils.getFileExtension(oriFileName));
+    		tbFile.setRegId(SecurityUtils.getPrincipal().getRegId());
+    		
+    		try {
+    			file.transferTo(saveFile); //물리적인 파일을 해당경로에 저장한다.
+
+        		fileRepository.insertFiles(tbFile);
+			}catch(Exception e) {
+				// log.error(e.getMessage());
+				// log.error("error : ",e);
+			}
+    		
+    	}
+    }
+    
+    @Override
+    public ResponseEntity<Resource> downloadFiles(String menuCd, String boardId, String fileId) {
+    	
+    	TbFile reqfile = new TbFile();
+    	reqfile.setFileId(fileId);
+    	reqfile.setBoardId(boardId);
+    	reqfile.setMenuCd(menuCd);
+    	
+    	TbFile resFile = fileRepository.selectFile(reqfile);
+    	
+    	try {
+	    	String fileName = resFile.getFileName();
+	    	String fileNewName = resFile.getFileNewName();
+	    	
+	    	String encodedFilename = URLEncoder.encode(fileName, "UTF-8");
+	    	
+	    	Path filePath = Paths.get(resFile.getFilePath()).resolve(fileNewName).normalize();
+	    	
+	    	Resource resource = new UrlResource(filePath.toUri());
+	        if (!resource.exists()) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	        }
+	    	
+	        return ResponseEntity.ok()
+	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"")
+	                .body(resource);
+    	
+    	} catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } 
+    			
+    }
+
 
     @Override
     public TbBoard selectBoardDetail(String menuCd, String boardId, HttpServletRequest request, HttpServletResponse response) {
@@ -93,6 +188,16 @@ public class BoardServiceImpl implements BoardService {
         this.viewCount(board, request, response);
 
         return boardRepository.selectBoardDetail(menuCd, boardId);
+    }
+    
+    @Override
+    public List<TbFile> selectBoardFiles(String menuCd, String boardId) {
+    	
+    	TbFile tbFile = new TbFile();
+    	tbFile.setMenuCd(menuCd);
+    	tbFile.setBoardId(boardId);
+    	
+    	return fileRepository.selectFileList(tbFile);
     }
 
     @Override
@@ -121,7 +226,6 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private void viewCount(TbBoard board, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("왜안타");
         Cookie oldCookie = null;
 
         Cookie[] cookies = request.getCookies();

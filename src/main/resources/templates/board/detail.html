@@ -64,8 +64,18 @@
                     조회 : <span class="userInfo" th:text="${detail.viewCount}"></span>
                 </td>
             </tr>
-            <tr>
-                <td class="font" style="line-height: 40px;">첨부 파일</td>
+            <tr th:if="${fileList != null and !fileList.isEmpty()}">
+                <td class="font" style="line-height: 40px; display: flex;">
+					<span style="margin-right:15px;font-size:11px;">첨부 파일</span>
+					<span style="display: flex; align-items: center;">
+						<a th:each="file : ${fileList}" class="select_file_box" 
+							th:href="@{'/' + ${siteId} + '/board/' + ${menuCd} + '/download/' + ${detail.boardId} +'/' + ${file.fileId}}" 
+							style="margin-right:6px; padding: 5px 8px 5px 7px;" download>
+							<span th:text="${file.fileName}" style="margin:5px;"></span>
+							<img class="photoDownload" src="/images/material-symbols_download.png" alt="다운로드 아이콘"/>
+						</a>
+					</span>
+				</td>
             </tr>
             </thead>
             <tbody>
@@ -94,6 +104,7 @@
 <script th:inline="javascript">
     let menuCd = [[${menuCd}]];
     let boardId = [[${detail.boardId}]];
+	
     document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("backBtn").addEventListener("click", function () {
