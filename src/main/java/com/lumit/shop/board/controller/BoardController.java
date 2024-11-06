@@ -67,17 +67,21 @@ public class BoardController {
     														, @RequestPart(value = "files", required = false) MultipartFile[] files) {
         return new ResponseEntity<>(boardService.insertBoard(menuCd, board, files), HttpStatus.OK);
     }
+    
+    @ResponseBody
+    @PostMapping("/{menuCd}/update")
+    public ResponseEntity<Map<String, Object>> updateBoard(ModelMap map
+    														, @PathVariable("menuCd") String menuCd 
+    														, @ModelAttribute TbBoard board
+    														, @RequestPart(value = "files", required = false) MultipartFile[] files) {
+        return new ResponseEntity<>(boardService.updateBoard(menuCd, board, files), HttpStatus.OK);
+    }
 
     @GetMapping("/{menuCd}/update/{boardId}")
     public String boardUpdate(ModelMap map, HttpServletRequest request, HttpServletResponse response, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId) {
         map.addAttribute("detail", boardService.selectBoardDetail(menuCd, boardId, request, response));
+        map.addAttribute("fileList", boardService.selectBoardFiles(menuCd, boardId));
         return BOARD_PATH + "/update";
-    }
-
-    @ResponseBody
-    @PostMapping("/{menuCd}/update")
-    public ResponseEntity<Map<String, Object>> updateBoard(ModelMap map, @PathVariable("menuCd") String menuCd, @RequestBody TbBoard board) {
-        return new ResponseEntity<>(boardService.updateBoard(menuCd, board), HttpStatus.OK);
     }
 
     @ResponseBody

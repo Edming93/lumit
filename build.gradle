@@ -50,7 +50,9 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
     implementation 'com.google.code.gson:gson:2.8.9' // 최신 버전 확인 필요

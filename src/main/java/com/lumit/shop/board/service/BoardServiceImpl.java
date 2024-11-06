@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lumit.shop.common.data.RequestList;
 import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.model.TbBoard;
@@ -85,12 +90,34 @@ public class BoardServiceImpl implements BoardService {
         	board.setFileYn("N");
         }
         
-        System.out.println(FILE_UPLOAD_PATH);
         board.setViewCount("0");
         board.setRegId(SecurityUtils.getPrincipal().getUserId());
         board.setModId(SecurityUtils.getPrincipal().getUserId());
 
         boardRepository.insertBoard(board);
+        
+        if(files != null) uploadFiles(board,files);
+
+        result.put("result", "success");
+
+        return result;
+    }
+    
+    @Override
+    public Map<String, Object> updateBoard(String menuCd, TbBoard board, MultipartFile[] files) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        board.setMenuCd(menuCd);
+        board.setModId(SecurityUtils.getPrincipal().getUserId());
+        if(files != null) {
+        	board.setFileYn("Y");
+        	
+        }else {
+        	board.setFileYn("N");
+        }
+        
+        boardRepository.updateBoard(board);
+        
         uploadFiles(board,files);
 
         result.put("result", "success");
@@ -101,7 +128,10 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public void uploadFiles(TbBoard board, MultipartFile[] files) {
-
+    	// boardId 해당 게시물의 파일을 모두 삭제하고 다시 추가
+		fileRepository.deleteFiles(board);
+	
+	
     	File uploadPath = new File(FILE_UPLOAD_PATH, StringUtils.getData());
     	
     	System.out.println("upload path: "+ uploadPath);
@@ -110,36 +140,68 @@ public class BoardServiceImpl implements BoardService {
     		uploadPath.mkdirs();
     	}
     	
-    	for(MultipartFile file : files) {
-    		String oriFileName =  file.getOriginalFilename();
+    	if(board.getJsonFileList() != null) {
+    		System.out.println("file ::: 기존파일추가  --------------------------");
     		
-    		UUID uuid = UUID.randomUUID(); // 랜덤 이름 생성
+    		// List<String>의 형태를 List<TbFile>로 변환
+    		ObjectMapper mapper = new ObjectMapper();
+    		List<TbFile> fileList = new ArrayList<>();
     		
-    		String uploadFileName = uuid.toString() + "_" + oriFileName; //UUID(랜덤문자라생각하면편함) + 원본파일명
-    		
-    		File saveFile = new File(uploadPath, uploadFileName);
-    		
-    		TbFile tbFile = new TbFile();
-    		tbFile.setBoardId(board.getBoardId());
-    		tbFile.setMenuCd(board.getMenuCd());
-    		tbFile.setFileName(oriFileName);
-    		tbFile.setFileNewName(uploadFileName);
-    		tbFile.setFileSize(file.getSize()+"");
-    		tbFile.setFilePath(uploadPath+"");
-    		// 01 : 서버
-    		tbFile.setFileType("01");
-    		tbFile.setFileExtension(StringUtils.getFileExtension(oriFileName));
-    		tbFile.setRegId(SecurityUtils.getPrincipal().getRegId());
-    		
-    		try {
-    			file.transferTo(saveFile); //물리적인 파일을 해당경로에 저장한다.
-
-        		fileRepository.insertFiles(tbFile);
-			}catch(Exception e) {
-				// log.error(e.getMessage());
-				// log.error("error : ",e);
+    		for (String jsonFile : board.getJsonFileList()) {
+    			
+				TbFile file;
+				try {
+					file = mapper.readValue(jsonFile, TbFile.class);
+					
+					fileList.add(file);
+				} catch (JsonMappingException e) {
+					e.printStackTrace();
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+				}
+				
 			}
     		
+	    	// 기존 파일 DB추가
+	    	for (TbFile file : fileList) {
+	    		
+				fileRepository.insertFiles(file);
+			}
+    	}
+    	
+    	if(files != null) {
+    		System.out.println("file ::: 새 파일 추가 --------------------------");
+	    	// 새로운 파일 DB추가
+	    	for(MultipartFile file : files) {
+	    		String oriFileName =  file.getOriginalFilename();
+	    		
+	    		UUID uuid = UUID.randomUUID(); // 랜덤 이름 생성
+	    		
+	    		String uploadFileName = uuid.toString() + "_" + oriFileName; //UUID(랜덤문자라생각하면편함) + 원본파일명
+	    		
+	    		File saveFile = new File(uploadPath, uploadFileName);
+	    		
+	    		TbFile tbFile = new TbFile();
+	    		tbFile.setBoardId(board.getBoardId());
+	    		tbFile.setMenuCd(board.getMenuCd());
+	    		tbFile.setFileName(oriFileName);
+	    		tbFile.setFileNewName(uploadFileName);
+	    		tbFile.setFileSize(file.getSize()+"");
+	    		tbFile.setFilePath(uploadPath+"");
+	    		// 01 : 서버
+	    		tbFile.setFileType("01");
+	    		tbFile.setFileExtension(StringUtils.getFileExtension(oriFileName));
+	    		tbFile.setRegId(SecurityUtils.getPrincipal().getRegId());
+	    		
+	    		try {
+	    			file.transferTo(saveFile); //물리적인 파일을 해당경로에 저장한다.
+	
+	        		fileRepository.insertFiles(tbFile);
+				}catch(Exception e) {
+					// log.error(e.getMessage());
+					// log.error("error : ",e);
+				}
+	    	}
     	}
     }
     
@@ -198,18 +260,6 @@ public class BoardServiceImpl implements BoardService {
     	tbFile.setBoardId(boardId);
     	
     	return fileRepository.selectFileList(tbFile);
-    }
-
-    @Override
-    public Map<String, Object> updateBoard(String menuCd, TbBoard board) {
-        Map<String, Object> result = new HashMap<String, Object>();
-
-        board.setModId(SecurityUtils.getPrincipal().getUserId());
-        boardRepository.updateBoard(board);
-
-        result.put("result", "success");
-
-        return result;
     }
 
     @Override

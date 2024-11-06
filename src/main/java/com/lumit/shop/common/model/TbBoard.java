@@ -1,5 +1,8 @@
 package com.lumit.shop.common.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +27,8 @@ public class TbBoard{
 	private String regDt;
 	private String modId;
 	private String modDt;
+	
+	private List<String> jsonFileList;
 
 	@Override
 	public String toString() {

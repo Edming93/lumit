@@ -191,6 +191,10 @@ i {
     margin-top: 20px;
 }
 
+.wsNorap {
+	white-space: nowrap;
+}
+
 .bold {
     font-weight: 600;
 }
