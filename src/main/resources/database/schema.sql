@@ -144,18 +144,18 @@ create table if not exists TB_DELIVERY
 
 create table if not exists TB_FILE
 (
-    FILE_ID   int AUTO_INCREMENT not null comment 'AUTO_INCREMENT'
+    FILE_ID        int AUTO_INCREMENT not null comment 'AUTO_INCREMENT'
         primary key,
-    BOARD_ID	int		NOT NULL,
-	MENU_CD	varchar(4)	NOT NULL comment '메뉴코드',
-	FILE_NEW_NAME	varchar(200)	NOT NULL,
-	FILE_NAME	varchar(200)	NOT NULL,
-	FILE_SIZE	varchar(255)	NOT NULL,
-	FILE_TYPE	varchar(2)	NOT NULL	COMMENT '01: 서버, 02: 스토리지서버, 03: blob',
-	FILE_PATH	varchar(255)	NULL,
-	FILE_EXTENSION	varchar(255)	NULL,
-	REG_ID		varchar(50)	not null,
-	REG_DT      timestamp   not null
+    BOARD_ID       int                NOT NULL,
+    MENU_CD        varchar(4)         NOT NULL comment '메뉴코드',
+    FILE_NEW_NAME  varchar(200)       NOT NULL,
+    FILE_NAME      varchar(200)       NOT NULL,
+    FILE_SIZE      varchar(255)       NOT NULL,
+    FILE_TYPE      varchar(2)         NOT NULL COMMENT '01: 서버, 02: 스토리지서버, 03: blob',
+    FILE_PATH      varchar(255)       NULL,
+    FILE_EXTENSION varchar(255)       NULL,
+    REG_ID         varchar(50)        not null,
+    REG_DT         timestamp          not null
 );
 
 create table if not exists TB_INVOICE
@@ -180,21 +180,22 @@ create table if not exists TB_LIKE
 
 create table if not exists TB_LOGIN
 (
-    USER_ID      varchar(50)  not null
+    USER_ID      varchar(50)       not null
         primary key,
-    ROLE_ID      int          not null,
-    PASSWORD     varchar(100) not null,
-    NAME         varchar(30)  not null,
-    GENDER_CD    varchar(2)   not null comment '1: 여, 2: 남',
-    EMAIL        varchar(30)  not null,
-    PHONE        varchar(14)  not null,
-    ADDRESS      varchar(30)  not null,
-    SOCIAL_ID    varchar(100) null,
-    DEFAULT_ADDR int          null,
-    REG_ID       varchar(50)  null,
-    REG_DT       timestamp    null,
-    MOD_ID       varchar(50)  null,
-    MOD_DT       timestamp    null
+    ROLE_ID      int               not null,
+    PASSWORD     varchar(100)      not null,
+    NAME         varchar(30)       not null,
+    GENDER_CD    varchar(2)        not null comment '1: 여, 2: 남',
+    EMAIL        varchar(30)       not null,
+    PHONE        varchar(14)       not null,
+    ADDRESS      varchar(30)       not null,
+    SOCIAL_ID    varchar(100)      null,
+    DEFAULT_ADDR int               null,
+    STATUS       tinyint default 1 not null comment '1: 활동, 2: 휴면, 3: 탈퇴, 4: 구 관리자',
+    REG_ID       varchar(50)       null,
+    REG_DT       timestamp         null,
+    MOD_ID       varchar(50)       null,
+    MOD_DT       timestamp         null
 );
 
 create table if not exists TB_LOGIN_HIS

@@ -5,7 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RoleDto {
+public class AdminDto {
+    String name;
     String roleId;
     String userId;
+    String modId;
+    int status;
 }

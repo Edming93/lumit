@@ -1,6 +1,6 @@
 package com.lumit.shop.common.service;
 
-import com.lumit.shop.admin.dto.RoleDto;
+import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.model.TbAddress;
@@ -34,7 +34,9 @@ public interface UserService {
 
     public List<TbAddress> selectAddressListByUserId(String userId);
 
-    int removeAdminRole(String adminId);
+    int deleteAdmin(AdminDto adminDto);
 
-    int updateAdminRole(RoleDto roleDto);
+    int updateAdmin(AdminDto adminDto);
+
+    List<User> selectOldAdminList();
 }

@@ -2,40 +2,88 @@
 <html
         xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{admin/fragments/layout}">
 <div layout:fragment="content">
-    <table class="adminTable">
-        <colgroup>
-            <col style="width: 20%;">
-            <col style="width: 35%;">
-            <col style="width: 35%;">
-            <col style="width: 10%;">
-        </colgroup>
-        <thead>
-        <tr>
-            <th>권한 레벨</th>
-            <th>관리자 아이디</th>
-            <th>관리자명</th>
-            <th>권한 삭제</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="admin : ${adminList}">
-            <td>
-                <select th:attr="onchange=|roleChange(event, this, ${admin.roleId})|">
-                    <option th:selected="${admin.roleId == '1'}" value="1">총괄</option>
-                    <option th:selected="${admin.roleId == '2'}" value="2">기본</option>
-                </select>
-                <button th:attr="onclick=|updateRole(this, '${admin.userId}')|" disabled class="editBtn">수정</button>
-            </td>
-            <td th:text="${admin.userId}"></td>
-            <td th:text="${admin.name}"></td>
-            <td>
-                <button th:attr="onclick=|removeRole('${admin.userId}')|"><i class="fa-solid fa-trash-can"></i></button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div th:replace="~{admin/fragments/modal::modal('정말 삭제하시겠습니까?', '삭제', 'delete')}"></div>
+    <div th:replace="~{admin/fragments/modal::modal('정말 수정하시겠습니까?', '수정','update')}"></div>
+    <input id="modalResult" type="hidden" value=""/>
+    <div class="adminContainer">
+        <h1 class="title">운영자 계정 관리</h1>
+        <table class="adminTable">
+            <colgroup>
+                <col style="width: 25%;">
+                <col style="width: 35%;">
+                <col style="width: 30%;">
+                <col style="width: 10%;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>권한 레벨</th>
+                <th>운영자 아이디</th>
+                <th>운영자명</th>
+                <th>권한 삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="admin : ${adminList}">
+                <td>
+                    <select th:attr="onchange=|roleChange(event, this, '${admin.roleId}')|">
+                        <option th:selected="${admin.roleId == '1'}" value="1">총괄</option>
+                        <option th:selected="${admin.roleId == '2'}" value="2">기본</option>
+                    </select>
+                    <button th:attr="onclick=|updateRole(this, '${admin.userId}', 'role')|" disabled class="editBtn">
+                        수정
+                    </button>
+                </td>
+                <td th:text="${admin.userId}"></td>
+                <td class="inputNameBox"><input th:attr="oninput=|nameChange(event, this, '${admin.name}')|"
+                                                th:value="${admin.name}">
+                    <button th:attr="onclick=|updateRole(this, '${admin.userId}', 'name')|" disabled class="editBtn"
+                            type="button">수정
+                    </button>
+                </td>
+                <td>
+                    <button th:attr="onclick=|deleteRole('${admin.userId}')|"><i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="adminContainer">
+        <h1 class="title">권한이 삭제된 운영자</h1>
+        <table class="adminTable">
+            <colgroup>
+                <col style="width: 20%;">
+                <col style="width: 20%;">
+                <col style="width: 15%;">
+                <col style="width: 30%;">
+                <col style="width: 15%;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>관리자 아이디</th>
+                <th>관리자명</th>
+                <th>수정자</th>
+                <th>수정일</th>
+                <th>권한 되돌리기</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="admin : ${oldAdminList}">
+                <td style="padding: 0.8rem" th:text="${admin.userId}"></td>
+                <td th:text="${admin.name}"></td>
+                <td th:text="${admin.modId}"></td>
+                <td th:text="${@StringUtils.setDetailDateFormat(admin.modDt)}"></td>
+                <td>
+                    <button th:attr="onclick=|updateRole(null, '${admin.userId}', 'reset')|"><i class="fa-solid fa-rotate-right"></i></i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
     <script th:inline="javascript">
 
         /**
@@ -55,21 +103,102 @@
 
         /**
          *
+         * @param event
+         * @param element{HTMLInputElement}
+         * @param value{string}
+         */
+        function nameChange(event, element, value) {
+            console.log(value);
+            console.log(event.target.value);
+            const btn = element.nextElementSibling
+            if (event.target.value == value) {
+                btn.setAttribute("disabled", true)
+            } else {
+                btn.removeAttribute("disabled")
+            }
+        }
+
+        /**
+         *
          * @param element{HTMLSelectElement}
          * @param id
+         * @param userId
          */
-        async function updateRole(element, id) {
-            const select = element.previousElementSibling
-            const data = await FETCH.patch(`/api/admin/role/update/${id}`, {roleId: select.value})
-            console.log(data)
+        async function updateRole(element, id, type) {
+            let result = await showModal("update").then(async function (result) {
+                if (!result) {
+                    return false;
+                }
+                if (element == null) {
+                    return await FETCH.patch(`/api/admin/role/update/${id}`, {})
+                }
+                const value = element.previousElementSibling.value
+                if (type == 'role') {
+                    return await FETCH.patch(`/api/admin/role/update/${id}`, {roleId: value})
+                } else if (type == 'name') {
+                    return await FETCH.patch(`/api/admin/role/update/${id}`, {name: value})
+                }
+            })
+            if (!result) {
+                return false;
+            }
             location.reload();
         }
 
-        async function removeRole(userId) {
-            const data = await FETCH.patch(`/api/admin/role/remove/${userId}`)
+        async function deleteRole(id) {
+            let result = await showModal("delete").then(async function (result) {
+                if (!result) {
+                    return false;
+                }
+                return await FETCH.patch(`/api/admin/role/delete/${id}`, {})
+            })
+            if (!result) {
+                return false;
+            }
+            console.log(result)
             location.reload();
-            console.log(data)
         }
 
+
+        async function showModal(type) {
+            if (type == 'update') {
+                document.getElementById("updateModal").style.display = 'flex'
+            } else if (type == 'delete') {
+                document.getElementById("deleteModal").style.display = 'flex'
+            }
+            return new Promise(function (resolve) {
+                const result = document.getElementById("modalResult");
+                result.addEventListener("change", function () {
+                    console.log(result.value)
+                    if (result.value == 'action') {
+                        hideModal(type)
+                        setTimeout(function () {
+                            resolve(true)
+                        }, 100);
+                    } else if (result.value == 'cancel') {
+                        hideModal(type)
+                        setTimeout(function () {
+                            resolve(false)
+                        }, 100);
+                    }
+                })
+            });
+        }
+
+        function hideModal(type) {
+            const result = document.getElementById("modalResult")
+            result.value = ""
+            if (type == 'update') {
+                document.getElementById("updateModal").style.display = 'none'
+            } else if (type == 'delete') {
+                document.getElementById("deleteModal").style.display = 'none'
+            }
+        }
+
+
+        async function resetRole(userId) {
+            const data = await FETCH.patch(`/api/admin/role/reset/${userId}`, {})
+            location.reload();
+        }
     </script>
 </div>

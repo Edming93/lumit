@@ -86,7 +86,9 @@ public class AdminController {
     @GetMapping(MEMBER_PATH + "/updateManager")
     public String updateManager(Model model) {
         List<User> adminList = userService.selectAdminList();
+        List<User> oldAdminList = userService.selectOldAdminList();
         model.addAttribute("adminList", adminList);
+        model.addAttribute("oldAdminList", oldAdminList);
         return BASE_URL + MEMBER_PATH + "/user/updateManager";
     }
 

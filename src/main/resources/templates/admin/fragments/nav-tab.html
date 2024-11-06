@@ -21,7 +21,8 @@
                 <i class="fa-solid fa-house"></i>
                 <span th:class="wide">홈</span>
             </a></li>
-        <li th:class="nav-list" th:each="menu : ${session.menuList}" th:if="${menu.isAdmin()}">
+        <li th:class="nav-list" th:each="menu : ${session.menuList}"
+            th:if="${menu.isAdmin() && !menu.getMenuUrl().startsWith('/api')}">
             <a th:class="nav-link"
                th:classappend="${servletPath.substring(0, servletPath.lastIndexOf('/')) == menu.getMenuUrl().split('/\*')[0] ? 'active' : null}"
                th:href="|${menu.getMenuUrl().split('\*')[0]}${menu.getMenuDefaultUrl()}|">

@@ -3,7 +3,7 @@ package com.lumit.shop.common.repository;
 import java.math.BigInteger;
 import java.util.List;
 
-import com.lumit.shop.admin.dto.RoleDto;
+import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.common.model.TbAddress;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -38,7 +38,9 @@ public interface UserRepository {
 
     int updateDefaultAddr(TbLogin tbLogin);
 
-    int removeAdminRole(String adminId);
+    int deleteAdmin(AdminDto adminDto);
 
-    int updateAdminRole(RoleDto roleDto);
+    int updateAdmin(AdminDto adminDto);
+
+    List<User> selectOldAdminList();
 }

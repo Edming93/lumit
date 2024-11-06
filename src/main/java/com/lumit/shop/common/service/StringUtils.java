@@ -8,40 +8,55 @@ import java.util.Date;
 public class StringUtils {
 
     public static String setDateFormat(String datetime) {
-    	
-    	SimpleDateFormat  inputFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    	SimpleDateFormat  outputFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    	Date date = new Date();
-    	
-    	try {
-    		date = inputFormatter.parse(datetime);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-    	
-    	return outputFormatter.format(date);
+        SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat outputFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date date = new Date();
+
+        try {
+            date = inputFormatter.parse(datetime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return outputFormatter.format(date);
 
     }
-    
+
+    public static String setDetailDateFormat(String dateStr) {
+        SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat outputFormatter = new SimpleDateFormat("yy.MM.dd HH:mm:ss");
+
+        Date date = new Date();
+
+        try {
+            date = inputFormatter.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return outputFormatter.format(date);
+    }
+
     public static String getData() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		// 현재날짜를받아옴
-		Date date = new Date();
-		
-		String str = sdf.format(date);
-		
-		return str.replace("-", File.separator);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        // 현재날짜를받아옴
+        Date date = new Date();
+
+        String str = sdf.format(date);
+
+        return str.replace("-", File.separator);
         // "-" 를 운영체제에 맞게 / 또는 \\ 으로 변경한다.
-	}
-    
+    }
+
     public static String getFileExtension(String fileName) {
-    	int index = fileName.lastIndexOf(".");
-    	String extension = "";
-    	
-    	if(index > 0) {
-    		extension = fileName.substring(index+1);
-    	}
-    	return extension;
+        int index = fileName.lastIndexOf(".");
+        String extension = "";
+
+        if (index > 0) {
+            extension = fileName.substring(index + 1);
+        }
+        return extension;
     }
 }

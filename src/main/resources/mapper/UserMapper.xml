@@ -22,8 +22,9 @@
     <select id="selectAdminList" resultType="com.lumit.shop.common.model.User">
         SELECT *
         FROM TB_LOGIN
-        WHERE ROLE_ID = '1'
-           or ROLE_ID = '2'
+        WHERE (ROLE_ID = '1'
+            or ROLE_ID = '2')
+          and STATUS != 4
         ORDER BY ROLE_ID ASC
     </select>
 
@@ -103,15 +104,33 @@
         WHERE USER_ID = #{userId}
     </update>
 
-    <update id="removeAdminRole" parameterType="java.lang.String">
+    <update id="deleteAdmin" parameterType="AdminDto">
         UPDATE TB_LOGIN
-        SET ROLE_ID='3'
-        WHERE USER_ID = #{adminId}
-    </update>
-
-    <update id="updateAdminRole" parameterType="RoleDto">
-        UPDATE TB_LOGIN
-        SET ROLE_ID=#{roleId}
+        SET STATUS = 4,
+            MOD_ID = #{modId},
+            MOD_DT = now()
         WHERE USER_ID = #{userId}
     </update>
+
+    <update id="updateAdmin" parameterType="AdminDto">
+        UPDATE TB_LOGIN
+        SET
+        <if test="roleId != null">
+            ROLE_ID=#{roleId},
+        </if>
+        STATUS = 1,
+        MOD_ID=#{modId},
+        MOD_DT = now()
+        <if test="name != null">
+            ,NAME = #{name}
+        </if>
+        WHERE USER_ID = #{userId}
+    </update>
+
+    <select id="selectOldAdminList" resultType="com.lumit.shop.common.model.User">
+        SELECT *
+        FROM TB_LOGIN
+        WHERE STATUS = 4
+        ORDER BY MOD_DT DESC
+    </select>
 </mapper>

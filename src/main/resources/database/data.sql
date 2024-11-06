@@ -5,12 +5,12 @@ VALUES (1, 'SUPER_ADMIN', 'R100', '슈퍼관리자', 'admin', '2024-07-17 10:32:
 
 
 REPLACE INTO `TB_LOGIN`
-VALUES ('admin', 2, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'ssdd', '1', 'sadf@dfa.com',
-        '01030303848', 'dfjaksdf', NULL, NULL, 'admin', now(), 'admin', now()),
+VALUES ('admin', 1, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'ssdd', '1', 'sadf@dfa.com',
+        '01030303848', 'dfjaksdf', NULL, NULL, 1, 'admin', now(), 'admin', now()),
        ('user', 3, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'asdf', '1', 'asdf@asdf.asd',
-        '01012341234', 'asdf', NULL, NULL, 'admin', now(), 'admin', now()),
-       ('dorong', 1, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'aaaa', '1', 'aaaa@aaa.com',
-        '01000000000', 'asdf', NULL, NULL, 'admin', now(), 'admin', now());
+        '01012341234', 'asdf', NULL, NULL, 1, 'admin', now(), 'admin', now()),
+       ('dorong', 2, '$2a$10$6hXP0sf0sQb85MK/kAtuz.uZmKNou.PboQYLdZDi2DkrgCtTYreW6', 'aaaa', '1', 'aaaa@aaa.com',
+        '01000000000', 'asdf', NULL, NULL, 1, 'admin', now(), 'admin', now());
 
 REPLACE INTO `TB_MENU`
 VALUES ('M100', 'M100', '메인', '/main/**', '', '', 0, NULL),

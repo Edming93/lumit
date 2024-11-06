@@ -2,15 +2,62 @@
 <html
         xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{fragments/layout}">
+        layout:decorate="~{member/fragments/layout}">
 <div layout:fragment="content" style="text-align: center">
-    <div style="font-size: x-large">내 개인 정보</div>
-    <div>
-        <h3 style="font-size: large">배송지 목록</h3>
+
+    <div class="infoWrapper">
+        <div class="infoContainer">
+            <h1>회원정보 수정</h1>
+            <div th:text="${user.name} + '님 반갑습니다.'"></div>
+            <hr>
+            <div>
+                <div><span>닉네임</span></div>
+                <div>
+                    <input th:value="${user.name}">
+                    <button>닉네임 설정</button>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <span>휴대폰 번호</span></div>
+                <div>
+                    <span th:text="${user.phone}"></span>
+                    <button>휴대전화 변경</button>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <span>비밀번호</span></div>
+                <div>
+                    <button>비밀번호 변경</button>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <span>이메일</span></div>
+                <div>
+                    <span th:text="${user.email}"></span>
+                    <button>이메일 변경</button>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <span>배송지</span></div>
+                <div>
+                    <span th:text="${user.address.split(',')[1]+ user.address.split(',')[2]}"></span>
+                    <button>배송지 관리</button>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <span>환불 계좌</span></div>
+                <div>
+                    <input placeholder="환불 받을 계좌를 입력해주세요.">
+                    <button>환불 계좌 관리</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div th:text="${user.userId}"></div>
-    <div th:text="${user.email}"></div>
-    <div th:text="${user.address}"></div>
     <script th:inline="javascript">
         const userId = [[${user.userId}]]
         let xhr = new XMLHttpRequest();

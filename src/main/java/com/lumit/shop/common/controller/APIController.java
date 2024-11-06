@@ -1,6 +1,6 @@
 package com.lumit.shop.common.controller;
 
-import com.lumit.shop.admin.dto.RoleDto;
+import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.board.service.BoardService;
 import com.lumit.shop.common.dto.ResponseDto;
 import com.lumit.shop.common.dto.SearchDto;
@@ -8,6 +8,7 @@ import com.lumit.shop.common.model.TbAddress;
 import com.lumit.shop.common.model.TbBoard;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.security.PrincipalDetails;
+import com.lumit.shop.common.service.SecurityUtils;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -77,9 +78,11 @@ public class APIController {
         return ResponseEntity.ok(boardService.selectPageableBoardList(board, pageable));
     }
 
-    @PatchMapping(value = "/admin/role/remove/{id}")
-    public @ResponseBody ResponseEntity<?> removeRole(@PathVariable("id") String id) {
-        int result = userService.removeAdminRole(id);
+    @PatchMapping(value = "/admin/role/delete/{id}")
+    public @ResponseBody ResponseEntity<?> deleteRole(@PathVariable("id") String id, @RequestBody AdminDto adminDto) {
+        adminDto.setModId(SecurityUtils.getPrincipal().getUserId());
+        adminDto.setUserId(id);
+        int result = userService.deleteAdmin(adminDto);
         if (result <= 0) {
             return ResponseEntity.badRequest().build();
         } else {
@@ -88,9 +91,10 @@ public class APIController {
     }
 
     @PatchMapping(value = "/admin/role/update/{id}")
-    public @ResponseBody ResponseEntity<?> updateRole(@PathVariable("id") String id, @RequestBody RoleDto roleDto) {
-        roleDto.setUserId(id);
-        int result = userService.updateAdminRole(roleDto);
+    public @ResponseBody ResponseEntity<?> updateRole(@PathVariable("id") String id, @RequestBody AdminDto adminDto) {
+        adminDto.setModId(SecurityUtils.getPrincipal().getUserId());
+        adminDto.setUserId(id);
+        int result = userService.updateAdmin(adminDto);
         if (result <= 0) {
             return ResponseEntity.badRequest().build();
         } else {

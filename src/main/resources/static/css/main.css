@@ -794,3 +794,61 @@ footer {
     margin-top: 1rem;
 }
 
+/**
+회원 정보 수정(일반 유저)
+ */
+.infoWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.infoContainer {
+    text-align: left;
+    /*display: flex;*/
+    width: 70%;
+}
+
+.infoContainer > h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.infoContainer > hr {
+    margin: 0;
+}
+
+.infoContainer > div {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #D3CCC2;
+}
+
+.infoContainer > div > div:nth-child(1) {
+    background-color: #F2EADF;
+    width: 12%;
+    padding: 1rem;
+    font-size: 14px;
+    color: #7B6A59;
+}
+
+.infoContainer > div > div:nth-child(2) {
+    /*width: 90%;*/
+    padding: 1rem;
+    font-size: 14px;
+    color: #3D3D3D;
+}
+
+.infoContainer input {
+    padding: 0.3rem;
+    width: 200px;
+}
+
+.infoContainer button {
+    border: 1px solid #D6CBBC;
+    padding: 0.3rem;
+    border-radius: 0.2rem;
+    background-color: #F5EFE6;
+    color: #958177;
+}

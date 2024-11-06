@@ -62,3 +62,7 @@ button {
 a, button {
     cursor: pointer;
 }
+
+.fa-solid {
+    vertical-align: middle;
+}
