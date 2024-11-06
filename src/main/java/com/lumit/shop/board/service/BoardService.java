@@ -24,7 +24,7 @@ public interface BoardService {
 
     public Map<String, Object> insertBoard(String menuCd, TbBoard board, MultipartFile[] files);
 
-    public Map<String, Object> updateBoard(String menuCd, TbBoard board);
+    public Map<String, Object> updateBoard(String menuCd, TbBoard board, MultipartFile[] files);
 
     public Map<String, Object> deleteBoard(TbBoard board);
 

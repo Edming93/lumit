@@ -44,11 +44,13 @@
                , now())
     </insert>
 
-    <delete id="deleteFile" parameterType="com.lumit.shop.common.model.TbFile">
-        DELETE
+    <delete id="deleteFiles" parameterType="com.lumit.shop.common.model.TbBoard">
+        DELETE FROM
             TB_FILE
-        WHERE BOARD_ID = #{boardId}
-          AND MENU_CD = #{menuCd}
+        WHERE 
+        	BOARD_ID = #{boardId}
+        AND 
+        	MENU_CD = #{menuCd}
     </delete>
 
 </mapper>

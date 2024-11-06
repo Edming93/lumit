@@ -12,7 +12,7 @@
         <p class="title">공지사항 등록</p>
     </div>
 
-    <div class="boardContainer">
+    <div class="boardContainer wsNorap">
         <form id="registForm"  method="post" entype="multipart/form-data">
 
             <table class="registTable">
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	document.getElementById("registBtn").addEventListener("click", function() {
 	
 		if(confirm("등록 하시겠습니까?")) {
-				
+			
 			let formData = new FormData(document.querySelector("#registForm"));
 			let params = {};
 			
