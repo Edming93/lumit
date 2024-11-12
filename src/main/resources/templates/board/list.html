@@ -74,7 +74,7 @@
             pageNo = pageNo || 0;
 
             const title = document.querySelector("#searchInp").value;
-            const url = "/api/opened/boardList?title=" + title + "&page=" + pageNo;
+            const url = "/api/boards" + title + "&page=" + pageNo;
             FETCH.get(url, afterGetList)
         }
 

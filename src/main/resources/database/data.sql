@@ -30,9 +30,7 @@ VALUES ('M100', 'M100', '메인', '/main/**', '', '', 0, NULL),
        ('M208', 'M200', '공지사항', '/admin/board/M208/**', 'list', '0000', 1, '<i class="fa-regular fa-clipboard"></i>'),
        ('M209', 'M200', 'Q&A', '/admin/board/M209/**', 'list', '0001', 1, '<i class="fa-regular fa-clipboard"></i>'),
        ('M210', 'M200', 'FAQ', '/admin/board/M210/**', 'list', '0002', 1, '<i class="fa-regular fa-clipboard"></i>'),
-       ('M211', 'M200', '주문관리', '/admin/order/**', 'dashboard', '', 1, '<i class=\"fa-solid fa-cart-shopping\"></i>'),
-       ('M212', 'M200', 'API', '/api/admin/**', '', '', 1, ''),
-       ('M213', 'M200', '권한API', '/api/admin/role/**', '', '', 1, '');
+       ('M211', 'M200', '주문관리', '/admin/order/**', 'dashboard', '', 1, '<i class=\"fa-solid fa-cart-shopping\"></i>');
 
 
 REPLACE INTO `TB_ROLE_MENU`
@@ -53,8 +51,6 @@ VALUES (1, 'M100', 'N'),
        (1, 'M209', 'N'),
        (1, 'M210', 'N'),
        (1, 'M211', 'N'),
-       (1, 'M212', 'N'),
-       (1, 'M213', 'N'),
        (2, 'M100', 'N'),
        (2, 'M101', 'N'),
        (2, 'M102', 'N'),
@@ -72,7 +68,6 @@ VALUES (1, 'M100', 'N'),
        (2, 'M209', 'N'),
        (2, 'M210', 'N'),
        (2, 'M211', 'N'),
-       (2, 'M212', 'N'),
        (3, 'M100', 'Y'),
        (3, 'M101', 'N'),
        (3, 'M102', 'N'),

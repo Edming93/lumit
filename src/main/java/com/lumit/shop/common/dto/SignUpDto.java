@@ -25,7 +25,7 @@ public class SignUpDto {
     private String name;
 
     @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
-    @Length(min = 8, max = 16, message = "비밀번호는 8자 이상 16자 입니다.")
+    @Length(min = 8, max = 16, message = "비밀번호는 8자 이상 16자 이하 입니다.")
     private String password;
 
     @NotBlank(message = "주소는 필수 입력 값입니다.")

@@ -4,9 +4,9 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{fragments/layout}">
 <div layout:fragment="content" style="text-align: center; display: flex; justify-content: center">
-    <script type="module" src="/js/firebase.js">
-        import {makeVerify} from "../../../static/js/firebase";
-    </script>
+    <div th:replace="~{fragments/modal::modal('입력하신 정보와 일치하는 회원이<br>존재하지 않습니다.', '', 'notFound','simple')}"></div>
+    <div th:replace="~{fragments/modal::modal('정보를 입력해주세요.', '', 'warning','simple')}"></div>
+    <div th:replace="~{fragments/modal::modal('이메일 전송이 완료되었습니다.', '', 'success','simple')}"></div>
     <div class="findUserForm">
         <p>계정 정보 찾기</p>
         <div class="findUserTab">
@@ -18,7 +18,9 @@
         <fieldset class="findUserRadio">
             <div>
                 <label>
-                    <input id="phoneRadio" type="radio" name="verifyType" value="phone" checked>휴대전화로 인증</label>
+                    <input id="phoneRadio" type="radio" name="verifyType"
+                           value="phone" checked>휴대전화로
+                    인증</label>
             </div>
             <div>
                 <label>
@@ -29,9 +31,6 @@
             <div id="phoneId">
                 <p>등록된 휴대전화로 아이디 찾기</p>
                 <hr>
-                <div>
-                    <input type="text" placeholder="이름">
-                </div>
                 <div>
                     <input type="text" placeholder="등록된 휴대전화 (-없이)">
                     <button class="verifyPhone">인증번호 받기</button>
@@ -47,9 +46,6 @@
                     <input type="text" placeholder="아이디">
                 </div>
                 <div>
-                    <input type="text" placeholder="이름">
-                </div>
-                <div>
                     <input type="text" placeholder="등록된 휴대전화 (-없이)">
                     <button class="verifyPhone">인증번호 받기</button>
                 </div>
@@ -61,31 +57,19 @@
                 <p>등록된 이메일로 아이디 찾기</p>
                 <hr>
                 <div>
-                    <input type="text" placeholder="이름">
-                </div>
-                <div>
                     <input type="email" placeholder="등록된 이메일 주소">
-                    <button>인증번호 받기</button>
-                </div>
-                <div><input type="text" placeholder="인증번호 입력">
-                    <button>확인</button>
+                    <button>아이디 전송</button>
                 </div>
             </div>
             <div id="emailPwd">
-                <p>등록된 이메일로 비밀번호 찾기</p>
+                <p>등록된 이메일로 임시 비밀번호 전송</p>
                 <hr>
                 <div>
                     <input type="text" placeholder="아이디">
                 </div>
                 <div>
-                    <input type="text" placeholder="이름">
-                </div>
-                <div>
                     <input type="email" placeholder="등록된 이메일 주소">
-                    <button>인증번호 받기</button>
-                </div>
-                <div><input type="text" placeholder="인증번호 입력">
-                    <button>확인</button>
+                    <button>임시 비밀번호 받기</button>
                 </div>
             </div>
             <div
@@ -96,9 +80,61 @@
             </div>
         </div>
     </div>
-
+    <!-- 통신 관련 스크립트-->
     <script th:inline="javascript">
-        
+        const email = {
+            async id(emailAddr) {
+                let result = await FETCH.post("/auth/mail/findId", {"email": emailAddr})
+                if (result.status == 204) {
+                    showModal("notFound")
+                    return;
+                }
+                showModal("success")
+            },
+            async password(id, emailAddr) {
+                let result = await FETCH.post("/auth/mail/password", {"email": emailAddr, "id": id})
+                if (result.status == 204) {
+                    showModal("notFound")
+                    return;
+                }
+                showModal("success")
+            }
+        }
+
+        function showModal(type) {
+            document.getElementById(type + "Modal").style.display = "flex"
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const emailId = document.querySelector("#emailId");
+            const emailPwd = document.querySelector("#emailPwd")
+            const emailIdBtn = emailId.querySelector(":scope button")
+            const emailIdInput = emailId.querySelector(":scope input");
+            const emailPwdBtn = emailPwd.querySelector(":scope button");
+            const emailPwdUserInput = emailPwd.querySelector(":scope input[type=text]");
+            const emailPwdEmailInput = emailPwd.querySelector(":scope input[type=email]")
+            emailIdBtn.addEventListener("click", () => {
+                const value = emailIdInput.value;
+                if (value == "") {
+                    showModal("warning")
+                    return;
+                }
+                email.id(emailIdInput.value)
+            })
+            emailPwdBtn.addEventListener("click", () => {
+                const userValue = emailPwdUserInput.value;
+                const emailValue = emailPwdEmailInput.value;
+                if (userValue == "" || emailValue == "") {
+                    showModal("warning")
+                    return;
+                }
+                email.password(userValue, emailValue)
+            })
+        })
+
+    </script>
+    <script th:inline="javascript">
+        const module = {};
         document.addEventListener("DOMContentLoaded", function () {
             let infoState = ""
             let typeState = ""
@@ -190,4 +226,6 @@
             }
         }
     </script>
+    <script th:src="@{/js/fetch.js}"></script>
+    <!--    <script type="module" src="/js/firebase.js"></script>-->
 </div>

@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.lumit.shop.admin.dto.AdminDto;
+import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.model.TbAddress;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,8 @@ public interface UserRepository {
 
     TbLogin selectByUserId(String userId);
 
+    TbLogin selectByEmail(String email);
+
     User selectUserByKakaoId(String kakaoId);
 
     User selectUserBySocialId(String socialId);
@@ -43,4 +46,6 @@ public interface UserRepository {
     int updateAdmin(AdminDto adminDto);
 
     List<User> selectOldAdminList();
+
+    int updatePwd(SignUpDto signUpDto);
 }

@@ -1,5 +1,6 @@
 @import "reset.css";
 @import "font.css";
+@import "common.css";
 
 :root {
     --background-color: #FFFFFF;
@@ -192,7 +193,7 @@ i {
 }
 
 .wsNorap {
-	white-space: nowrap;
+    white-space: nowrap;
 }
 
 .bold {
@@ -569,50 +570,3 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
 }
-
-#updateModal {
-    display: none;
-}
-
-#deleteModal {
-    display: none;
-}
-
-.simpleModalOverlay {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(71, 58, 58, 0.25);
-}
-
-.simpleModalWindow {
-    background: rgba(84, 93, 99, 0.7);
-    width: 400px;
-    height: 200px;
-    position: relative;
-    display: none;
-    border-radius: 0.3rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.simpleModalWindow > p {
-    font-size: x-large;
-    margin-bottom: 3rem;
-    color: white;
-}
-
-.simpleModalWindow button {
-    color: white;
-    background-color: #000000;
-    border-radius: 0.3rem;
-    padding: 0.3rem;
-}
-

@@ -4,11 +4,12 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{member/fragments/layout}">
 <div layout:fragment="content" style="text-align: center">
-
+    <div th:replace="~{fragments/modal::modal('새로운 비밀번호가 서로 일치하지 않습니다.', '', 'warning','simple')}"></div>
+    <div th:replace="~{fragments/modal::modal('입력되지 않은 정보가 있습니다.', '', 'notEnough','simple')}"></div>
     <div class="infoWrapper">
         <div class="infoContainer">
             <h1>회원정보 수정</h1>
-            <div th:text="${user.name} + '님 반갑습니다.'"></div>
+            <div class="" th:text="${user.name} + '님 반갑습니다.'"></div>
             <hr>
             <div>
                 <div><span>닉네임</span></div>
@@ -28,8 +29,14 @@
             <div>
                 <div>
                     <span>비밀번호</span></div>
-                <div>
+                <div id="changePwd">
                     <button>비밀번호 변경</button>
+                    <form>
+                        <div><label>현재 비밀번호</label><input type="password"></div>
+                        <div><label>새로운 비밀번호</label><input type="password"></div>
+                        <div><label>비밀번호 확인</label><input type="password"></div>
+                        <button>변경하기</button>
+                    </form>
                 </div>
             </div>
             <div>
@@ -44,7 +51,8 @@
                 <div>
                     <span>배송지</span></div>
                 <div>
-                    <span th:text="${user.address.split(',')[1]+ user.address.split(',')[2]}"></span>
+                    <!-- user.address.split(',')[1]+ user.address.split(',')[2]-->
+                    <span th:text="${user.address}"></span>
                     <button>배송지 관리</button>
                 </div>
             </div>
@@ -59,20 +67,63 @@
         </div>
     </div>
     <script th:inline="javascript">
-        const userId = [[${user.userId}]]
-        let xhr = new XMLHttpRequest();
-        xhr.responseType = "json"
-        xhr.open("GET", `/api/opened/addressList?userId=${userId}`, true);
-        xhr.send();
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === xhr.DONE) {
-                const res = xhr.response;
-                if (res.data) {
-                    for (let i = 0; i < res.data.length; i++) {
-                        console.log(res.data[i]);
-                    }
-                }
+        function showModal(type) {
+            document.getElementById(type + "Modal").style.display = "flex"
+        }
+
+        function togglePwdForm() {
+            const password = document.getElementById("changePwd")
+            const btn = password.querySelector(":scope > button")
+            const form = password.querySelector(":scope form")
+            if (btn.style.display == "none") {
+                btn.style.display = "block"
+                form.style.display = "none"
+            } else {
+                btn.style.display = "none"
+                form.style.display = "block"
             }
         }
+
+        async function changePwd(current, newPwd) {
+            const result = await FETCH.patch("/api/user/password", {
+                "current": current,
+                "newPwd": newPwd
+            }).then(data => data);
+            console.log(result.body)
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const password = document.getElementById("changePwd")
+            const form = password.querySelector(":scope form")
+            form.style.display = "none"
+            const btn = password.querySelector(":scope > button")
+            const submitBtn = password.querySelector(":scope form button")
+            btn.addEventListener('click', () => {
+                // todo
+                togglePwdForm()
+            })
+            submitBtn.addEventListener("click", (event) => {
+                event.preventDefault()
+                const divs = password.querySelectorAll(":scope div")
+                const current = divs[0].querySelector(":scope input").value
+                const newPwd = divs[1].querySelector(":scope input").value
+                const pwdCheck = divs[2].querySelector(":scope input").value
+                if (current == "" || newPwd == "" || pwdCheck == "") {
+                    showModal("notEnough")
+                    return false;
+                }
+                if (newPwd != pwdCheck) {
+                    showModal("warning")
+                    return false
+                }
+                changePwd(current, newPwd)
+            })
+
+        })
+
+        // const userId = [[${user.userId}]]
+        // const result = await FETCH.get(`/api/user/addresses?userId=${userId}`);
+        // console.log(result)
     </script>
+    <script th:src="@{/js/fetch.js}"></script>
 </div>

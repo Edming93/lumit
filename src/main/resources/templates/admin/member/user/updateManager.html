@@ -5,8 +5,8 @@
         xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{admin/fragments/layout}">
 <div layout:fragment="content">
-    <div th:replace="~{admin/fragments/modal::modal('정말 삭제하시겠습니까?', '삭제', 'delete')}"></div>
-    <div th:replace="~{admin/fragments/modal::modal('정말 수정하시겠습니까?', '수정','update')}"></div>
+    <div th:replace="~{fragments/modal::modal('정말 삭제하시겠습니까?', '삭제', 'delete','prompt')}"></div>
+    <div th:replace="~{fragments/modal::modal('정말 수정하시겠습니까?', '수정','update','prompt')}"></div>
     <input id="modalResult" type="hidden" value=""/>
     <div class="adminContainer">
         <h1 class="title">운영자 계정 관리</h1>
@@ -129,14 +129,14 @@
                 if (!result) {
                     return false;
                 }
-                if (element == null) {
-                    return await FETCH.patch(`/api/admin/role/update/${id}`, {})
+                if (type == 'reset') {
+                    return await FETCH.patch(`/api/admin/role/${id}`, {})
                 }
                 const value = element.previousElementSibling.value
                 if (type == 'role') {
-                    return await FETCH.patch(`/api/admin/role/update/${id}`, {roleId: value})
+                    return await FETCH.patch(`/api/admin/role/${id}`, {roleId: value})
                 } else if (type == 'name') {
-                    return await FETCH.patch(`/api/admin/role/update/${id}`, {name: value})
+                    return await FETCH.patch(`/api/admin/role/${id}`, {name: value})
                 }
             })
             if (!result) {
@@ -150,7 +150,7 @@
                 if (!result) {
                     return false;
                 }
-                return await FETCH.patch(`/api/admin/role/delete/${id}`, {})
+                return await FETCH.delete(`/api/admin/role/${id}`)
             })
             if (!result) {
                 return false;
@@ -186,19 +186,11 @@
         }
 
         function hideModal(type) {
-            const result = document.getElementById("modalResult")
-            result.value = ""
             if (type == 'update') {
                 document.getElementById("updateModal").style.display = 'none'
             } else if (type == 'delete') {
                 document.getElementById("deleteModal").style.display = 'none'
             }
-        }
-
-
-        async function resetRole(userId) {
-            const data = await FETCH.patch(`/api/admin/role/reset/${userId}`, {})
-            location.reload();
         }
     </script>
 </div>

@@ -2,6 +2,7 @@ package com.lumit.shop.common.controller;
 
 import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.board.service.BoardService;
+import com.lumit.shop.common.constants.Role;
 import com.lumit.shop.common.dto.ResponseDto;
 import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.model.TbAddress;
@@ -18,22 +19,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api")
 public class APIController {
 
-
     private final UserService userService;
     private final BoardService boardService;
+    private final PasswordEncoder passwordEncoder;
 
     // 멤버 - 회원가입 - 중복체크api
-    @GetMapping(value = "/opened/idCheck")
+    @GetMapping(value = "/user/idCheck")
     public @ResponseBody ResponseDto<?> idDuplicateCheck(@RequestParam(value = "id") String id) {
         System.out.println(id);
         if (id == null || id.isEmpty()) {
@@ -52,24 +55,27 @@ public class APIController {
      *
      * @return
      */
-    @GetMapping(value = "/opened/addressList")
-    public @ResponseBody ResponseDto<?> addressList(HttpServletResponse response) throws IOException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object obj = authentication.getPrincipal();
-        User user = null;
-        if (obj instanceof User) {
-            user = (User) obj;
-        } else if (obj instanceof PrincipalDetails) {
-            user = ((PrincipalDetails) obj).getUser();
-        } else {
-            response.sendRedirect("/auth/accessDenied");
+    @GetMapping(value = "/user/addresses")
+    public @ResponseBody ResponseDto<?> addressList() throws IOException {
+        User user = SecurityUtils.getPrincipal();
+        if (user == null) {
             return null;
         }
         List<TbAddress> addressList = userService.selectAddressListByUserId(user.getUserId());
         return new ResponseDto<>("", addressList);
     }
 
-    @GetMapping(value = "/opened/boardList")
+    @PatchMapping(value = "/user/password")
+    public @ResponseBody ResponseEntity<?> changePwd(@RequestBody Map<String, String> data) {
+        User user = SecurityUtils.getPrincipal();
+        if (!passwordEncoder.matches(data.get("current"), user.getPassword())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/boards")
     public @ResponseBody ResponseEntity<?> boardList(String menuCd, SearchDto search, TbBoard board, @PageableDefault(size = 10) Pageable pageable) throws IOException {
         board.setMenuCd(menuCd);
         if (search.getTitle() != null) {
@@ -78,9 +84,14 @@ public class APIController {
         return ResponseEntity.ok(boardService.selectPageableBoardList(board, pageable));
     }
 
-    @PatchMapping(value = "/admin/role/delete/{id}")
-    public @ResponseBody ResponseEntity<?> deleteRole(@PathVariable("id") String id, @RequestBody AdminDto adminDto) {
-        adminDto.setModId(SecurityUtils.getPrincipal().getUserId());
+    @DeleteMapping(value = "/admin/role/{id}")
+    public @ResponseBody ResponseEntity<?> deleteRole(@PathVariable("id") String id) {
+        AdminDto adminDto = new AdminDto();
+        User user = SecurityUtils.getPrincipal();
+        if (!user.getRole().equals(Role.SUPER_ADMIN)) {
+            return ResponseEntity.status(403).build();
+        }
+        adminDto.setModId(user.getUserId());
         adminDto.setUserId(id);
         int result = userService.deleteAdmin(adminDto);
         if (result <= 0) {
@@ -90,9 +101,13 @@ public class APIController {
         }
     }
 
-    @PatchMapping(value = "/admin/role/update/{id}")
+    @PatchMapping(value = "/admin/role/{id}")
     public @ResponseBody ResponseEntity<?> updateRole(@PathVariable("id") String id, @RequestBody AdminDto adminDto) {
-        adminDto.setModId(SecurityUtils.getPrincipal().getUserId());
+        User user = SecurityUtils.getPrincipal();
+        if (!user.getRole().equals(Role.SUPER_ADMIN)) {
+            return ResponseEntity.status(403).build();
+        }
+        adminDto.setModId(user.getUserId());
         adminDto.setUserId(id);
         int result = userService.updateAdmin(adminDto);
         if (result <= 0) {

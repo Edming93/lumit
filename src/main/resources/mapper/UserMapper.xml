@@ -19,6 +19,12 @@
         WHERE USER_ID = #{userId}
     </select>
 
+    <select id="selectByEmail" resultType="com.lumit.shop.common.model.TbLogin">
+        SELECT *
+        FROM TB_LOGIN
+        WHERE EMAIL = #{email}
+    </select>
+
     <select id="selectAdminList" resultType="com.lumit.shop.common.model.User">
         SELECT *
         FROM TB_LOGIN
@@ -133,4 +139,10 @@
         WHERE STATUS = 4
         ORDER BY MOD_DT DESC
     </select>
+
+    <update id="updatePwd" parameterType="SignUpDto">
+        UPDATE TB_LOGIN
+        SET PASSWORD=#{password}
+        WHERE USER_ID = #{userId}
+    </update>
 </mapper>

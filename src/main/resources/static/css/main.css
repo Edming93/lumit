@@ -1,5 +1,6 @@
 @import "reset.css";
 @import "font.css";
+@import "common.css";
 
 :root {
     --background-color: #FCF9F6;
@@ -788,7 +789,7 @@ footer {
 
 .findUserInput input {
     background-color: inherit;
-    padding: 0.4rem;
+    /*padding: 0.4rem;*/
     border-bottom: 2px solid rgba(217, 217, 217, 0.7);
     width: 60%;
     margin-top: 1rem;
@@ -821,7 +822,7 @@ footer {
 
 .infoContainer > div {
     display: flex;
-    align-items: center;
+    /*align-items: center;*/
     border-bottom: 1px solid #D3CCC2;
 }
 
@@ -835,13 +836,13 @@ footer {
 
 .infoContainer > div > div:nth-child(2) {
     /*width: 90%;*/
-    padding: 1rem;
+    padding: 0.5rem;
     font-size: 14px;
     color: #3D3D3D;
 }
 
 .infoContainer input {
-    padding: 0.3rem;
+    padding: 0.4rem;
     width: 200px;
 }
 
@@ -851,4 +852,27 @@ footer {
     border-radius: 0.2rem;
     background-color: #F5EFE6;
     color: #958177;
+}
+
+#changePwd div {
+    display: flex;
+    /*align-items: center;*/
+    align-items: flex-end;
+    padding: 0.3rem;
+}
+
+#changePwd label {
+    width: 40%;
+}
+
+#changePwd form input {
+    padding: 0;
+    background-color: transparent;
+    border-bottom: 1px solid #3D3D3D;
+    font-size: 1.1rem;
+}
+
+#changePwd form button {
+    margin-top: 0.3rem;
+    float: right;
 }

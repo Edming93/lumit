@@ -45,6 +45,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public TbLogin selectByEmail(String email) {
+        return userRepository.selectByEmail(email);
+    }
+
+    @Override
     public int insertUser(TbLogin user) {
         return userRepository.insertUser(user);
     }
@@ -150,5 +155,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> selectOldAdminList() {
         return userRepository.selectOldAdminList();
+    }
+
+    @Override
+    public int updateTempPwd(String userId, String tempPwd) {
+        SignUpDto signUpDto = new SignUpDto();
+        signUpDto.setUserId(userId);
+        signUpDto.setPassword(passwordEncoder.encode(tempPwd));
+        return userRepository.updatePwd(signUpDto);
     }
 }

@@ -16,6 +16,8 @@ public interface UserService {
 
     public TbLogin selectByUserId(String userId);
 
+    public TbLogin selectByEmail(String email);
+
     public User selectByUsername(String username);
 
     public int insertUser(TbLogin tbLogin);
@@ -39,4 +41,6 @@ public interface UserService {
     int updateAdmin(AdminDto adminDto);
 
     List<User> selectOldAdminList();
+
+    int updateTempPwd(String userId, String tempPwd);
 }
