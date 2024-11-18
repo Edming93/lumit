@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lumit.shop.common.repository.CodeRepository">
+    <sql id="searchWhere">
+        WHERE 1=1
+        <if test="useYn != '' and useYn neq null">
+            AND USE_YN = #{useYn}
+        </if>
+        <if test="grpCd != '' and grpCd neq null">
+            AND GRP_CD = #{grpCd}
+        </if>
+    </sql>
+    <select id="selectCodeListByGrpCd" resultType="com.lumit.shop.common.model.TbCode">
+        SELECT *
+        FROM
+        	TB_CODE
+        <include refid="searchWhere"></include>
+        ORDER BY SORT_SEQ ASC
+    </select>
+
+</mapper>

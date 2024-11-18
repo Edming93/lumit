@@ -1,14 +1,25 @@
 package com.lumit.shop.common.controller;
 
-import com.lumit.shop.common.security.social.CustomOauth2UserService;
-import com.lumit.shop.common.service.UserService;
-import lombok.RequiredArgsConstructor;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.lumit.shop.common.config.ResponseBuilder;
+import com.lumit.shop.common.model.CommonSearch;
+import com.lumit.shop.common.security.social.CustomOauth2UserService;
+import com.lumit.shop.common.service.CommonService;
+import com.lumit.shop.common.service.UserService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CommonController {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final CommonService commonService;
 
     /**
      * GET Mapping Returns
@@ -49,6 +61,12 @@ public class CommonController {
         model.addAttribute("kakaoUri", kakaoRedirectUri);
         return LOGIN_FORM;
     }
+    
+    @PostMapping("/common/codeList")
+    public ResponseEntity<Map<String, Object>> getCodeList(@ModelAttribute CommonSearch search) {
+    	return ResponseBuilder.build(commonService.selectCodeListByGrpCd(search), HttpStatus.OK);
+    }
+    
 
 
 }

@@ -65,6 +65,8 @@ public class BoardController {
     														, @PathVariable("menuCd") String menuCd 
     														, @ModelAttribute TbBoard board
     														, @RequestPart(value = "files", required = false) MultipartFile[] files) {
+    	System.out.println(board);
+    	System.out.println("-----------");
         return new ResponseEntity<>(boardService.insertBoard(menuCd, board, files), HttpStatus.OK);
     }
     

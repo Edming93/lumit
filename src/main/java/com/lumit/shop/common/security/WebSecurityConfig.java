@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class WebSecurityConfig {
     private final OAuth2UserService oAuth2UserService;
     private static final String[] WHITE_LIST = {
-            "/favicon**", "/", "/main", "/main/member/createUser", "/main/member/findUser", "/lumit/**", "/error/**", "/api/opened/**"
+            "/favicon**", "/", "/main", "/main/member/createUser", "/main/member/findUser", "/lumit/**", "/error/**", "/api/opened/**", "/common/**"
     };
     private final CustomAuthorizationManager customAuthorizationManager;
 
