@@ -58,6 +58,7 @@
         ( 
 	        MENU_CD
 	        , MENU_DV_CD
+	        , CATEGORIES
 	        , TITLE
 	        , CONTENT
 	        , PASSWORD
@@ -76,6 +77,7 @@
         ( 
         	#{menuCd}
             , #{menuDvCd}
+            , #{categories}
             , #{title}
             , #{content}
             , #{password}
