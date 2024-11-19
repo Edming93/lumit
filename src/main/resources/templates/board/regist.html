@@ -4,7 +4,6 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{admin/fragments/layout}">
 <head>
-	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 	<style>
 		#categories {
@@ -222,7 +221,6 @@ function deleteFileBtn(elem) {
 	setFiles();
 };
 
-
 // 비동기 통신
 function setData(formData,url) {
     fetch('/' + siteId + '/board/' + menuCd + '/regist', {
@@ -243,37 +241,5 @@ function setData(formData,url) {
     .catch(function(error) {
         console.log("error:", error);
     });
-}
-
-
-function createSelectOptions(selectId, collection, options) {
-	if(options.isSetAll) {
-		$(`#${selectId}`).append(`<option value="">전체</option>`);
-	}
-	
-    if(options.isSetBlank) {
-        $(`#${selectId}`).append(`<option value="">선택</option>`);
-    }
-
-	if(collection instanceof Map) {
-		collection.forEach((value, key) => {
-			$(`#${selectId}`).append(
-				options && (options.selectedValue === key) ?
-					`<option value="${key}" selected>${value}</option>`
-					: `<option value="${key}">${value}</option>`
-			);
-		});
-	} else {
-		if(!options || !options.keyNm || !options.valueNm) {
-			throw 'Option is not valid.' + JSON.stringify(options);
-		}
-		collection.forEach(item => {		
-			$(`#${selectId}`).append(
-				options.selectedValue === item[options.keyNm] ?
-					`<option value="${item[options.keyNm]}" selected>${item[options.valueNm]}</option>`
-					:`<option value="${item[options.keyNm]}">${item[options.valueNm]}</option>`
-			);
-		});
-	}
 }
 </script>
