@@ -92,6 +92,10 @@ public class APIController {
         if (search.getTitle() != null) {
             board.setTitle(search.getTitle());
         }
+        
+        if (search.getCategories() != null) {
+        	board.setCategories(search.getCategories());
+        }
         return ResponseEntity.ok(boardService.selectPageableBoardList(board, pageable));
     }
 

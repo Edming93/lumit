@@ -570,3 +570,13 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
 }
+
+#categories {
+	border-radius: 6px;
+	background-color: #FCF9F5;
+	border: 1px solid #DCCEC3;
+	width: 125px;
+	height: 35px;
+	padding-left:10px;
+	color: #876453;
+}
