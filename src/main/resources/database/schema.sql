@@ -36,6 +36,7 @@ create table if not exists TB_BOARD
         primary key,
     MENU_CD    varchar(4)         not null comment '메뉴 코드',
     MENU_DV_CD varchar(4)         null comment '메뉴구분코드',
+    CATEGORIES varchar(4)		  not null comment '카테고리구분코드',
     TITLE      varchar(255)       not null,
     CONTENT    text               null,
     PASSWORD   varchar(50)        null,
@@ -49,6 +50,22 @@ create table if not exists TB_BOARD
     REG_DT     timestamp          not null,
     MOD_ID     varchar(50)        not null,
     MOD_DT     timestamp          not null
+);
+
+create table if not exists TB_CODE
+(
+    GRP_CD	   varchar(200)		 not null,
+    CD    	   varchar(4)         not null,
+    GRP_CD_NM  varchar(100)       not null,
+    CD_NM      varchar(100)       not null,
+    SORT_SEQ   int                not null,
+    USE_YN     varchar(2)         not null,
+    CTT        varchar(300)       null,
+    REG_ID     varchar(50)        not null,
+    REG_DT     timestamp          not null,
+    MOD_ID     varchar(50)        not null,
+    MOD_DT     timestamp          not null,
+    PRIMARY KEY (GRP_CD,CD)
 );
 
 create table if not exists TB_CARTS

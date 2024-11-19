@@ -1,6 +1,5 @@
 package com.lumit.shop.common.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -14,6 +13,7 @@ public class TbBoard{
 	private String boardId;
 	private String menuCd;
 	private String menuDvCd;
+	private String categories;
 	private String title;
 	private String content; 
 	private String password;
@@ -32,11 +32,14 @@ public class TbBoard{
 
 	@Override
 	public String toString() {
-		return "TbBoard [boardId=" + boardId + ", menuCd=" + menuCd + ", menuDvCd=" + menuDvCd + ", title=" + title
-				+ ", content=" + content + ", password=" + password + ", topFix=" + topFix + ", useYn=" + useYn
-				+ ", delYn=" + delYn + ", rplyYn=" + rplyYn + ", fileYn=" + fileYn + ", viewCount=" + viewCount
-				+ ", regId=" + regId + ", regDt=" + regDt + ", modId=" + modId + ", modDt=" + modDt + "]";
+		return "TbBoard [boardId=" + boardId + ", menuCd=" + menuCd + ", menuDvCd=" + menuDvCd + ", categories="
+				+ categories + ", title=" + title + ", content=" + content + ", password=" + password + ", topFix="
+				+ topFix + ", useYn=" + useYn + ", delYn=" + delYn + ", rplyYn=" + rplyYn + ", fileYn=" + fileYn
+				+ ", viewCount=" + viewCount + ", regId=" + regId + ", regDt=" + regDt + ", modId=" + modId + ", modDt="
+				+ modDt + ", jsonFileList=" + jsonFileList + "]";
 	}
+
+
 	
 	
 	
