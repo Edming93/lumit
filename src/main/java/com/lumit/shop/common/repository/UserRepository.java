@@ -4,7 +4,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.lumit.shop.admin.dto.AdminDto;
+import com.lumit.shop.common.dto.SearchUserDto;
 import com.lumit.shop.common.dto.SignUpDto;
+import com.lumit.shop.common.dto.UserInfoDto;
 import com.lumit.shop.common.model.TbAddress;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -17,13 +19,12 @@ import com.lumit.shop.common.model.User;
 @Repository
 public interface UserRepository {
 
+    //select
     List<User> getUserList();
 
     List<User> selectAdminList();
 
     User selectByUserName(String username);
-
-    int insertUser(TbLogin tbLogin);
 
     TbLogin selectByUserId(String userId);
 
@@ -33,19 +34,28 @@ public interface UserRepository {
 
     User selectUserBySocialId(String socialId);
 
-    int updateSocialUser(TbLogin tbLogin);
-
-    int insertAddress(TbAddress tbAddress);
-
     List<TbAddress> selectAddressListByUserId(String userId);
-
-    int updateDefaultAddr(TbLogin tbLogin);
-
-    int deleteAdmin(AdminDto adminDto);
-
-    int updateAdmin(AdminDto adminDto);
 
     List<User> selectOldAdminList();
 
+    //insert
+
+    int insertUser(TbLogin tbLogin);
+
+    int insertAddress(TbAddress tbAddress);
+
+    //update
+
+    int updateSocialUser(TbLogin tbLogin);
+
+    int updateDefaultAddr(TbLogin tbLogin);
+
+    int updateAdmin(AdminDto adminDto);
+
     int updatePwd(SignUpDto signUpDto);
+
+    int updateUserInfo(UserInfoDto userInfoDto);
+
+    // delete
+    int deleteAdmin(AdminDto adminDto);
 }

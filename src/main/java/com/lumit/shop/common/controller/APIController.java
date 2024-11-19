@@ -3,8 +3,10 @@ package com.lumit.shop.common.controller;
 import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.board.service.BoardService;
 import com.lumit.shop.common.constants.Role;
+import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.dto.ResponseDto;
 import com.lumit.shop.common.dto.SearchDto;
+import com.lumit.shop.common.dto.UserInfoDto;
 import com.lumit.shop.common.model.TbAddress;
 import com.lumit.shop.common.model.TbBoard;
 import com.lumit.shop.common.model.User;
@@ -14,6 +16,7 @@ import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,7 +41,6 @@ public class APIController {
     // 멤버 - 회원가입 - 중복체크api
     @GetMapping(value = "/user/idCheck")
     public @ResponseBody ResponseDto<?> idDuplicateCheck(@RequestParam(value = "id") String id) {
-        System.out.println(id);
         if (id == null || id.isEmpty()) {
             return new ResponseDto<>("아이디를 입력해주세요", null);
         }
@@ -56,7 +58,7 @@ public class APIController {
      * @return
      */
     @GetMapping(value = "/user/addresses")
-    public @ResponseBody ResponseDto<?> addressList() throws IOException {
+    public @ResponseBody ResponseDto<?> selectAddressList() throws IOException {
         User user = SecurityUtils.getPrincipal();
         if (user == null) {
             return null;
@@ -71,7 +73,16 @@ public class APIController {
         if (!passwordEncoder.matches(data.get("current"), user.getPassword())) {
             return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.ok().build();
+    }
 
+    @PatchMapping(value = "/user/info/{id}")
+    public @ResponseBody ResponseEntity<?> updateInfo(@PathVariable("id") String id, @RequestBody UserInfoDto userInfo) {
+        ServiceCode sc = userService.updateUserInfo(id, userInfo);
+        System.out.println(sc);
+        if (!sc.equals(ServiceCode.UPDATED)) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -84,36 +95,21 @@ public class APIController {
         return ResponseEntity.ok(boardService.selectPageableBoardList(board, pageable));
     }
 
-    @DeleteMapping(value = "/admin/role/{id}")
+    @DeleteMapping(value = "/admin/info/{id}")
     public @ResponseBody ResponseEntity<?> deleteRole(@PathVariable("id") String id) {
-        AdminDto adminDto = new AdminDto();
-        User user = SecurityUtils.getPrincipal();
-        if (!user.getRole().equals(Role.SUPER_ADMIN)) {
-            return ResponseEntity.status(403).build();
-        }
-        adminDto.setModId(user.getUserId());
-        adminDto.setUserId(id);
-        int result = userService.deleteAdmin(adminDto);
-        if (result <= 0) {
+        ServiceCode result = userService.deleteAdmin(id);
+        if (!result.equals(ServiceCode.DELETED)) {
             return ResponseEntity.badRequest().build();
-        } else {
-            return ResponseEntity.ok().build();
         }
+        return ResponseEntity.ok().build();
     }
 
-    @PatchMapping(value = "/admin/role/{id}")
-    public @ResponseBody ResponseEntity<?> updateRole(@PathVariable("id") String id, @RequestBody AdminDto adminDto) {
-        User user = SecurityUtils.getPrincipal();
-        if (!user.getRole().equals(Role.SUPER_ADMIN)) {
-            return ResponseEntity.status(403).build();
-        }
-        adminDto.setModId(user.getUserId());
-        adminDto.setUserId(id);
-        int result = userService.updateAdmin(adminDto);
-        if (result <= 0) {
+    @PatchMapping(value = "/admin/info/{id}")
+    public @ResponseBody ResponseEntity<?> updateAdmin(@PathVariable("id") String id, @RequestBody AdminDto adminDto) {
+        ServiceCode result = userService.updateAdmin(id, adminDto);
+        if (!result.equals(ServiceCode.UPDATED)) {
             return ResponseEntity.badRequest().build();
-        } else {
-            return ResponseEntity.ok().build();
         }
+        return ResponseEntity.ok().build();
     }
 }

@@ -32,19 +32,19 @@
                         <option th:selected="${admin.roleId == '1'}" value="1">총괄</option>
                         <option th:selected="${admin.roleId == '2'}" value="2">기본</option>
                     </select>
-                    <button th:attr="onclick=|updateRole(this, '${admin.userId}', 'role')|" disabled class="editBtn">
+                    <button th:attr="onclick=|updateInfo(this, '${admin.userId}', 'role')|" disabled class="editBtn">
                         수정
                     </button>
                 </td>
                 <td th:text="${admin.userId}"></td>
                 <td class="inputNameBox"><input th:attr="oninput=|nameChange(event, this, '${admin.name}')|"
                                                 th:value="${admin.name}">
-                    <button th:attr="onclick=|updateRole(this, '${admin.userId}', 'name')|" disabled class="editBtn"
+                    <button th:attr="onclick=|updateInfo(this, '${admin.userId}', 'name')|" disabled class="editBtn"
                             type="button">수정
                     </button>
                 </td>
                 <td>
-                    <button th:attr="onclick=|deleteRole('${admin.userId}')|"><i class="fa-solid fa-trash-can"></i>
+                    <button th:attr="onclick=|deleteInfo('${admin.userId}')|"><i class="fa-solid fa-trash-can"></i>
                     </button>
                 </td>
             </tr>
@@ -124,19 +124,19 @@
          * @param id
          * @param userId
          */
-        async function updateRole(element, id, type) {
+        async function updateInfo(element, id, type) {
             let result = await showModal("update").then(async function (result) {
                 if (!result) {
                     return false;
                 }
                 if (type == 'reset') {
-                    return await FETCH.patch(`/api/admin/role/${id}`, {})
+                    return await FETCH.patch(`/api/admin/info/${id}`, {})
                 }
                 const value = element.previousElementSibling.value
                 if (type == 'role') {
-                    return await FETCH.patch(`/api/admin/role/${id}`, {roleId: value})
+                    return await FETCH.patch(`/api/admin/info/${id}`, {roleId: value})
                 } else if (type == 'name') {
-                    return await FETCH.patch(`/api/admin/role/${id}`, {name: value})
+                    return await FETCH.patch(`/api/admin/info/${id}`, {name: value})
                 }
             })
             if (!result) {
@@ -145,12 +145,12 @@
             location.reload();
         }
 
-        async function deleteRole(id) {
+        async function deleteInfo(id) {
             let result = await showModal("delete").then(async function (result) {
                 if (!result) {
                     return false;
                 }
-                return await FETCH.delete(`/api/admin/role/${id}`)
+                return await FETCH.delete(`/api/admin/info/${id}`)
             })
             if (!result) {
                 return false;

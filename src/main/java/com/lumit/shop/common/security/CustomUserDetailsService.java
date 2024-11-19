@@ -3,6 +3,7 @@ package com.lumit.shop.common.security;
 import java.util.Iterator;
 import java.util.List;
 
+import com.lumit.shop.common.model.TbLogin;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

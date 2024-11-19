@@ -14,8 +14,8 @@
             <div>
                 <div><span>닉네임</span></div>
                 <div>
-                    <input th:value="${user.name}">
-                    <button>닉네임 설정</button>
+                    <input id="nickname" th:value="${user.name}">
+                    <button id="nickBtn">닉네임 설정</button>
                 </div>
             </div>
             <div>
@@ -84,6 +84,10 @@
             }
         }
 
+        async function changeNickname() {
+            inpu
+        }
+
         async function changePwd(current, newPwd) {
             const result = await FETCH.patch("/api/user/password", {
                 "current": current,
@@ -95,6 +99,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const password = document.getElementById("changePwd")
             const form = password.querySelector(":scope form")
+
             form.style.display = "none"
             const btn = password.querySelector(":scope > button")
             const submitBtn = password.querySelector(":scope form button")
@@ -118,7 +123,15 @@
                 }
                 changePwd(current, newPwd)
             })
-
+            const nickBtn = document.getElementById("nickBtn")
+            nickBtn.addEventListener("click", async function () {
+                const id = [[${user.userId}]]
+                const value = document.getElementById("nickname").value
+                const result = await FETCH.patch(`/api/user/info/${id}`, {
+                    name: value
+                })
+                console.log(result)
+            })
         })
 
         // const userId = [[${user.userId}]]

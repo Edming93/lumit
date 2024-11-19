@@ -2,7 +2,9 @@ package com.lumit.shop.common.service;
 
 import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.common.constants.ServiceCode;
+import com.lumit.shop.common.dto.SearchUserDto;
 import com.lumit.shop.common.dto.SignUpDto;
+import com.lumit.shop.common.dto.UserInfoDto;
 import com.lumit.shop.common.model.TbAddress;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
@@ -36,11 +38,13 @@ public interface UserService {
 
     public List<TbAddress> selectAddressListByUserId(String userId);
 
-    int deleteAdmin(AdminDto adminDto);
+    ServiceCode deleteAdmin(String id);
 
-    int updateAdmin(AdminDto adminDto);
+    ServiceCode updateAdmin(String id, AdminDto adminDto);
 
     List<User> selectOldAdminList();
 
     int updateTempPwd(String userId, String tempPwd);
+
+    ServiceCode updateUserInfo(String id, UserInfoDto userInfoDto);
 }
