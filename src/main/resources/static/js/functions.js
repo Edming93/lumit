@@ -174,7 +174,7 @@ let validate = {
 
         let xhr = new XMLHttpRequest();
         xhr.responseType = "json"
-        xhr.open("GET", `/api/opened/idCheck?id=${id.value}`, true);
+        xhr.open("GET", `/api/user/idCheck?id=${id.value}`, true);
         xhr.send();
         xhr.onreadystatechange = () => {
             if (xhr.readyState === xhr.DONE) {
@@ -234,8 +234,3 @@ function getSiteId(defaultUrl) {
         console.log("Invalid URL format");
     }
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-    sideBar.setting();
-
-})

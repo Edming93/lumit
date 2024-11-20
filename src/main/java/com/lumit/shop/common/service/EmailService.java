@@ -1,6 +1,8 @@
 package com.lumit.shop.common.service;
 
+import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.controller.GlobalController;
+import com.lumit.shop.common.dto.UserInfoDto;
 import com.lumit.shop.common.model.EmailMessage;
 import com.lumit.shop.common.model.TbLogin;
 import jakarta.mail.MessagingException;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
@@ -28,6 +31,7 @@ public class EmailService {
     @Value("${lumit.siteId}")
     String siteId;
 
+    @Transactional
     public String sendMail(EmailMessage emailMessage, String type) {
         String authNum = createCode();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -37,7 +41,13 @@ public class EmailService {
             if (tbLogin == null || !tbLogin.getEmail().equals(emailMessage.getTo())) {
                 return null;
             }
-            userService.updateTempPwd(emailMessage.getUserId(), authNum);
+            UserInfoDto userInfo = new UserInfoDto();
+            userInfo.setUserId(tbLogin.getUserId());
+            userInfo.setPassword(authNum);
+            ServiceCode sc = userService.updateTempPwd(userInfo);
+            if (!sc.equals(ServiceCode.UPDATED)) {
+                return null;
+            }
         }
         if (type.equals("id")) {
             tbLogin = userService.selectByEmail(emailMessage.getTo());

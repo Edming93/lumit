@@ -816,6 +816,10 @@ footer {
     margin-bottom: 2rem;
 }
 
+.infoContainer > div:nth-child(1) {
+    color: #876453;
+}
+
 .infoContainer > hr {
     margin: 0;
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
+import org.modelmapper.ModelMapper;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -29,4 +30,13 @@ public class TbLogin {
     private Timestamp modDt;
     private String modId;
     private int defaultAddr;
+    private static ModelMapper modelMapper = new ModelMapper();
+
+    public User userMapping() {
+        return modelMapper.map(this, User.class);
+    }
+
+    public static TbLogin of(User user) {
+        return modelMapper.map(user, TbLogin.class);
+    }
 }

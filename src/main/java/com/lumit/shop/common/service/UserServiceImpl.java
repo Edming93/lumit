@@ -11,6 +11,7 @@ import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.repository.UserRepository;
 import com.lumit.shop.common.security.social.CustomOauth2UserService;
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,11 +45,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public TbLogin selectByUserId(String userId) {
         return userRepository.selectByUserId(userId);
-    }
-
-
-    public User selectByUsername(String username) {
-        return userRepository.selectByUserName(username);
     }
 
     @Override
@@ -181,16 +177,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int updateTempPwd(String userId, String tempPwd) {
-        SignUpDto signUpDto = new SignUpDto();
-        signUpDto.setUserId(userId);
-        signUpDto.setPassword(passwordEncoder.encode(tempPwd));
-        return userRepository.updatePwd(signUpDto);
+    public ServiceCode updateTempPwd(UserInfoDto userInfo) {
+        userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
+        int result = userRepository.updatePwd(userInfo);
+        if (result <= 0) {
+            return ServiceCode.UNKNOWN;
+        }
+        return ServiceCode.UPDATED;
     }
 
     @Override
     public ServiceCode updateUserInfo(String id, UserInfoDto userInfo) {
-        User user = SecurityUtils.getPrincipal();
+        User user = userRepository.selectByUserId(id).userMapping();
+        if (userInfo.getName() != null && user.getName().equals(userInfo.getName())) {
+            return ServiceCode.CONFLICT;
+        }
         if (!id.equals(user.getUserId()) && !user.getRole().equals(Role.SUPER_ADMIN)) {
             return ServiceCode.UNAUTHORIZED;
         }

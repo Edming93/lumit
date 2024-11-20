@@ -74,8 +74,17 @@ VALUES (1, 'M100', 'N'),
        (3, 'M103', 'N'),
        (3, 'M104', 'N'),
        (3, 'M105', 'N');
-       
 
-INSERT INTO `tb_code` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`, `MOD_DT`) VALUES ('MENU_DV_CD', '0000', '메뉴구분코드', '상품문의', 1, 'Y', NULL, 'admin', '2024-11-18 22:41:19', 'admin', '2024-11-18 22:41:13');
-INSERT INTO `tb_code` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`, `MOD_DT`) VALUES ('MENU_DV_CD', '0001', '메뉴구분코드', '교환&반품문의', 2, 'Y', NULL, 'admin', '2024-11-18 22:42:57', 'admin', '2024-11-18 22:41:19');
-INSERT INTO `tb_code` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`, `MOD_DT`) VALUES ('MENU_DV_CD', '0002', '메뉴구분코드', '배송문의', 3, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin', '2024-11-18 22:42:40');
+
+INSERT INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`,
+                       `MOD_DT`)
+VALUES ('MENU_DV_CD', '0000', '메뉴구분코드', '상품문의', 1, 'Y', NULL, 'admin', '2024-11-18 22:41:19', 'admin',
+        '2024-11-18 22:41:13');
+INSERT INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`,
+                       `MOD_DT`)
+VALUES ('MENU_DV_CD', '0001', '메뉴구분코드', '교환&반품문의', 2, 'Y', NULL, 'admin', '2024-11-18 22:42:57', 'admin',
+        '2024-11-18 22:41:19');
+INSERT INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`,
+                       `MOD_DT`)
+VALUES ('MENU_DV_CD', '0002', '메뉴구분코드', '배송문의', 3, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
+        '2024-11-18 22:42:40');

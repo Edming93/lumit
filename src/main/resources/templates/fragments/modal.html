@@ -5,7 +5,7 @@
 >
 <div th:fragment="modal(title, choice, name, type)">
     <div th:if="${type} == 'prompt'">
-        <div th:attr="onclick=|backgroundCancel(event, '${name}Modal')|" class="simpleModalOverlay"
+        <div th:attr="onclick=|backgroundCancel(event, '${name}Modal', 'prompt')|" class="simpleModalOverlay"
              th:id="${name}+Modal">
             <div class="simpleModalWindow">
                 <p th:text="${title}">
@@ -18,7 +18,7 @@
         </div>
     </div>
     <div th:if="${type} == 'simple'">
-        <div th:attr="onclick=|backgroundCancel(event, '${name}Modal')|" class="simpleModalOverlay"
+        <div th:attr="onclick=|backgroundCancel(event, '${name}Modal', 'simple')|" class="simpleModalOverlay"
              th:id="${name}+Modal" style="display: none">
             <div class="simpleModalWindow">
                 <p th:utext="${title}">
@@ -50,11 +50,16 @@
          *
          * @param event{Event}
          */
-        function backgroundCancel(event, id) {
+        function backgroundCancel(event, id, type) {
             event.stopPropagation();
             if (event.target == document.getElementById(id)) {
+                hideModal(id)
+                if (type == "simple") {
+                    return;
+                }
                 resultChange("cancel")
             }
+
         }
     </script>
 </div>

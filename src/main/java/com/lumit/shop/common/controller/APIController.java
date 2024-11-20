@@ -68,10 +68,15 @@ public class APIController {
     }
 
     @PatchMapping(value = "/user/password")
-    public @ResponseBody ResponseEntity<?> changePwd(@RequestBody Map<String, String> data) {
+    public @ResponseBody ResponseEntity<?> changePwd(@RequestBody UserInfoDto userInfo) {
         User user = SecurityUtils.getPrincipal();
-        if (!passwordEncoder.matches(data.get("current"), user.getPassword())) {
+        userInfo.setUserId(user.getUserId());
+        if (!passwordEncoder.matches(userInfo.getCurrent(), user.getPassword())) {
             return ResponseEntity.badRequest().build();
+        }
+        ServiceCode sc = userService.updateTempPwd(userInfo);
+        if (!sc.equals(ServiceCode.UPDATED)) {
+            return ResponseEntity.status(500).build();
         }
         return ResponseEntity.ok().build();
     }
@@ -79,7 +84,9 @@ public class APIController {
     @PatchMapping(value = "/user/info/{id}")
     public @ResponseBody ResponseEntity<?> updateInfo(@PathVariable("id") String id, @RequestBody UserInfoDto userInfo) {
         ServiceCode sc = userService.updateUserInfo(id, userInfo);
-        System.out.println(sc);
+        if (sc.equals(ServiceCode.CONFLICT)) {
+            return ResponseEntity.status(409).build();
+        }
         if (!sc.equals(ServiceCode.UPDATED)) {
             return ResponseEntity.badRequest().build();
         }
@@ -92,9 +99,9 @@ public class APIController {
         if (search.getTitle() != null) {
             board.setTitle(search.getTitle());
         }
-        
+
         if (search.getCategories() != null) {
-        	board.setCategories(search.getCategories());
+            board.setCategories(search.getCategories());
         }
         return ResponseEntity.ok(boardService.selectPageableBoardList(board, pageable));
     }

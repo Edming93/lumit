@@ -27,8 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("loadUserByUsername :: " + username);
         // DB에서 User 객체 조회
-        User user = userRepository.selectByUserName(username);
-
+        User user = userRepository.selectByUserId(username).userMapping();
         if (user == null) {
             throw new UsernameNotFoundException("UsernameNotFoundException");
         }

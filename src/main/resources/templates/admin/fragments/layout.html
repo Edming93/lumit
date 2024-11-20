@@ -18,6 +18,11 @@
     </div>
 </div>
 </body>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        sideBar.setting()
+    })
+</script>
 <script th:src="@{/js/functions.js}"></script>
 <script th:src="@{/js/fetch.js}"></script>
 <script th:src="@{/js/common.js}"></script>

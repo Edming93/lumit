@@ -7,12 +7,6 @@
         FROM TB_LOGIN
     </select>
 
-    <select id="selectByUserName" resultType="com.lumit.shop.common.model.User">
-        SELECT *
-        FROM TB_LOGIN
-        WHERE USER_ID = #{username}
-    </select>
-
     <select id="selectByUserId" resultType="com.lumit.shop.common.model.TbLogin">
         SELECT *
         FROM TB_LOGIN
@@ -164,7 +158,7 @@
         WHERE USER_ID = #{userId}
     </update>
 
-    <update id="updatePwd" parameterType="SignUpDto">
+    <update id="updatePwd" parameterType="UserInfoDto">
         UPDATE TB_LOGIN
         SET PASSWORD=#{password}
         WHERE USER_ID = #{userId}

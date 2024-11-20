@@ -5,6 +5,7 @@ import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.security.PrincipalDetails;
+import com.lumit.shop.common.service.SecurityUtils;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -30,14 +31,7 @@ public class MemberController {
 
     @GetMapping("")
     public String userInfo(Model model) {
-        User user = null;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object obj = authentication.getPrincipal();
-        if (obj instanceof User) {
-            user = (User) obj;
-        } else if (obj instanceof PrincipalDetails) {
-            user = ((PrincipalDetails) obj).getUser();
-        }
+        User user = userService.selectByUserId(SecurityUtils.getPrincipal().getUserId()).userMapping();
         model.addAttribute("user", user);
         return "/member/userInfo";
     }

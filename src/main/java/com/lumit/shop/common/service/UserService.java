@@ -10,33 +10,32 @@ import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
     public List<User> getUserList();
 
     List<User> selectAdminList();
 
-    public TbLogin selectByUserId(String userId);
+    TbLogin selectByUserId(String userId);
 
-    public TbLogin selectByEmail(String email);
+    TbLogin selectByEmail(String email);
 
-    public User selectByUsername(String username);
+    int insertUser(TbLogin tbLogin);
 
-    public int insertUser(TbLogin tbLogin);
+    int insertAdmin(TbLogin tbLogin);
 
-    public int insertAdmin(TbLogin tbLogin);
+    boolean isIdDuplicated(String id);
 
-    public boolean isIdDuplicated(String id);
+    ServiceCode insertUserControl(SignUpDto signUpDto);
 
-    public ServiceCode insertUserControl(SignUpDto signUpDto);
+    ServiceCode updateSocialUser(SignUpDto signUpDto);
 
-    public ServiceCode updateSocialUser(SignUpDto signUpDto);
+    int insertAddress(TbAddress tbAddress);
 
-    public int insertAddress(TbAddress tbAddress);
+    int updateDefaultAddr(TbLogin tbLogin);
 
-    public int updateDefaultAddr(TbLogin tbLogin);
-
-    public List<TbAddress> selectAddressListByUserId(String userId);
+    List<TbAddress> selectAddressListByUserId(String userId);
 
     ServiceCode deleteAdmin(String id);
 
@@ -44,7 +43,7 @@ public interface UserService {
 
     List<User> selectOldAdminList();
 
-    int updateTempPwd(String userId, String tempPwd);
+    ServiceCode updateTempPwd(UserInfoDto userInfo);
 
     ServiceCode updateUserInfo(String id, UserInfoDto userInfoDto);
 }

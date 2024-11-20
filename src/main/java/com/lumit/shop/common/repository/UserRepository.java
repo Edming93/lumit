@@ -24,8 +24,6 @@ public interface UserRepository {
 
     List<User> selectAdminList();
 
-    User selectByUserName(String username);
-
     TbLogin selectByUserId(String userId);
 
     TbLogin selectByEmail(String email);
@@ -52,7 +50,7 @@ public interface UserRepository {
 
     int updateAdmin(AdminDto adminDto);
 
-    int updatePwd(SignUpDto signUpDto);
+    int updatePwd(UserInfoDto userInfo);
 
     int updateUserInfo(UserInfoDto userInfoDto);
 

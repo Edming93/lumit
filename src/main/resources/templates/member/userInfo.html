@@ -5,11 +5,14 @@
         layout:decorate="~{member/fragments/layout}">
 <div layout:fragment="content" style="text-align: center">
     <div th:replace="~{fragments/modal::modal('새로운 비밀번호가 서로 일치하지 않습니다.', '', 'warning','simple')}"></div>
+    <div th:replace="~{fragments/modal::modal('변경할 정보가 없습니다.<br>(이전 정보와 일치)', '', 'same','simple')}"></div>
     <div th:replace="~{fragments/modal::modal('입력되지 않은 정보가 있습니다.', '', 'notEnough','simple')}"></div>
+    <div th:replace="~{fragments/modal::modal('수정이 완료되었습니다.', '', 'success','simple')}"></div>
+    <div th:replace="~{fragments/modal::modal('입력하신 정보가 일치하지 않습니다.', '', 'unauthorized','simple')}"></div>
     <div class="infoWrapper">
         <div class="infoContainer">
             <h1>회원정보 수정</h1>
-            <div class="" th:text="${user.name} + '님 반갑습니다.'"></div>
+            <div class="greeting" th:text="${user.name} + '님 반갑습니다.'"></div>
             <hr>
             <div>
                 <div><span>닉네임</span></div>
@@ -69,6 +72,7 @@
     <script th:inline="javascript">
         function showModal(type) {
             document.getElementById(type + "Modal").style.display = "flex"
+            return document.getElementById(type + "Modal")
         }
 
         function togglePwdForm() {
@@ -91,9 +95,14 @@
         async function changePwd(current, newPwd) {
             const result = await FETCH.patch("/api/user/password", {
                 "current": current,
-                "newPwd": newPwd
+                "password": newPwd
             }).then(data => data);
-            console.log(result.body)
+            if (result.status == 200) {
+                showModal("success")
+                togglePwdForm();
+            } else {
+                showModal("unauthorized")
+            }
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -104,7 +113,6 @@
             const btn = password.querySelector(":scope > button")
             const submitBtn = password.querySelector(":scope form button")
             btn.addEventListener('click', () => {
-                // todo
                 togglePwdForm()
             })
             submitBtn.addEventListener("click", (event) => {
@@ -121,6 +129,10 @@
                     showModal("warning")
                     return false
                 }
+                if (current == newPwd) {
+                    showModal("same")
+                    return false
+                }
                 changePwd(current, newPwd)
             })
             const nickBtn = document.getElementById("nickBtn")
@@ -130,7 +142,18 @@
                 const result = await FETCH.patch(`/api/user/info/${id}`, {
                     name: value
                 })
-                console.log(result)
+                console.log(result.status)
+                if (result.status === 409) {
+                    showModal("same")
+                    return false;
+                }
+                if (result.status === 200) {
+                    showModal("success")
+                    setTimeout(() => {
+                        location.href = "/main/member"
+                    }, 1000)
+
+                }
             })
         })
 
