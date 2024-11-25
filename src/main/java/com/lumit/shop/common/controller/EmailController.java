@@ -22,7 +22,7 @@ public class EmailController {
         EmailMessage emailMessage = EmailMessage.builder().to(email.get("email")).subject("LUMIT ID 찾기").build();
         String result = emailService.sendMail(emailMessage, "id");
         if (result == null || result.equals("")) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(204).build();
         }
         return ResponseEntity.ok().build();
     }
@@ -32,7 +32,7 @@ public class EmailController {
         EmailMessage emailMessage = EmailMessage.builder().to(data.get("email")).userId(data.get("id")).subject("LUMIT 임시 비밀번호 발급").build();
         String result = emailService.sendMail(emailMessage, "password");
         if (result == null || result.equals("")) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(204).build();
         }
         return ResponseEntity.ok().build();
     }
@@ -40,7 +40,10 @@ public class EmailController {
     @PostMapping("/auth")
     public ResponseEntity sendJoinMail(@RequestBody Map<String, String> email) {
         EmailMessage emailMessage = EmailMessage.builder().to(email.get("email")).subject("LUMIT 이메일 인증").build();
-        emailService.sendMail(emailMessage, "email");
+        String result = emailService.sendMail(emailMessage, "email");
+        if (result == null || result.equals("")) {
+            return ResponseEntity.status(204).build();
+        }
         return ResponseEntity.ok().build();
     }
 }

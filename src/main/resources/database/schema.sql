@@ -28,6 +28,7 @@ drop table if exists TB_ROLE_MENU cascade;
 drop table if exists TB_TAG cascade;
 drop table if exists TB_TAG_MAP cascade;
 drop table if exists TB_ADDRESS cascade;
+drop table if exists TB_CODE cascade;
 SET FOREIGN_KEY_CHECKS = 1;
 
 create table if not exists TB_BOARD
