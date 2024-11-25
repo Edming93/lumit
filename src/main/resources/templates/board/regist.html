@@ -59,9 +59,41 @@
                 </tbody>
             </table>
 
-            <div class="btnArea" style="justify-content: center;">
-            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
-                <button type="button" id="registBtn" class="commBtn mgl10 size100">작성 완료</button>
+            <div class="btnArea">
+            	<div class="btnAreaLeft">
+            		<button type="button" onclick="showSecretBox();">
+					  <img class="btnSecretImg" src="/images/secretMsg.png"/>
+					</button>
+					<div class="secretBox" style="display:none;">
+						<div class="secretHeader">
+							<div>비밀글 설정</div>
+							<div class="cancelBox">
+								<button type="button" onclick="hideSecretBox();">
+								  <img src="/images/xBox.png"/>
+								</button>
+							</div>
+						</div>
+						<div class="secretContent">
+							<div class="secretContentTop">
+								<div class="secretTitle">비밀번호 입력</div>
+								<div>
+									<input type="password" class="secretPassword" id="pw" name="password">
+								</div>
+							</div>
+							<div class="secretContentBt">
+								<button type="button" class="btnSecretSave" onclick="alert('클릭!')">
+								  저장
+								</button>
+							</div>
+						</div>
+					</div>
+            	</div>
+            	<div class="btnAreaCenter">
+	            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
+	                <button type="button" id="registBtn" class="commBtn mgl10 size100">작성 완료</button>
+                </div>
+                <div class="btnAreaRight">
+                </div>
             </div>
         </form>
     </div>
@@ -189,6 +221,14 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 });
+
+function showSecretBox() {
+	$(".secretBox").show();
+}
+
+function hideSecretBox() {
+	$(".secretBox").hide();
+}
 
 var fileDiv = document.querySelector('.form__div--file');
 

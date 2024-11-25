@@ -81,7 +81,7 @@ public class BoardServiceImpl implements BoardService {
 
         board.setMenuCd(menuCd);
         board.setMenuDvCd(menuRepository.selectMenuByMenuCd(menuCd).getTmplCd());
-        board.setUseYn("Y");
+        board.setUseYn("N");
         board.setDelYn("N");
         board.setRplyYn("N");
         if(files != null) {

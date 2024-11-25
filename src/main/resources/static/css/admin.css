@@ -36,6 +36,10 @@ a {
     text-decoration: none;
 }
 
+button {
+	padding:0px;
+}
+
 .container {
     width: 100%;
     padding: 10px;
@@ -312,7 +316,7 @@ i {
 }
 
 .boardContainer {
-    width: 70%;
+	width: 55vw;
 }
 
 
@@ -365,18 +369,6 @@ i {
     width: 70%;
 }
 
-.btnArea {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-}
-
-.btnLeftArea {
-}
-
-.btnRightArea {
-}
 
 .pagination {
     display: flex;
@@ -580,3 +572,88 @@ input::-webkit-inner-spin-button {
 	padding-left:10px;
 	color: #876453;
 }
+
+
+.btnArea {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+.btnAreaLeft {
+	display: flex;
+}
+
+.btnAreaCenter{
+	display: flex;
+    justify-content: center;
+}
+
+.btnArea > .btnAreaLeft, .btnAreaCenter, .btnAreaRight {
+	flex: 1;
+}
+
+.btnAreaLeft button {
+	display:flex;
+}
+
+.btnSecretImg {
+	width: 75px;
+}
+
+/* 게시판 secretBox */
+.secretBox {
+	border: 1px solid #CAAB9C;
+    border-radius: 6px;
+    width: 100%;
+    margin-left: 10px;
+}
+
+.secretHeader {
+	border-bottom: 1px solid #D9D9D9;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 10px;
+    color: #9F8578;
+    background-color: #F4EEE9;
+    border-radius: 6px;
+}
+
+.secretContent {
+	padding: 10px;
+}
+
+.secretContentTop {
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 13px;
+}
+
+.secretPassword {
+	border: 1px solid #CACACA;
+    border-radius: 2px;
+    width: 95%;
+    height: 21px;
+}
+
+.secretTitle {
+	margin-right:5px;
+	font-size: 13px;
+}
+
+.secretContentBt {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btnSecretSave {
+	background-color: #E7DBCD;
+	color: #876453;
+	border-radius: 6px;
+	width: 48px;
+    height: 25px;
+    justify-content: center;
+    align-items: center;
+}
+
