@@ -53,9 +53,41 @@
                 </tbody>
             </table>
 
-            <div class="btnArea" style="justify-content: center;">
-            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
-                <button type="button" id="registBtn" class="commBtn mgl10 size100">작성 완료</button>
+            <div class="btnArea">
+            	<div class="btnAreaLeft">
+            		<button type="button" onclick="showSecretBox();">
+					  <img class="btnSecretImg" src="/images/secretMsg.png"/>
+					</button>
+					<div class="secretBox" style="display:none;">
+						<div class="secretHeader">
+							<div>비밀글 설정</div>
+							<div class="cancelBox">
+								<button type="button" onclick="hideSecretBox();">
+								  <img src="/images/xBox.png"/>
+								</button>
+							</div>
+						</div>
+						<div class="secretContent">
+							<div class="secretContentTop">
+								<div class="secretTitle">비밀번호 입력</div>
+								<div>
+									<input type="password" class="secretPassword" id="password" th:value="${detail.password}">
+								</div>
+							</div>
+							<div class="secretContentBt">
+								<button type="button" class="btnSecretSave" onclick="passwordSave();">
+								  저장
+								</button>
+							</div>
+						</div>
+					</div>
+            	</div>
+            	<div class="btnAreaCenter">
+	            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
+	                <button type="button" id="registBtn" class="commBtn mgl10 size100">작성 완료</button>
+                </div>
+                <div class="btnAreaRight">
+                </div>
             </div>
         </form>
     </div>
@@ -75,8 +107,7 @@ var oriFiles = []; // 기존 파일 담는 arr
 var fileIdx = 1;
 var beforeFiles = []; // 백업용
 
-var a = [[${fileList}]];
-console.log([[${fileList}]]);
+let secretPw = "";
 
 document.addEventListener("DOMContentLoaded", function () {
 	
@@ -128,6 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			// 텍스트에디터 내용 가져오기
 			let tinyContent = tinymce.get("tiny").getContent();
 			formData.append('content',tinyContent);
+			formData.append('password',secretPw);
 			
 			for(let [key,value] of formData.entries()) {
 				if(key != "files") {
@@ -158,15 +190,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	const limitSize = mb * 10;
 	
 	fileTarget.addEventListener('change', function () {
-
-		console.log("file Length:: ")
-		console.log(this.files.length);
-		console.log("orifile Length:: ")
-		console.log(oriFiles.length);
 		
 		let fileLength = this.files.length + oriFiles.length + files.length;
-		console.log("최종 :::")
-		console.log(fileLength)
+
 		for(var i=0; i< fileLength; i++) {
 			if(fileLength > 5){
 				alert('최대 5개까지 첨부 가능합니다.');
@@ -192,6 +218,21 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 });
+
+function showSecretBox() {
+	$(".secretBox").show();
+}
+
+function hideSecretBox() {
+	$(".secretBox").hide();
+}
+
+function passwordSave() {
+	secretPw = $("#password").val();
+	
+	alert("저장되었습니다.");
+}
+
 
 var fileDiv = document.querySelector('.form__div--file');
 
@@ -222,9 +263,7 @@ function deleteFileBtn(elem) {
 
 function deleteOriFileBtn(elem) {
 	// 기존 파일 삭제
-	console.log(oriFiles);
 	oriFiles = _.filter(oriFiles, function(file) {return file.fileId != elem.getAttribute("data-idx")})
-	console.log(oriFiles);
 	setFiles();
 }
 

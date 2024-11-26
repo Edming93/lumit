@@ -77,11 +77,11 @@
 							<div class="secretContentTop">
 								<div class="secretTitle">비밀번호 입력</div>
 								<div>
-									<input type="password" class="secretPassword" id="pw" name="password">
+									<input type="password" class="secretPassword" id="password">
 								</div>
 							</div>
 							<div class="secretContentBt">
-								<button type="button" class="btnSecretSave" onclick="alert('클릭!')">
+								<button type="button" class="btnSecretSave" onclick="passwordSave();">
 								  저장
 								</button>
 							</div>
@@ -109,6 +109,8 @@ let menuCd = [[${menuCd}]];
 var files = []; // 실제 파일 담는 arr
 var fileIdx = 1;
 var beforeFiles = []; // 백업용
+
+let secretPw = "";
 
 document.addEventListener("DOMContentLoaded", function () {
 	
@@ -166,6 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			let tinyContent = tinymce.get("tiny").getContent();
 			formData.append('content',tinyContent);
 			formData.append('categories',$("#categories").val());
+			formData.append('password',secretPw);
 			
 			for(let [key,value] of formData.entries()) {
 				if(key != "files") {
@@ -228,6 +231,12 @@ function showSecretBox() {
 
 function hideSecretBox() {
 	$(".secretBox").hide();
+}
+
+function passwordSave() {
+	secretPw = $("#password").val();
+	
+	alert("저장되었습니다.");
 }
 
 var fileDiv = document.querySelector('.form__div--file');

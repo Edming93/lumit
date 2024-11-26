@@ -137,8 +137,10 @@
                 let template = `
 					<td class="alCenter"><p>${PAGE.pageRowNumber(response.number, response.size, i, response.totalElements)}</p></td>
 					<td class="alCenter" style="color: #9F9F9F;">${codeList.find((item) => {return item.cd === result.categories}).cdNm}</td>
-					<td class="alLeft" style="color: #515151; font-size:16px; font-weight:500;"><a href="javascript:moveDetail(${result.boardId});">
-				             		<p>${result.title}</p>
+					<td class="alLeft" style="color: #515151; font-size:16px; font-weight:500;"><a href="javascript:moveDetail(${result.boardId},'${result.useYn}','${result.password}');">
+				             		<p style="display: flex; align-items: center;">
+				             			${result.useYn =="Y" ? '<img class="btnSecretIconImg" src="/images/secretIcon.png">' + result.title : result.title}
+				             		</p>
 				             	</a></td>
 					<td class="alCenter" style="color: #515151; font-size:16px;"><p>${result.regId}</p></td>
 					<td class="alCenter"><p>${date}</p></td>
@@ -158,9 +160,23 @@
     }
 
 
-    function moveDetail(boardId) {
-        let menuCd = [[${menuCd}]]
-        moveUrl("/" + siteId + "/board/" + menuCd + "/detail/" + boardId);
+    function moveDetail(boardId,useYn,pw) {
+        let menuCd = [[${menuCd}]];
+        console.log(useYn);
+        console.log(pw);
+        
+        if(useYn == "Y") {
+        	let inputPw = prompt("비밀번호를 입력해주세요.");
+        	console.log("inputPw :::" + inputPw);
+            if(inputPw != pw) {
+            	alert("비밀번호가 일치하지 않습니다.");
+            	return;
+            }
+        }
+            moveUrl("/" + siteId + "/board/" + menuCd + "/detail/" + boardId);
+        
+        
+        
     }
 </script>
 </div>

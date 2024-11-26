@@ -78,10 +78,16 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public Map<String, Object> insertBoard(String menuCd, TbBoard board, MultipartFile[] files) {
         Map<String, Object> result = new HashMap<String, Object>();
-
+        
+        System.out.println(board);
+        System.out.println("--------------");
         board.setMenuCd(menuCd);
         board.setMenuDvCd(menuRepository.selectMenuByMenuCd(menuCd).getTmplCd());
-        board.setUseYn("N");
+        if(board.getPassword().isEmpty()) {
+        	board.setUseYn("N");
+        }else {
+        	board.setUseYn("Y");
+        }
         board.setDelYn("N");
         board.setRplyYn("N");
         if(files != null) {
@@ -111,9 +117,14 @@ public class BoardServiceImpl implements BoardService {
         board.setModId(SecurityUtils.getPrincipal().getUserId());
         if(files != null) {
         	board.setFileYn("Y");
-        	
         }else {
         	board.setFileYn("N");
+        }
+        
+        if(board.getPassword().isEmpty()) {
+        	board.setUseYn("N");
+        }else {
+        	board.setUseYn("Y");
         }
         
         boardRepository.updateBoard(board);
