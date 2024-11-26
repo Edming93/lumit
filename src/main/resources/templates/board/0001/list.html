@@ -1,0 +1,25 @@
+
+<select th:fragment="selectFragment" id="categories"></select>
+
+<table th:fragment="tableFragment" class="boardTable mgt20">
+    <colgroup>
+        <col style="width: 5%;"/>
+        <col style="width: 12%;"/>
+        <col style="width: auto;"/>
+        <col style="width: 10%;"/>
+        <col style="width: 10%;"/>
+        <col style="width: 8%;"/>
+    </colgroup>
+    <thead>
+    <tr>
+        <th class="alCenter">No.</th>
+        <th class="alCenter">카테고리</th>
+        <th class="alCenter">제목</th>
+        <th class="alCenter">작성자</th>
+        <th class="alCenter">등록일</th>
+        <th class="alCenter">조회</th>
+    </tr>
+    </thead>
+    <tbody id="boardListBody">
+    </tbody>
+</table>

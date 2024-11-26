@@ -9,43 +9,23 @@
 </head>
 <div layout:fragment="content">
     <div>
-        <p class="title">공지사항</p>
+        <p class="title"><span th:utext="${menu.menuName}" ></span></p>
     </div>
 
     <div id="container">
 
         <div class="btnArea">
             <div class="btnLeftArea">
-            	<select id="categories"></select>
+            	<select th:replace="~{'board/'+${menu.tmplCd}+'/list.html' :: selectFragment}"></select>
             </div>
             <div class="btnRightArea">
                 <input type="text" id="searchInp" placeholder="게시글 제목 검색" th:value="${title}" class="commInp size300">
                 <button type="button" id="registBtn" class="commBtn mgl10">글쓰기</button>
             </div>
         </div>
-
-        <table class="boardTable mgt20">
-            <colgroup>
-                <col style="width: 5%;"/>
-                <col style="width: 12%;"/>
-                <col style="width: auto;"/>
-                <col style="width: 10%;"/>
-                <col style="width: 10%;"/>
-                <col style="width: 8%;"/>
-            </colgroup>
-            <thead>
-            <tr>
-                <th class="alCenter">No.</th>
-                <th class="alCenter">카테고리</th>
-                <th class="alCenter">제목</th>
-                <th class="alCenter">작성자</th>
-                <th class="alCenter">등록일</th>
-                <th class="alCenter">조회</th>
-            </tr>
-            </thead>
-            <tbody id="boardListBody">
-            </tbody>
-        </table>
+        
+		<table th:replace="~{'board/'+${menu.tmplCd}+'/list.html' :: tableFragment}"></table>
+        
         <input type="hidden" name="page" id="page" value="0"/>
         <ul id="pagingArea" class="pagination"></ul>
 	</div>
@@ -56,7 +36,7 @@
 	let menuCd = [[${menuCd}]];
 	let codeList = [];
 	let cateDvCd = '';
-	
+	console.log([[${tmplCd}]]);
     window.onload = function () {
         
         document.getElementById("registBtn").addEventListener("click", function () {
@@ -103,38 +83,36 @@
         });
     }
     
-    
-
     function getList(pageNo) {
-    	console.log("타니?");
-        pageNo = pageNo || 0;
-
-        const title = $("#searchInp").val();
-        let url = "/api/boards?";
-        if (title != null && title != "") {
-            url += "title=" + title + "&";
-        }
-        url += "page=" + pageNo + "&categories="+cateDvCd;
-        FETCH.get(url, afterGetList)
-    }
-
-    function afterGetList(response) {
-        PAGE.paging(response.totalPages, response.number, response.totalElements, "getList")
-        resultTable(response)
-    }
-
-
-    function resultTable(response) {
-        document.querySelector("#boardListBody").innerHTML = "";
-        if (response.size > 0) {
-            const content = response.content;
-
-            for (let i = 0; i < content.length; i++) {
-                let element = document.querySelector("#boardListBody");
-                let result = content[i];
-                
-                let date = DATE.setDateFormat(result.regDt)
-                let template = `
+		console.log("타니?");
+	    pageNo = pageNo || 0;
+	
+	    const title = $("#searchInp").val();
+	    let url = "/api/boards?";
+	    if (title != null && title != "") {
+	        url += "title=" + title + "&";
+	    }
+	    url += "page=" + pageNo + "&categories="+cateDvCd + "&menuCd="+menuCd;
+	    FETCH.get(url, afterGetList)
+	}
+	
+	function afterGetList(response) {
+	    PAGE.paging(response.totalPages, response.number, response.totalElements, "getList")
+	    resultTable(response)
+	}
+	
+	
+	function resultTable(response) {
+	    document.querySelector("#boardListBody").innerHTML = "";
+	    if (response.size > 0) {
+	        const content = response.content;
+	
+	        for (let i = 0; i < content.length; i++) {
+	            let element = document.querySelector("#boardListBody");
+	            let result = content[i];
+	            
+	            let date = DATE.setDateFormat(result.regDt)
+	            let template = `
 					<td class="alCenter"><p>${PAGE.pageRowNumber(response.number, response.size, i, response.totalElements)}</p></td>
 					<td class="alCenter" style="color: #9F9F9F;">${codeList.find((item) => {return item.cd === result.categories}).cdNm}</td>
 					<td class="alLeft" style="color: #515151; font-size:16px; font-weight:500;"><a href="javascript:moveDetail(${result.boardId},'${result.useYn}','${result.password}');">
@@ -146,18 +124,20 @@
 					<td class="alCenter"><p>${date}</p></td>
 					<td class="alCenter"><p>${result.viewCount}</p></td>
 				`;
-                element.insertAdjacentHTML('beforeend', template);
-            }
-        }
-    }
+	            element.insertAdjacentHTML('beforeend', template);
+	        }
+	    }
+	}
+	
+	// 초기화
+	function resetList() {
+	    document.querySelector("#title").value = "";
+	    document.querySelector("#boardListBody").innerHTML = "";
+	
+	    getList();
+	}
 
-    // 초기화
-    function resetList() {
-        document.querySelector("#title").value = "";
-        document.querySelector("#boardListBody").innerHTML = "";
-
-        getList();
-    }
+   
 
 
     function moveDetail(boardId,useYn,pw) {

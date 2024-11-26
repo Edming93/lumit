@@ -9,30 +9,23 @@
 
 <div layout:fragment="content">
     <div>
-        <p class="title">공지사항 등록</p>
+        <p class="title"><span th:utext="${menu.menuName}" ></span> 등록</p>
     </div>
 
     <div class="boardContainer wsNorap">
         <form id="registForm"  method="post" entype="multipart/form-data">
-
+			
             <table class="registTable">
                 <colgroup>
                     <col style="width: 10%;"/>
                     <col style="width: 90%;"/>
                 </colgroup>
                 <tbody>
+                	<tr th:replace="~{'board/'+${menu.tmplCd}+'/regist.html' :: trTagFragment}"></tr>
                     <tr>
                         <th class="alLeft bold">제목</th>
                         <td>
                             <input type="text" id="title" name="title" class="boardInp" placeholder="제목을 입력해주세요.">
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="alLeft bold">카테고리</th>
-                        <td>
-                            <select id="categories">
-                            	
-                            </select>
                         </td>
                     </tr>
                     <tr>
@@ -167,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			// 텍스트에디터 내용 가져오기
 			let tinyContent = tinymce.get("tiny").getContent();
 			formData.append('content',tinyContent);
-			formData.append('categories',$("#categories").val());
+			formData.append('categories',$("#categories").val() ?? '');
 			formData.append('password',secretPw);
 			
 			for(let [key,value] of formData.entries()) {

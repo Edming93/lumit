@@ -2,6 +2,7 @@ package com.lumit.shop.board.controller;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.lumit.shop.board.service.BoardService;
 import com.lumit.shop.common.model.TbBoard;
+import com.lumit.shop.common.repository.MenuRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,17 +33,22 @@ import lombok.RequiredArgsConstructor;
 public class BoardController {
     private final BoardService boardService;
     private final String BOARD_PATH = "/board";
+    
+    @Autowired
+    MenuRepository menuRepository;
 
 
     @GetMapping("/{menuCd}/list")
     public String selectBoardList(ModelMap map, @PathVariable("menuCd") String menuCd) {
         map.addAttribute("menuCd", menuCd);
+        map.addAttribute("menu",menuRepository.selectMenuByMenuCd(menuCd));
         return BOARD_PATH + "/list";
     }
 
     @GetMapping("/{menuCd}/regist")
     public String boardRegist(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd) {
         map.addAttribute("menuCd", menuCd);
+        map.addAttribute("menu",menuRepository.selectMenuByMenuCd(menuCd));
         return BOARD_PATH + "/regist";
     }
 

@@ -36,7 +36,7 @@ create table if not exists TB_BOARD
         primary key,
     MENU_CD    varchar(4)         not null comment '메뉴 코드',
     MENU_DV_CD varchar(4)         null comment '메뉴구분코드',
-    CATEGORIES varchar(4)		  not null comment '카테고리구분코드',
+    CATEGORIES varchar(4)		  null comment '카테고리구분코드',
     TITLE      varchar(255)       not null,
     CONTENT    text               null,
     PASSWORD   varchar(50)        null,
