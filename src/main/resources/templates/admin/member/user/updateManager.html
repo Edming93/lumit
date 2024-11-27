@@ -5,8 +5,8 @@
         xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{admin/fragments/layout}">
 <div layout:fragment="content">
-    <div th:replace="~{fragments/modal::modal('정말 삭제하시겠습니까?', '삭제', 'delete','prompt')}"></div>
-    <div th:replace="~{fragments/modal::modal('정말 수정하시겠습니까?', '수정','update','prompt')}"></div>
+    <div th:replace="~{fragments/modal::modal('운영자 정보 관리','정말 삭제하시겠습니까?', '삭제', 'delete','prompt')}"></div>
+    <div th:replace="~{fragments/modal::modal('운영자 정보 관리','정말 수정하시겠습니까?', '수정','update','prompt')}"></div>
     <input id="modalResult" type="hidden" value=""/>
     <div class="adminContainer">
         <h1 class="title">운영자 계정 관리</h1>

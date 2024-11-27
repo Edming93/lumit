@@ -7,10 +7,12 @@ import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.dto.ResponseDto;
 import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.dto.UserInfoDto;
+import com.lumit.shop.common.model.CommonSearch;
 import com.lumit.shop.common.model.TbAddress;
 import com.lumit.shop.common.model.TbBoard;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.security.PrincipalDetails;
+import com.lumit.shop.common.service.CommonService;
 import com.lumit.shop.common.service.SecurityUtils;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,6 +38,7 @@ public class APIController {
 
     private final UserService userService;
     private final BoardService boardService;
+    private final CommonService commonService;
     private final PasswordEncoder passwordEncoder;
 
     // 멤버 - 회원가입 - 중복체크api
@@ -122,5 +125,17 @@ public class APIController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/common/code/{groupCode}")
+    public @ResponseBody ResponseEntity<?> getCode(@PathVariable("groupCode") String groupCode) {
+        CommonSearch commonSearch = new CommonSearch();
+        commonSearch.setGrpCd(groupCode);
+        commonSearch.setUseYn("Y");
+        Map<String, Object> result = commonService.selectCodeListByGrpCd(commonSearch);
+        if (result == null || result.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(result);
     }
 }

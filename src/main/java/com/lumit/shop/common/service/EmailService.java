@@ -1,111 +1,21 @@
 package com.lumit.shop.common.service;
 
 import com.lumit.shop.common.constants.ServiceCode;
-import com.lumit.shop.common.controller.GlobalController;
-import com.lumit.shop.common.dto.UserInfoDto;
 import com.lumit.shop.common.model.EmailMessage;
-import com.lumit.shop.common.model.TbLogin;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
+import com.lumit.shop.common.model.TbEmailAuth;
 
-import java.util.Random;
+public interface EmailService {
+    String sendMail(EmailMessage emailMessage);
 
-@Service
-@Slf4j
-@RequiredArgsConstructor
-public class EmailService {
-    private final JavaMailSender javaMailSender;
-    private final SpringTemplateEngine templateEngine;
+    String createCode();
 
-    private final UserService userService;
+    String setContext(String code, String type);
 
-    @Value("${lumit.siteId}")
-    String siteId;
+    TbEmailAuth selectAuthInfo(String userId);
 
-    @Transactional
-    public String sendMail(EmailMessage emailMessage, String type) {
-        String authNum = createCode();
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        TbLogin tbLogin = null;
-        if (type.equals("password")) {
-            tbLogin = userService.selectByUserId(emailMessage.getUserId());
-            if (tbLogin == null || !tbLogin.getEmail().equals(emailMessage.getTo())) {
-                return null;
-            }
-            UserInfoDto userInfo = new UserInfoDto();
-            userInfo.setUserId(tbLogin.getUserId());
-            userInfo.setPassword(authNum);
-            ServiceCode sc = userService.updateTempPwd(userInfo);
-            if (!sc.equals(ServiceCode.UPDATED)) {
-                return null;
-            }
-        }
-        if (type.equals("id")) {
-            tbLogin = userService.selectByEmail(emailMessage.getTo());
-            if (tbLogin == null) {
-                return null;
-            }
-        }
-        try {
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-            mimeMessageHelper.setTo(emailMessage.getTo());
-            mimeMessageHelper.setSubject(emailMessage.getSubject());
-            if (type.equals("id")) {
-                mimeMessageHelper.setText(setContext(tbLogin.getUserId(), type), true);
-            } else {
-                mimeMessageHelper.setText(setContext(authNum, type), true);
-            }
-            javaMailSender.send(mimeMessage);
-            log.info("Success");
-            return authNum;
-        } catch (MessagingException e) {
-            log.info("fail");
-            throw new RuntimeException(e);
-        }
-    }
+    ServiceCode insertAuthInfo(TbEmailAuth tbEmailAuth);
 
-    public String createCode() {
-        Random random = new Random();
-        StringBuffer key = new StringBuffer();
+    ServiceCode updateAuthInfo(TbEmailAuth tbEmailAuth);
 
-        for (int i = 0; i < 16; i++) {
-            int index = random.nextInt(3);
-            switch (index) {
-                case 0:
-                    key.append((char) ((int) random.nextInt(26) + 97));
-                    break;
-                case 1:
-                    key.append((char) ((int) random.nextInt(26) + 65));
-                    break;
-                default:
-                    key.append(random.nextInt(10));
-            }
-        }
-        return key.toString();
-    }
-
-    public String setContext(String code, String type) {
-        Context context = new Context();
-        context.setVariable("code", code);
-
-        context.setVariable("siteId", siteId);
-        String htmlPath = null;
-        if (type.equals("email")) {
-            htmlPath = "emailTemplates/authEmail";
-        } else if (type.equals("password")) {
-            htmlPath = "emailTemplates/tempPwdEmail";
-        } else if (type.equals("id")) {
-            htmlPath = "emailTemplates/findIdEmail";
-        }
-        return templateEngine.process(htmlPath, context);
-    }
+    ServiceCode grantAuthInfo(String userId);
 }

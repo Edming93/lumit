@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
-<div th:fragment="modal(title, choice, name, type)">
+<div th:fragment="modal(title,content, choice, name, type)">
     <div th:if="${type} == 'prompt'">
         <div th:attr="onclick=|backgroundCancel(event, '${name}Modal', 'prompt')|" class="simpleModalOverlay"
              th:id="${name}+Modal">
@@ -21,10 +21,16 @@
         <div th:attr="onclick=|backgroundCancel(event, '${name}Modal', 'simple')|" class="simpleModalOverlay"
              th:id="${name}+Modal" style="display: none">
             <div class="simpleModalWindow">
-                <p th:utext="${title}">
-                </p>
-                <div>
-                    <button th:attr="onclick=|hideModal('${name}Modal')|" th:text="확인"></button>
+                <div class="modalHeader">
+                    <p th:utext="${title}"></p>
+                    <button th:attr="onclick=|hideModal('${name}Modal')|"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modalContentWrapper">
+                    <p th:utext="${content}">
+                    </p>
+                    <div>
+                        <button class="decisionBtn" th:attr="onclick=|hideModal('${name}Modal')|" th:text="확인"></button>
+                    </div>
                 </div>
             </div>
         </div>

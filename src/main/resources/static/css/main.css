@@ -166,7 +166,8 @@ footer {
 
 .footerContainer {
     width: 1280px;
-    padding: 1rem;
+    /*padding: 1rem;*/
+    padding: 1rem 0 1rem 0;
 }
 
 .footerContainer > .contact {
@@ -809,7 +810,7 @@ footer {
 .navWrapper {
     display: flex;
     justify-content: center;
-    width: 80%;
+    width: 1280px;
     margin-top: 6rem;
     margin-bottom: 8rem;
 }
@@ -817,12 +818,14 @@ footer {
 .sideNavContainer {
     display: flex;
     flex-direction: column;
-    width: 30%;
+    max-width: 180px;
+    min-width: 180px;
 }
 
 .sideNavContainer .title {
     font-weight: 700;
-    font-size: 2rem;
+    font-size: 1.7rem;
+    margin-bottom: 0.7rem;
 }
 
 .sideNavContainer li {
@@ -833,10 +836,27 @@ footer {
     border: 1px solid #C9BEB1;
     padding: 1rem;
     border-radius: 0.3rem;
+    background-color: #FFFFFF;
+}
+
+.sideNavContainer .menu {
+    margin: 0.5rem 0 0.5rem 0;
+    color: #767676;
+    font-size: 0.8rem;
+}
+
+.sideNavContainer .parentMenu {
+    color: #4D4D4D;
+    font-weight: 700;
+    font-size: 0.82rem;
 }
 
 .sideNavContainer > .navList > hr {
-    margin: 1rem 0 1rem 0;
+    margin: 0.7rem 0 0.7rem 0;
+}
+
+.sideNavContainer .currentMenu {
+    color: #B84F03 !important;
 }
 
 /**
@@ -845,17 +865,18 @@ footer {
 .infoWrapper {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    margin-left: 3rem;
+    width: 100%;
 }
 
 .infoContainer {
     text-align: left;
     /*display: flex;*/
-    width: 70%;
+    width: 100%;
 }
 
 .infoContainer > h1 {
-    font-size: 1.4rem;
+    font-size: 2rem;
     font-weight: 600;
     margin-bottom: 2rem;
 }
@@ -880,7 +901,7 @@ footer {
 
 .infoContainer > div > div:nth-child(1) {
     background-color: #F2EADF;
-    width: 12%;
+    width: 10%;
     padding: 1rem;
     font-size: 14px;
     color: #7B6A59;

@@ -1,6 +1,7 @@
 package com.lumit.shop.common.model;
 
 import com.lumit.shop.common.dto.SignUpDto;
+import com.lumit.shop.common.dto.UserInfoDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

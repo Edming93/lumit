@@ -183,6 +183,7 @@ public class UserServiceImpl implements UserService {
         if (result <= 0) {
             return ServiceCode.UNKNOWN;
         }
+        SecurityUtils.refreshPrincipal();
         return ServiceCode.UPDATED;
     }
 
@@ -199,6 +200,7 @@ public class UserServiceImpl implements UserService {
             if (!passwordEncoder.matches(userInfo.getCurrent(), user.getPassword())) {
                 return ServiceCode.UNAUTHORIZED;
             }
+            userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
         }
         userInfo.setUserId(id);
         userInfo.setModId(user.getUserId());
@@ -206,6 +208,7 @@ public class UserServiceImpl implements UserService {
         if (result < 1) {
             return ServiceCode.UNKNOWN;
         }
+        SecurityUtils.refreshPrincipal();
         return ServiceCode.UPDATED;
     }
 

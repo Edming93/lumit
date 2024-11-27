@@ -29,7 +29,7 @@ public class MemberController {
     private final UserService userService;
     private final UserDetailsService userDetailsService;
 
-    @GetMapping("")
+    @GetMapping("/edit")
     public String userInfo(Model model) {
         User user = userService.selectByUserId(SecurityUtils.getPrincipal().getUserId()).userMapping();
         model.addAttribute("user", user);

@@ -3,72 +3,72 @@
         xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{member/fragments/layout}">
-<div layout:fragment="content" style="text-align: center">
-    <div th:replace="~{fragments/modal::modal('새로운 비밀번호가 서로 일치하지 않습니다.', '', 'warning','simple')}"></div>
-    <div th:replace="~{fragments/modal::modal('변경할 정보가 없습니다.<br>(이전 정보와 일치)', '', 'same','simple')}"></div>
-    <div th:replace="~{fragments/modal::modal('입력되지 않은 정보가 있습니다.', '', 'notEnough','simple')}"></div>
-    <div th:replace="~{fragments/modal::modal('수정이 완료되었습니다.', '', 'success','simple')}"></div>
-    <div th:replace="~{fragments/modal::modal('입력하신 정보가 일치하지 않습니다.', '', 'unauthorized','simple')}"></div>
-    <div class="infoWrapper">
-        <div class="infoContainer">
-            <h1>회원정보 수정</h1>
-            <div class="greeting" th:text="${user.name} + '님 반갑습니다.'"></div>
-            <hr>
+<div layout:fragment="content" class="infoWrapper">
+    <div th:replace="~{fragments/modal::modal('회원정보 수정','새로운 비밀번호가 서로 일치하지 않습니다.', '', 'warning','simple')}"></div>
+    <div th:replace="~{fragments/modal::modal('회원정보 수정','변경할 정보가 없습니다.<br>(이전 정보와 일치)', '', 'same','simple')}"></div>
+    <div th:replace="~{fragments/modal::modal('회원정보 수정','입력되지 않은 정보가 있습니다.', '', 'notEnough','simple')}"></div>
+    <div th:replace="~{fragments/modal::modal('회원정보 수정','수정이 완료되었습니다.', '', 'success','simple')}"></div>
+    <div th:replace="~{fragments/modal::modal('회원정보 수정','입력하신 정보가 일치하지 않습니다.', '', 'unauthorized','simple')}"></div>
+
+    <div class="infoContainer">
+        <h1>회원정보 수정</h1>
+        <div class="greeting" th:text="${user.name} + '님 반갑습니다.'"></div>
+        <hr>
+        <div>
+            <div><span>닉네임</span></div>
             <div>
-                <div><span>닉네임</span></div>
-                <div>
-                    <input id="nickname" th:value="${user.name}">
-                    <button id="nickBtn">닉네임 설정</button>
-                </div>
+                <input id="nickname" th:value="${user.name}">
+                <button id="nickBtn">닉네임 설정</button>
             </div>
+        </div>
+        <div>
             <div>
-                <div>
-                    <span>휴대폰 번호</span></div>
-                <div>
-                    <span th:text="${user.phone}"></span>
-                    <button>휴대전화 변경</button>
-                </div>
+                <span>휴대폰 번호</span></div>
+            <div>
+                <span th:text="${user.phone}"></span>
+                <button>휴대전화 변경</button>
             </div>
+        </div>
+        <div>
             <div>
-                <div>
-                    <span>비밀번호</span></div>
-                <div id="changePwd">
-                    <button>비밀번호 변경</button>
-                    <form>
-                        <div><label>현재 비밀번호</label><input type="password"></div>
-                        <div><label>새로운 비밀번호</label><input type="password"></div>
-                        <div><label>비밀번호 확인</label><input type="password"></div>
-                        <button>변경하기</button>
-                    </form>
-                </div>
+                <span>비밀번호</span></div>
+            <div id="changePwd">
+                <button>비밀번호 변경</button>
+                <form>
+                    <div><label>현재 비밀번호</label><input type="password"></div>
+                    <div><label>새로운 비밀번호</label><input type="password"></div>
+                    <div><label>비밀번호 확인</label><input type="password"></div>
+                    <button>변경하기</button>
+                </form>
             </div>
+        </div>
+        <div>
             <div>
-                <div>
-                    <span>이메일</span></div>
-                <div>
-                    <span th:text="${user.email}"></span>
-                    <button>이메일 변경</button>
-                </div>
+                <span>이메일</span></div>
+            <div id="changeEmail">
+                <input th:value="${user.email}">
+                <button class="inputSetting">이메일 변경</button>
             </div>
+        </div>
+        <div>
             <div>
-                <div>
-                    <span>배송지</span></div>
-                <div>
-                    <!-- user.address.split(',')[1]+ user.address.split(',')[2]-->
-                    <span th:text="${user.address}"></span>
-                    <button>배송지 관리</button>
-                </div>
+                <span>배송지</span></div>
+            <div>
+                <!-- user.address.split(',')[1]+ user.address.split(',')[2]-->
+                <span th:text="${user.address}"></span>
+                <button>배송지 관리</button>
             </div>
+        </div>
+        <div>
             <div>
-                <div>
-                    <span>환불 계좌</span></div>
-                <div>
-                    <input placeholder="환불 받을 계좌를 입력해주세요.">
-                    <button>환불 계좌 관리</button>
-                </div>
+                <span>환불 계좌</span></div>
+            <div>
+                <input placeholder="환불 받을 계좌를 입력해주세요.">
+                <button>환불 계좌 관리</button>
             </div>
         </div>
     </div>
+
     <script th:inline="javascript">
         function showModal(type) {
             document.getElementById(type + "Modal").style.display = "flex"
@@ -88,12 +88,10 @@
             }
         }
 
-        async function changeNickname() {
-            inpu
-        }
 
         async function changePwd(current, newPwd) {
-            const result = await FETCH.patch("/api/user/password", {
+            const id = [[${user.userId}]]
+            const result = await FETCH.patch(`/api/user/info/${id}`, {
                 "current": current,
                 "password": newPwd
             }).then(data => data);
@@ -106,6 +104,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+            const id = [[${user.userId}]]
             const password = document.getElementById("changePwd")
             const form = password.querySelector(":scope form")
 
@@ -142,7 +141,6 @@
                 const result = await FETCH.patch(`/api/user/info/${id}`, {
                     name: value
                 })
-                console.log(result.status)
                 if (result.status === 409) {
                     showModal("same")
                     return false;
@@ -150,10 +148,34 @@
                 if (result.status === 200) {
                     showModal("success")
                     setTimeout(() => {
-                        location.href = "/main/member"
+                        location.href = "/main/member/edit"
                     }, 1000)
-
                 }
+            })
+            const emailDiv = document.querySelector("#changeEmail")
+            const emailInput = emailDiv.querySelector("input")
+            const emailBtn = emailDiv.querySelector(".inputSetting")
+            const emailSubmit = document.createElement("button")
+            emailSubmit.textContent = "인증 코드 받기"
+            emailSubmit.hidden = true
+            emailDiv.appendChild(emailSubmit)
+            emailInput.readOnly = true
+            emailBtn.addEventListener("click", () => {
+                if (emailInput.hasAttribute("readonly")) {
+                    emailInput.removeAttribute("readonly")
+                    emailInput.value = ""
+                    emailInput.focus()
+                    emailBtn.hidden = true
+                    emailSubmit.hidden = false;
+                    return;
+                }
+                emailInput.setAttribute("readonly", "readonly")
+            })
+            emailSubmit.addEventListener("click", () => {
+                FETCH.post("/auth/mail/change-email", {
+                    "email": emailInput.value,
+                    "id": id
+                })
             })
         })
 
@@ -161,5 +183,5 @@
         // const result = await FETCH.get(`/api/user/addresses?userId=${userId}`);
         // console.log(result)
     </script>
-    <script th:src="@{/js/fetch.js}"></script>
+
 </div>

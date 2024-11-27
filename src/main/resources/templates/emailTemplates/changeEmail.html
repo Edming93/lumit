@@ -1,0 +1,18 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8">
+<body>
+<div style="margin:100px">
+    <div style="background-color: #7B6A59; color: white; display: flex; flex-direction: column; padding: 2rem">
+        <h1>안녕하세요.</h1>
+        <h1>LUMIT 이메일 변경 인증 메일 입니다.</h1>
+        <div style="font-size: 24px"><span>인증코드는 </span><span
+                style="background-color: #D3CCC2; color: #2B2928; font-weight: bold; margin-right: 0.3rem; margin-left: 0.3rem; border-radius: 0.3rem"
+                th:text="${code}"></span><span>입니다.</span>
+        </div>
+        <div style="text-align: center; margin-top: 2rem; font-size: 20px;">
+            <a style="cursor: pointer; background-color: #263458; padding: 0.5rem; border-radius: 0.3rem; text-decoration: none; color:white"
+               th:href="${siteId}+'/auth/codeCheck/${code}'"><span>링크를 클릭하여 바로 인증</span></a></div>
+    </div>
+</div>
+</body>
+</html>

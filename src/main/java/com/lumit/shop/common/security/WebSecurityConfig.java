@@ -3,9 +3,12 @@ package com.lumit.shop.common.security;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -22,9 +25,10 @@ public class WebSecurityConfig {
     private final OAuth2UserService oAuth2UserService;
     private static final String[] WHITE_LIST = {
             "/favicon**", "/", "/main", "/main/member/createUser", "/main/member/findUser", "/lumit/**", "/error/**", "/api/**", "/auth/mail/**", "/common/**"
-            
+
     };
     private final CustomAuthorizationManager customAuthorizationManager;
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -42,6 +46,11 @@ public class WebSecurityConfig {
                 ).oauth2Login((auth) -> auth.loginPage("/login").userInfoEndpoint((end) -> end.userService(oAuth2UserService)).successHandler(getSuccessHandler()));
         http.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).deleteCookies("JSESSIONID").invalidateHttpSession(false).logoutSuccessUrl("/"));
         return http.build();
+    }
+
+    @Bean
+    public UserDetailsService getDetailsService() {
+        return userDetailsService;
     }
 
     @Bean

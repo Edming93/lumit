@@ -12,19 +12,19 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CommonServiceImpl implements CommonService{
-	
-	@Autowired
-	CodeRepository codeRepository;
-	
-	@Override
-	public HashMap<String,Object> selectCodeListByGrpCd(CommonSearch search) {
-		HashMap<String,Object> retMap = new HashMap<String,Object>();
-		search.setUseYn("Y");
-		
-		retMap.put("list",codeRepository.selectCodeListByGrpCd(search));
-	
-		System.out.println(retMap);
-		return retMap;
-	}
+public class CommonServiceImpl implements CommonService {
+
+    @Autowired
+    CodeRepository codeRepository;
+
+    @Override
+    public HashMap<String, Object> selectCodeListByGrpCd(CommonSearch search) {
+        HashMap<String, Object> retMap = new HashMap<String, Object>();
+        search.setUseYn("Y");
+
+        retMap.put("list", codeRepository.selectCodeListByGrpCd(search));
+
+        System.out.println(retMap);
+        return retMap;
+    }
 }

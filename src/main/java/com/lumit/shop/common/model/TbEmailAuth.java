@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+@Builder
 @Getter
 @Setter
-@Builder
 @ToString
-public class EmailMessage {
+public class TbEmailAuth {
     private String userId;
-    private String to;
-    private String subject;
-    private String message;
-    private String type;
+    private int type;
+    private String email;
+    private String code;
+    private boolean isAuthenticated;
 }
