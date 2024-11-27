@@ -98,6 +98,8 @@ public class APIController {
 
     @GetMapping(value = "/boards")
     public @ResponseBody ResponseEntity<?> boardList(String menuCd, SearchDto search, TbBoard board, @PageableDefault(size = 10) Pageable pageable) throws IOException {
+    	System.out.println(menuCd);
+    	System.out.println("-------------");
         board.setMenuCd(menuCd);
         if (search.getTitle() != null) {
             board.setTitle(search.getTitle());

@@ -9,30 +9,23 @@
 
 <div layout:fragment="content">
     <div>
-        <p class="title">공지사항 등록</p>
+        <p class="title"><span th:utext="${menu.menuName}" ></span> 등록</p>
     </div>
 
     <div class="boardContainer wsNorap">
         <form id="registForm"  method="post" entype="multipart/form-data">
-
+			
             <table class="registTable">
                 <colgroup>
                     <col style="width: 10%;"/>
                     <col style="width: 90%;"/>
                 </colgroup>
                 <tbody>
+                	<tr th:replace="~{'board/'+${menu.tmplCd}+'/regist.html' :: trTagFragment}"></tr>
                     <tr>
                         <th class="alLeft bold">제목</th>
                         <td>
                             <input type="text" id="title" name="title" class="boardInp" placeholder="제목을 입력해주세요.">
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="alLeft bold">카테고리</th>
-                        <td>
-                            <select id="categories">
-                            	
-                            </select>
                         </td>
                     </tr>
                     <tr>
@@ -77,11 +70,11 @@
 							<div class="secretContentTop">
 								<div class="secretTitle">비밀번호 입력</div>
 								<div>
-									<input type="password" class="secretPassword" id="pw" name="password">
+									<input type="password" class="secretPassword" id="password">
 								</div>
 							</div>
 							<div class="secretContentBt">
-								<button type="button" class="btnSecretSave" onclick="alert('클릭!')">
+								<button type="button" class="btnSecretSave" onclick="passwordSave();">
 								  저장
 								</button>
 							</div>
@@ -109,6 +102,8 @@ let menuCd = [[${menuCd}]];
 var files = []; // 실제 파일 담는 arr
 var fileIdx = 1;
 var beforeFiles = []; // 백업용
+
+let secretPw = "";
 
 document.addEventListener("DOMContentLoaded", function () {
 	
@@ -165,7 +160,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			// 텍스트에디터 내용 가져오기
 			let tinyContent = tinymce.get("tiny").getContent();
 			formData.append('content',tinyContent);
-			formData.append('categories',$("#categories").val());
+			formData.append('categories',$("#categories").val() ?? '');
+			formData.append('password',secretPw);
 			
 			for(let [key,value] of formData.entries()) {
 				if(key != "files") {
@@ -228,6 +224,12 @@ function showSecretBox() {
 
 function hideSecretBox() {
 	$(".secretBox").hide();
+}
+
+function passwordSave() {
+	secretPw = $("#password").val();
+	
+	alert("저장되었습니다.");
 }
 
 var fileDiv = document.querySelector('.form__div--file');

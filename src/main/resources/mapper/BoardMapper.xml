@@ -38,6 +38,9 @@
             <if test="data.categories != '' and data.categories neq null">
 	            AND CATEGORIES = #{data.categories}
 	        </if>
+	        <if test="data.menuCd != '' and data.menuCd neq null">
+	            AND MENU_CD = #{data.menuCd}
+	        </if>
             AND
             	DEL_YN = 'N'
         </where>
@@ -58,6 +61,9 @@
             </if>
             <if test="categories != '' and categories neq null">
 	            AND CATEGORIES = #{categories}
+	        </if>
+	        <if test="menuCd != '' and menuCd neq null">
+	            AND MENU_CD = #{menuCd}
 	        </if>
         </where>
         AND

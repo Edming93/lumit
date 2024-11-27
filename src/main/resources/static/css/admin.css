@@ -334,8 +334,8 @@ i {
 }
 
 .registTable > tbody > tr {
-    height: 60px;
-    line-height: 60px;
+    height: 46px;
+    line-height: 46px;
 }
 
 .size300 {
@@ -600,6 +600,11 @@ input::-webkit-inner-spin-button {
 	width: 75px;
 }
 
+.btnSecretIconImg {
+	width: 20px;
+	margin-right:10px;
+}
+
 /* 게시판 secretBox */
 .secretBox {
 	border: 1px solid #CAAB9C;
@@ -634,6 +639,7 @@ input::-webkit-inner-spin-button {
     border-radius: 2px;
     width: 95%;
     height: 21px;
+    padding-left:5px;
 }
 
 .secretTitle {
