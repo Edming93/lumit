@@ -9,156 +9,159 @@
 </head>
 <div layout:fragment="content">
     <div>
-        <p class="title"><span th:utext="${menu.menuName}" ></span></p>
+        <p class="title"><span th:utext="${menu.menuName}"></span></p>
     </div>
 
     <div id="container">
 
         <div class="btnArea">
             <div class="btnLeftArea">
-            	<select th:replace="~{'board/'+${menu.tmplCd}+'/list.html' :: selectFragment}"></select>
+                <select th:replace="~{'board/'+${menu.tmplCd}+'/list.html' :: selectFragment}"></select>
             </div>
             <div class="btnRightArea">
                 <input type="text" id="searchInp" placeholder="게시글 제목 검색" th:value="${title}" class="commInp size300">
                 <button type="button" id="registBtn" class="commBtn mgl10">글쓰기</button>
             </div>
         </div>
-        
-		<table th:replace="~{'board/'+${menu.tmplCd}+'/list.html' :: tableFragment}"></table>
-        
+
+        <table th:replace="~{'board/'+${menu.tmplCd}+'/list.html' :: tableFragment}"></table>
+
         <input type="hidden" name="page" id="page" value="0"/>
         <ul id="pagingArea" class="pagination"></ul>
-	</div>
-<script type="text/javascript" th:src="@{/js/page.js}"></script>
-<script type="text/javascript" th:src="@{/js/date.js}"></script>
-<script th:inline="javascript">
+    </div>
+    <script type="text/javascript" th:src="@{/js/page.js}"></script>
+    <script type="text/javascript" th:src="@{/js/date.js}"></script>
+    <script th:inline="javascript">
 
-	let menuCd = [[${menuCd}]];
-	let codeList = [];
-	let cateDvCd = '';
-	console.log([[${tmplCd}]]);
-    window.onload = function () {
-        
-        document.getElementById("registBtn").addEventListener("click", function () {
-            moveUrl("/" + siteId + "/board/" + menuCd + "/regist");
-        });
+        let menuCd = [[${menuCd}]];
+        let codeList = [];
+        let cateDvCd = '';
+        console.log([[${tmplCd}]]);
+        window.onload = function () {
 
-        document.getElementById("searchInp").addEventListener('keydown', function (event) {
-            if (event.key === 'Enter') {
+            document.getElementById("registBtn").addEventListener("click", function () {
+                moveUrl("/" + siteId + "/board/" + menuCd + "/regist");
+            });
+
+            document.getElementById("searchInp").addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
 //                 const query = event.target.value;
 //                 let params = {};
 //                 params['title'] = query;
 
 //                 moveUrl("/" + siteId + "/board/" + menuCd + "/list", params);
-            	getList(0);
-            }
-        });
+                    getList(0);
+                }
+            });
 
-        
-        // 코드리스트중에서 카테고리 리스트 가져오기
-        fetch('/common/codeList', {
-	        method: 'POST',
-	        data: {grpCd:"CATEGORIES"}
-	    })
-	    .then(response => response.json())
-	    .then(function(response) {
-	    	codeList = response.list;
-			
-			createSelectOptions("categories", codeList,{isSetAll:true, selectedValue:null, keyNm:"cd", valueNm:"cdNm"});
-			
-	    })
-	    .catch(function(error) {
-	        console.log("error:", error);
-	    });
-        
-        getList();
-        
-        $('#categories').on('change', function() {
-        	
-        	cateDvCd = $(this).val();
-        	console.log(cateDvCd);
-        	
-        	getList(0);
-        	
-        });
-    }
-    
-    function getList(pageNo) {
-		console.log("타니?");
-	    pageNo = pageNo || 0;
-	
-	    const title = $("#searchInp").val();
-	    let url = "/api/boards?";
-	    if (title != null && title != "") {
-	        url += "title=" + title + "&";
-	    }
-	    url += "page=" + pageNo + "&categories="+cateDvCd + "&menuCd="+menuCd;
-	    FETCH.get(url, afterGetList)
-	}
-	
-	function afterGetList(response) {
-	    PAGE.paging(response.totalPages, response.number, response.totalElements, "getList")
-	    resultTable(response)
-	}
-	
-	
-	function resultTable(response) {
-	    document.querySelector("#boardListBody").innerHTML = "";
-	    if (response.size > 0) {
-	        const content = response.content;
-	
-	        for (let i = 0; i < content.length; i++) {
-	            let element = document.querySelector("#boardListBody");
-	            let result = content[i];
-	            
-	            let date = DATE.setDateFormat(result.regDt)
-	            let template = `
+
+            // 코드리스트중에서 카테고리 리스트 가져오기
+            fetch('/common/codeList', {
+                method: 'POST',
+                data: {grpCd: "CATEGORIES"}
+            })
+                .then(response => response.json())
+                .then(function (response) {
+                    codeList = response.list;
+
+                    createSelectOptions("categories", codeList, {
+                        isSetAll: true,
+                        selectedValue: null,
+                        keyNm: "cd",
+                        valueNm: "cdNm"
+                    });
+
+                })
+                .catch(function (error) {
+                    console.log("error:", error);
+                });
+            getList();
+
+            $('#categories').on('change', function () {
+
+                cateDvCd = $(this).val();
+                console.log(cateDvCd);
+
+                getList(0);
+
+            });
+        }
+
+        function getList(pageNo) {
+            console.log("타니?");
+            pageNo = pageNo || 0;
+
+            const title = $("#searchInp").val();
+            let url = "/api/boards?";
+            if (title != null && title != "") {
+                url += "title=" + title + "&";
+            }
+            url += "page=" + pageNo + "&categories=" + cateDvCd + "&menuCd=" + menuCd;
+            FETCH.get(url, afterGetList)
+        }
+
+        function afterGetList(response) {
+            PAGE.paging(response.totalPages, response.number, response.totalElements, "getList")
+            resultTable(response)
+        }
+
+
+        function resultTable(response) {
+            document.querySelector("#boardListBody").innerHTML = "";
+            if (response.size > 0) {
+                const content = response.content;
+
+                for (let i = 0; i < content.length; i++) {
+                    let element = document.querySelector("#boardListBody");
+                    let result = content[i];
+
+                    let date = DATE.setDateFormat(result.regDt)
+                    let template = `
 					<td class="alCenter"><p>${PAGE.pageRowNumber(response.number, response.size, i, response.totalElements)}</p></td>
-					<td class="alCenter" style="color: #9F9F9F;">${codeList.find((item) => {return item.cd === result.categories}).cdNm}</td>
+					<td class="alCenter" style="color: #9F9F9F;">${codeList.find((item) => {
+                        return item.cd === result.categories
+                    }).cdNm}</td>
 					<td class="alLeft" style="color: #515151; font-size:16px; font-weight:500;"><a href="javascript:moveDetail(${result.boardId},'${result.useYn}','${result.password}');">
 				             		<p style="display: flex; align-items: center;">
-				             			${result.useYn =="Y" ? '<img class="btnSecretIconImg" src="/images/secretIcon.png">' + result.title : result.title}
+				             			${result.useYn == "Y" ? '<img class="btnSecretIconImg" src="/images/secretIcon.png">' + result.title : result.title}
 				             		</p>
 				             	</a></td>
 					<td class="alCenter" style="color: #515151; font-size:16px;"><p>${result.regId}</p></td>
 					<td class="alCenter"><p>${date}</p></td>
 					<td class="alCenter"><p>${result.viewCount}</p></td>
 				`;
-	            element.insertAdjacentHTML('beforeend', template);
-	        }
-	    }
-	}
-	
-	// 초기화
-	function resetList() {
-	    document.querySelector("#title").value = "";
-	    document.querySelector("#boardListBody").innerHTML = "";
-	
-	    getList();
-	}
-
-   
-
-
-    function moveDetail(boardId,useYn,pw) {
-        let menuCd = [[${menuCd}]];
-        console.log(useYn);
-        console.log(pw);
-        
-        if(useYn == "Y") {
-        	let inputPw = prompt("비밀번호를 입력해주세요.");
-        	console.log("inputPw :::" + inputPw);
-            if(inputPw != pw) {
-            	alert("비밀번호가 일치하지 않습니다.");
-            	return;
+                    element.insertAdjacentHTML('beforeend', template);
+                }
             }
         }
+
+        // 초기화
+        function resetList() {
+            document.querySelector("#title").value = "";
+            document.querySelector("#boardListBody").innerHTML = "";
+
+            getList();
+        }
+
+
+        function moveDetail(boardId, useYn, pw) {
+            let menuCd = [[${menuCd}]];
+            console.log(useYn);
+            console.log(pw);
+
+            if (useYn == "Y") {
+                let inputPw = prompt("비밀번호를 입력해주세요.");
+                console.log("inputPw :::" + inputPw);
+                if (inputPw != pw) {
+                    alert("비밀번호가 일치하지 않습니다.");
+                    return;
+                }
+            }
             moveUrl("/" + siteId + "/board/" + menuCd + "/detail/" + boardId);
-        
-        
-        
-    }
-</script>
+
+
+        }
+    </script>
 </div>
 
 </html>

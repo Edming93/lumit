@@ -4,18 +4,17 @@ import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.board.service.BoardService;
 import com.lumit.shop.common.constants.Role;
 import com.lumit.shop.common.constants.ServiceCode;
+import com.lumit.shop.common.data.ModalInfo;
 import com.lumit.shop.common.dto.ResponseDto;
 import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.dto.UserInfoDto;
-import com.lumit.shop.common.model.CommonSearch;
-import com.lumit.shop.common.model.TbAddress;
-import com.lumit.shop.common.model.TbBoard;
-import com.lumit.shop.common.model.User;
+import com.lumit.shop.common.model.*;
 import com.lumit.shop.common.security.PrincipalDetails;
 import com.lumit.shop.common.service.CommonService;
 import com.lumit.shop.common.service.SecurityUtils;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
@@ -85,21 +84,25 @@ public class APIController {
     }
 
     @PatchMapping(value = "/user/info/{id}")
-    public @ResponseBody ResponseEntity<?> updateInfo(@PathVariable("id") String id, @RequestBody UserInfoDto userInfo) {
-        ServiceCode sc = userService.updateUserInfo(id, userInfo);
+    public @ResponseBody ResponseEntity<?> updateInfo(@PathVariable("id") String id, @RequestBody UserInfoDto userInfo, HttpSession session) {
+        userInfo.setUserId(id);
+        ServiceCode sc = userService.updateUserInfo(userInfo);
+        ModalInfo modalInfo = null;
         if (sc.equals(ServiceCode.CONFLICT)) {
-            return ResponseEntity.status(409).build();
+            modalInfo = ModalInfo.builder().title("닉네임 변경").content("변경된 정보가 없습니다.").choice("").type("simple").name("same").build();
+        } else if (!sc.equals(ServiceCode.UPDATED)) {
+            modalInfo = ModalInfo.builder().title("닉네임 변경 실패").content("닉네임을 변경하지 못하였습니다.<br>잠시 후 다시 시도해주세요.").choice("").type("simple").name("fail").build();
+        } else {
+            modalInfo = ModalInfo.builder().title("닉네임 변경 완료").content("닉네임이 변경되었습니다.").choice("").type("simple").name("fail").build();
         }
-        if (!sc.equals(ServiceCode.UPDATED)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().build();
+        session.setAttribute("modalInfo", modalInfo);
+        return ResponseEntity.ok().body(modalInfo);
     }
 
     @GetMapping(value = "/boards")
     public @ResponseBody ResponseEntity<?> boardList(String menuCd, SearchDto search, TbBoard board, @PageableDefault(size = 10) Pageable pageable) throws IOException {
-    	System.out.println(menuCd);
-    	System.out.println("-------------");
+        System.out.println(menuCd);
+        System.out.println("-------------");
         board.setMenuCd(menuCd);
         if (search.getTitle() != null) {
             board.setTitle(search.getTitle());
@@ -140,4 +143,6 @@ public class APIController {
         }
         return ResponseEntity.ok(result);
     }
+
+
 }

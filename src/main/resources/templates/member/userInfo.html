@@ -4,12 +4,13 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{member/fragments/layout}">
 <div layout:fragment="content" class="infoWrapper">
-    <div th:replace="~{fragments/modal::modal('회원정보 수정','새로운 비밀번호가 서로 일치하지 않습니다.', '', 'warning','simple')}"></div>
-    <div th:replace="~{fragments/modal::modal('회원정보 수정','변경할 정보가 없습니다.<br>(이전 정보와 일치)', '', 'same','simple')}"></div>
-    <div th:replace="~{fragments/modal::modal('회원정보 수정','입력되지 않은 정보가 있습니다.', '', 'notEnough','simple')}"></div>
-    <div th:replace="~{fragments/modal::modal('회원정보 수정','수정이 완료되었습니다.', '', 'success','simple')}"></div>
-    <div th:replace="~{fragments/modal::modal('회원정보 수정','입력하신 정보가 일치하지 않습니다.', '', 'unauthorized','simple')}"></div>
 
+    <div th:if="${modalInfo != null}"
+    >
+        <div th:insert="~{fragments/modal::modal(${modalInfo.getTitle()},${modalInfo.getContent()}, '', ${modalInfo.getName()},${modalInfo.getType()})}"></div>
+    </div>
+
+    <div id="modalContainer"></div>
     <div class="infoContainer">
         <h1>회원정보 수정</h1>
         <div class="greeting" th:text="${user.name} + '님 반갑습니다.'"></div>
@@ -104,6 +105,10 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+            const modalInfo = [[${modalInfo}]]
+            if (modalInfo != null) {
+                showModal(modalInfo.name)
+            }
             const id = [[${user.userId}]]
             const password = document.getElementById("changePwd")
             const form = password.querySelector(":scope form")
@@ -138,19 +143,11 @@
             nickBtn.addEventListener("click", async function () {
                 const id = [[${user.userId}]]
                 const value = document.getElementById("nickname").value
-                const result = await FETCH.patch(`/api/user/info/${id}`, {
+                await FETCH.patch(`/api/user/info/${id}`, {
                     name: value
+                }).then(() => {
+                    setTimeout(() => location.reload(), 500)
                 })
-                if (result.status === 409) {
-                    showModal("same")
-                    return false;
-                }
-                if (result.status === 200) {
-                    showModal("success")
-                    setTimeout(() => {
-                        location.href = "/main/member/edit"
-                    }, 1000)
-                }
             })
             const emailDiv = document.querySelector("#changeEmail")
             const emailInput = emailDiv.querySelector("input")
@@ -171,10 +168,12 @@
                 }
                 emailInput.setAttribute("readonly", "readonly")
             })
-            emailSubmit.addEventListener("click", () => {
-                FETCH.post("/auth/mail/change-email", {
+            emailSubmit.addEventListener("click", async () => {
+                await FETCH.post("/auth/mail/change-email", {
                     "email": emailInput.value,
                     "id": id
+                }).then(() => {
+                    setTimeout(() => location.reload(), 500)
                 })
             })
         })

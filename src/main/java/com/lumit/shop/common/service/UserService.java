@@ -45,5 +45,5 @@ public interface UserService {
 
     ServiceCode updateTempPwd(UserInfoDto userInfo);
 
-    ServiceCode updateUserInfo(String id, UserInfoDto userInfoDto);
+    ServiceCode updateUserInfo(UserInfoDto userInfoDto);
 }

@@ -11,7 +11,8 @@
         </div>
         <div style="text-align: center; margin-top: 2rem; font-size: 20px;">
             <a style="cursor: pointer; background-color: #263458; padding: 0.5rem; border-radius: 0.3rem; text-decoration: none; color:white"
-               th:href="${siteId}+'/auth/codeCheck/${code}'"><span>링크를 클릭하여 바로 인증</span></a></div>
+               th:href="${siteId}+'/auth/emailCheck?id=' + ${id} + '&code='+${code}+'&email='+ ${email} + '&type=change'"><span>링크를 클릭하여 바로 인증</span></a>
+        </div>
     </div>
 </div>
 </body>

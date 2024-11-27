@@ -8,10 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.lumit.shop.common.config.ResponseBuilder;
 import com.lumit.shop.common.model.CommonSearch;
@@ -61,12 +58,12 @@ public class CommonController {
         model.addAttribute("kakaoUri", kakaoRedirectUri);
         return LOGIN_FORM;
     }
-    
+
     @PostMapping("/common/codeList")
-    public ResponseEntity<Map<String, Object>> getCodeList(@ModelAttribute CommonSearch search) {
-    	return ResponseBuilder.build(commonService.selectCodeListByGrpCd(search), HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> getCodeList(@RequestBody CommonSearch search) {
+        System.out.println(search.getGrpCd());
+        return ResponseBuilder.build(commonService.selectCodeListByGrpCd(search), HttpStatus.OK);
     }
-    
 
 
 }

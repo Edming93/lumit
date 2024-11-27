@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<div th:fragment="modal(title,content, choice, name, type)">
+    <div th:if="${type} == 'prompt'">
+        <div th:attr="onclick=|backgroundCancel(event, '${name}Modal', 'prompt')|" class="simpleModalOverlay"
+             th:id="${name}+Modal">
+            <div class="simpleModalWindow">
+                <p th:text="${title}">
+                </p>
+                <div>
+                    <button onclick="resultChange('action')" th:text="${choice}"></button>
+                    <button onclick="resultChange('cancel')" th:text="취소"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${type} == 'simple'">
+        <div th:attr="onclick=|backgroundCancel(event, '${name}Modal', 'simple')|" class="simpleModalOverlay"
+             th:id="${name}+Modal" style="display: none">
+            <div class="simpleModalWindow">
+                <div class="modalHeader">
+                    <p th:utext="${title}"></p>
+                    <button th:attr="onclick=|hideModal('${name}Modal')|"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modalContentWrapper">
+                    <p th:utext="${content}">
+                    </p>
+                    <div>
+                        <button class="decisionBtn" th:attr="onclick=|hideModal('${name}Modal')|" th:text="확인"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let modalName = [[${name}]] + "Modal"
+            document.getElementById(modalName).style.display = "none"
+        })
+
+        function hideModal(id) {
+            document.getElementById(id).style.display = "none"
+        }
+
+        function resultChange(value) {
+            const result = document.getElementById("modalResult")
+            result.value = value
+            result.dispatchEvent(new Event("change"))
+        }
+
+        /**
+         *
+         * @param event{Event}
+         */
+        function backgroundCancel(event, id, type) {
+            event.stopPropagation();
+            if (event.target == document.getElementById(id)) {
+                hideModal(id)
+                if (type == "simple") {
+                    return;
+                }
+                resultChange("cancel")
+            }
+
+        }
+    </script>
+</div>

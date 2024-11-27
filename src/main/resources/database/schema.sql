@@ -29,7 +29,6 @@ drop table if exists TB_TAG cascade;
 drop table if exists TB_TAG_MAP cascade;
 drop table if exists TB_ADDRESS cascade;
 drop table if exists TB_CODE cascade;
-drop table if exists TB_EMAIL_AUTH cascade;
 SET FOREIGN_KEY_CHECKS = 1;
 
 create table if not exists TB_BOARD
@@ -38,7 +37,7 @@ create table if not exists TB_BOARD
         primary key,
     MENU_CD    varchar(4)         not null comment '메뉴 코드',
     MENU_DV_CD varchar(4)         null comment '메뉴구분코드',
-    CATEGORIES varchar(4)		  null comment '카테고리구분코드',
+    CATEGORIES varchar(4)         null comment '카테고리구분코드',
     TITLE      varchar(255)       not null,
     CONTENT    text               null,
     PASSWORD   varchar(50)        null,
@@ -211,6 +210,7 @@ create table if not exists TB_LOGIN
     SOCIAL_ID    varchar(100)      null,
     DEFAULT_ADDR int               null,
     STATUS       tinyint default 1 not null comment '1: 활동, 2: 휴면, 3: 탈퇴, 4: 구 관리자',
+    AUTH_CODE    varchar(200)      null,
     REG_ID       varchar(50)       null,
     REG_DT       timestamp         null,
     MOD_ID       varchar(50)       null,
@@ -411,15 +411,6 @@ CREATE TABLE `TB_ADDRESS`
     `DETAIL_ADDR`  varchar(50)        NOT NULL,
     `REG_DT`       timestamp          NOT NULL,
     `USER_ID`      varchar(50)        NOT NULL
-);
-
-CREATE TABLE `TB_EMAIL_AUTH`
-(
-    USER_ID          varchar(50)  not null primary key,
-    TYPE             tinyint COMMENT "1: join, 2: change",
-    EMAIL            varchar(30)  not null,
-    CODE             varchar(200) not null,
-    IS_AUTHENTICATED boolean      not null DEFAULT FALSE
 );
 
 

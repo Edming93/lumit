@@ -188,8 +188,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceCode updateUserInfo(String id, UserInfoDto userInfo) {
-        User user = userRepository.selectByUserId(id).userMapping();
+    public ServiceCode updateUserInfo(UserInfoDto userInfo) {
+        User user = userRepository.selectByUserId(userInfo.getUserId()).userMapping();
+        String id = SecurityUtils.getPrincipal().getUserId();
         if (userInfo.getName() != null && user.getName().equals(userInfo.getName())) {
             return ServiceCode.CONFLICT;
         }
