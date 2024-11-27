@@ -74,12 +74,6 @@
 	        console.log("error:", error);
 	    });
         
-//         let res = FETCH.post('/common/codeList',{"grpCd":"CATEGORIES"});
-//         console.log(res.data);
-// 			codeList = res.data;
-			
-// 			createSelectOptions("categories", codeList,{isSetAll:true, selectedValue:null, keyNm:"cd", valueNm:"cdNm"});
-        
         getList();
         
         $('#categories').on('change', function() {
@@ -123,7 +117,8 @@
 	            let date = DATE.setDateFormat(result.regDt)
 	            let template = `
 					<td class="alCenter"><p>${PAGE.pageRowNumber(response.number, response.size, i, response.totalElements)}</p></td>
-					<td class="alCenter" style="color: #9F9F9F;">${codeList.find((item) => {return item.cd === result.categories}).cdNm}</td>
+					${result.categories ? `<td class="alCenter" style="color: #9F9F9F;">${codeList.find((item) => {return item.cd === result.categories}).cdNm}</td>` :''}
+					
 					<td class="alLeft" style="color: #515151; font-size:16px; font-weight:500;"><a href="javascript:moveDetail(${result.boardId},'${result.useYn}','${result.password}');">
 				             		<p style="display: flex; align-items: center;">
 				             			${result.useYn =="Y" ? '<img class="btnSecretIconImg" src="/images/secretIcon.png">' + result.title : result.title}
