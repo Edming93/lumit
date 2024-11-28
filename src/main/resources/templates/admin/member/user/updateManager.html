@@ -77,7 +77,7 @@
                 <td th:text="${admin.modId}"></td>
                 <td th:text="${@StringUtils.setDetailDateFormat(admin.modDt)}"></td>
                 <td>
-                    <button th:attr="onclick=|updateRole(null, '${admin.userId}', 'reset')|"><i class="fa-solid fa-rotate-right"></i></i>
+                    <button th:attr="onclick=|updateInfo(null, '${admin.userId}', 'reset')|"><i class="fa-solid fa-rotate-right"></i></i>
                     </button>
                 </td>
             </tr>

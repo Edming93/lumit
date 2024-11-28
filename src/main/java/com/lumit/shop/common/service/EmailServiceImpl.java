@@ -1,11 +1,13 @@
 package com.lumit.shop.common.service;
 
 import com.lumit.shop.common.constants.ServiceCode;
+import com.lumit.shop.common.data.ModalInfo;
 import com.lumit.shop.common.dto.UserInfoDto;
 import com.lumit.shop.common.model.EmailMessage;
 import com.lumit.shop.common.model.TbLogin;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,35 +26,36 @@ import java.util.Random;
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
-
+    private final HttpSession session;
     private final UserService userService;
 
     @Value("${lumit.siteId}")
     String siteId;
 
     @Transactional
-    public String sendMail(EmailMessage emailMessage) {
+    public ModalInfo sendMail(EmailMessage emailMessage) {
         String authNum = createCode();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         TbLogin tbLogin = null;
         String type = emailMessage.getType();
         emailMessage.setCode(authNum);
+        ModalInfo modalInfo = null;
         switch (type) {
             case "temp-password":
                 tbLogin = userService.selectByUserId(emailMessage.getUserId());
                 if (tbLogin == null || !tbLogin.getEmail().equals(emailMessage.getTo())) {
-                    return "NOT_FOUND";
+                    return new ModalInfo(ModalInfo.Title.TEMP_PASSWORD, ServiceCode.NOT_FOUND);
                 }
                 UserInfoDto userInfo = UserInfoDto.builder().userId(tbLogin.getUserId()).password(authNum).build();
                 ServiceCode sc = userService.updateTempPwd(userInfo);
                 if (!sc.equals(ServiceCode.UPDATED)) {
-                    return sc.name();
+                    return new ModalInfo(ModalInfo.Title.PASSWORD, ServiceCode.UNKNOWN);
                 }
                 break;
             case "find-id":
                 tbLogin = userService.selectByEmail(emailMessage.getTo());
                 if (tbLogin == null) {
-                    return ServiceCode.NOTFOUND.name();
+                    return new ModalInfo(ModalInfo.Title.FIND_ID, ServiceCode.NOT_FOUND);
                 }
                 break;
             case "mail-check":
@@ -60,12 +63,15 @@ public class EmailServiceImpl implements EmailService {
             case "change-address":
                 tbLogin = userService.selectByEmail(emailMessage.getTo());
                 if (tbLogin != null) {
-                    return ServiceCode.CONFLICT.name();
+                    if (tbLogin.getUserId().equals(emailMessage.getUserId())) {
+                        return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.NOT_MODIFIED);
+                    }
+                    return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.CONFLICT);
                 }
                 userInfo = UserInfoDto.builder().userId(emailMessage.getUserId()).code(authNum).build();
-                sc = userService.updateUserInfo(userInfo);
-                if (!sc.equals(ServiceCode.UPDATED)) {
-                    return ServiceCode.UNKNOWN.name();
+                modalInfo = userService.updateUserInfo(userInfo, session);
+                if (!modalInfo.getSc().equals(ServiceCode.UPDATED)) {
+                    return modalInfo;
                 }
                 break;
             default:
@@ -78,10 +84,10 @@ public class EmailServiceImpl implements EmailService {
             mimeMessageHelper.setText(setContext(emailMessage), true);
             javaMailSender.send(mimeMessage);
             log.info("Success");
-            return authNum;
+            return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.SUCCESS);
         } catch (MessagingException e) {
             log.info("fail");
-            throw new RuntimeException(e);
+            return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.UNKNOWN);
         }
     }
 

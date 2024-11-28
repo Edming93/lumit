@@ -2,12 +2,14 @@ package com.lumit.shop.common.service;
 
 import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.common.constants.ServiceCode;
+import com.lumit.shop.common.data.ModalInfo;
 import com.lumit.shop.common.dto.SearchUserDto;
 import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.dto.UserInfoDto;
 import com.lumit.shop.common.model.TbAddress;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,8 @@ public interface UserService {
     int insertUser(TbLogin tbLogin);
 
     int insertAdmin(TbLogin tbLogin);
+
+    ModalInfo updateUserInfo(UserInfoDto userInfo, HttpSession httpSession);
 
     boolean isIdDuplicated(String id);
 
@@ -44,6 +48,4 @@ public interface UserService {
     List<User> selectOldAdminList();
 
     ServiceCode updateTempPwd(UserInfoDto userInfo);
-
-    ServiceCode updateUserInfo(UserInfoDto userInfoDto);
 }

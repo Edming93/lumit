@@ -30,49 +30,36 @@ import java.util.Map;
 @RequestMapping("/auth/mail")
 public class EmailController {
     private final EmailService emailService;
+    private final HttpSession session;
 
     @PostMapping("/findId")
     public ResponseEntity findId(@RequestBody Map<String, String> email) {
         EmailMessage emailMessage = EmailMessage.builder().to(email.get("email")).subject("LUMIT ID 찾기").type("find-id").build();
-        String result = emailService.sendMail(emailMessage);
-        if (result == null || result.equals("")) {
-            return ResponseEntity.status(204).build();
-        }
+        ModalInfo modalInfo = emailService.sendMail(emailMessage);
+        session.setAttribute("modalInfo", modalInfo);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/password")
     public ResponseEntity sendPasswordMail(@RequestBody Map<String, String> data) {
         EmailMessage emailMessage = EmailMessage.builder().to(data.get("email")).userId(data.get("id")).subject("LUMIT 임시 비밀번호 발급").type("temp-password").build();
-        String result = emailService.sendMail(emailMessage);
-        if (result == null || result.equals("")) {
-            return ResponseEntity.status(204).build();
-        }
+        ModalInfo modalInfo = emailService.sendMail(emailMessage);
+        session.setAttribute("modalInfo", modalInfo);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/mail-check")
     public ResponseEntity sendJoinMail(@RequestBody Map<String, String> email) {
         EmailMessage emailMessage = EmailMessage.builder().to(email.get("email")).subject("LUMIT 이메일 인증").type("mail-check").build();
-        String result = emailService.sendMail(emailMessage);
-        if (result == null || result.equals("")) {
-            return ResponseEntity.status(204).build();
-        }
+        ModalInfo modalInfo = emailService.sendMail(emailMessage);
+        session.setAttribute("modalInfo", modalInfo);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/change-email")
-    public ResponseEntity changeEmailAddr(@RequestBody Map<String, String> email, HttpServletResponse response, HttpSession session) throws IOException {
+    public ResponseEntity changeEmailAddr(@RequestBody Map<String, String> email, HttpServletResponse response) throws IOException {
         EmailMessage emailMessage = EmailMessage.builder().to(email.get("email")).userId(email.get("id")).subject("LUMIT 이메일 인증").type("change-address").build();
-        String result = emailService.sendMail(emailMessage);
-        ModalInfo modalInfo = null;
-        if (result.equals(ServiceCode.UNKNOWN.name())) {
-            modalInfo = ModalInfo.builder().title("이메일 전송 실패").type("simple").choice("").name("emailFail").content("이메일 전송에 실패하였습니다.<br>잠시 후 다시 시도해주세요.").build();
-        } else if (result.equals(ServiceCode.CONFLICT.name())) {
-            modalInfo = ModalInfo.builder().title("이메일 중복").type("simple").choice("").name("emailConflict").content("현재 이메일과 동일합니다.").build();
-        } else {
-            modalInfo = ModalInfo.builder().title("이메일 전송 완료").type("simple").choice("").name("emailChangeSuccess").content("이메일이 전송되었습니다.<br>메일함을 확인해주세요.").build();
-        }
+        ModalInfo modalInfo = emailService.sendMail(emailMessage);
         session.setAttribute("modalInfo", modalInfo);
         return ResponseEntity.ok().body(modalInfo);
     }

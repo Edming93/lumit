@@ -86,15 +86,7 @@ public class APIController {
     @PatchMapping(value = "/user/info/{id}")
     public @ResponseBody ResponseEntity<?> updateInfo(@PathVariable("id") String id, @RequestBody UserInfoDto userInfo, HttpSession session) {
         userInfo.setUserId(id);
-        ServiceCode sc = userService.updateUserInfo(userInfo);
-        ModalInfo modalInfo = null;
-        if (sc.equals(ServiceCode.CONFLICT)) {
-            modalInfo = ModalInfo.builder().title("닉네임 변경").content("변경된 정보가 없습니다.").choice("").type("simple").name("same").build();
-        } else if (!sc.equals(ServiceCode.UPDATED)) {
-            modalInfo = ModalInfo.builder().title("닉네임 변경 실패").content("닉네임을 변경하지 못하였습니다.<br>잠시 후 다시 시도해주세요.").choice("").type("simple").name("fail").build();
-        } else {
-            modalInfo = ModalInfo.builder().title("닉네임 변경 완료").content("닉네임이 변경되었습니다.").choice("").type("simple").name("fail").build();
-        }
+        ModalInfo modalInfo = userService.updateUserInfo(userInfo, session);
         session.setAttribute("modalInfo", modalInfo);
         return ResponseEntity.ok().body(modalInfo);
     }

@@ -38,13 +38,7 @@ public class AuthController {
                 return "/error/wrong-code";
             }
             UserInfoDto userInfoDto = UserInfoDto.builder().userId(id).email(email).build();
-            ServiceCode sc = userService.updateUserInfo(userInfoDto);
-            ModalInfo modalInfo = null;
-            if (!sc.equals(ServiceCode.UPDATED)) {
-                modalInfo = ModalInfo.builder().title("이메일 변경 실패").type("simple").choice("").name("emailFail").content("이메일을 변경하지 못하였습니다.<br>잠시 후 다시 시도해주세요.").build();
-            } else {
-                modalInfo = ModalInfo.builder().title("이메일 변경 완료").type("simple").choice("").name("emailSuccess").content(String.format("이메일 주소가 %s로 변경되었습니다.", email)).build();
-            }
+            ModalInfo modalInfo = userService.updateUserInfo(userInfoDto, session);
             session.setAttribute("modalInfo", modalInfo);
             return "redirect:/main/member/edit";
         }

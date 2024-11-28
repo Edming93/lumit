@@ -4,13 +4,18 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{member/fragments/layout}">
 <div layout:fragment="content" class="infoWrapper">
-
-    <div th:if="${modalInfo != null}"
-    >
-        <div th:insert="~{fragments/modal::modal(${modalInfo.getTitle()},${modalInfo.getContent()}, '', ${modalInfo.getName()},${modalInfo.getType()})}"></div>
+    <div id="modalWrapper">
+        <div th:if="${modalInfo != null}"
+        >
+            <div th:insert="~{fragments/modal::modal(${modalInfo.title},${modalInfo.content}, '', ${modalInfo.name},${modalInfo.type})}"></div>
+        </div>
     </div>
-
-    <div id="modalContainer"></div>
+    <div th:insert="~{fragments/modal::modal('이메일 전송 중입니다.', '잠시만 기다려주세요.', '', 'sending', 'simple')}"></div>
+    <div th:insert="~{fragments/modal::modal('회원 정보 수정', '데이터를 입력해주세요.', '', 'warning', 'simple')}"></div>
+    <div th:insert="~{fragments/modal::modal('비밀번호 변경', '빈 칸을 채워주세요.', '', 'notEnough', 'simple')}"></div>
+    <div th:insert="~{fragments/modal::modal('비밀번호 변경', '새로운 비밀번호가 서로 일치하지 않습니다.', '', 'notMatched', 'simple')}"></div>
+    <div th:insert="~{fragments/modal::modal('비밀번호 변경', '변경할 정보가 없습니다.', '', 'notMofied', 'simple')}"></div>
+    <div th:insert="~{fragments/modal::modal('비밀번호 변경', '비밀번호는 영문/숫자/특수문자 중 2가지 이상,<br>8~16자로 생성해주세요.', '', 'notValidated', 'simple')}"></div>
     <div class="infoContainer">
         <h1>회원정보 수정</h1>
         <div class="greeting" th:text="${user.name} + '님 반갑습니다.'"></div>
@@ -71,10 +76,11 @@
     </div>
 
     <script th:inline="javascript">
-        function showModal(type) {
-            document.getElementById(type + "Modal").style.display = "flex"
-            return document.getElementById(type + "Modal")
+        function showModal(id) {
+            document.getElementById(id + "Modal").style.display = "flex"
+            return document.getElementById(id + "Modal")
         }
+
 
         function togglePwdForm() {
             const password = document.getElementById("changePwd")
@@ -92,16 +98,18 @@
 
         async function changePwd(current, newPwd) {
             const id = [[${user.userId}]]
-            const result = await FETCH.patch(`/api/user/info/${id}`, {
+            await FETCH.patch(`/api/user/info/${id}`, {
                 "current": current,
                 "password": newPwd
-            }).then(data => data);
-            if (result.status == 200) {
-                showModal("success")
-                togglePwdForm();
-            } else {
-                showModal("unauthorized")
+            }).then(() => location.reload())
+        }
+
+        function validatePwd(newPassword) {
+            const regex = /(?:[a-zA-Z]+[0-9]+$)|(?:[a-zA-Z]+[^a-zA-Z0-9\n]+$)|(?:[0-9]+[a-zA-Z]+$)|(?:[0-9]+[!@#$%^&*-_]+$)|(?:[^a-zA-Z0-9\n]+[a-zA-Z0-9]+$)/;
+            if (newPassword.length < 8 || newPassword.length > 16 || !regex.test(newPassword)) {
+                return false;
             }
+            return true;
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -122,32 +130,44 @@
             submitBtn.addEventListener("click", (event) => {
                 event.preventDefault()
                 const divs = password.querySelectorAll(":scope div")
-                const current = divs[0].querySelector(":scope input").value
-                const newPwd = divs[1].querySelector(":scope input").value
-                const pwdCheck = divs[2].querySelector(":scope input").value
-                if (current == "" || newPwd == "" || pwdCheck == "") {
+                const current = divs[0].querySelector(":scope input")
+                const newPwd = divs[1].querySelector(":scope input")
+                const pwdCheck = divs[2].querySelector(":scope input")
+                if (current.value == "" || newPwd.value == "" || pwdCheck.value == "") {
                     showModal("notEnough")
                     return false;
                 }
-                if (newPwd != pwdCheck) {
-                    showModal("warning")
+                if (!validatePwd(newPwd.value)) {
+                    newPwd.value = ""
+                    pwdCheck.value = ""
+                    showModal("notValidated")
+                    return false;
+                }
+                if (newPwd.value != pwdCheck.value) {
+                    showModal("notMatched")
+                    pwdCheck.value = ""
                     return false
                 }
-                if (current == newPwd) {
-                    showModal("same")
+                if (current.value == newPwd.value) {
+                    showModal("notModified")
+                    newPwd.value = ""
+                    pwdCheck.value = ""
                     return false
                 }
-                changePwd(current, newPwd)
+
+                changePwd(current.value, newPwd.value)
             })
             const nickBtn = document.getElementById("nickBtn")
             nickBtn.addEventListener("click", async function () {
                 const id = [[${user.userId}]]
                 const value = document.getElementById("nickname").value
+                if (value == "") {
+                    showModal("warning")
+                    return;
+                }
                 await FETCH.patch(`/api/user/info/${id}`, {
                     name: value
-                }).then(() => {
-                    setTimeout(() => location.reload(), 500)
-                })
+                }).then(() => location.reload())
             })
             const emailDiv = document.querySelector("#changeEmail")
             const emailInput = emailDiv.querySelector("input")
@@ -169,11 +189,16 @@
                 emailInput.setAttribute("readonly", "readonly")
             })
             emailSubmit.addEventListener("click", async () => {
+                if (emailInput.value == "" || emailInput.value == null) {
+                    showModal("warning")
+                    return;
+                }
+                showModal("sending")
                 await FETCH.post("/auth/mail/change-email", {
                     "email": emailInput.value,
                     "id": id
                 }).then(() => {
-                    setTimeout(() => location.reload(), 500)
+                    location.reload()
                 })
             })
         })
