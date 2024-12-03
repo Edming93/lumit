@@ -164,10 +164,14 @@ document.addEventListener("DOMContentLoaded", function () {
 			// 텍스트에디터 내용 가져오기
 			let tinyContent = tinymce.get("tiny").getContent();
 			formData.append('content',tinyContent);
-			formData.append('categories',$("#categories").val() ?? '');
+			if($("#categories").length > 0) {
+				formData.append('categories',$("#categories").val() ?? '');
+			}
 			formData.append('password',secretPw);
 			
 			for(let [key,value] of formData.entries()) {
+				console.log("key::"+key);
+				console.log("value:: "+ value);
 				if(key != "files") {
 					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
 						if(key == "title") {
@@ -177,6 +181,11 @@ document.addEventListener("DOMContentLoaded", function () {
 						
 						if(key == "content") {
 							alert("내용을 입력해주세요.");
+							return;
+						}
+						
+						if(key == "categories") {
+							alert("카테고리를 선택해주세요.");
 							return;
 						}
 					}

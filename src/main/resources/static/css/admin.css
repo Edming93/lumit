@@ -306,6 +306,10 @@ i {
     border-bottom: 1px solid #D9D9D9;
 }
 
+.boardTable tbody tr td {
+	vertical-align: middle;
+}
+
 .commInp {
     border: 1px solid #e5e5e5;
     width: 100%;

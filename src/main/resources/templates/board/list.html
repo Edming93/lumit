@@ -36,7 +36,8 @@
 	let menuCd = [[${menuCd}]];
 	let codeList = [];
 	let cateDvCd = '';
-	console.log([[${tmplCd}]]);
+	let tmplCd = [[${menu.tmplCd}]];
+	console.log(tmplCd);
     window.onload = function () {
         
         document.getElementById("registBtn").addEventListener("click", function () {
@@ -87,19 +88,21 @@
     }
     
     function getList(pageNo) {
-		console.log("타니?");
 	    pageNo = pageNo || 0;
 	
 	    const title = $("#searchInp").val();
+	    console.log(title);
 	    let url = "/api/boards?";
 	    if (title != null && title != "") {
 	        url += "title=" + title + "&";
 	    }
-	    url += "page=" + pageNo + "&categories="+cateDvCd + "&menuCd="+menuCd;
+	    url += "page=" + pageNo + "&categories="+cateDvCd + "&menuCd="+menuCd + "&menuDvCd="+tmplCd;
+	    console.log(url);
 	    FETCH.get(url, afterGetList)
 	}
 	
 	function afterGetList(response) {
+		console.log(response);
 	    PAGE.paging(response.totalPages, response.number, response.totalElements, "getList")
 	    resultTable(response)
 	}

@@ -97,17 +97,18 @@ public class APIController {
     }
 
     @GetMapping(value = "/boards")
-    public @ResponseBody ResponseEntity<?> boardList(String menuCd, SearchDto search, TbBoard board, @PageableDefault(size = 10) Pageable pageable) throws IOException {
-    	System.out.println(menuCd);
-    	System.out.println("-------------");
-        board.setMenuCd(menuCd);
-        if (search.getTitle() != null) {
-            board.setTitle(search.getTitle());
-        }
-
-        if (search.getCategories() != null) {
-            board.setCategories(search.getCategories());
-        }
+    public @ResponseBody ResponseEntity<?> boardList(String menuCd,TbBoard board, @PageableDefault(size = 10) Pageable pageable) throws IOException {
+		/* TODO: searchDto가 필요 없을 것 같아서 지웠어용 확인 부탁!!
+		 * 
+		 * board.setMenuCd(menuCd); if (search.getTitle() != null) {
+		 * board.setTitle(search.getTitle()); }
+		 * 
+		 * if (search.getCategories() != null) {
+		 * board.setCategories(search.getCategories()); }
+		 * 
+		 * if (search.getMenuDvCd() != null) { board.setMenuDvCd(search.getMenuDvCd());
+		 * }
+		 */
         return ResponseEntity.ok(boardService.selectPageableBoardList(board, pageable));
     }
 
