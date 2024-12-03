@@ -306,7 +306,7 @@ i {
     border-bottom: 1px solid #D9D9D9;
 }
 
-.boardTable tbody tr td {
+.boardTable .listTable tbody tr td {
 	vertical-align: middle;
 }
 

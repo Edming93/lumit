@@ -58,7 +58,7 @@
             <thead>
             <tr>
                 <td class="boardTitle" style="padding-top: 10px;">
-                    <span id="category" th:class="${detail.categories} != '' ? 'mgr10' : ''"></span><span th:text="${detail.title}"></span>
+                    <span id="category" th:class="${detail.categories} ? 'mgr10' : ''"></span><span th:text="${detail.title}"></span>
                 </td>
             </tr>
             <tr style="border-bottom:1px solid #e9e9e9;">
