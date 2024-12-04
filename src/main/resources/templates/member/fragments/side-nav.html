@@ -6,7 +6,7 @@
     </nav>
     <script th:inline="javascript">
         function getMenu() {
-            FETCH.get("/api/common/code/USER_MENU_CD", listAssembler)
+            FETCH.get("/api/common/code/U0000", listAssembler)
         }
 
         function listMaker(type, link, title) {
@@ -38,21 +38,21 @@
             /**
              * @type {Array | null}
              */
-            const list = data["list"]
+            const list = data
             let parentChk = true;
             for (let i = 0; i < list.length; i++) {
                 /**
                  *
                  * @type {string}
                  */
-                let code = list[i]["cd"]
+                let code = list[i]["menuCd"]
                 let type = code.endsWith("0") ? "parent" : ""
                 if (!parentChk && type == "parent") {
                     parent.appendChild(document.createElement("hr"))
                 }
                 parentChk = type == "parent" ? true : false
-                let link = list[i]["ctt"] != null ? list[i]["ctt"] : ""
-                let title = list[i]["cdNm"]
+                let link = list[i]["menuUrl"] != null ? list[i]["menuUrl"] : ""
+                let title = list[i]["menuName"]
                 const elem = listMaker(type, link, title)
                 parent.appendChild(elem)
             }

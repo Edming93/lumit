@@ -66,3 +66,7 @@ dependencies {
 configurations.all {
     exclude group: 'org.springframework', module: 'spring-jcl'
 }
+
+bootJar {
+	mainClass = 'com.lumit.shop.ShopApplication'
+}

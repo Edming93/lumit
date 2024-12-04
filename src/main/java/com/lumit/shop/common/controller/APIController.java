@@ -11,6 +11,7 @@ import com.lumit.shop.common.dto.UserInfoDto;
 import com.lumit.shop.common.model.*;
 import com.lumit.shop.common.security.PrincipalDetails;
 import com.lumit.shop.common.service.CommonService;
+import com.lumit.shop.common.service.MenuService;
 import com.lumit.shop.common.service.SecurityUtils;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,7 +38,7 @@ public class APIController {
 
     private final UserService userService;
     private final BoardService boardService;
-    private final CommonService commonService;
+    private final MenuService menuService;
     private final PasswordEncoder passwordEncoder;
 
     // 멤버 - 회원가입 - 중복체크api
@@ -129,7 +130,7 @@ public class APIController {
         CommonSearch commonSearch = new CommonSearch();
         commonSearch.setGrpCd(groupCode);
         commonSearch.setUseYn("Y");
-        Map<String, Object> result = commonService.selectCodeListByGrpCd(commonSearch);
+        List<TbMenu> result = menuService.selectMenuListByGroupCd(groupCode);
         if (result == null || result.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

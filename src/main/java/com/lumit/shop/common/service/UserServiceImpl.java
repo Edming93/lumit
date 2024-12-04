@@ -12,6 +12,7 @@ import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.angus.mail.imap.protocol.MODSEQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -200,6 +201,9 @@ public class UserServiceImpl implements UserService {
             modalInfo = new ModalInfo(ModalInfo.Title.NICK, ServiceCode.UPDATED);
             System.out.println(modalInfo);
         }
+        if (userInfo.getEmail() != null) {
+            modalInfo = new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.SUCCESS);
+        }
         if (userInfo.getCurrent() != null && userInfo.getCurrent() != "") {
             if (!passwordEncoder.matches(userInfo.getCurrent(), user.getPassword())) {
                 modalInfo = new ModalInfo(ModalInfo.Title.PASSWORD, ServiceCode.UNAUTHORIZED);
@@ -220,7 +224,7 @@ public class UserServiceImpl implements UserService {
             return new ModalInfo(ModalInfo.Title.USERINFO, ServiceCode.UNKNOWN);
         }
         SecurityUtils.refreshPrincipal();
-        return modalInfo;
+        return new ModalInfo(modalInfo.getTitle(modalInfo.getTitle()), ServiceCode.UPDATED);
     }
 
     // 유효성 검사 메소드

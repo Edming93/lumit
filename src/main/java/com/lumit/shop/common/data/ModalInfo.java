@@ -31,6 +31,15 @@ public class ModalInfo {
         }
     }
 
+    public static Title getTitle(String label) {
+        for (Title t : Title.values()) {
+            if (t.label.equals(label)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
     public ModalInfo(Title t, ServiceCode sc) {
         this.title = t.label;
         this.sc = sc;
@@ -45,6 +54,10 @@ public class ModalInfo {
                 if (sc.equals(ServiceCode.UNAUTHORIZED)) {
                     this.content = "정보 수정의 권한이 없습니다.";
                     this.name = "forbiddenError";
+                }
+                if (sc.equals(ServiceCode.UPDATED)) {
+                    this.content = "회원 정보가 수정 되었습니다.";
+                    this.name = "userInfoSuccess";
                 }
                 break;
             case FIND_ID:

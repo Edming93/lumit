@@ -6,5 +6,8 @@ import java.util.List;
 
 public interface MenuService {
     public List<TbMenu> selectMenuList(String userId);
+
     public TbMenu selectMenuByMenuCd(String menuCd);
+
+    List<TbMenu> selectMenuListByGroupCd(String groupCode);
 }

@@ -233,7 +233,7 @@ create table if not exists TB_MENU
     MENU_CD          varchar(8)           not null primary key,
     MENU_GROUP_CD    varchar(8)           not null,
     MENU_NAME        varchar(30)          not null,
-    MENU_URL         varchar(100)         not null,
+    MENU_URL         varchar(100)         null,
     MENU_DEFAULT_URL varchar(100)         null,
     TMPL_CD          varchar(4)           null,
     IS_ADMIN         tinyint(1) default 0 not null,

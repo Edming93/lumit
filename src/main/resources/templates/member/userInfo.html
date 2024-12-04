@@ -197,9 +197,7 @@
                 await FETCH.post("/auth/mail/change-email", {
                     "email": emailInput.value,
                     "id": id
-                }).then(() => {
-                    location.reload()
-                })
+                }).then(() => location.reload())
             })
         })
 

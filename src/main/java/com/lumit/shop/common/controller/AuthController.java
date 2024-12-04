@@ -39,6 +39,9 @@ public class AuthController {
             }
             UserInfoDto userInfoDto = UserInfoDto.builder().userId(id).email(email).build();
             ModalInfo modalInfo = userService.updateUserInfo(userInfoDto, session);
+            if (modalInfo.getSc().equals(ServiceCode.UPDATED)) {
+                modalInfo = new ModalInfo(ModalInfo.Title.EMAIL, ServiceCode.UPDATED);
+            }
             session.setAttribute("modalInfo", modalInfo);
             return "redirect:/main/member/edit";
         }
