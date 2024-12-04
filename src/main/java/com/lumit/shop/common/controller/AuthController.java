@@ -30,17 +30,19 @@ public class AuthController {
 
     @GetMapping(value = "/emailCheck")
     public String setEmailAuth(String id, String code, String email, String type, HttpSession session) {
+        ModalInfo modalInfo = null;
         if (type.equals("join")) {
 
         } else if (type.equals("change")) {
             TbLogin tbLogin = userService.selectByUserId(id);
             if (!tbLogin.getAuthCode().equals(code)) {
-                return "/error/wrong-code";
-            }
-            UserInfoDto userInfoDto = UserInfoDto.builder().userId(id).email(email).build();
-            ModalInfo modalInfo = userService.updateUserInfo(userInfoDto, session);
-            if (modalInfo.getSc().equals(ServiceCode.UPDATED)) {
-                modalInfo = new ModalInfo(ModalInfo.Title.EMAIL, ServiceCode.UPDATED);
+                modalInfo = new ModalInfo(ModalInfo.Title.EMAIL, ServiceCode.UNAUTHORIZED);
+            } else {
+                UserInfoDto userInfoDto = UserInfoDto.builder().userId(id).email(email).build();
+                modalInfo = userService.updateUserInfo(userInfoDto, session);
+                if (modalInfo.getSc().equals(ServiceCode.UPDATED)) {
+                    modalInfo = new ModalInfo(ModalInfo.Title.EMAIL, ServiceCode.UPDATED);
+                }
             }
             session.setAttribute("modalInfo", modalInfo);
             return "redirect:/main/member/edit";

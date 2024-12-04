@@ -12,8 +12,8 @@
     --text-size-large: 1.2rem;
     --text-size-larger: 1.5rem;
     --text-size-xlarge: 2rem;
-    --nav-background-color: #876453;
-    --active-background-color: #994433;
+    --nav-background-color: #513A31;
+    --active-background-color: #453129;
     --edge-color: #4169E1;
     --default-padding: 0.7rem;
     --default-margin: 0.7rem;
@@ -156,7 +156,7 @@ i {
     font-size: var(--text-size-xlarge);
     /*margin-top: var(--default-margin);*/
     /*margin-bottom: var(--default-margin);*/
-    border-bottom: 1px solid #FFFFFF;
+    border-bottom: 1px solid #83685E;
     padding-top: 0.7rem;
     padding-bottom: 0.7rem;
     transition: all 500ms;
@@ -253,7 +253,7 @@ i {
 }
 
 .toggleBtn:hover, .nav-link:not(.active):hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--active-background-color);
 }
 
 .nav-link > * {
@@ -307,7 +307,7 @@ i {
 }
 
 .boardTable .listTable tbody tr td {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 .commInp {
