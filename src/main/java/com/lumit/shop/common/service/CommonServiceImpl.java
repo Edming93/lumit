@@ -21,7 +21,8 @@ public class CommonServiceImpl implements CommonService {
     public HashMap<String, Object> selectCodeListByGrpCd(CommonSearch search) {
         HashMap<String, Object> retMap = new HashMap<String, Object>();
         search.setUseYn("Y");
-
+        System.out.println(search);
+        System.out.println("-----------------");
         retMap.put("list", codeRepository.selectCodeListByGrpCd(search));
 
         System.out.println(retMap);

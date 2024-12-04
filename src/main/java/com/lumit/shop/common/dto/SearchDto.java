@@ -13,5 +13,6 @@ public class SearchDto{
 	private String title;
 	private String content; 
 	private String categories;
+	private String menuDvCd;
 	
 }

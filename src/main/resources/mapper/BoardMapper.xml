@@ -41,6 +41,9 @@
 	        <if test="data.menuCd != '' and data.menuCd neq null">
 	            AND MENU_CD = #{data.menuCd}
 	        </if>
+	        <if test="data.menuDvCd != '' and data.menuDvCd neq null">
+	        	AND MENU_DV_CD = #{data.menuDvCd}
+	        </if>
             AND
             	DEL_YN = 'N'
         </where>
@@ -54,16 +57,19 @@
         <where>
         	1=1
             <if test="title != null and title != ''">
-                AND TITLE LIKE '%' || #{title} || '%'
+                AND TITLE LIKE CONCAT('%', #{title}, '%')
             </if>
             <if test="content != null and content != ''">
-                AND CONTENT LIKE '%' || #{content} || '%'
+                AND CONTENT LIKE CONCAT('%', #{content}, '%')
             </if>
             <if test="categories != '' and categories neq null">
 	            AND CATEGORIES = #{categories}
 	        </if>
 	        <if test="menuCd != '' and menuCd neq null">
 	            AND MENU_CD = #{menuCd}
+	        </if>
+	        <if test="menuDvCd != '' and menuDvCd neq null">
+	        	AND MENU_DV_CD = #{menuDvCd}
 	        </if>
         </where>
         AND

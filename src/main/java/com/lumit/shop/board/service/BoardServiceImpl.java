@@ -67,10 +67,11 @@ public class BoardServiceImpl implements BoardService {
 //        for (Field field : variables) {
 //            System.out.println(field.getName());
 //        }
-
+        System.out.println("tbBoard다요 :::");
+        System.out.println(tbBoard);
         List<Map<String, Object>> content = boardRepository.selectPageableBoardList(requestList);
         int total = boardRepository.selectListBoardCount(tbBoard);
-
+        System.out.println("total ::: " + total);
         return new PageImpl<>(content, pageable, total);
     }
 
