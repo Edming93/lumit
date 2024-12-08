@@ -1,12 +1,13 @@
 package com.lumit.shop.common.service;
 
 import com.lumit.shop.common.constants.ServiceCode;
+import com.lumit.shop.common.data.ModalInfo;
 import com.lumit.shop.common.dto.UserInfoDto;
 import com.lumit.shop.common.model.EmailMessage;
-import com.lumit.shop.common.model.TbEmailAuth;
 import com.lumit.shop.common.model.TbLogin;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,41 +26,53 @@ import java.util.Random;
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
-
+    private final HttpSession session;
     private final UserService userService;
 
     @Value("${lumit.siteId}")
     String siteId;
 
     @Transactional
-    public String sendMail(EmailMessage emailMessage) {
+    public ModalInfo sendMail(EmailMessage emailMessage) {
         String authNum = createCode();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         TbLogin tbLogin = null;
         String type = emailMessage.getType();
+        emailMessage.setCode(authNum);
+        ModalInfo modalInfo = null;
         switch (type) {
             case "temp-password":
                 tbLogin = userService.selectByUserId(emailMessage.getUserId());
                 if (tbLogin == null || !tbLogin.getEmail().equals(emailMessage.getTo())) {
-                    return "NOT_FOUND";
+                    return new ModalInfo(ModalInfo.Title.TEMP_PASSWORD, ServiceCode.NOT_FOUND);
                 }
-                UserInfoDto userInfo = new UserInfoDto();
-                userInfo.setUserId(tbLogin.getUserId());
-                userInfo.setPassword(authNum);
+                UserInfoDto userInfo = UserInfoDto.builder().userId(tbLogin.getUserId()).password(authNum).build();
                 ServiceCode sc = userService.updateTempPwd(userInfo);
                 if (!sc.equals(ServiceCode.UPDATED)) {
-                    return "UNKNOWN_ERROR";
+                    return new ModalInfo(ModalInfo.Title.PASSWORD, ServiceCode.UNKNOWN);
                 }
                 break;
             case "find-id":
                 tbLogin = userService.selectByEmail(emailMessage.getTo());
                 if (tbLogin == null) {
-                    return null;
+                    return new ModalInfo(ModalInfo.Title.FIND_ID, ServiceCode.NOT_FOUND);
                 }
                 break;
             case "mail-check":
                 break;
             case "change-address":
+                tbLogin = userService.selectByEmail(emailMessage.getTo());
+                if (tbLogin != null) {
+                    if (tbLogin.getUserId().equals(emailMessage.getUserId())) {
+                        return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.NOT_MODIFIED);
+                    }
+                    return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.CONFLICT);
+                }
+                userInfo = UserInfoDto.builder().userId(emailMessage.getUserId()).code(authNum).build();
+                modalInfo = userService.updateUserInfo(userInfo, session);
+                if (!modalInfo.getSc().equals(ServiceCode.UPDATED)) {
+                    return modalInfo;
+                }
                 break;
             default:
                 break;
@@ -68,17 +81,13 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(emailMessage.getTo());
             mimeMessageHelper.setSubject(emailMessage.getSubject());
-            if (type.equals("find-id")) {
-                mimeMessageHelper.setText(setContext(tbLogin.getUserId(), type), true);
-            } else {
-                mimeMessageHelper.setText(setContext(authNum, type), true);
-            }
+            mimeMessageHelper.setText(setContext(emailMessage), true);
             javaMailSender.send(mimeMessage);
             log.info("Success");
-            return authNum;
+            return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.SUCCESS);
         } catch (MessagingException e) {
             log.info("fail");
-            throw new RuntimeException(e);
+            return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.UNKNOWN);
         }
     }
 
@@ -102,38 +111,33 @@ public class EmailServiceImpl implements EmailService {
         return key.toString();
     }
 
-    public String setContext(String code, String type) {
+    public String setContext(EmailMessage emailMessage) {
         Context context = new Context();
-        context.setVariable("code", code);
+        if (emailMessage.getCode() != null) {
+            context.setVariable("code", emailMessage.getCode());
+        }
+        if (emailMessage.getUserId() != null) {
+            context.setVariable("id", emailMessage.getUserId());
+        }
+        context.setVariable("email", emailMessage.getTo());
         context.setVariable("siteId", siteId);
         String htmlPath = null;
-        if (type.equals("email")) {
-            htmlPath = "emailTemplates/authEmail";
-        } else if (type.equals("password")) {
-            htmlPath = "emailTemplates/tempPwdEmail";
-        } else if (type.equals("id")) {
-            htmlPath = "emailTemplates/findIdEmail";
+        String type = emailMessage.getType();
+        switch (type) {
+            case "email":
+                htmlPath = "emailTemplates/authEmail";
+                break;
+            case "temp-password":
+                htmlPath = "emailTemplates/tempPwdEmail";
+                break;
+            case "find-id":
+                htmlPath = "emailTemplates/findIdEmail";
+                break;
+            case "change-address":
+                htmlPath = "emailTemplates/changeEmail";
+                break;
         }
         return templateEngine.process(htmlPath, context);
     }
 
-    @Override
-    public TbEmailAuth selectAuthInfo(String userId) {
-        return null;
-    }
-
-    @Override
-    public ServiceCode insertAuthInfo(TbEmailAuth tbEmailAuth) {
-        return null;
-    }
-
-    @Override
-    public ServiceCode updateAuthInfo(TbEmailAuth tbEmailAuth) {
-        return null;
-    }
-
-    @Override
-    public ServiceCode grantAuthInfo(String userId) {
-        return null;
-    }
 }

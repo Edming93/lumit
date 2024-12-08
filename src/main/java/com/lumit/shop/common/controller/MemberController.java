@@ -1,6 +1,7 @@
 package com.lumit.shop.common.controller;
 
 import com.lumit.shop.common.constants.ServiceCode;
+import com.lumit.shop.common.data.ModalInfo;
 import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
@@ -30,9 +31,13 @@ public class MemberController {
     private final UserDetailsService userDetailsService;
 
     @GetMapping("/edit")
-    public String userInfo(Model model) {
+    public String userInfo(Model model, HttpSession session) {
         User user = userService.selectByUserId(SecurityUtils.getPrincipal().getUserId()).userMapping();
+        ModalInfo modalInfo = (ModalInfo) session.getAttribute("modalInfo");
+        session.removeAttribute("modalInfo");
         model.addAttribute("user", user);
+        model.addAttribute("modalInfo", modalInfo);
+        System.out.println(modalInfo);
         return "/member/userInfo";
     }
 

@@ -12,8 +12,8 @@
     --text-size-large: 1.2rem;
     --text-size-larger: 1.5rem;
     --text-size-xlarge: 2rem;
-    --nav-background-color: #263458;
-    --active-background-color: #3c69dd;
+    --nav-background-color: #876453;
+    --active-background-color: #994433;
     --edge-color: #4169E1;
     --default-padding: 0.7rem;
     --default-margin: 0.7rem;
@@ -37,7 +37,7 @@ a {
 }
 
 button {
-	padding:0px;
+    padding: 0px;
 }
 
 .container {
@@ -114,7 +114,7 @@ i {
     width: 24px;
     height: 24px;
     text-align: center;
-    color: var(--icon-color);
+    color: #FFFFFF;
 }
 
 .active {
@@ -156,7 +156,7 @@ i {
     font-size: var(--text-size-xlarge);
     /*margin-top: var(--default-margin);*/
     /*margin-bottom: var(--default-margin);*/
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid #FFFFFF;
     padding-top: 0.7rem;
     padding-bottom: 0.7rem;
     transition: all 500ms;
@@ -320,7 +320,7 @@ i {
 }
 
 .boardContainer {
-	width: 55vw;
+    width: 55vw;
 }
 
 
@@ -548,7 +548,7 @@ button > i {
 
 
 .editBtn {
-    background-color: #3c69dd;
+    background-color: #6f3300;
     color: white;
     padding: 0.3rem;
     border-radius: 0.3rem;
@@ -568,13 +568,13 @@ input::-webkit-inner-spin-button {
 }
 
 #categories {
-	border-radius: 6px;
-	background-color: #FCF9F5;
-	border: 1px solid #DCCEC3;
-	width: 125px;
-	height: 35px;
-	padding-left:10px;
-	color: #876453;
+    border-radius: 6px;
+    background-color: #FCF9F5;
+    border: 1px solid #DCCEC3;
+    width: 125px;
+    height: 35px;
+    padding-left: 10px;
+    color: #876453;
 }
 
 
@@ -583,42 +583,43 @@ input::-webkit-inner-spin-button {
     justify-content: space-between;
     margin-top: 15px;
 }
+
 .btnAreaLeft {
-	display: flex;
+    display: flex;
 }
 
-.btnAreaCenter{
-	display: flex;
+.btnAreaCenter {
+    display: flex;
     justify-content: center;
 }
 
 .btnArea > .btnAreaLeft, .btnAreaCenter, .btnAreaRight {
-	flex: 1;
+    flex: 1;
 }
 
 .btnAreaLeft button {
-	display:flex;
+    display: flex;
 }
 
 .btnSecretImg {
-	width: 75px;
+    width: 75px;
 }
 
 .btnSecretIconImg {
-	width: 20px;
-	margin-right:10px;
+    width: 20px;
+    margin-right: 10px;
 }
 
 /* 게시판 secretBox */
 .secretBox {
-	border: 1px solid #CAAB9C;
+    border: 1px solid #CAAB9C;
     border-radius: 6px;
     width: 100%;
     margin-left: 10px;
 }
 
 .secretHeader {
-	border-bottom: 1px solid #D9D9D9;
+    border-bottom: 1px solid #D9D9D9;
     display: flex;
     justify-content: space-between;
     padding: 10px 10px;
@@ -628,40 +629,40 @@ input::-webkit-inner-spin-button {
 }
 
 .secretContent {
-	padding: 10px;
+    padding: 10px;
 }
 
 .secretContentTop {
-	display: flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 13px;
 }
 
 .secretPassword {
-	border: 1px solid #CACACA;
+    border: 1px solid #CACACA;
     border-radius: 2px;
     width: 95%;
     height: 21px;
-    padding-left:5px;
+    padding-left: 5px;
 }
 
 .secretTitle {
-	margin-right:5px;
-	font-size: 13px;
+    margin-right: 5px;
+    font-size: 13px;
 }
 
 .secretContentBt {
-	display: flex;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .btnSecretSave {
-	background-color: #E7DBCD;
-	color: #876453;
-	border-radius: 6px;
-	width: 48px;
+    background-color: #E7DBCD;
+    color: #876453;
+    border-radius: 6px;
+    width: 48px;
     height: 25px;
     justify-content: center;
     align-items: center;

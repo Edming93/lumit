@@ -26,6 +26,7 @@ public class TbLogin {
     private String genderCd;
     private String phone;
     private String socialId;
+    private String authCode;
     private Timestamp regDt;
     private String regId;
     private Timestamp modDt;

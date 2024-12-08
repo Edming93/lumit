@@ -138,6 +138,9 @@
     <update id="updateUserInfo" parameterType="UserInfoDto">
         UPDATE TB_LOGIN
         SET
+        <if test="code != null">
+            AUTH_CODE = #{code},
+        </if>
         <if test="name != null">
             NAME=#{name},
         </if>

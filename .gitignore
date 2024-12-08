@@ -41,3 +41,5 @@ application-dev.properties
 
 /src/main/resources/static/js/private-config.js
 .DS_Store
+
+Dockerfile

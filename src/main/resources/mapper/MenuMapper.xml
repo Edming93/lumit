@@ -22,4 +22,9 @@
         WHERE MENU_CD = #{menuCd}
     </select>
 
+    <select id="selectMenuListByGroupCd" resultType="TbMenu">
+        SELECT *
+        FROM TB_MENU
+        WHERE MENU_GROUP_CD = #{groupCd}
+    </select>
 </mapper>

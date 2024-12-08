@@ -3,25 +3,22 @@ package com.lumit.shop.common.service;
 import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.common.constants.Role;
 import com.lumit.shop.common.constants.ServiceCode;
-import com.lumit.shop.common.dto.SearchUserDto;
+import com.lumit.shop.common.data.ModalInfo;
 import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.dto.UserInfoDto;
 import com.lumit.shop.common.model.TbAddress;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.repository.UserRepository;
-import com.lumit.shop.common.security.social.CustomOauth2UserService;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.angus.mail.imap.protocol.MODSEQ;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -188,28 +185,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceCode updateUserInfo(String id, UserInfoDto userInfo) {
-        User user = userRepository.selectByUserId(id).userMapping();
-        if (userInfo.getName() != null && user.getName().equals(userInfo.getName())) {
-            return ServiceCode.CONFLICT;
-        }
+    public ModalInfo updateUserInfo(UserInfoDto userInfo, HttpSession session) {
+        User user = userRepository.selectByUserId(userInfo.getUserId()).userMapping();
+        String id = SecurityUtils.getPrincipal().getUserId();
+        ModalInfo modalInfo = null;
         if (!id.equals(user.getUserId()) && !user.getRole().equals(Role.SUPER_ADMIN)) {
-            return ServiceCode.UNAUTHORIZED;
+            modalInfo = new ModalInfo(ModalInfo.Title.USERINFO, ServiceCode.UNAUTHORIZED);
+            return modalInfo;
+        }
+        if (userInfo.getName() != null) {
+            if (user.getName().equals(userInfo.getName())) {
+                modalInfo = new ModalInfo(ModalInfo.Title.NICK, ServiceCode.NOT_MODIFIED);
+                return modalInfo;
+            }
+            modalInfo = new ModalInfo(ModalInfo.Title.NICK, ServiceCode.UPDATED);
+            System.out.println(modalInfo);
+        }
+        if (userInfo.getEmail() != null) {
+            modalInfo = new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.SUCCESS);
         }
         if (userInfo.getCurrent() != null && userInfo.getCurrent() != "") {
             if (!passwordEncoder.matches(userInfo.getCurrent(), user.getPassword())) {
-                return ServiceCode.UNAUTHORIZED;
+                modalInfo = new ModalInfo(ModalInfo.Title.PASSWORD, ServiceCode.UNAUTHORIZED);
+                return modalInfo;
             }
             userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
+            modalInfo = new ModalInfo(ModalInfo.Title.PASSWORD, ServiceCode.UPDATED);
         }
         userInfo.setUserId(id);
         userInfo.setModId(user.getUserId());
         int result = userRepository.updateUserInfo(userInfo);
         if (result < 1) {
-            return ServiceCode.UNKNOWN;
+            if (modalInfo.getTitle().equals(ModalInfo.Title.NICK)) {
+                return new ModalInfo(ModalInfo.Title.NICK, ServiceCode.UNKNOWN);
+            } else if (modalInfo.getTitle().equals(ModalInfo.Title.PASSWORD)) {
+                return new ModalInfo(ModalInfo.Title.PASSWORD, ServiceCode.UNKNOWN);
+            }
+            return new ModalInfo(ModalInfo.Title.USERINFO, ServiceCode.UNKNOWN);
         }
         SecurityUtils.refreshPrincipal();
-        return ServiceCode.UPDATED;
+        return new ModalInfo(modalInfo.getTitle(modalInfo.getTitle()), ServiceCode.UPDATED);
     }
 
     // 유효성 검사 메소드

@@ -15,4 +15,5 @@ public class EmailMessage {
     private String subject;
     private String message;
     private String type;
+    private String code;
 }

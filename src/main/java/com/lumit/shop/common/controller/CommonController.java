@@ -69,7 +69,6 @@ public class CommonController {
     public ResponseEntity<Map<String, Object>> getCodeList(@RequestBody CommonSearch search) {
     	return ResponseBuilder.build(commonService.selectCodeListByGrpCd(search), HttpStatus.OK);
     }
-    
 
 
 }

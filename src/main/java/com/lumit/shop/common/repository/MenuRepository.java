@@ -11,6 +11,9 @@ import java.util.List;
 @Repository
 public interface MenuRepository {
     List<TbMenu> selectMenuList(String userId);
+
     public TbMenu selectMenuByMenuCd(String menuCd);
+
+    List<TbMenu> selectMenuListByGroupCd(String groupCd);
 
 }

@@ -4,18 +4,18 @@ import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.board.service.BoardService;
 import com.lumit.shop.common.constants.Role;
 import com.lumit.shop.common.constants.ServiceCode;
+import com.lumit.shop.common.data.ModalInfo;
 import com.lumit.shop.common.dto.ResponseDto;
 import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.dto.UserInfoDto;
-import com.lumit.shop.common.model.CommonSearch;
-import com.lumit.shop.common.model.TbAddress;
-import com.lumit.shop.common.model.TbBoard;
-import com.lumit.shop.common.model.User;
+import com.lumit.shop.common.model.*;
 import com.lumit.shop.common.security.PrincipalDetails;
 import com.lumit.shop.common.service.CommonService;
+import com.lumit.shop.common.service.MenuService;
 import com.lumit.shop.common.service.SecurityUtils;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
@@ -38,7 +38,7 @@ public class APIController {
 
     private final UserService userService;
     private final BoardService boardService;
-    private final CommonService commonService;
+    private final MenuService menuService;
     private final PasswordEncoder passwordEncoder;
 
     // 멤버 - 회원가입 - 중복체크api
@@ -85,30 +85,25 @@ public class APIController {
     }
 
     @PatchMapping(value = "/user/info/{id}")
-    public @ResponseBody ResponseEntity<?> updateInfo(@PathVariable("id") String id, @RequestBody UserInfoDto userInfo) {
-        ServiceCode sc = userService.updateUserInfo(id, userInfo);
-        if (sc.equals(ServiceCode.CONFLICT)) {
-            return ResponseEntity.status(409).build();
-        }
-        if (!sc.equals(ServiceCode.UPDATED)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().build();
+    public @ResponseBody ResponseEntity<?> updateInfo(@PathVariable("id") String id, @RequestBody UserInfoDto userInfo, HttpSession session) {
+        userInfo.setUserId(id);
+        ModalInfo modalInfo = userService.updateUserInfo(userInfo, session);
+        session.setAttribute("modalInfo", modalInfo);
+        return ResponseEntity.ok().body(modalInfo);
     }
 
     @GetMapping(value = "/boards")
-    public @ResponseBody ResponseEntity<?> boardList(String menuCd,TbBoard board, @PageableDefault(size = 10) Pageable pageable) throws IOException {
-		/* TODO: searchDto가 필요 없을 것 같아서 지웠어용 확인 부탁!!
-		 * 
-		 * board.setMenuCd(menuCd); if (search.getTitle() != null) {
-		 * board.setTitle(search.getTitle()); }
-		 * 
-		 * if (search.getCategories() != null) {
-		 * board.setCategories(search.getCategories()); }
-		 * 
-		 * if (search.getMenuDvCd() != null) { board.setMenuDvCd(search.getMenuDvCd());
-		 * }
-		 */
+    public @ResponseBody ResponseEntity<?> boardList(String menuCd, SearchDto search, TbBoard board, @PageableDefault(size = 10) Pageable pageable) throws IOException {
+        System.out.println(menuCd);
+        System.out.println("-------------");
+        board.setMenuCd(menuCd);
+        if (search.getTitle() != null) {
+            board.setTitle(search.getTitle());
+        }
+
+        if (search.getCategories() != null) {
+            board.setCategories(search.getCategories());
+        }
         return ResponseEntity.ok(boardService.selectPageableBoardList(board, pageable));
     }
 
@@ -135,10 +130,12 @@ public class APIController {
         CommonSearch commonSearch = new CommonSearch();
         commonSearch.setGrpCd(groupCode);
         commonSearch.setUseYn("Y");
-        Map<String, Object> result = commonService.selectCodeListByGrpCd(commonSearch);
+        List<TbMenu> result = menuService.selectMenuListByGroupCd(groupCode);
         if (result == null || result.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(result);
     }
+
+
 }
