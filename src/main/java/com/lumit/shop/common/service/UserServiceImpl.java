@@ -199,7 +199,6 @@ public class UserServiceImpl implements UserService {
                 return modalInfo;
             }
             modalInfo = new ModalInfo(ModalInfo.Title.NICK, ServiceCode.UPDATED);
-            System.out.println(modalInfo);
         }
         if (userInfo.getEmail() != null) {
             modalInfo = new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.SUCCESS);

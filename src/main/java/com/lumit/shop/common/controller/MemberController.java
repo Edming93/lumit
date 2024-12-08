@@ -3,6 +3,7 @@ package com.lumit.shop.common.controller;
 import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.data.ModalInfo;
 import com.lumit.shop.common.dto.SignUpDto;
+import com.lumit.shop.common.model.TbAddress;
 import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.security.PrincipalDetails;
@@ -20,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/main/member")
@@ -34,8 +36,10 @@ public class MemberController {
     public String userInfo(Model model, HttpSession session) {
         User user = userService.selectByUserId(SecurityUtils.getPrincipal().getUserId()).userMapping();
         ModalInfo modalInfo = (ModalInfo) session.getAttribute("modalInfo");
+        List<TbAddress> addressBook = userService.selectAddressListByUserId(user.getUserId());
         session.removeAttribute("modalInfo");
         model.addAttribute("user", user);
+        model.addAttribute("addressBook", addressBook);
         model.addAttribute("modalInfo", modalInfo);
         System.out.println(modalInfo);
         return "/member/userInfo";
