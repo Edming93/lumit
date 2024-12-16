@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lumit.shop.admin.repository.ProductRepository">
+    <sql id="searchWhere">
+        WHERE 1=1
+        <if test="title != '' and title neq null">
+            AND TITLE LIKE CONCAT('%', #{title}, '%')
+        </if>
+        <if test="content != '' and content neq null">
+            AND CONTENT LIKE CONCAT('%', #{content}, '%')
+        </if>
+        <if test="categories != '' and categories neq null">
+            AND CATEGORIES = #{categories}
+        </if>
+    </sql>
+    <select id="selectProductList" resultType="com.lumit.shop.common.model.TbProduct">
+        SELECT *
+        FROM
+        	TB_PRODUCT
+        <include refid="searchWhere"></include>
+        AND
+        	DEL_YN = 'N'
+        ORDER BY REG_DT DESC
+    </select>
+</mapper>

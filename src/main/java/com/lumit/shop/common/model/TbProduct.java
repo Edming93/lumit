@@ -11,27 +11,27 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class TbBoard{
-	private String boardId;
-	private String menuCd;
-	private String menuDvCd;
-	private String categories;
-	private String title;
+public class TbProduct{
+	private String productId;
+	private String productName;
+	private String productCd;
+	private String price;
+	private String disPrice;
 	private String content; 
-	private String password;
-	private String topFix;
-	private String useYn;
+	private String summation;
+	private String stocks;
+	private String sales;
+	private String status;
+	private String watt;
+	private String stock;
+	private String deliveryFee;
 	private String delYn;
-	private String rplyYn;
-	private String fileYn;
-	private String viewCount;
 	private String regId;
 	private String regDt;
 	private String modId;
 	private String modDt;
 	
 	private List<String> jsonFileList;
-
 
 
 	

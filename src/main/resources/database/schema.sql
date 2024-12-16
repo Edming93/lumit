@@ -119,8 +119,8 @@ create table if not exists TB_COUPON
     DISCOUNT_AMOUNT         decimal(10, 2) not null comment '쿠폰 유형이 1일 경우 소수점으로 할인율 기입(예: 0.1은 10프로 할인),  2일 경우 액수 기입, 3일 경우 규정에 따라 기입',
     MIN_ORDER_AMOUNT        decimal(10, 2) null comment '쿠폰 사용을 위한 최소 주문 금액',
     MAX_DISCOUNT_AMOUNT     decimal(10, 2) null,
-    VALID_FROM              datetime       not null,
-    VALID_TO                datetime       not null,
+    VALID_FROM              timestamp       not null,
+    VALID_TO                timestamp       not null,
     COUPON_DESCRIPTION      varchar(255)   null,
     RESTRICTED_USE          tinyint        not null comment '0: 제한 없음, 1: 특정 제품 또는 카테고리에만 사용 가능',
     RESTRICTED_PRODUCT_IDS  varchar(255)   null comment '쿠폰이 적용되는 제품의 ID 목록을 쉼표로 구분',
@@ -137,8 +137,8 @@ create table if not exists TB_COUPON_USE_HIS
     COUPON_NAME     varchar(50)    not null,
     USE_STATUS_CD   varchar(2)     not null comment '{1: 사용 안함, 2: 사용함, 3: 만료됨}',
     DISCOUNT_AMT    decimal(10, 2) null,
-    VALID_FROM      datetime       not null,
-    VALID_TO        datetime       not null,
+    VALID_FROM      timestamp       not null,
+    VALID_TO        timestamp       not null,
     DISCOUNT_AMOUNT decimal(10, 2) null,
     REG_ID          varchar(50)    not null,
     REG_DT          timestamp      not null
@@ -154,7 +154,7 @@ create table if not exists TB_DELIVERY
     DELIVERY_ZIPCODE varchar(255)   not null,
     DELIVERY_COUNTRY varchar(255)   not null,
     DELIVERY_STATUS  tinyint        not null,
-    EXPECTED_DATE    datetime       not null,
+    EXPECTED_DATE    timestamp       not null,
     TRACKING_NUMBER  varchar(255)   not null,
     DELIVERY_COMPANY varchar(255)   not null,
     DELIVERY_COST    decimal(10, 2) not null
@@ -283,8 +283,8 @@ create table if not exists TB_PAY_BANK
     BANK_CODE      int         not null,
     ORDER_AMOUNT   int         not null,
     DEPOSIT_AMOUNT int         null,
-    DEPOSIT_DT     datetime    null,
-    EXPIRATION_DT  datetime    not null,
+    DEPOSIT_DT     timestamp    null,
+    EXPIRATION_DT  timestamp    not null,
     PAYMENT_STATE  tinyint     not null,
     primary key (BANK_ID, PP_ID),
     constraint FK_TB_PAYMENT_PLAN_TO_TB_PAY_BANK_1
@@ -311,14 +311,21 @@ create table if not exists TB_PRODUCT
     PRODUCT_ID    int          not null comment 'AUTO_INCREMENT'
         primary key,
     PRODUCT_NAME  varchar(255) not null,
-    PRICE         int          not null,
+    PRODUCT_CD  varchar(100) not null,
+    PRICE         int          not null comment '정가',
+    DIS_PRICE     int          not null comment '판매가',
     CONTENT       json         not null comment '상품의 상세정보와 이미지들이 json 형식으로 들어감',
-    STOCKS        int          not null,
-    SALES         bigint       not null,
-    STATUS        varchar(50)  not null,
-    WATT          varchar(8)   null,
-    STOCK         int          null,
-    DISCOUNT_RATE int          null
+    SUMMATION     text         not null comment '상품 요약 설명',
+    STOCKS        int          not null comment '재고 수량',
+    SALES         int          not null comment '판매 수량',
+    STATUS        varchar(50)  not null comment '판매 상태',
+    WATT          varchar(8)   null comment '와트수',
+    DELIVERY_FEE  int		   null comment '배송비',
+    DEL_YN		  varchar(2)   not null,
+    REG_ID		  varchar(50)  null,
+    REG_DT		  timestamp	   null,
+    MOD_ID		  varchar(50)  null,
+    MOD_DT		  timestamp	   null
 );
 
 create table if not exists TB_PRODUCT_OPTION
@@ -328,8 +335,8 @@ create table if not exists TB_PRODUCT_OPTION
     `OPTION`   varchar(50) not null,
     CONTENT    varchar(50) null,
     PRICE      int         not null,
-    REG_ID     timestamp   not null,
-    REG_DT     varchar(50) not null,
+    REG_ID     varchar(50) not null,
+    REG_DT     timestamp not null,
     STATUS     varchar(50) not null comment '일반',
     PRODUCT_ID int         not null comment 'AUTO_INCREMENT'
 );
@@ -360,7 +367,7 @@ create table if not exists TB_REVIEW
     USER_ID       varchar(50)   not null,
     RATING        decimal(2, 1) not null comment '0~5점(0.5 단위)',
     REVIEW_TEXT   varchar(255)  null,
-    REVIEW_DATE   datetime      not null,
+    REVIEW_DATE   timestamp      not null,
     LIKES         int           not null,
     REVIEW_PHOTOS json          null,
     ADMIN_NOTES   varchar(255)  null comment '검토나 삭제에 대한 계획'

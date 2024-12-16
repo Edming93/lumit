@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{admin/fragments/layout}">
+<head>
+	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+
+<div layout:fragment="content">
+    <div>
+        <p class="title">공지사항 수정</p>
+    </div>
+
+    <div class="boardContainer wsNorap">
+        <form id="registForm" method="post" entype="multipart/form-data">
+
+            <table class="registTable">
+                <colgroup>
+                    <col style="width: 10%;"/>
+                    <col style="width: 90%;"/>
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th class="alLeft bold">제목</th>
+                        <td>
+                            <input type="text" id="title" name="title" class="boardInp" placeholder="제목을 입력해주세요." th:value="${detail.title}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="alLeft bold">파일 첨부</th>
+                        <td>
+							<div class="form__input--file_wrap">
+								<div class="form__input--top_wrap">
+								  <input class="form__input--file" id="upload" type="file" multiple>
+								  <label class="form__label--file" for="upload">내PC</label>
+								  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
+							  	</div>
+								<div class="form__input--bottom_wrap">
+							  		<div class="form__div--file"></div>
+								</div>
+							</div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <textarea id="tiny">
+								<span th:utext="${detail.content}"></span>
+							</textarea>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="btnArea">
+            	<div class="btnAreaLeft">
+            		<button type="button" onclick="showSecretBox();">
+					  <img class="btnSecretImg" src="/images/secretMsg.png"/>
+					</button>
+					<div class="secretBox" style="display:none;">
+						<div class="secretHeader">
+							<div>비밀글 설정</div>
+							<div class="cancelBox">
+								<button type="button" onclick="hideSecretBox();">
+								  <img src="/images/xBox.png"/>
+								</button>
+							</div>
+						</div>
+						<div class="secretContent">
+							<div class="secretContentTop">
+								<div class="secretTitle">비밀번호 입력</div>
+								<div>
+									<input type="password" class="secretPassword" id="password" th:value="${detail.password}">
+								</div>
+							</div>
+							<div class="secretContentBt">
+								<button type="button" class="btnSecretSave" onclick="passwordSave();">
+								  저장
+								</button>
+							</div>
+						</div>
+					</div>
+            	</div>
+            	<div class="btnAreaCenter">
+	            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
+	                <button type="button" id="registBtn" class="commBtn mgl10 size100">작성 완료</button>
+                </div>
+                <div class="btnAreaRight">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</html>
+
+
+
+
+<script th:inline="javascript">
+
+let menuCd = [[${menuCd}]];
+let boardId = [[${detail.boardId}]];
+
+var files = []; // 실제 파일 담는 arr
+var oriFiles = []; // 기존 파일 담는 arr
+var fileIdx = 1;
+var beforeFiles = []; // 백업용
+
+let secretPw = "";
+
+document.addEventListener("DOMContentLoaded", function () {
+	
+	oriFiles = [[${fileList}]];
+	setFiles();
+	
+	// 텍스트에디터 기초 세팅
+	tinymce.init({
+		language:"ko_KR",
+	    selector: 'textarea',
+	    height:500,
+	    plugins: [
+	      // Core editing features
+	      'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+	    ],
+	    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+	    tinycomments_mode: 'embedded',
+	    tinycomments_author: 'Author name',
+	    mergetags_list: [
+	      { value: 'First.Name', title: 'First Name' },
+	      { value: 'Email', title: 'Email' },
+	    ],
+	    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+	});
+	
+	document.getElementById("registBtn").addEventListener("click", function() {
+	
+		if(confirm("수정 하시겠습니까?")) {
+				
+			let formData = new FormData(document.querySelector("#registForm"));
+
+			formData.append('boardId',boardId);
+			if(files.length === 0) {
+				formData.append('files',[]);
+			}else {
+				for(var i=0; i<files.length; i++) {
+					formData.append('files',files[i]);
+				}
+			}
+			
+			if(oriFiles.length === 0) {
+				formData.append('jsonFileList',[])
+			}else {
+				for(var i=0; i<oriFiles.length; i++) {
+					formData.append('jsonFileList',JSON.stringify(oriFiles[i]));
+				}
+			}
+			
+			// 텍스트에디터 내용 가져오기
+			let tinyContent = tinymce.get("tiny").getContent();
+			formData.append('content',tinyContent);
+			formData.append('password',secretPw);
+			
+			for(let [key,value] of formData.entries()) {
+				if(key != "files") {
+					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
+						if(key == "title") {
+							alert("제목을 입력해주세요.");
+							return;
+						}
+						
+						if(key == "content") {
+							alert("내용을 입력해주세요.");
+							return;
+						}
+					}
+				}
+			}
+			let url = "/"+siteId+"/board/"+menuCd+"/list";
+			
+			setData(formData,url);
+		}
+	});
+	
+	
+	// input file 커스텀 - 파일명 붙이기
+	const fileTarget = document.querySelector('.form__input--file_wrap input');
+	
+	const mb = 1024 * 1024; //1mb(메가)
+	const limitSize = mb * 10;
+	
+	fileTarget.addEventListener('change', function () {
+		
+		let fileLength = this.files.length + oriFiles.length + files.length;
+
+		for(var i=0; i< fileLength; i++) {
+			if(fileLength > 5){
+				alert('최대 5개까지 첨부 가능합니다.');
+				break;
+			}
+			
+			if(this.files[i]) {
+				var uploadSize = this.files[i].size;
+			
+				if(limitSize < uploadSize) {
+					alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
+				}else {
+					var file = this.files[i];
+								
+					file['idx'] = fileIdx;
+					files.push(file);
+					fileIdx++;
+				}
+			}
+		}
+		
+		setFiles();
+	});
+
+});
+
+function showSecretBox() {
+	$(".secretBox").show();
+}
+
+function hideSecretBox() {
+	$(".secretBox").hide();
+}
+
+function passwordSave() {
+	secretPw = $("#password").val();
+	
+	alert("저장되었습니다.");
+}
+
+
+var fileDiv = document.querySelector('.form__div--file');
+
+// 파일 그리기
+function setFiles() {
+	var fileHtml = '';
+	
+	// 기존 파일 그리기
+	_.forEach(oriFiles, function(file){
+			fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.fileId+'"class="delete_file_btn" onClick="deleteOriFileBtn(this)"> x </button>'+file.fileName+'</span>';
+		})
+		
+	// 새 파일 그리기
+	_.forEach(files, function(file){
+			fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
+		})
+	
+	if (fileDiv) {
+		fileDiv.innerHTML = fileHtml;
+	};
+}
+
+function deleteFileBtn(elem) {
+	// 새 파일 삭제
+	files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")})
+	setFiles();
+};
+
+function deleteOriFileBtn(elem) {
+	// 기존 파일 삭제
+	oriFiles = _.filter(oriFiles, function(file) {return file.fileId != elem.getAttribute("data-idx")})
+	setFiles();
+}
+
+
+// 비동기 통신
+function setData(formData,url) {
+    fetch('/' + siteId + '/board/' + menuCd + '/update', {
+        method: 'POST',
+        body: formData
+    })
+    .then(function(result) {
+		if(result.ok) {
+			alert("수정이 완료되었습니다.");
+					
+			moveUrl(url);
+		}else {
+			alert("등록에 실패하였습니다.");
+		}
+		
+    })
+    .catch(function(error) {
+        console.log("error:", error);
+    });
+}
+
+</script>
