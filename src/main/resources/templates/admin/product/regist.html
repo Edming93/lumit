@@ -9,87 +9,119 @@
 
 <div layout:fragment="content">
     <div>
-        <p class="title"><span th:utext="${menu.menuName}" ></span> 등록</p>
+        <p class="title">상품 관리 등록</p>
     </div>
 
-    <div class="boardContainer wsNorap">
-        <form id="registForm"  method="post" entype="multipart/form-data">
-			
-            <table class="registTable">
-                <colgroup>
-                    <col style="width: 10%;"/>
-                    <col style="width: 90%;"/>
-                </colgroup>
-                <tbody>
-                	<tr th:replace="~{'board/'+${menu.tmplCd}+'/regist.html' :: trTagFragment}"></tr>
-                    <tr>
-                        <th class="alLeft bold">제목</th>
-                        <td>
-                            <input type="text" id="title" name="title" class="boardInp" placeholder="제목을 입력해주세요.">
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="alLeft bold">파일 첨부</th>
-                        <td>
-							<div class="form__input--file_wrap">
-								<div class="form__input--top_wrap">
-								  <input class="form__input--file" id="upload" type="file" multiple>
-								  <label class="form__label--file" for="upload">내PC</label>
-								  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
-							  	</div>
-								<div class="form__input--bottom_wrap">
-							  		<div class="form__div--file"></div>
+	<div class="contentWrap">
+	    <div class="boardContainer wsNorap">
+	        <form id="registForm"  method="post" entype="multipart/form-data">
+				
+	            <table class="registTable">
+	                <colgroup>
+	                    <col style="width: 10%;"/>
+	                    <col style="width: 90%;"/>
+	                </colgroup>
+	                <tbody>
+	                	<tr>
+	                        <th class="alLeft bold">대표 이미지</th>
+	                        <td>
+								<div class="form__input--file_wrap">
+									<div class="form__input--top_wrap">
+									  <input class="form__input--file" id="upload" type="file" multiple>
+									  <label class="form__label--file" for="upload">내PC</label>
+									  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
+								  	</div>
+									<div class="form__input--bottom_wrap">
+								  		<div class="form__div--file"></div>
+									</div>
 								</div>
-							</div>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <textarea id="tiny"></textarea>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="btnArea">
-            	<div class="btnAreaLeft">
-            		<button type="button" onclick="showSecretBox();">
-					  <img class="btnSecretImg" src="/images/secretMsg.png"/>
-					</button>
-					<div class="secretBox" style="display:none;">
-						<div class="secretHeader">
-							<div>비밀글 설정</div>
-							<div class="cancelBox">
-								<button type="button" onclick="hideSecretBox();">
-								  <img src="/images/xBox.png"/>
-								</button>
-							</div>
-						</div>
-						<div class="secretContent">
-							<div class="secretContentTop">
-								<div class="secretTitle">비밀번호 입력</div>
-								<div>
-									<input type="password" class="secretPassword" id="password">
-								</div>
-							</div>
-							<div class="secretContentBt">
-								<button type="button" class="btnSecretSave" onclick="passwordSave();">
-								  저장
-								</button>
-							</div>
-						</div>
-					</div>
-            	</div>
-            	<div class="btnAreaCenter">
-	            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
-	                <button type="button" id="registBtn" class="commBtn mgl10 size100">작성 완료</button>
-                </div>
-                <div class="btnAreaRight">
-                </div>
-            </div>
-        </form>
-    </div>
+	
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">상품명</th>
+	                        <td>
+	                            <input type="text" id="productName" name="productName" class="boardInp w100" placeholder="상품명을 입력해주세요.">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">상품코드</th>
+	                        <td>
+	                            <span class='col brand4'>자동 생성</span>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">판매상태</th>
+	                        <td>
+	                            <select id="pdStatus"></select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">상품 요약설명</th>
+	                        <td>
+	                           <input type="text" id="productName" name="productName" class="boardInp w100" placeholder="상품 요약설명을 입력해주세요.">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">옵션 상품코드</th>
+	                        <td>
+	                            <select id="optionId">
+	                            	<option>어떻게 매칭할지 고민</option>
+	                            	<option>상품명 검색하면 상품코드 가져오기?</option>
+	                            </select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">카테고리</th>
+	                        <td>
+	                            <select id="categoryId">
+	                            	<option>어떻게 매칭할지 고민</option>
+	                            	<option>카테고리 관리 팝업 띄우기?</option>
+	                            	<option>그 팝업안에서 카테고리 추가,수정,삭제가능?</option>
+	                            	<option>별점관리는 어떤 테이블에서? just 상품리뷰 테이블에 의존?</option>
+	                            </select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">정가</th>
+	                        <td>
+	                           <input type="text" id="price" name="price" class="boardInp w15" placeholder=""> 원
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">할인가(판매가)</th>
+	                        <td>
+	                           <input type="text" id="disPrice" name="disPrice" class="boardInp w15" placeholder=""> 원
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">배송비</th>
+	                        <td>
+	                           <input type="text" id="deliveryFee" name="deliveryFee" class="boardInp w15" placeholder=""> 원
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                    	<th class="alLeft bold">상품 상세설명</th>
+	                        <td colspan="2">
+	                            <textarea id="tiny"></textarea>
+	                        </td>
+	                    </tr>
+	                </tbody>
+	            </table>
+	
+	            <div class="btnArea">
+	            	<div class="btnAreaLeft">
+	            	</div>
+	            	<div class="btnAreaCenter">
+		            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
+		                <button type="button" id="registBtn" class="commBtn mgl10 size100">작성 완료</button>
+	                </div>
+	                <div class="btnAreaRight">
+	                </div>
+	            </div>
+	        </form>
+	    </div>
+	</div>
 </div>
 </html>
 
@@ -107,19 +139,19 @@ let secretPw = "";
 
 document.addEventListener("DOMContentLoaded", function () {
 	
-    // 코드리스트중에서 카테고리 리스트 가져오기
+    // 코드리스트중에서 판매상태 리스트 가져오기
     fetch('/common/codeList', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json' // JSON 데이터 전송 명시
         },
-        body: JSON.stringify({grpCd:"CATEGORIES"})
+        body: JSON.stringify({grpCd:"PD_STATUS"})
     })
     .then(response => response.json())
     .then(function(response) {
     	codeList = response.list;
 		
-		createSelectOptions("categories", codeList,{isSetAll:true, selectedValue:null, keyNm:"cd", valueNm:"cdNm"});
+		createSelectOptions("pdStatus", codeList,{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
 		
     })
     .catch(function(error) {

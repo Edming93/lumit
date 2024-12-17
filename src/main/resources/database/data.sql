@@ -88,7 +88,24 @@ INSERT INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN
                        `MOD_DT`)
 VALUES ('CATEGORIES', '0002', '메뉴구분코드', '배송문의', 3, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
         '2024-11-18 22:42:40');
-
+INSERT INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`,
+                       `MOD_DT`)
+VALUES ('PD_STATUS', '0000', '판매상태', '신상품', 1, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
+        '2024-11-18 22:42:40'),
+        ('PD_STATUS', '0001', '판매상태', '중고상품', 2, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
+        '2024-11-18 22:42:40'),
+        ('PD_STATUS', '0002', '판매상태', '반품상품', 3, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
+        '2024-11-18 22:42:40'),
+        ('PD_STATUS', '0004', '판매상태', '재고상품', 4, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
+        '2024-11-18 22:42:40'),
+        ('PD_STATUS', '0005', '판매상태', '전시상품', 5, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
+        '2024-11-18 22:42:40'),
+        ('PD_STATUS', '0006', '판매상태', '리퍼상품', 6, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
+        '2024-11-18 22:42:40'),
+        ('PD_STATUS', '0007', '판매상태', '스크래치상품', 7, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
+        '2024-11-18 22:42:40');
+        
+        
 INSERT INTO TB_MENU
 (MENU_CD,
  MENU_GROUP_CD,

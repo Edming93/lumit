@@ -16,7 +16,7 @@
 			<input type="text" title="상품명" placeholder="상품명" id="productName">
 			<div class="datepickerWrap mgl10">
 				<input type="text" class="datepickerInput" placeholder="등록시작일" readonly="readonly" id="strDt"/>
-				<span class="datepicker_dash">~</span>
+				<span class="datepickerDash">~</span>
 				<input type="text" class="datepickerInput" placeholder="등록종료일" readonly="readonly" id="endDt"/>
 			</div>
 			<button class="searchBtn"></button>
@@ -72,6 +72,10 @@
 <script th:inline="javascript">
 	$(document).ready(function() {
 		setSearchInit('searchArea');
+		
+		$("#registBtn").on("click",function() {
+			moveUrl("/" + siteId + "/product/regist");
+		});
 	})
 
 </script>

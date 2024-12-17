@@ -22,8 +22,13 @@ public class ProductController {
     MenuRepository menuRepository;
 
     @GetMapping("/list")
-    public String selectBoardList(ModelMap map, String menuCd) {
+    public String selectProductList(ModelMap map) {
         return PRODUCT_PATH + "/list";
+    }
+    
+    @GetMapping("/regist")
+    public String registProduct(ModelMap map) {
+        return PRODUCT_PATH + "/regist";
     }
 
 } 
