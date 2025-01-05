@@ -20,7 +20,7 @@ public class ProductServiceImpl implements ProductService {
     private String FILE_UPLOAD_PATH;
 
     @Override
-    public List<TbProduct> selectBoardList(SearchDto search) {
+    public List<TbProduct> selectProductList(SearchDto search) {
         return productRepository.selectProductList(search);
     }
 

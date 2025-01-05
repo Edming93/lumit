@@ -30,7 +30,8 @@ VALUES ('M100', 'M100', '메인', '/main/**', '', '', 0, NULL),
        ('M208', 'M200', '공지사항', '/admin/board/M208/**', 'list', '0000', 1, '<i class="fa-regular fa-clipboard"></i>'),
        ('M209', 'M200', 'Q&A', '/admin/board/M209/**', 'list', '0001', 1, '<i class="fa-regular fa-clipboard"></i>'),
        ('M210', 'M200', 'FAQ', '/admin/board/M210/**', 'list', '0002', 1, '<i class="fa-regular fa-clipboard"></i>'),
-       ('M211', 'M200', '주문관리', '/admin/order/**', 'dashboard', '', 1, '<i class=\"fa-solid fa-cart-shopping\"></i>');
+       ('M211', 'M200', '주문관리', '/admin/order/**', 'dashboard', '', 1, '<i class=\"fa-solid fa-cart-shopping\"></i>'),
+       ('M212', 'M200', '옵션관리', '/admin/option/**', 'list', '', 1, '<i class=\"fa-solid fa-shirt\"></i>');
 
 
 REPLACE INTO `TB_ROLE_MENU`
@@ -51,6 +52,7 @@ VALUES (1, 'M100', 'N'),
        (1, 'M209', 'N'),
        (1, 'M210', 'N'),
        (1, 'M211', 'N'),
+       (1, 'M212', 'N'),
        (2, 'M100', 'N'),
        (2, 'M101', 'N'),
        (2, 'M102', 'N'),
@@ -76,34 +78,18 @@ VALUES (1, 'M100', 'N'),
        (3, 'M105', 'N');
 
 
-INSERT INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`,
-                       `MOD_DT`)
-VALUES ('CATEGORIES', '0000', '메뉴구분코드', '상품문의', 1, 'Y', NULL, 'admin', '2024-11-18 22:41:19', 'admin',
-        '2024-11-18 22:41:13');
-INSERT INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`,
-                       `MOD_DT`)
-VALUES ('CATEGORIES', '0001', '메뉴구분코드', '교환&반품문의', 2, 'Y', NULL, 'admin', '2024-11-18 22:42:57', 'admin',
-        '2024-11-18 22:41:19');
-INSERT INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`,
-                       `MOD_DT`)
-VALUES ('CATEGORIES', '0002', '메뉴구분코드', '배송문의', 3, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
-        '2024-11-18 22:42:40');
-INSERT INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`,
-                       `MOD_DT`)
-VALUES ('PD_STATUS', '0000', '판매상태', '신상품', 1, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
-        '2024-11-18 22:42:40'),
-        ('PD_STATUS', '0001', '판매상태', '중고상품', 2, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
-        '2024-11-18 22:42:40'),
-        ('PD_STATUS', '0002', '판매상태', '반품상품', 3, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
-        '2024-11-18 22:42:40'),
-        ('PD_STATUS', '0004', '판매상태', '재고상품', 4, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
-        '2024-11-18 22:42:40'),
-        ('PD_STATUS', '0005', '판매상태', '전시상품', 5, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
-        '2024-11-18 22:42:40'),
-        ('PD_STATUS', '0006', '판매상태', '리퍼상품', 6, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
-        '2024-11-18 22:42:40'),
-        ('PD_STATUS', '0007', '판매상태', '스크래치상품', 7, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
-        '2024-11-18 22:42:40');
+INSERT IGNORE INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`, `MOD_DT`) VALUES
+	('CATEGORIES', '0000', '메뉴구분코드', '상품문의', 1, 'Y', NULL, 'admin', '2024-11-18 22:41:19', 'admin', '2024-11-18 22:41:13'),
+	('CATEGORIES', '0001', '메뉴구분코드', '교환&반품문의', 2, 'Y', NULL, 'admin', '2024-11-18 22:42:57', 'admin', '2024-11-18 22:41:19'),
+	('CATEGORIES', '0002', '메뉴구분코드', '배송문의', 3, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin', '2024-11-18 22:42:40'),
+	('DEL_YN', 'N', '삭제여부', '미삭제', 2, 'Y', NULL, 'admin', '2025-01-05 16:04:57', 'admin', '2025-01-05 16:04:57'),
+	('DEL_YN', 'Y', '삭제여부', '삭제', 1, 'Y', NULL, 'admin', '2025-01-05 16:04:20', 'admin', '2025-01-05 16:04:20'),
+	('DP_STATUS', 'N', '진열여부', '진열안함', 2, 'Y', NULL, 'admin', '2025-01-05 16:05:54', 'admin', '2025-01-05 16:05:54'),
+	('DP_STATUS', 'Y', '진열여부', '진열함', 1, 'Y', NULL, 'admin', '2025-01-05 16:05:54', 'admin', '2025-01-05 16:05:54'),
+	('PD_STATUS', '0000', '판매상태', '판매함', 1, 'Y', NULL, 'admin', '2025-01-05 15:58:16', 'admin', '2024-11-18 22:42:40'),
+	('PD_STATUS', '0001', '판매상태', '판매안함 (품절)', 2, 'Y', NULL, 'admin', '2025-01-05 15:58:12', 'admin', '2024-11-18 22:42:40'),
+	('OPTION_DV_CD', '0001', '옵션구분코드', '태그', 1, 'Y', NULL, 'admin', '2025-01-05 15:58:12', 'admin', '2024-11-18 22:42:40'),
+	('OPTION_DV_CD', '0001', '옵션구분코드', '색상', 2, 'Y', NULL, 'admin', '2025-01-05 15:58:12', 'admin', '2024-11-18 22:42:40');
         
         
 INSERT INTO TB_MENU

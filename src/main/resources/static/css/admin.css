@@ -68,6 +68,13 @@ button {
 
 .searchArea{width: 100%; display: flex; column-gap: 5px; margin-bottom: 45px;}
 .container select, .container input[type="text"], .container input[type="password"], .container input[type="number"]{background-color: var(--input-background-color); border: none; outline: none; border-radius: 5px; height: 32px; padding-left: 15px; padding-right: 15px; box-shadow: 0px 2px 5px var(--shadow-color); max-width: 100%; box-sizing: border-box;}
+
+
+.container input[type="text"]:disabled {
+	background-color: dimgrey;
+ 	color: linen;
+ 	opacity: 1;
+}
 .container select{-webkit-appearance:none; /* for chrome */-moz-appearance:none; /*for firefox*/appearance:none; background-image: url('../images/icons/dropdown.svg'); background-repeat: no-repeat; background-size: 20px 20px; background-position: right 5px top 50%; padding-right: 40px; height: 34px;}
 
 input.f1 ,select.f1{flex: 1;}
@@ -363,6 +370,21 @@ i {
 
 .alRight {
     text-align: right;
+}
+
+table tbody tr td.dvCd {
+	color: #9F9F9F;
+}
+table tbody tr td.tdTitle {
+	color: #515151; font-size:16px; font-weight:500;
+}
+
+table tbody tr td {vertical-align: middle;}
+table tbody tr td .tblBtn {margin: 0 auto; width: 34px; height: 34px; border-radius: 5px; background-position: center; background-repeat: no-repeat; background-size: 16px 16px; cursor: pointer; border: none; box-shadow: 0px 2px 5px var(--shadow-color);}
+table tbody tr td .tblBtn.delBtn{
+	display: block;
+	background-color: var(--brand-color4); 
+	background-image: url('../images/icons/delete.svg');
 }
 
 .boardTable {

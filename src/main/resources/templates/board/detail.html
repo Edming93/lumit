@@ -110,13 +110,10 @@
     let boardId = [[${detail.boardId}]];
 	let codeList = [];
 	let cateDvCd = [[${detail.categories}]];
-	console.log(cateDvCd);
     document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("backBtn").addEventListener("click", function () {
-            console.log(boardId);
             let page = boardId / 100;
-            console.log(page);
             // moveUrl("/" + siteId + "/board/" + menuCd + "/pageableList");
 			moveUrl("/" + siteId + "/board/" + menuCd + "/list");
         })

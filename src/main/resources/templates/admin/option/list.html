@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{admin/fragments/layout}"
+>
+<head>
+
+</head>
+<div layout:fragment="content">
+	<div>
+        <p class="title"><span>옵션 관리</span></p>
+    </div>
+    <div id="container">
+    	<div class="searchArea">
+			<input type="text" title="옵션명" placeholder="옵션명" id="optionName">
+			<button class="searchBtn"></button>
+		</div>
+		
+        <div class="btnArea">
+        	<div class="btnLeftArea">
+                <span class="searchResult bold">
+					검색 결과 <em id="total" class="total">00</em> /
+				</span>
+				<select id="pageSize">
+					<option value="10" selected>10</option>
+					<option value="20">20</option>
+					<option value="30">30</option>
+				</select>
+            </div>
+            <div class="btnRightArea">
+                <button type="button" id="registBtn" class="commBtn mgl10">옵션 등록</button>
+            </div>
+        </div>
+		
+		<div>
+			<table class="boardTable listTable mgt20">
+			    <colgroup>
+			        <col style="width: 5%;"/>
+			        <col style="width: 10%;"/>
+			        <col style="width: auto;"/>
+			        <col style="width: 7%;"/>
+			    </colgroup>
+			    <thead>
+			    <tr>
+			        <th class="alCenter">No.</th>
+			        <th class="alCenter">옵션 구분</th>
+			        <th class="alCenter">옵션명</th>
+			        <th class="alCenter">삭제</th>
+			    </tr>
+			    </thead>
+			    <tbody id="listArea">
+			    </tbody>
+			</table>
+		</div>
+
+        <input type="hidden" name="page" id="page" value="0"/>
+        <ul id="pagingArea" class="pagination"></ul>
+    </div>
+
+<script th:inline="javascript">
+$(document).ready(function() {
+	load();
+	
+	// setSearchInit('searchArea');
+	
+	$("#registBtn").on("click",function() {
+		moveUrl("/" + siteId + "/option/regist");
+	});
+	
+	$("#listArea").on("click", ".delBtn", function(e) {
+		var delOptionId = $(this).attr('id').replace("del_",'');
+		delOption(delOptionId);
+    });
+	
+    $("#optionName").on('keydown', function (event) {
+        if (event.key === 'Enter') {
+            getList(0);
+        }
+    });
+});
+
+async function load() {
+	await getList();
+}
+
+async function getList(pageNo) {
+	pageNo = pageNo || 0;
+	
+	let optionName = $("#optionName").val();
+	
+	let url = "/rest/admin/option/list?page="+pageNo;
+
+	const res = await axios.get("/rest/admin/option/list?page="+pageNo, {params:{optionName : optionName}});
+	
+	if (!res || !res.data) {
+		openAlert({contents: '옵션 목록을 불러오는데 실패했습니다. <br/> 다시 시도해주세요.'});
+		return;
+	};
+	
+	let data = res.data ?? [];
+	console.log(data);
+	console.log("----------response::")
+	
+	PAGE.paging(data.totalPages, data.number, data.totalElements, "getList");
+	
+	setList(data);
+}
+
+function setList(data){
+	$('#listArea').empty();
+	
+	optionList = data.content;
+	
+	let listLength = optionList.length;
+	let optionCodeList = codeList.filter((item) => {return item.grpCd === 'OPTION_DV_CD'});
+	
+	let cnt = 0;
+	if(listLength > 0) {
+		optionList.forEach((item) => {
+			$('#listArea').append(`
+				<tr>
+					<td class='alCenter'>${PAGE.pageRowNumber(list.number, list.size, cnt++, list.totalElements)}</td>
+					<td class='alCenter dvCd'>
+						${optionCodeList.find((code) => code.cd === item.optionDvCd)?.cdNm}
+					</td>
+					<td class='alLeft tdTitle'>
+						${item.optionName}
+					</td>
+					<td class="alCenter">
+						<button class="tblBtn delBtn" id="del_${item.optionId}" name="delBtn"></button>
+					</td>
+				</tr>
+			`);
+		});
+	}else {
+		$('#listArea').append(`
+			<tr>
+				<td class='alCenter' colspan='3'>검색 결과가 없습니다.</td>
+			</tr>
+		`);
+	}
+	
+}
+
+async function delOption(optionId) {
+	
+	if(confirm("삭제 하시겠습니까?")) {
+		let params = {
+			optionId : optionId,
+		};
+		
+		const res = await axios.post('/rest/admin/option/delete', params);
+		
+		if(!res){
+			alert('삭제에 실패했습니다. <br/>다시 시도해주세요.');
+			return;
+		}
+		
+		moveUrl('/' + siteId + '/option/list');
+	}
+};
+	
+</script>
+</div>
+
+</html>

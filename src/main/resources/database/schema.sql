@@ -4,7 +4,7 @@ drop table if exists TB_BOARD cascade;
 drop table if exists TB_CARTS cascade;
 drop table if exists TB_CATEGORY cascade;
 drop table if exists TB_CATEGORY_MAP cascade;
-drop table if exists TB_COLOR cascade;
+drop table if exists TB_COLOR_MAP cascade;
 drop table if exists TB_COUPON cascade;
 drop table if exists TB_COUPON_USE_HIS cascade;
 drop table if exists TB_DELIVERY cascade;
@@ -25,7 +25,7 @@ drop table if exists TB_PRODUCT_QNA cascade;
 drop table if exists TB_REVIEW cascade;
 drop table if exists TB_ROLE cascade;
 drop table if exists TB_ROLE_MENU cascade;
-drop table if exists TB_TAG cascade;
+drop table if exists TB_OPTION cascade;
 drop table if exists TB_TAG_MAP cascade;
 drop table if exists TB_ADDRESS cascade;
 drop table if exists TB_CODE cascade;
@@ -33,7 +33,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 create table if not exists TB_BOARD
 (
-    BOARD_ID   int AUTO_INCREMENT not null comment 'AUTO_INCREMENT'
+    BOARD_ID   int AUTO_INCREMENT not null
         primary key,
     MENU_CD    varchar(4)         not null comment '메뉴 코드',
     MENU_DV_CD varchar(4)         null comment '메뉴구분코드',
@@ -71,11 +71,11 @@ create table if not exists TB_CODE
 
 create table if not exists TB_CARTS
 (
-    CART_ID       int         not null comment 'AUTO_INCREMENT'
+    CART_ID       int AUTO_INCREMENT        not null
         primary key,
     USER_ID       varchar(50) not null,
-    PRODUCT_ID    int         not null comment 'AUTO_INCREMENT',
-    OPTION_ID     int         not null comment 'AUTO_INCREMENT',
+    PRODUCT_ID    int         not null,
+    OPTION_ID     int         not null,
     CART_QUANTITY int         not null,
     CART_STATUS   varchar(2)  not null,
     REG_ID        varchar(50) null,
@@ -87,7 +87,7 @@ create table if not exists TB_CARTS
 
 create table if not exists TB_CATEGORY
 (
-    CATEGORY_ID   bigint      not null
+    CATEGORY_ID   bigint AUTO_INCREMENT     not null
         primary key,
     CATEGORY_NAME varchar(50) not null,
     USE_YN        varchar(2)  not null,
@@ -97,20 +97,19 @@ create table if not exists TB_CATEGORY
 create table if not exists TB_CATEGORY_MAP
 (
     CATEGORY_ID bigint not null,
-    PRODUCT_ID  int    not null comment 'AUTO_INCREMENT'
+    PRODUCT_ID  int    not null
 );
 
-create table if not exists TB_COLOR
+create table if not exists TB_COLOR_MAP
 (
-    COLOR_ID   int         not null comment 'AUTO_INCREMENT'
-        primary key,
-    PRODUCT_ID int         not null comment 'AUTO_INCREMENT',
-    COLOR_NAME varchar(20) not null
+    OPTION_ID   int         not null,
+    PRODUCT_ID  int         not null,
+    COLOR_NAME  varchar(50)  null
 );
 
 create table if not exists TB_COUPON
 (
-    COUPON_ID               bigint         not null comment 'AUTO_INCREMENT'
+    COUPON_ID               bigint AUTO_INCREMENT        not null
         primary key,
     USER_ID                 varchar(50)    not null,
     COUPON_CODE             varchar(255)   not null,
@@ -133,7 +132,7 @@ create table if not exists TB_COUPON_USE_HIS
 (
     USER_ID         varchar(50)    not null
         primary key,
-    COUPON_ID       bigint         not null comment 'AUTO_INCREMENT',
+    COUPON_ID       bigint         not null,
     COUPON_NAME     varchar(50)    not null,
     USE_STATUS_CD   varchar(2)     not null comment '{1: 사용 안함, 2: 사용함, 3: 만료됨}',
     DISCOUNT_AMT    decimal(10, 2) null,
@@ -146,9 +145,9 @@ create table if not exists TB_COUPON_USE_HIS
 
 create table if not exists TB_DELIVERY
 (
-    DELIVERY_ID      bigint         not null comment 'AUTO_INCREMENT'
+    DELIVERY_ID      bigint AUTO_INCREMENT        not null
         primary key,
-    INVOICE_ID       int            not null comment 'AUTO_INCREMENT',
+    INVOICE_ID       int            not null,
     DELIVERY_METHOD  varchar(255)   not null,
     DELIVERY_ADDRESS varchar(255)   not null,
     DELIVERY_ZIPCODE varchar(255)   not null,
@@ -162,7 +161,7 @@ create table if not exists TB_DELIVERY
 
 create table if not exists TB_FILE
 (
-    FILE_ID        int AUTO_INCREMENT not null comment 'AUTO_INCREMENT'
+    FILE_ID        int AUTO_INCREMENT not null
         primary key,
     BOARD_ID       int                NOT NULL,
     MENU_CD        varchar(4)         NOT NULL comment '메뉴코드',
@@ -178,9 +177,9 @@ create table if not exists TB_FILE
 
 create table if not exists TB_INVOICE
 (
-    INVOICE_ID      int         not null comment 'AUTO_INCREMENT'
+    INVOICE_ID      int AUTO_INCREMENT not null
         primary key,
-    ORDER_ID        int         not null comment 'AUTO_INCREMENT',
+    ORDER_ID        int         not null,
     INVOICE_CODE    varchar(30) not null,
     INVOICE_COMPANY varchar(30) not null,
     REG_DT          timestamp   not null,
@@ -189,7 +188,7 @@ create table if not exists TB_INVOICE
 
 create table if not exists TB_LIKE
 (
-    LIKE_ID    int         not null comment 'AUTO_INCREMENT'
+    LIKE_ID    int AUTO_INCREMENT        not null
         primary key,
     USER_ID    varchar(50) not null,
     PRODUCT_ID bigint      not null,
@@ -219,7 +218,7 @@ create table if not exists TB_LOGIN
 
 create table if not exists TB_LOGIN_HIS
 (
-    LOGIN_HIS_ID int          not null comment 'AUTO_INCREMENT'
+    LOGIN_HIS_ID int AUTO_INCREMENT         not null
         primary key,
     USER_ID      varchar(255) null,
     NAME         varchar(30)  not null,
@@ -242,12 +241,12 @@ create table if not exists TB_MENU
 
 create table if not exists TB_ORDER
 (
-    ORDER_ID      int           not null comment 'AUTO_INCREMENT'
+    ORDER_ID      int AUTO_INCREMENT          not null
         primary key,
     USER_ID       varchar(50)   not null,
     PRODUCT_ID    int           not null,
-    COUPON_ID     bigint        not null comment 'AUTO_INCREMENT',
-    PP_ID         int           not null comment 'AUTO_INCREMENT',
+    COUPON_ID     bigint        not null,
+    PP_ID         int           not null,
     TOTAL_PRICE   int           not null,
     ORDER_COMMENT varchar(2000) null,
     ADDRESS_NAME  varchar(20)   not null,
@@ -308,7 +307,7 @@ create table if not exists TB_PAY_CARD
 
 create table if not exists TB_PRODUCT
 (
-    PRODUCT_ID    int          not null comment 'AUTO_INCREMENT'
+    PRODUCT_ID    int AUTO_INCREMENT         not null
         primary key,
     PRODUCT_NAME  varchar(255) not null,
     PRODUCT_CD  varchar(100) not null,
@@ -318,10 +317,10 @@ create table if not exists TB_PRODUCT
     SUMMATION     text         not null comment '상품 요약 설명',
     STOCKS        int          not null comment '재고 수량',
     SALES         int          not null comment '판매 수량',
-    STATUS        varchar(50)  not null comment '판매 상태',
+    STATUS        varchar(50)  not null comment '판매 상태 - 판매중(Y), 품절(N) 진열한 상품의 판매 상태',
+    DP_STATUS	  varchar(4)   not null comment '진열 상태 - 진열(Y), 미진열(N) 등록한 상품의 쇼핑몰 진열(노출)여부를 설정',
     WATT          varchar(8)   null comment '와트수',
     DELIVERY_FEE  int		   null comment '배송비',
-    DEL_YN		  varchar(2)   not null,
     REG_ID		  varchar(50)  null,
     REG_DT		  timestamp	   null,
     MOD_ID		  varchar(50)  null,
@@ -393,18 +392,19 @@ create table if not exists TB_ROLE_MENU
     MAIN_YN varchar(1) not null
 );
 
-create table if not exists TB_TAG
+create table if not exists TB_OPTION
 (
-    TAG_ID     bigint      not null
-        primary key,
-    PRODUCT_ID int         not null comment 'AUTO_INCREMENT',
-    TAG_NAME   varchar(50) not null
+    OPTION_ID     bigint AUTO_INCREMENT NOT NULL primary key,
+    OPTION_DV_CD  varchar(4)  not null,
+    OPTION_NAME   varchar(50) not null
 );
 
 create table if not exists TB_TAG_MAP
 (
-    PRODUCT_ID int    not null comment 'AUTO_INCREMENT',
-    TAG_ID     bigint not null
+	OPTION_ID  bigint not null,
+    PRODUCT_ID int    not null,
+    TAG_NAME   varchar(50)null
+    
 );
 
 CREATE TABLE `TB_ADDRESS`
@@ -437,28 +437,12 @@ ALTER TABLE `TB_LIKE`
                                `USER_ID`
             );
 
-ALTER TABLE `TB_TAG`
-    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_TAG_1` FOREIGN KEY (
-                                                            `PRODUCT_ID`
-        )
-        REFERENCES `TB_PRODUCT` (
-                                 `PRODUCT_ID`
-            );
-
 ALTER TABLE `TB_ROLE_MENU`
     ADD CONSTRAINT `FK_TB_MENU_TO_TB_ROLE_MENU_1` FOREIGN KEY (
                                                                `MENU_CD`
         )
         REFERENCES `TB_MENU` (
                               `MENU_CD`
-            );
-
-ALTER TABLE `TB_COLOR`
-    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_COLOR_1` FOREIGN KEY (
-                                                              `PRODUCT_ID`
-        )
-        REFERENCES `TB_PRODUCT` (
-                                 `PRODUCT_ID`
             );
 
 ALTER TABLE `TB_COUPON`
@@ -628,22 +612,6 @@ ALTER TABLE `TB_CATEGORY_MAP`
         )
         REFERENCES `TB_PRODUCT` (
                                  `PRODUCT_ID`
-            );
-
-ALTER TABLE `TB_TAG_MAP`
-    ADD CONSTRAINT `FK_TB_PRODUCT_TO_TB_TAG_MAP_1` FOREIGN KEY (
-                                                                `PRODUCT_ID`
-        )
-        REFERENCES `TB_PRODUCT` (
-                                 `PRODUCT_ID`
-            );
-
-ALTER TABLE `TB_TAG_MAP`
-    ADD CONSTRAINT `FK_TB_TAG_TO_TB_TAG_MAP_1` FOREIGN KEY (
-                                                            `TAG_ID`
-        )
-        REFERENCES `TB_TAG` (
-                             `TAG_ID`
             );
 
 ALTER TABLE `TB_ADDRESS`

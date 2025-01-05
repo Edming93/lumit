@@ -170,8 +170,6 @@ document.addEventListener("DOMContentLoaded", function () {
 			formData.append('password',secretPw);
 			
 			for(let [key,value] of formData.entries()) {
-				console.log("key::"+key);
-				console.log("value:: "+ value);
 				if(key != "files") {
 					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
 						if(key == "title") {

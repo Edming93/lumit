@@ -51,9 +51,15 @@
 	                        </td>
 	                    </tr>
 	                    <tr>
+	                        <th class="alLeft bold">진열상태</th>
+	                        <td>
+	                            <select id="dpStatus"></select>
+	                        </td>
+	                    </tr>
+	                    <tr>
 	                        <th class="alLeft bold">판매상태</th>
 	                        <td>
-	                            <select id="pdStatus"></select>
+	                            <select id="status"></select>
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -101,6 +107,14 @@
 	                        </td>
 	                    </tr>
 	                    <tr>
+	                        <th class="alLeft bold">무료배송 설정</th>
+	                        <td>
+								<input type="text" id="freeDeliveryFee" name="deliveryFee" class="boardInp w15" placeholder="">원 이상 주문시 무료배송
+	                        	<input type="checkbox" id="freeFeeCheck">
+	                        	<label for="freeFeeCheck">체크시 적용</label>
+	                        </td>
+	                    </tr>
+	                    <tr>
 	                    	<th class="alLeft bold">상품 상세설명</th>
 	                        <td colspan="2">
 	                            <textarea id="tiny"></textarea>
@@ -139,6 +153,12 @@ let secretPw = "";
 
 document.addEventListener("DOMContentLoaded", function () {
 	
+// 	$("#freeFeeCheck").on("click",function() {
+// 		let checked = $(this).prop("checked");
+// 		console.log(checked);
+// 		$("#deliveryFee").prop("disabled",checked);
+// 	});
+	
     // 코드리스트중에서 판매상태 리스트 가져오기
     fetch('/common/codeList', {
         method: 'POST',
@@ -151,7 +171,26 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(function(response) {
     	codeList = response.list;
 		
-		createSelectOptions("pdStatus", codeList,{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
+		createSelectOptions("status", codeList,{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
+		
+    })
+    .catch(function(error) {
+        console.log("error:", error);
+    });
+    
+    // 코드리스트중에서 진열상태 리스트 가져오기
+    fetch('/common/codeList', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json' // JSON 데이터 전송 명시
+        },
+        body: JSON.stringify({grpCd:"DP_STATUS"})
+    })
+    .then(response => response.json())
+    .then(function(response) {
+    	codeList = response.list;
+		
+		createSelectOptions("dpStatus", codeList,{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
 		
     })
     .catch(function(error) {
@@ -202,8 +241,6 @@ document.addEventListener("DOMContentLoaded", function () {
 			formData.append('password',secretPw);
 			
 			for(let [key,value] of formData.entries()) {
-				console.log("key::"+key);
-				console.log("value:: "+ value);
 				if(key != "files") {
 					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
 						if(key == "title") {

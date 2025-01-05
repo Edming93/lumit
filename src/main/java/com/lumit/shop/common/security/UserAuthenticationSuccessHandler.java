@@ -48,6 +48,7 @@ public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
                 }
             }
         }
+        
         HttpSession session = request.getSession();
         if (user.getSocialId() != null) {
             if (user.getEmail().equals(user.getUserId()) || user.getUserId().equals(user.getSocialId())) {
