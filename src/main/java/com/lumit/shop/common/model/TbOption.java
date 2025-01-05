@@ -21,5 +21,6 @@ public class TbOption {
     private String optionId;
     private String optionDvCd;
     private String optionName;
+    private String optionCd;
    
 }

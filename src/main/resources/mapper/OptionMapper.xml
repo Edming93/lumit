@@ -33,7 +33,7 @@
 			</if>
 		</where>
         ORDER BY OPTION_ID DESC
-        LIMIT #{pageable.offset}, 10
+        LIMIT #{pageable.offset}, #{data.cntPerPage}
     </select>
     
     <select id="selectCountOptionList" parameterType="TbOption" resultType="int">
@@ -56,11 +56,13 @@
     	(
     		OPTION_DV_CD
     		, OPTION_NAME
+    		, OPTION_CD
     	)
     	VALUES
     	(
     		#{optionDvCd}
     		, #{optionName}
+    		, #{optionCd}
     	)
     </insert>
     

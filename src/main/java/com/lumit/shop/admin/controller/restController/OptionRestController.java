@@ -31,10 +31,9 @@ public class OptionRestController {
     @Autowired
     MenuRepository menuRepository;
 
-    @ResponseBody
     @GetMapping("/list")
-    public ResponseEntity<?> selectOptionList(CommonSearch search,@PageableDefault(size = 10) Pageable pageable) {
-        return ResponseEntity.ok(optionService.selectPageableOptionList(search,pageable));
+    public ResponseEntity<Map<String,Object>> selectOptionList(CommonSearch search, @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseBuilder.build(optionService.selectOptionList(search, pageable),HttpStatus.OK);
     }
     
     @ResponseBody

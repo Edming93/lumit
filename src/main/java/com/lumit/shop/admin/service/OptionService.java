@@ -23,7 +23,6 @@ import jakarta.servlet.http.HttpServletResponse;
 public interface OptionService {
 
     public HashMap<String, Object> selectOptionList(CommonSearch search, Pageable pageable);
-    public Page<Map<String, Object>> selectPageableOptionList(CommonSearch search, Pageable pageable);
     public HashMap<String, Object> registOption(TbOption option);
     public HashMap<String, Object> updateOption(TbOption option);
     public HashMap<String, Object> deleteOption(TbOption option);

@@ -12,6 +12,8 @@ const PAGE = {
             document.querySelector("#pagingArea").innerHTML = "";
             return false;
         }
+        
+        $('#total').html(totalElementCount);
         /**
          * 한번에 볼 수 있는 페이지 블럭
          *

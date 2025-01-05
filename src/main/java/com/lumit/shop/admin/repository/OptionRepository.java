@@ -13,7 +13,7 @@ import com.lumit.shop.common.model.TbOption;
 @Mapper
 @Repository
 public interface OptionRepository {
-    public List<TbOption> selectOptionList(CommonSearch search);
+    // public List<TbOption> selectOptionList(CommonSearch search);
     public List<Map<String, Object>> selectPageableOptionList(RequestList<?> requestList);
     public int selectCountOptionList(CommonSearch search);
     public int insertOption(TbOption option);

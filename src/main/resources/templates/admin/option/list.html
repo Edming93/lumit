@@ -39,13 +39,15 @@
 			        <col style="width: 5%;"/>
 			        <col style="width: 10%;"/>
 			        <col style="width: auto;"/>
-			        <col style="width: 7%;"/>
+			        <col style="width: 8%;"/>
+			        <col style="width: 10%;"/>
 			    </colgroup>
 			    <thead>
 			    <tr>
 			        <th class="alCenter">No.</th>
 			        <th class="alCenter">옵션 구분</th>
 			        <th class="alCenter">옵션명</th>
+			        <th class="alCenter">코드(색상)</th>
 			        <th class="alCenter">삭제</th>
 			    </tr>
 			    </thead>
@@ -73,36 +75,56 @@ $(document).ready(function() {
 		delOption(delOptionId);
     });
 	
-    $("#optionName").on('keydown', function (event) {
+    $("#optionName").on("keydown", function (event) {
         if (event.key === 'Enter') {
             getList(0);
         }
     });
+    
+    $(".searchBtn").on("click", function(event) {
+    	getList(0);
+    });
+    
+    // 검색 결과 페이지 수 변경시
+    $('#pageSize').change(function() {
+		const cntPerPage = $(this).val();
+		const page = 1;
+		const nowParams = {page, cntPerPage};
+
+		getList(0, cntPerPage);
+	});
 });
 
 async function load() {
 	await getList();
 }
 
-async function getList(pageNo) {
-	pageNo = pageNo || 0;
+async function getList(pageNo,cntPerPage) {
+	pageNo = pageNo ?? 0;
+	cntPerPage = cntPerPage ?? 10;
 	
 	let optionName = $("#optionName").val();
 	
+	params = {
+		optionName : optionName,
+		cntPerPage : cntPerPage
+	}
+	
 	let url = "/rest/admin/option/list?page="+pageNo;
 
-	const res = await axios.get("/rest/admin/option/list?page="+pageNo, {params:{optionName : optionName}});
+	const res = await axios.get("/rest/admin/option/list?page="+pageNo, {params});
 	
 	if (!res || !res.data) {
 		openAlert({contents: '옵션 목록을 불러오는데 실패했습니다. <br/> 다시 시도해주세요.'});
 		return;
 	};
 	
-	let data = res.data ?? [];
-	console.log(data);
-	console.log("----------response::")
+	data = res.data.list ?? [];
 	
-	PAGE.paging(data.totalPages, data.number, data.totalElements, "getList");
+	// 검색결과 노출 수 변경마다 totalPageCount 값 변경
+	const totalPageCount = Math.ceil(data.totalElements / cntPerPage);
+	
+	PAGE.paging(totalPageCount, data.number, data.totalElements, "getList");
 	
 	setList(data);
 }
@@ -120,12 +142,23 @@ function setList(data){
 		optionList.forEach((item) => {
 			$('#listArea').append(`
 				<tr>
-					<td class='alCenter'>${PAGE.pageRowNumber(list.number, list.size, cnt++, list.totalElements)}</td>
+					<td class='alCenter'>${PAGE.pageRowNumber(data.number, data.size, cnt++, data.totalElements)}</td>
 					<td class='alCenter dvCd'>
 						${optionCodeList.find((code) => code.cd === item.optionDvCd)?.cdNm}
-					</td>
+					</td>	
 					<td class='alLeft tdTitle'>
 						${item.optionName}
+					</td>
+					<td class="alCenter">
+						<div style='display: flex;justify-content: space-between;align-items: center;'>
+							${item.optionCd ?
+								`<span class='mgr10'>` +item.optionCd + `</span>
+								<div style='display: flex;'>
+									<input type='color' value="${item.optionCd}">
+								</div>
+								` : ''
+							}
+						</div>
 					</td>
 					<td class="alCenter">
 						<button class="tblBtn delBtn" id="del_${item.optionId}" name="delBtn"></button>
@@ -157,7 +190,7 @@ async function delOption(optionId) {
 			return;
 		}
 		
-		moveUrl('/' + siteId + '/option/list');
+		getList(0);
 	}
 };
 	

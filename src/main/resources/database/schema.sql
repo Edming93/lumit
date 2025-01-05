@@ -104,7 +104,8 @@ create table if not exists TB_COLOR_MAP
 (
     OPTION_ID   int         not null,
     PRODUCT_ID  int         not null,
-    COLOR_NAME  varchar(50)  null
+    COLOR_NAME  varchar(50)  null,
+    COLOR_CD	varchar(50)  null
 );
 
 create table if not exists TB_COUPON
@@ -396,7 +397,8 @@ create table if not exists TB_OPTION
 (
     OPTION_ID     bigint AUTO_INCREMENT NOT NULL primary key,
     OPTION_DV_CD  varchar(4)  not null,
-    OPTION_NAME   varchar(50) not null
+    OPTION_NAME   varchar(50) not null,
+    OPTION_CD	  varchar(50) null
 );
 
 create table if not exists TB_TAG_MAP

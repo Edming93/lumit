@@ -21,7 +21,7 @@
 	                    <col style="width: 10%;"/>
 	                    <col style="width: 90%;"/>
 	                </colgroup>
-	                <tbody>
+	                <tbody id="listArea">
 	                    <tr>
 	                        <th class="alLeft bold">옵션 구분</th>
 	                        <td>
@@ -81,13 +81,28 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("error:", error);
     });
     
+    $("#optionDvCd").on("change", function() {
+    	let selectDvCd = $(this).val();
+    	console.log(selectDvCd);
+    	
+    	if(selectDvCd == '0001') {
+    		$('#listArea').append(`
+    			<tr>
+                    <th class="alLeft bold">색상 지정</th>
+                    <td>
+                        <input type="color" id="optionCd"/>
+                    </td>
+                </tr>
+    		`);
+    	}
+    });
 	
 	document.getElementById("registBtn").addEventListener("click",async function() {
-	
 		if(confirm("등록 하시겠습니까?")) {
 			let params = {
 				optionDvCd : $("#optionDvCd").val(),
-				optionName : $("#optionName").val()
+				optionName : $("#optionName").val(),
+				optionCd : $("#optionCd").val()
 			};
 			
 			const res = await axios.post('/rest/admin/option/regist', params);

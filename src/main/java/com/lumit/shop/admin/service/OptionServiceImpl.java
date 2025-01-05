@@ -27,7 +27,7 @@ public class OptionServiceImpl implements OptionService {
     	HashMap<String,Object> retMap = new HashMap<String,Object>();
     	
     	retMap.put("list", this.selectPageableOptionList(search, pageable));
-		retMap.put("total", optionRepository.selectCountOptionList(search));
+		// retMap.put("total", optionRepository.selectCountOptionList(search));
     	
         return retMap;
     }

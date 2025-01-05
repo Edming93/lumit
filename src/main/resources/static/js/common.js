@@ -1,6 +1,12 @@
 $(document).ready(function() {
 	initDatePicker();
+	setCntPerPageInit();
 })
+function pageReload() {
+	const newParams = {...getQueryParamAsJson()};
+	const newQueryParams = jsonToQueryParam(newParams);
+	location.href = location.pathname + '?' + newQueryParams;
+}
 
 function initDatePicker() {
 	$(".datepickerInput").each(function () {
@@ -22,6 +28,18 @@ function initDatePicker() {
 			}
 		}).datepicker(); // Set the default date
 	});
+}
+
+// 페이지 개수 선택
+function setCntPerPageInit() {
+	const jsonUrlParam = getQueryParamAsJson();
+	
+	if(jsonUrlParam['cntPerPage']) {
+		$('#pageSize').val(decodeURI(jsonUrlParam['cntPerPage'])).prop("selected", true);
+	} else {
+		$("#pageSize option:eq(0)").prop("selected", true);
+	}
+	
 }
 
 function setSearchInit(searchClass) {

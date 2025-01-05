@@ -14,4 +14,7 @@ public class CommonSearch{
 	private String grpCd;
 	private String optionName;
 	private String optionDvCd;
+	private String optionCd;
+	
+	private int cntPerPage = 10;
 }
