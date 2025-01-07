@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{admin/fragments/layout}">
+<head>
+	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+
+<div layout:fragment="content">
+    <div>
+        <p class="title">상품 관리 등록</p>
+    </div>
+
+	<div class="contentWrap">
+	    <div class="boardContainer wsNorap">
+	        <form id="registForm"  method="post" entype="multipart/form-data">
+				
+	            <table class="registTable">
+	                <colgroup>
+	                    <col style="width: 10%;"/>
+	                    <col style="width: 90%;"/>
+	                </colgroup>
+	                <tbody>
+	                	<tr>
+	                        <th class="alLeft bold">대표 이미지</th>
+	                        <td>
+								<div class="form__input--file_wrap">
+									<div class="form__input--top_wrap">
+									  <input class="form__input--file" id="upload" type="file" multiple>
+									  <label class="form__label--file" for="upload">내PC</label>
+									  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
+								  	</div>
+									<div class="form__input--bottom_wrap">
+								  		<div class="form__div--file"></div>
+									</div>
+								</div>
+	
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">상품명</th>
+	                        <td>
+	                            <input type="text" id="productName" name="productName" class="boardInp w100" placeholder="상품명을 입력해주세요.">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">상품코드</th>
+	                        <td>
+	                            <span class='col brand4'>자동 생성</span>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">진열상태</th>
+	                        <td>
+	                            <select id="dpStatus"></select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">판매상태</th>
+	                        <td>
+	                            <select id="status"></select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">상품 요약설명</th>
+	                        <td>
+	                           <input type="text" id="productName" name="productName" class="boardInp w100" placeholder="상품 요약설명을 입력해주세요.">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">옵션 상품코드</th>
+	                        <td>
+	                            <select id="optionId">
+	                            	<option>어떻게 매칭할지 고민</option>
+	                            	<option>상품명 검색하면 상품코드 가져오기?</option>
+	                            </select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">카테고리</th>
+	                        <td>
+	                            <select id="categoryId">
+	                            	<option>어떻게 매칭할지 고민</option>
+	                            	<option>카테고리 관리 팝업 띄우기?</option>
+	                            	<option>그 팝업안에서 카테고리 추가,수정,삭제가능?</option>
+	                            	<option>별점관리는 어떤 테이블에서? just 상품리뷰 테이블에 의존?</option>
+	                            </select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">정가</th>
+	                        <td>
+	                           <input type="text" id="price" name="price" class="boardInp w15" placeholder=""> 원
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">할인가(판매가)</th>
+	                        <td>
+	                           <input type="text" id="disPrice" name="disPrice" class="boardInp w15" placeholder=""> 원
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">배송비</th>
+	                        <td>
+	                           <input type="text" id="deliveryFee" name="deliveryFee" class="boardInp w15" placeholder=""> 원
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">무료배송 설정</th>
+	                        <td>
+								<input type="text" id="freeDeliveryFee" name="deliveryFee" class="boardInp w15" placeholder="">원 이상 주문시 무료배송
+	                        	<input type="checkbox" id="freeFeeCheck">
+	                        	<label for="freeFeeCheck">체크시 적용</label>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                    	<th class="alLeft bold">상품 상세설명</th>
+	                        <td colspan="2">
+	                            <textarea id="tiny"></textarea>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">색상</th>
+	                        <td>
+	                            <select id="color">
+	                            	
+	                            </select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">태그</th>
+	                        <td>
+	                            <select id="tag">
+	                            </select>
+	                        </td>
+	                    </tr>
+	                </tbody>
+	            </table>
+	
+	            <div class="btnArea">
+	            	<div class="btnAreaLeft">
+	            	</div>
+	            	<div class="btnAreaCenter">
+		            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
+		                <button type="button" id="registBtn" class="commBtn mgl10 size100">작성 완료</button>
+	                </div>
+	                <div class="btnAreaRight">
+	                </div>
+	            </div>
+	        </form>
+	    </div>
+	</div>
+</div>
+</html>
+
+
+
+
+<script th:inline="javascript">
+
+let menuCd = [[${menuCd}]];
+var files = []; // 실제 파일 담는 arr
+var fileIdx = 1;
+var beforeFiles = []; // 백업용
+
+let secretPw = "";
+
+document.addEventListener("DOMContentLoaded", function () {
+	
+// 	$("#freeFeeCheck").on("click",function() {
+// 		let checked = $(this).prop("checked");
+// 		console.log(checked);
+// 		$("#deliveryFee").prop("disabled",checked);
+// 	});
+	
+    // 코드리스트중에서 판매상태 리스트 가져오기
+    fetch('/common/codeList', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json' // JSON 데이터 전송 명시
+        },
+        body: JSON.stringify({grpCd:"PD_STATUS"})
+    })
+    .then(response => response.json())
+    .then(function(response) {
+    	codeList = response.list;
+		
+		createSelectOptions("status", codeList,{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
+		
+    })
+    .catch(function(error) {
+        console.log("error:", error);
+    });
+    
+    // 코드리스트중에서 진열상태 리스트 가져오기
+    fetch('/common/codeList', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json' // JSON 데이터 전송 명시
+        },
+        body: JSON.stringify({grpCd:"DP_STATUS"})
+    })
+    .then(response => response.json())
+    .then(function(response) {
+    	codeList = response.list;
+		
+		createSelectOptions("dpStatus", codeList,{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
+		
+    })
+    .catch(function(error) {
+        console.log("error:", error);
+    });
+	
+	
+	// 텍스트에디터 기초 세팅
+	tinymce.init({
+		language:"ko_KR",
+	    selector: 'textarea',
+	    height:500,
+	    plugins: [
+	      // Core editing features
+	      'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+	    ],
+	    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+	    tinycomments_mode: 'embedded',
+	    tinycomments_author: 'Author name',
+	    mergetags_list: [
+	      { value: 'First.Name', title: 'First Name' },
+	      { value: 'Email', title: 'Email' },
+	    ],
+	    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+	});
+	
+	document.getElementById("registBtn").addEventListener("click", function() {
+	
+		if(confirm("등록 하시겠습니까?")) {
+			
+			let formData = new FormData(document.querySelector("#registForm"));
+			let params = {};
+			
+			if(files.length === 0) {
+				formData.append('files',[]);
+			}else {
+				for(var i=0; i<files.length; i++) {
+					formData.append('files',files[i]);
+				}
+			}
+
+			// 텍스트에디터 내용 가져오기
+			let tinyContent = tinymce.get("tiny").getContent();
+			formData.append('content',tinyContent);
+			if($("#categories").length > 0) {
+				formData.append('categories',$("#categories").val() ?? '');
+			}
+			formData.append('password',secretPw);
+			
+			for(let [key,value] of formData.entries()) {
+				if(key != "files") {
+					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
+						if(key == "title") {
+							alert("제목을 입력해주세요.");
+							return;
+						}
+						
+						if(key == "content") {
+							alert("내용을 입력해주세요.");
+							return;
+						}
+						
+						if(key == "categories") {
+							alert("카테고리를 선택해주세요.");
+							return;
+						}
+					}
+				}
+			}
+			let url = "/"+siteId+"/board/"+menuCd+"/list";
+			
+			setData(formData,url);
+		}
+	});
+	
+	
+	// input file 커스텀 - 파일명 붙이기
+	const fileTarget = document.querySelector('.form__input--file_wrap input');
+	
+	const mb = 1024 * 1024; //1mb(메가)
+	const limitSize = mb * 10;
+	
+	fileTarget.addEventListener('change', function () { 
+		
+		for(var i=0; i<this.files.length; i++) {
+			if(files.length >= 5){
+				alert('최대 5개까지 첨부 가능합니다.');
+				break;
+			}
+			
+			var uploadSize = this.files[i].size;
+		
+			if(limitSize < uploadSize) {
+				alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
+			}else {
+				var file = this.files[i];
+							
+				file['idx'] = fileIdx;
+				files.push(file);
+				fileIdx++;
+			}
+		}
+		
+		setFiles();
+		
+	});
+
+});
+
+function showSecretBox() {
+	$(".secretBox").show();
+}
+
+function hideSecretBox() {
+	$(".secretBox").hide();
+}
+
+function passwordSave() {
+	secretPw = $("#password").val();
+	
+	alert("저장되었습니다.");
+	$(".secretBox").hide();
+	$(".btnSecretImg").attr("src","/images/secretMsg-on.png");
+}
+
+var fileDiv = document.querySelector('.form__div--file');
+
+// 파일 그리기
+function setFiles() {
+	var fileHtml = '';
+	_.forEach(files, function(file){
+		fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
+	})
+	
+	if (fileDiv) {
+		fileDiv.innerHTML = fileHtml;
+	};
+}
+
+function deleteFileBtn(elem) {
+	// 실제 파일 삭제
+	files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")})
+	setFiles();
+};
+
+// 비동기 통신
+function setData(formData,url) {
+    fetch('/' + siteId + '/board/' + menuCd + '/regist', {
+        method: 'POST',
+        body: formData
+    })
+    .then(function(result) {
+		
+		if(result.ok) {
+			alert("등록이 완료되었습니다.");
+					
+			moveUrl(url);
+		}else {
+			alert("등록에 실패하였습니다.");
+		}
+		
+    })
+    .catch(function(error) {
+        console.log("error:", error);
+    });
+}
+</script>

@@ -4,6 +4,7 @@
 
 :root {
     --background-color: #FFFFFF;
+    --background-gray: #efefef;
     --font-color: #2B2928;
     --font-light-color: #FFFFFF;
     --font-grey-color: #828282;
@@ -19,6 +20,27 @@
     --default-margin: 0.7rem;
     --icon-color: #a9aec1;
     --highlight-background-color: #E6E6E6;
+    --brand-color1 : #CAAB9C;
+    --brand-color2 : #E7DBCD;
+    --brand-color3 : #9F8578;
+    --brand-color4 : #876453;
+    
+   	--gray-white-color: #E6E4E5;
+    --white2: #E5E5E5;
+    --red-color: #D12B2B;
+    --text-color: #333333;
+    --gray-color: #F2F2F2;
+    --gray-color2: #F5F5F5;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --dark-gray-color: #7F7F7F;
+    --light-gray-color: #E6E4E5;
+    --table-line-color: #191919;
+    --input-background-color: #F7F5F6;
+    --green-color: #388E3C;
+    --table-border: #D3D3D3;
+    --table-odd: #F6F6F6;
+    --yellow-color: #EEC346;
+    
     --small-border-radius: 0.2rem;
     --default-border-radius: 0.3rem;
 }
@@ -40,6 +62,70 @@ button {
     padding: 0px;
 }
 
+.container * {
+    color: var(--text-color);
+}
+
+.searchArea{width: 100%; display: flex; column-gap: 5px; margin-bottom: 45px;}
+.container select, .container input[type="text"], .container input[type="password"], .container input[type="number"]{background-color: var(--input-background-color); border: none; outline: none; border-radius: 5px; height: 32px; padding-left: 15px; padding-right: 15px; box-shadow: 0px 2px 5px var(--shadow-color); max-width: 100%; box-sizing: border-box;}
+
+
+.container input[type="text"]:disabled {
+	background-color: dimgrey;
+ 	color: linen;
+ 	opacity: 1;
+}
+.container select{-webkit-appearance:none; /* for chrome */-moz-appearance:none; /*for firefox*/appearance:none; background-image: url('../images/icons/dropdown.svg'); background-repeat: no-repeat; background-size: 20px 20px; background-position: right 5px top 50%; padding-right: 40px; height: 34px;}
+
+input.f1 ,select.f1{flex: 1;}
+input.w10 ,select.w10{width:10%;}
+input.w15 ,select.w15{width:15%;}
+input.w20 ,select.w20{width:20%;}
+input.w25 ,select.w25{width:25%;}
+input.w30 ,select.w30{width:30%;}
+input.w40 ,select.w40{width:40%;}
+input.w50 ,select.w50{width:50%;}
+input.w60 ,select.w60{width:60%;}
+input.w70 ,select.w70{width:70%;}
+input.w80 ,select.w80{width:80%;}
+input.w100 ,select.w100{width:100%;}
+
+.container .col.red{color: var(--red-color);}
+.container .col.green{color: var(--green-color);}
+.container .col.brand1{color: var(--brand-color1);}
+.container .col.brand2{color: var(--brand-color2);}
+.container .col.brand3{color: var(--brand-color3);}
+.container .col.brand4{color: var(--brand-color4);}
+
+.container .txt_el {overflow: hidden; white-space: nowrap; text-overflow: ellipsis; word-break: break-all;}
+
+.datepickerWrap{display: flex; align-items: center; width: 20%;}
+.datepickerInput{padding-right: 45px;flex:1;background-image: url('../images/icons/calendar.svg'); background-repeat: no-repeat; background-size: 20px 20px; background-position: right 10px top 50%;  width: 100px; cursor: pointer;}
+.datepickerDash{margin-left: 10px; margin-right: 10px;}
+.searchBtn {border:none; background-color: var(--brand-color2); border-radius: 5px; outline: none; background-position: center; background-repeat: no-repeat; background-size: 20px 20px; background-image: url('../images/icons/ic_search.svg'); width: 34px; height: 34px; cursor: pointer; box-shadow: 0px 2px 5px var(--shadow-color);}
+.searchResult{color: var(--brand-color1);}
+.searchResult .total{color: var(--brand-color1); font-weight: bold; font-size: 17px;}
+
+.tableWrap{width: 100%; display: flex; flex-direction: column; justify-content: space-between; flex: 1; font-size:14px;}
+.tableWrap table{width: 100%; table-layout: fixed;}
+.tableWrap table th, .wrap .table_wrap table td{border: 1px solid var(--brand-color2); padding: 10px 15px; }
+.tableWrap table th{background-color: var(--brand-color2); color: var(--white);}
+.tableWrap table th, .wrap .table_wrap table td{vertical-align: middle;}
+
+.ui-datepicker th{font-family: 'NanumGothic', sans-serif !important; color: var(--text-color); font-size: 0.9em;}
+.ui-widget-header {background-color: var(--brand-color4); border: none; font-size: 12px;}
+.ui-widget.ui-widget-content{padding:0; border: 1px solid var(--brand-color1);}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active{border: none; background-color: transparent; text-align: center; vertical-align: middle; font-family: 'NanumGothic', sans-serif; padding-top: 0.6em; padding-bottom: 0.6em; font-size: 12px;}
+.ui-datepicker-today .ui-state-default{ color: var(--brand-color1); font-family: 'NanumGothicBold', sans-serif; border-radius: 5px; background-color: var(--light-gray-color) !important; border-radius: 5px; }
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover{background-color: var(--brand-color1) !important; border-radius: 5px; color: var(--white)}
+.ui-state-hover{background-color: transparent !important;}
+.ui-datepicker .ui-datepicker-prev span{background-size: cover; background-image: url('../images/icons/arrow_gray.svg') !important; background-position: center;}
+.ui-datepicker .ui-datepicker-next span{background-size: cover; background-image: url('../images/icons/arrow_gray.svg') !important; background-position: center; transform: rotate(180deg)}
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next{top: 50% !important; transform: translateY(-50%);}
+
+.ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year{width: 30%; height: 30px;}
+
 .container {
     width: 100%;
     padding: 10px;
@@ -47,10 +133,11 @@ button {
     box-sizing: border-box;
     position: relative;
     height: 100vh;
+    padding: 3rem;
 }
 
-.content {
-    padding: 3rem;
+.contentWrap {
+    margin-top:30px;
 }
 
 .wrapper {
@@ -285,6 +372,21 @@ i {
     text-align: right;
 }
 
+table tbody tr td.dvCd {
+	color: #9F9F9F;
+}
+table tbody tr td.tdTitle {
+	color: #515151; font-size:16px; font-weight:500;
+}
+
+table tbody tr td {vertical-align: middle;}
+table tbody tr td .tblBtn {margin: 0 auto; width: 34px; height: 34px; border-radius: 5px; background-position: center; background-repeat: no-repeat; background-size: 16px 16px; cursor: pointer; border: none; box-shadow: 0px 2px 5px var(--shadow-color);}
+table tbody tr td .tblBtn.delBtn{
+	display: block;
+	background-color: var(--brand-color4); 
+	background-image: url('../images/icons/delete.svg');
+}
+
 .boardTable {
     width: 100%;
 }
@@ -326,7 +428,6 @@ i {
 
 .boardInp {
     border-bottom: 1px solid #D9D9D9;
-    width: 100%;
     height: 35px;
     padding: 0px 15px;
     box-sizing: border-box;

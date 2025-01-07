@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{admin/fragments/layout}"
+>
+<head>
+
+</head>
+<div layout:fragment="content">
+	<div>
+        <p class="title"><span>상품 관리</span></p>
+    </div>
+    <div id="container">
+    	<div class="searchArea">
+			<input type="text" title="상품명" placeholder="상품명" id="productName">
+			<div class="datepickerWrap mgl10">
+				<input type="text" class="datepickerInput" placeholder="등록시작일" readonly="readonly" id="strDt"/>
+				<span class="datepickerDash">~</span>
+				<input type="text" class="datepickerInput" placeholder="등록종료일" readonly="readonly" id="endDt"/>
+			</div>
+			<button class="searchBtn"></button>
+		</div>
+		
+        <div class="btnArea">
+        	<div class="btnLeftArea">
+                <span class="searchResult bold">
+					검색 결과 <em id="total" class="total">00</em> /
+				</span>
+				<select id="pageSize">
+					<option value="10" selected>10</option>
+					<option value="20">20</option>
+					<option value="30">30</option>
+				</select>
+            </div>
+            <div class="btnRightArea">
+                <button type="button" id="registBtn" class="commBtn mgl10">상품 등록</button>
+            </div>
+        </div>
+		
+		<div class="tableWrap mgt20">
+			<table>
+			    <colgroup>
+			        <col style="width: 5%;"/>
+			        <col style="width: 10%;"/>
+			        <col style="width: auto;"/>
+			        <col style="width: 10%;"/>
+			        <col style="width: 10%;"/>
+			        <col style="width: 8%;"/>
+			    </colgroup>
+			    <thead>
+			    <tr>
+			        <th class="alCenter">No.</th>
+			        <th class="alCenter">상품코드</th>
+			        <th class="alCenter">상품명</th>
+			        <th class="alCenter">판매가</th>
+			        <th class="alCenter">할인가</th>
+			        <th class="alCenter">등록일</th>
+			    </tr>
+			    </thead>
+			    <tbody id="listArea">
+			    </tbody>
+			</table>
+		</div>
+
+        <input type="hidden" name="page" id="page" value="0"/>
+        <ul id="pagingArea" class="pagination"></ul>
+    </div>
+<script type="text/javascript" th:src="@{/js/page.js}"></script>
+<script type="text/javascript" th:src="@{/js/date.js}"></script>
+
+<script th:inline="javascript">
+	$(document).ready(function() {
+		setSearchInit('searchArea');
+		
+		$("#registBtn").on("click",function() {
+			moveUrl("/" + siteId + "/product/regist");
+		});
+	})
+
+</script>
+</div>
+
+</html>

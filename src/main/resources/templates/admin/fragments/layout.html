@@ -4,9 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 ><!--/*  layout 선언부 추가    */-->
 <head>
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
     <th:block th:replace="~{admin/fragments/head :: headFragment}"></th:block>
-    <script src="/js/underscore.js"></script>
 </head>
 <body>
 <div class="wrapper" style="position:fixed;">
@@ -14,22 +12,44 @@
         <div th:replace="~{admin/fragments/nav-tab :: navFragment}"></div>
     </div>
     <div class="container">
-        <div class="content" layout:fragment="content"></div>
+        <div class="content" layout:fragment="content">
+        
+        </div>
     </div>
 </div>
 </body>
 <script th:inline="javascript">
-    document.addEventListener("DOMContentLoaded", function () {
-        sideBar.setting()
+    document.addEventListener("DOMContentLoaded", async function () {
+        sideBar.setting();
+        
+        await getCodeList();
     })
 </script>
-<script th:src="@{/js/functions.js}"></script>
-<script th:src="@{/js/fetch.js}"></script>
-<script th:src="@{/js/common.js}"></script>
-<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 
 <script th:inline="javascript">
     let defaultUrl = [[${session.defaultUrl}]];
+    let codeList = [];
+    
     getSiteId(defaultUrl);
+    
+    let menuList = [[${session.menuList}]];
+    
+    async function getCodeList() {
+	    const codeRes = await axios.post('/common/codeList', {});
+	    
+	    if(!codeRes || !codeRes.data) {
+	    	alert("codeList를 불러오는데 실패했습니다.");
+	    	return;
+	    }
+	    
+	    codeList = codeRes.data.list;
+    } 
+    
+    
+// 메뉴 정보 공통화 할 일 있으면 사용
+//  let selectUrl = window.location.pathname.replace(/\/[^/]+$/, '') + "/**";;
+// 	let selectMenu = menuList.find((item) => {return item.menuUrl === selectUrl});
+//  $("#menuNm").html(selectMenu.menuName);
+    
 </script>
 </html>

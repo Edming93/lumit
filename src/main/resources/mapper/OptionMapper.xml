@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lumit.shop.admin.repository.OptionRepository">
+    <sql id="searchWhere">
+        WHERE 1=1
+        <if test="optionName != '' and optionName neq null">
+            AND OPTION_NAME LIKE CONCAT('%', #{optionName}, '%')
+        </if>
+        <if test="optionDvCd != '' and optionDvCd neq null">
+            AND OPTION_DV_CD = #{optionDvCd}
+        </if>
+    </sql>
+    <select id="selectOptionList" resultType="com.lumit.shop.common.model.TbOption">
+        SELECT *
+        FROM
+        	TB_OPTION
+        <include refid="searchWhere"></include>
+        ORDER BY OPTION_ID DESC
+    </select>
+    
+    <select id="selectPageableOptionList" parameterType="RequestList" resultType="TbOption">
+        SELECT *
+        FROM
+        	TB_OPTION
+        <where>
+        	1=1
+			<if test="data.optionName != '' and data.optionName neq null">
+			    AND OPTION_NAME LIKE CONCAT('%', #{data.optionName}, '%')
+			</if>
+			<if test="data.optionDvCd != '' and data.optionDvCd neq null">
+				AND OPTION_DV_CD = #{data.optionDvCd}
+			</if>
+		</where>
+        ORDER BY OPTION_ID DESC
+        LIMIT #{pageable.offset}, #{data.cntPerPage}
+    </select>
+    
+    <select id="selectCountOptionList" parameterType="TbOption" resultType="int">
+        SELECT COUNT(*) AS CNT
+        FROM
+        	TB_OPTION
+        <where>
+        	1=1
+			<if test="optionName != '' and optionName neq null">
+			    AND OPTION_NAME LIKE CONCAT('%', #{optionName}, '%')
+			</if>
+			<if test="optionDvCd != '' and optionDvCd neq null">
+				AND OPTION_DV_CD = #{optionDvCd}
+			</if>
+		</where>
+    </select>
+    
+    <insert id="insertOption" parameterType="com.lumit.shop.common.model.TbOption">
+    	INSERT INTO TB_OPTION
+    	(
+    		OPTION_DV_CD
+    		, OPTION_NAME
+    		, OPTION_CD
+    	)
+    	VALUES
+    	(
+    		#{optionDvCd}
+    		, #{optionName}
+    		, #{optionCd}
+    	)
+    </insert>
+    
+    <update id="updateOption" parameterType="com.lumit.shop.common.model.TbOption">
+        UPDATE
+        	TB_OPTION
+        SET
+        <if test="optionDvCd != '' and optionDvCd neq null">
+            , OPTION_DV_CD = #{optionDvCd}
+        </if>
+        <if test="optionName != '' and optionName neq null">
+            , OPTION_NAME = #{optionName}
+        </if>
+        WHERE
+        	OPTION_ID = #{optionId}
+    </update>
+    
+    <delete id="deleteOption" parameterType="com.lumit.shop.common.model.TbOption">
+		DELETE FROM TB_OPTION 
+		WHERE
+			OPTION_ID = #{optionId}
+	</delete>
+</mapper>

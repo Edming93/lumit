@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 public class ResponseBuilder {
-	public static final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_CONTENT_TYPE = "Content-Type";
     public static final String CHARSET_UTF8 = ";charset=UTF-8";
 
     private ResponseBuilder() {

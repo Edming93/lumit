@@ -5,10 +5,12 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class TbBoard{
 	private String boardId;
 	private String menuCd;
@@ -30,14 +32,6 @@ public class TbBoard{
 	
 	private List<String> jsonFileList;
 
-	@Override
-	public String toString() {
-		return "TbBoard [boardId=" + boardId + ", menuCd=" + menuCd + ", menuDvCd=" + menuDvCd + ", categories="
-				+ categories + ", title=" + title + ", content=" + content + ", password=" + password + ", topFix="
-				+ topFix + ", useYn=" + useYn + ", delYn=" + delYn + ", rplyYn=" + rplyYn + ", fileYn=" + fileYn
-				+ ", viewCount=" + viewCount + ", regId=" + regId + ", regDt=" + regDt + ", modId=" + modId + ", modDt="
-				+ modDt + ", jsonFileList=" + jsonFileList + "]";
-	}
 
 
 	

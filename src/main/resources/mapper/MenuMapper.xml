@@ -4,15 +4,16 @@
 <mapper namespace="com.lumit.shop.common.repository.MenuRepository">
     <select id="selectMenuList" resultType="com.lumit.shop.common.model.TbMenu">
         SELECT a.*, b.MAIN_YN
-        FROM TB_MENU a
-                 LEFT JOIN
-             TB_ROLE_MENU b
-             ON
-                 a.MENU_CD = b.MENU_CD
-                 LEFT JOIN
-             TB_LOGIN c
-             ON
-                 b.ROLE_ID = c.ROLE_ID
+        FROM 
+        	TB_MENU a
+        LEFT JOIN
+        	TB_ROLE_MENU b
+        ON
+        	a.MENU_CD = b.MENU_CD
+        LEFT JOIN
+        	TB_LOGIN c
+        ON
+        	b.ROLE_ID = c.ROLE_ID
         WHERE c.USER_ID = #{userId}
     </select>
 

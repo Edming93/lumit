@@ -1,0 +1,40 @@
+package com.lumit.shop.common.model;
+
+import java.util.List;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+public class TbProduct{
+	private String productId;
+	private String productName;
+	private String productCd;
+	private String price;
+	private String disPrice;
+	private String content; 
+	private String summation;
+	private String stocks;
+	private String sales;
+	private String status;
+	private String watt;
+	private String stock;
+	private String deliveryFee;
+	private String delYn;
+	private String regId;
+	private String regDt;
+	private String modId;
+	private String modDt;
+	
+	private List<String> jsonFileList;
+
+
+	
+	
+	
+}

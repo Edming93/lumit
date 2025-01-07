@@ -1,3 +1,137 @@
+$(document).ready(function() {
+	initDatePicker();
+	setCntPerPageInit();
+})
+function pageReload() {
+	const newParams = {...getQueryParamAsJson()};
+	const newQueryParams = jsonToQueryParam(newParams);
+	location.href = location.pathname + '?' + newQueryParams;
+}
+
+function initDatePicker() {
+	$(".datepickerInput").each(function () {
+		$(this).datepicker({
+			showAnim: "slideDown",
+			showOtherMonths: false,
+			changeYear: true,
+			changeMonth: true,
+			dateFormat: "yy.mm.dd",
+			showMonthAfterYear: true,
+			yearSuffix: ".",
+			dayNames: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+			dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
+			monthNames: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
+			monthNamesShort: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
+			onSelect: function (dateText) {
+			// Set the selected date to .input field
+// 			$(this).siblings('.input').val(dateText);
+			}
+		}).datepicker(); // Set the default date
+	});
+}
+
+// 페이지 개수 선택
+function setCntPerPageInit() {
+	const jsonUrlParam = getQueryParamAsJson();
+	
+	if(jsonUrlParam['cntPerPage']) {
+		$('#pageSize').val(decodeURI(jsonUrlParam['cntPerPage'])).prop("selected", true);
+	} else {
+		$("#pageSize option:eq(0)").prop("selected", true);
+	}
+	
+}
+
+function setSearchInit(searchClass) {
+	// searchOption 선택 기능	
+	const jsonUrlParam = getQueryParamAsJson();
+	for(key in jsonUrlParam) {
+		if(!key || !jsonUrlParam[key] || !$('.'+searchClass).find('#'+key)) {
+			continue;
+		}
+		
+		if(!$('.'+searchClass).find('#'+key).prop('tagName')) {
+			continue;
+		}
+		const tag = $('.'+searchClass).find('#'+key).prop('tagName').toLowerCase();
+		
+		// 날짜패턴 정규식 YYYY-MM-DD
+		var regex = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
+		if(regex.test(jsonUrlParam[key])) {
+			jsonUrlParam[key] = dayjs(jsonUrlParam[key]).format('YYYY.MM.DD');
+		}
+		
+		if(tag === 'input') {
+			$('.'+searchClass).find('#'+key).val(decodeURI(jsonUrlParam[key]));
+		} else if(tag === 'select' || tag === 'radio') {
+			$('.'+searchClass).find('#'+key).val(decodeURI(jsonUrlParam[key])).prop("selected", true);
+		}
+	}
+	
+	$('.'+searchClass).find('button.searchBtn').click(function() {
+		//const nowParams = getQueryParamAsJson();
+		const newParams = searchObject(searchClass);
+		for(key in newParams) {
+			if(!newParams[key]) {
+				continue;
+			}
+			// 날짜패턴 정규식 YYYY.MM.DD
+			var regex = RegExp(/^\d{4}.(0[1-9]|1[012]).(0[1-9]|[12][0-9]|3[01])$/);
+			if(regex.test(newParams[key])) {
+				newParams[key] = dayjs(newParams[key]).format('YYYY-MM-DD');
+			}
+			//nowParams[key] = newParams[key];
+		}
+		
+		// 객체 nowParams를 쓰면 다중조건 검색후에 일부 조건을 빼서 재검색하려면 param[key]값이 유지가 되어서 삭제(주석처리해둠)
+		//const newQueryParams = jsonToQueryParam(nowParams);
+		const newQueryParams = jsonToQueryParam(newParams);
+		const url = newQueryParams ? location.pathname + '?' + newQueryParams : location.pathname;
+		location.href=url;
+	})
+}
+
+function searchObject(searchClass) {
+	let param = {};
+	
+	$('.'+searchClass+' :input').each(function() {
+		let id = "";
+		let value = "";
+		
+		if($(this).attr("type") == "radio"){
+			if($(this).prop("checked")){
+				id = $(this).attr("name");
+				value = $(this).val();
+			}
+		}else{
+			id = $(this).attr("id");
+			value = $(this).val();
+		}
+		
+		if(value.trim() != ''){
+			param[id] = value;
+		};
+		
+	});
+	return param;
+} 
+
+function getQueryParamAsJson(){
+	const urlParams = new URLSearchParams(window.location.search);
+	const jsonObject = Object.fromEntries(urlParams.entries());
+	return jsonObject;
+}
+
+function jsonToQueryParam(json) {
+    const urlParams = new URLSearchParams();
+
+    for (const [key, value] of Object.entries(json)) {
+        urlParams.append(key, value);
+    }
+
+    return urlParams.toString();
+}
+
 /*
 	selectbox, option 생성
 */

@@ -222,11 +222,8 @@ function getSiteId(defaultUrl) {
         console.log("세션 Item 키값 없음");
     }
 
-    console.log(defaultUrl);
-
     let urlSegments = defaultUrl.split('/');
 
-    console.log("segments ::" + urlSegments[1]);
     // siteId 부분만 추출
     if (urlSegments.length > 1) {
         siteId = urlSegments[1];
