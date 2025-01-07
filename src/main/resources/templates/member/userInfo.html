@@ -4,13 +4,11 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{member/fragments/layout}">
 <div layout:fragment="content" class="infoWrapper">
-    <div id="modalWrapper">
-        <div th:if="${modalInfo != null}"
-        >
-            <div th:insert="~{fragments/modal::modal(${modalInfo.title},${modalInfo.content}, '', ${modalInfo.name},${modalInfo.type})}"></div>
-        </div>
+    <div th:if="${modal} != null">
+        <div th:insert="~{fragments/modal::modal(${modal.title}, ${modal.content}, '', 'response', 'simple')}"></div>
     </div>
     <div th:insert="~{fragments/modal::modal('이메일 전송 중입니다.', '잠시만 기다려주세요.', '', 'sending', 'simple')}"></div>
+    <div th:insert="~{fragments/modal::modal('이메일 형식 오류', '이메일 형식이 맞지 않습니다.', '', 'emailFormat', 'simple')}"></div>
     <div th:insert="~{fragments/modal::modal('회원 정보 수정', '데이터를 입력해주세요.', '', 'warning', 'simple')}"></div>
     <div th:insert="~{fragments/modal::modal('비밀번호 변경', '빈 칸을 채워주세요.', '', 'notEnough', 'simple')}"></div>
     <div th:insert="~{fragments/modal::modal('비밀번호 변경', '새로운 비밀번호가 서로 일치하지 않습니다.', '', 'notMatched', 'simple')}"></div>
@@ -59,10 +57,12 @@
         <div>
             <div>
                 <span>배송지</span></div>
-            <div>
+            <div id="address">
                 <!-- user.address.split(',')[1]+ user.address.split(',')[2]-->
                 <span th:text="${user.address}"></span>
-                <button>배송지 관리</button>
+                <button id="addressBook">배송지 관리</button>
+                <div
+                        th:insert="~{fragments/modal::modal('배송지 관리', ${addressBook},'', 'addressBook', 'list')}"></div>
             </div>
         </div>
         <div>
@@ -101,7 +101,9 @@
             await FETCH.patch(`/api/user/info/${id}`, {
                 "current": current,
                 "password": newPwd
-            }).then(() => location.reload())
+            }).then(() => {
+                location.reload()
+            })
         }
 
         function validatePwd(newPassword) {
@@ -113,9 +115,26 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            const modalInfo = [[${modalInfo}]]
-            if (modalInfo != null) {
-                showModal(modalInfo.name)
+            history.replaceState({}, null, location.pathname);
+            const dragTable = document.querySelector("#draggable");
+            let address = [[${addressBook}]];
+            let isOpen = [[${openAddressBook}]];
+            if (isOpen) {
+                showModal("addressBook")
+            }
+            let defaultId = address[0].addrId;
+            dragTable.addEventListener("dragend", (e) => {
+                const firstRow = dragTable.querySelector("tbody tr:first-child");
+                const id = parseInt(firstRow.querySelector("input[type='hidden']").value)
+                if (id != defaultId) {
+                    FETCH.get(`/api/user/address/default/${id}`).then(res => res.json()).then(res => {
+                        defaultId = res[0].addrId;
+                    })
+                }
+            })
+            const modal = [[${modal}]]
+            if (modal != null) {
+                showModal('response')
             }
             const id = [[${user.userId}]]
             const password = document.getElementById("changePwd")
@@ -193,12 +212,31 @@
                     showModal("warning")
                     return;
                 }
+                if (!validate(emailInput.value)) {
+                    showModal("emailFormat")
+                    return;
+                }
                 showModal("sending")
                 await FETCH.post("/auth/mail/change-email", {
                     "email": emailInput.value,
                     "id": id
-                }).then(() => location.reload())
+                }).then(() => {
+                    setTimeout(() => location.reload(), 500)
+                })
             })
+
+            const addressBook = document.querySelector("#addressBook")
+            addressBook.addEventListener("click", () => {
+                showModal("addressBook")
+            })
+
+            function validate(emailAddr) {
+                let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+                if (!regex.test(emailAddr)) {
+                    return false;
+                }
+                return true;
+            }
         })
 
         // const userId = [[${user.userId}]]

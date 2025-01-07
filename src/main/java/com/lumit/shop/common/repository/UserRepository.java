@@ -48,6 +48,14 @@ public interface UserRepository {
 
     int updateDefaultAddr(TbLogin tbLogin);
 
+    int updateAddress(TbAddress tbAddress);
+
+    int deleteAddress(int id);
+
+    int insertNewAddress(TbAddress tbAddress);
+
+    TbAddress selectAddressById(int id);
+
     int updateAdmin(AdminDto adminDto);
 
     int updatePwd(UserInfoDto userInfo);
@@ -56,4 +64,6 @@ public interface UserRepository {
 
     // delete
     int deleteAdmin(AdminDto adminDto);
+
+    int removeAuthCode(String userId);
 }

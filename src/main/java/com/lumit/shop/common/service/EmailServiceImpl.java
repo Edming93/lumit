@@ -33,30 +33,31 @@ public class EmailServiceImpl implements EmailService {
     String siteId;
 
     @Transactional
-    public ModalInfo sendMail(EmailMessage emailMessage) {
+    public ServiceCode sendMail(EmailMessage emailMessage) {
         String authNum = createCode();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         TbLogin tbLogin = null;
         String type = emailMessage.getType();
         emailMessage.setCode(authNum);
-        ModalInfo modalInfo = null;
+        ServiceCode sc;
         switch (type) {
             case "temp-password":
                 tbLogin = userService.selectByUserId(emailMessage.getUserId());
                 if (tbLogin == null || !tbLogin.getEmail().equals(emailMessage.getTo())) {
-                    return new ModalInfo(ModalInfo.Title.TEMP_PASSWORD, ServiceCode.NOT_FOUND);
+                    return ServiceCode.NOT_FOUND;
                 }
                 UserInfoDto userInfo = UserInfoDto.builder().userId(tbLogin.getUserId()).password(authNum).build();
-                ServiceCode sc = userService.updateTempPwd(userInfo);
+                sc = userService.updateTempPwd(userInfo);
                 if (!sc.equals(ServiceCode.UPDATED)) {
-                    return new ModalInfo(ModalInfo.Title.PASSWORD, ServiceCode.UNKNOWN);
+                    return ServiceCode.UNKNOWN;
                 }
                 break;
             case "find-id":
                 tbLogin = userService.selectByEmail(emailMessage.getTo());
                 if (tbLogin == null) {
-                    return new ModalInfo(ModalInfo.Title.FIND_ID, ServiceCode.NOT_FOUND);
+                    return ServiceCode.NOT_FOUND;
                 }
+                emailMessage.setUserId(tbLogin.getUserId());
                 break;
             case "mail-check":
                 break;
@@ -64,16 +65,15 @@ public class EmailServiceImpl implements EmailService {
                 tbLogin = userService.selectByEmail(emailMessage.getTo());
                 if (tbLogin != null) {
                     if (tbLogin.getUserId().equals(emailMessage.getUserId())) {
-                        return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.NOT_MODIFIED);
+                        return ServiceCode.NOT_MODIFIED;
                     }
-                    return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.CONFLICT);
+                    return ServiceCode.CONFLICT;
                 }
                 userInfo = UserInfoDto.builder().userId(emailMessage.getUserId()).code(authNum).build();
-                modalInfo = userService.updateUserInfo(userInfo, session);
-                if (!modalInfo.getSc().equals(ServiceCode.UPDATED)) {
-                    return modalInfo;
+                sc = userService.updateUserInfo(userInfo);
+                if (!sc.equals(ServiceCode.UPDATED)) {
+                    return ServiceCode.UNKNOWN;
                 }
-                break;
             default:
                 break;
         }
@@ -84,10 +84,10 @@ public class EmailServiceImpl implements EmailService {
             mimeMessageHelper.setText(setContext(emailMessage), true);
             javaMailSender.send(mimeMessage);
             log.info("Success");
-            return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.SUCCESS);
+            return ServiceCode.SUCCESS;
         } catch (MessagingException e) {
             log.info("fail");
-            return new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.UNKNOWN);
+            return ServiceCode.UNKNOWN;
         }
     }
 

@@ -24,7 +24,17 @@
     flex-direction: column;
 }
 
-.simpleModalWindow > .modalHeader {
+.simpleModalWindowBig {
+    background: white;
+    width: 800px;
+    height: 400px;
+    position: relative;
+    display: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.simpleModalWindow > .modalHeader, .simpleModalWindowBig > .modalHeader {
     background-color: #F4EEE6;
     display: flex;
     justify-content: space-between;
@@ -84,4 +94,92 @@
     border: 1px solid #AAAAAA;
     border-radius: 1rem;
     padding: 0.3rem 2rem 0.3rem 2rem;
+}
+
+.modalContentWrapper .tableScroll {
+    height: 55%;
+    width: 100%;
+    overflow: auto;
+    position: relative;
+    min-height: 300px;
+    min-width: 700px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.modalContentWrapper > div {
+    width: 100%;
+}
+
+.modalContentWrapper table {
+    height: auto;
+    overflow-y: scroll;
+    width: 100%;
+    table-layout: fixed;
+
+}
+
+.modalContentWrapper th {
+    height: 30px;
+    margin: 0 auto;
+    background-color: #876453;
+    color: white;
+    align-self: center;
+    font-weight: 600;
+    vertical-align: middle;
+    text-align: center;
+    position: sticky;
+    top: 24px;
+}
+
+.modalContentWrapper tr {
+    text-align: center;
+}
+
+.modalContentWrapper td {
+    padding: 0.2rem;
+}
+
+.modalContentWrapper tr:hover {
+    background-color: #F4EEE6;
+}
+
+.tableBottom {
+    margin-top: 0.6rem;
+    position: relative;
+    width: 100%;
+}
+
+.tableBottom > div > button {
+
+}
+
+.tableScroll > div:nth-child(1) {
+    background-color: #F4EEE6;
+    text-align: left;
+    padding: 0.3rem;
+    position: sticky;
+    top: 0;
+    color: #3D3D3D;
+}
+
+#draggable tr.hover {
+    background-color: #876453;
+    color: white;
+}
+
+.inputAddr {
+    width: 90% !important;
+    margin: 0 !important;
+    padding: 0.3rem 0.2rem 0.3rem 0.2rem !important;
+
+}
+
+.inputAddr.readonly {
+    text-decoration: none;
+    border: none;
+}
+
+.inputAddr.modify:focus {
+    background-color: #876453;
+    color: white;
 }

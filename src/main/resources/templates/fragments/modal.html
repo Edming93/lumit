@@ -40,7 +40,116 @@
             </div>
         </div>
     </div>
+    <div th:if="${type} == 'list'">
+        <div th:attr="onclick=|backgroundCancel(event, '${name}Modal', 'list')|" class="simpleModalOverlay"
+             th:id="${name}+Modal" style="display: none">
+            <div class="simpleModalWindowBig">
+                <div class="modalHeader">
+                    <p th:utext="${title}"></p>
+                    <button th:attr="onclick=|hideModal('${name}Modal')|"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modalContentWrapper">
+                    <div th:if="${T(com.lumit.shop.common.model.TbAddress).simpleName == content[0].Class.simpleName}"
+                         id="addrTable">
+                        <div class="tableScroll">
+                            <div>
+                                &#x2022; 기본 배송지를 변경하려면 주소를 맨 위로 드래그하세요(기본 배송지 이외의 순서는 변경되지 않습니다.)
+                            </div>
+                            <table id="draggable" th:if="!${#lists.isEmpty(content)}">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="15%">
+                                    <col width="45%">
+                                    <col width="15%">
+                                    <col width="15%">
+                                </colgroup>
+                                <thead>
+                                <tr th:if="${T(com.lumit.shop.common.model.TbAddress).simpleName == content[0].Class.simpleName}">
+                                    <th>배송지명</th>
+                                    <th>받는 사람</th>
+                                    <th>주소</th>
+                                    <th>전화번호</th>
+                                    <th>편집</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${T(com.lumit.shop.common.model.TbAddress).simpleName == item.Class.simpleName}"
+                                    th:each="item: ${content}">
+                                    <input type="hidden" th:value="${item.addrId}">
+                                    <td><input class="inputAddr readonly" maxlength="10"
+                                               th:value="${item.addrName}"
+                                    >
+                                    </td>
+                                    <td><input class="inputAddr readonly" type="text" readonly="readonly"
+                                               th:value="${item.receiver}"
+                                    >
+                                    </td>
+                                    <td>
+                                        <input name="addrCell" class="inputAddr readonly"
+                                               th:value="${item.baseAddr} + ' ' +${item.detailAddr}"
+                                               readonly="readonly">
+                                        <button class="addrBtn" style="display: none;" onclick="daumPostcode(event)">주소
+                                            검색
+                                        </button>
+
+                                    </td>
+                                    <td>
+                                        <input class="inputAddr readonly" type="text" readonly="readonly"
+                                               th:value="${item.phoneNumber.length() == 11 ? #strings.substring(item.phoneNumber, 0, 3) + '-' + #strings.substring(item.phoneNumber, 3, 7) + '-' + #strings.substring(item.phoneNumber, 7, 11): ''}"
+                                               oninput="phoneValidate(event)">
+                                    </td>
+                                    <td>
+                                        <div class="defaultBtns">
+                                            <button class="modifyBtn" th:text="수정" onclick="modifyAddr(event)"></button>
+                                            <button th:text="삭제" onclick="deleteAddr(event)"></button>
+                                        </div>
+                                        <div style="display:none" class="completeBtn">
+                                            <button th:text="저장" onclick="submitAddr(event)"></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <input type="hidden" id="zonecode">
+                        </div>
+                        <div class="tableBottom"
+
+                        >
+                            <div style="width: 100%; display: flex;justify-content: center">
+                                <div>
+                                    <button th:onmouseover="|toggleHelpText()|" th:onmouseout="|toggleHelpText()|"
+                                            onclick="newAddrForm()"
+                                    >
+                                        새 주소 추가하기
+                                    </button>
+                                    <div id="helpText"
+                                         style="position:absolute; padding: 0.3rem; color:white; background-color: #9F9F9F;"
+                                         class="hide">배송지는 10개까지 저장 가능합니다.
+                                    </div>
+                                </div>
+                                <div style="position:absolute; right: 0;"
+                                     th:text="'총 ' + ${#lists.size(content)} + '개의 주소'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script th:inline="javascript">
+        function toggleHelpText() {
+            const helpText = document.querySelector("#helpText");
+            if (helpText.classList.contains("hide")) {
+                helpText.classList.remove("hide");
+            } else {
+                helpText.classList.add("hide");
+            }
+        }
+
+        function showInput(e) {
+            console.log(e)
+        }
 
         document.addEventListener("DOMContentLoaded", function () {
             let modalName = [[${name}]] + "Modal"
@@ -55,6 +164,174 @@
             const result = document.getElementById("modalResult")
             result.value = value
             result.dispatchEvent(new Event("change"))
+        }
+
+        function modifyAddr(e) {
+            const parent = e.target.parentNode.parentNode.parentElement
+            const inputs = parent.querySelectorAll(".inputAddr")
+            if (parent.querySelector(".defaultBtns").style.display == 'none') {
+                parent.querySelector(".defaultBtns").style.display = 'inline';
+                parent.querySelector('.completeBtn').style.display = 'none';
+            } else {
+                parent.querySelector(".defaultBtns").style.display = 'none';
+                parent.querySelector('.completeBtn').style.display = 'inline';
+            }
+            for (let i = 0; i < inputs.length; i++) {
+                if (inputs[i].name === 'addrCell') {
+                    const btn = inputs[i].nextElementSibling;
+                    if (inputs[i].classList.contains("readonly")) {
+                        btn.style.display = "inline";
+                        inputs[i].style.display = "none";
+                    } else {
+                        btn.style.display = "none";
+                        inputs[i].style.display = "inline";
+                    }
+                }
+                if (inputs[i].classList.contains("readonly")) {
+                    inputs[i].removeAttribute("readonly");
+                    inputs[i].classList.remove("readonly");
+                    inputs[i].classList.add("modify");
+                } else {
+                    inputs[i].setAttribute("readonly", "readonly")
+                    inputs[i].classList.add("readonly");
+                    inputs[i].classList.remove("modify");
+                }
+            }
+        }
+
+        function phoneValidate(event) {
+            const value = event.currentTarget.value
+            if (value.length > 13) {
+                event.currentTarget.value = value.substring(0, 13)
+                return;
+            }
+            event.currentTarget.value = value.replace(/[^0-9]/g, '')
+                .replace(/(^02.{0}|^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")
+        }
+
+        async function submitAddr(e) {
+            const target = e.target.parentNode.parentNode.parentElement
+            const inputs = target.querySelectorAll("input")
+            const zonecode = document.querySelector("#zonecode").value
+            const addr = inputs[3].value.split(", ");
+            const data = {
+                addrId: inputs[0].value,
+                addrName: inputs[1].value,
+                receiver: inputs[2].value,
+                zipCd: zonecode != "" ? zonecode : "",
+                baseAddr: addr[0],
+                detailAddr: addr[1],
+                phoneNumber: inputs[4].value
+            }
+            await FETCH.put(`/api/user/address/${data.addrId}`, data).then(res => {
+                if (res.ok) {
+                    alert("수정이 완료되었습니다.");
+                } else {
+                    alert("다시 시도해주세요.");
+                }
+                location.href = "/main/member/edit?addr=true";
+            })
+        }
+
+        async function deleteAddr(event) {
+            const parent = event.target.parentNode.parentNode.parentElement
+            const id = parent.querySelectorAll("input")[0].value;
+            await FETCH.delete(`/api/user/address/${id}`).then((res) => {
+                if (res.ok) {
+                    FETCH.get("/main/member/addressList")
+                }
+                location.href = "/main/member/edit?addr=true";
+            });
+        }
+
+        function newAddrForm() {
+            const table = document.querySelector("#draggable")
+            const tbody = table.querySelector("tbody");
+            tbody.insertAdjacentHTML("beforeend", `<tr>
+                                    <td><input class="inputAddr" maxlength="10"
+                                    placeholder="배송지명"
+                                    >
+                                    </td>
+                                    <td><input class="inputAddr" type="text"
+                                    placeholder="받는 사람"
+                                    >
+                                    </td>
+                                    <td>
+                                    <input style="display: none" name="addrCell" class="inputAddr">
+                                        <button class="addrBtn" style="display: inline;" onclick="daumPostcode(event)">주소
+                                            검색
+                                        </button>
+
+                                    </td>
+                                    <td>
+                                        <input class="inputAddr" type="text"
+                                               oninput="phoneValidate(event)">
+                                    </td>
+                                    <td>
+                                        <div style="display:inline" class="completeBtn">
+                                            <button onclick="submitNewAddr(event)">저장</button>
+                                        </div>
+                                    </td>
+                                </tr>`)
+        }
+
+        async function submitNewAddr(event) {
+            const target = event.target.parentNode.parentNode.parentElement
+            console.log(target)
+            const inputs = target.querySelectorAll("input")
+            const zonecode = document.querySelector("#zonecode").value
+            const addr = inputs[2].value.split(", ");
+            const data = {
+                addrName: inputs[0].value,
+                receiver: inputs[1].value,
+                zipCd: zonecode != "" ? zonecode : "",
+                baseAddr: addr[0],
+                detailAddr: addr[1],
+                phoneNumber: inputs[3].value
+            }
+            await FETCH.post(`/api/user/address`, data).then(res => {
+                if (res.ok) {
+                    alert("새로운 주소가 추가되었습니다.");
+                } else {
+                    alert("다시 시도해주세요.");
+                }
+                location.href = "/main/member/edit?addr=true";
+            })
+        }
+
+        function daumPostcode(event) {
+            const pt = event.target.parentElement
+            console.log(pt)
+            const input = pt.querySelector('input');
+            const btn = pt.querySelector('button');
+            new daum.Postcode({
+                oncomplete: function (data) {
+
+                    let addr = ''; //
+                    let extraAddr = '';
+
+                    if (data.userSelectedType === 'R') {
+                        addr = data.roadAddress;
+                    } else {
+                        addr = data.jibunAddress;
+                    }
+
+                    if (data.userSelectedType == 'R') {
+                        // 건물명이 있고, 공동주택일 경우 추가한다.
+                        if (data.buildingName !== '' && data.apartment === 'Y') {
+                            extraAddr += "(" + data.buildingName + ")";
+                        }
+                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                        addr += " " + extraAddr
+                    }
+                    input.value = addr.trim() + ", ";
+
+                    document.getElementById('zonecode').value = data.zonecode;
+                    input.focus()
+                }
+            }).open();
+            input.style.display = 'inline'
+            btn.style.display = "none";
         }
 
         /**
@@ -73,4 +350,5 @@
 
         }
     </script>
+    <script th:src="@{/js/sortable.js}"></script>
 </div>
