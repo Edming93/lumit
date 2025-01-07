@@ -4,10 +4,12 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{fragments/layout}">
 <div layout:fragment="content" style="text-align: center; display: flex; justify-content: center">
-    <div th:replace="~{fragments/modal::modal('회원 정보 찾기','입력하신 정보와 일치하는 회원이<br>존재하지 않습니다.', '', 'notFound','simple')}"></div>
+    <div th:if="${modal} != null">
+        <div th:insert="~{fragments/modal::modal(${modal.title}, ${modal.content}, '', 'response', 'simple')}"></div>
+    </div>
     <div th:replace="~{fragments/modal::modal('회원 정보 찾기','메일을 전송 중입니다.<br>잠시만 기다려주세요...', '', 'wait','simple')}"></div>
     <div th:replace="~{fragments/modal::modal('회원 정보 찾기','정보를 입력해주세요.', '', 'warning','simple')}"></div>
-    <div th:replace="~{fragments/modal::modal('회원 정보 찾기','이메일 전송이 완료되었습니다.', '', 'success','simple')}"></div>
+    <div th:replace="~{fragments/modal::modal('회원 정보 찾기','이메일 주소 형식이 맞지 않습니다.', '', 'error','simple')}"></div>
     <div class="findUserForm">
         <p>계정 정보 찾기</p>
         <div class="findUserTab">
@@ -86,23 +88,22 @@
         const email = {
             async id(emailAddr) {
                 showModal("wait")
-                let result = await FETCH.post("/auth/mail/findId", {"email": emailAddr})
-                closeModal("wait")
-                if (result.status == 204) {
-                    showModal("notFound")
-                    return;
-                }
-                showModal("success")
+                await FETCH.post("/auth/mail/findId", {"email": emailAddr}).then(() => {
+                    setTimeout(() => location.reload(), 500)
+                })
             },
             async password(id, emailAddr) {
                 showModal("wait")
-                let result = await FETCH.post("/auth/mail/password", {"email": emailAddr, "id": id})
-                closeModal("wait")
-                if (result.status == 204) {
-                    showModal("notFound")
-                    return;
+                await FETCH.post("/auth/mail/password", {"email": emailAddr, "id": id}).then(() => {
+                    setTimeout(() => location.reload(), 500)
+                })
+            },
+            validate(emailAddr) {
+                let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+                if (!regex.test(emailAddr)) {
+                    return false;
                 }
-                showModal("success")
+                return true;
             }
         }
 
@@ -115,6 +116,10 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+            const modal = [[${modal}]]
+            if (modal != null) {
+                showModal('response')
+            }
             const emailId = document.querySelector("#emailId");
             const emailPwd = document.querySelector("#emailPwd")
             const emailIdBtn = emailId.querySelector(":scope button")
@@ -126,6 +131,10 @@
                 const value = emailIdInput.value;
                 if (value == "") {
                     showModal("warning")
+                    return;
+                }
+                if (!email.validate(value)) {
+                    showModal("error")
                     return;
                 }
                 email.id(emailIdInput.value)
@@ -155,10 +164,10 @@
             const emailRadio = document.querySelector("#emailRadio")
 
             const btns = document.querySelectorAll(".verifyPhone")
-            for (let i = 0; i < btns.length; i++) {
-                const id = btns[i].parentElement.parentElement.id;
-                btns[i].addEventListener("click", () => makeVerify(btns[i], id))
-            }
+            // for (let i = 0; i < btns.length; i++) {
+            //     const id = btns[i].parentElement.parentElement.id;
+            //     btns[i].addEventListener("click", () => makeVerify(btns[i], id))
+            // }
             idBtn.addEventListener("click", function () {
                 pwdBtn.classList.remove("highlight")
                 idBtn.classList.add("highlight")

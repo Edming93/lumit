@@ -90,12 +90,47 @@
         VALUES (#{addrName}, #{receiver}, #{phoneNumber}, #{zipCd}, #{baseAddr}, #{detailAddr}, now(), #{userId});
     </insert>
 
+    <update id="updateAddress" parameterType="TbAddress">
+        UPDATE TB_ADDRESS
+        SET ADDR_NAME = #{addrName},
+        RECEIVER = #{receiver},
+        PHONE_NUMBER = #{phoneNumber},
+        <if test="zipCd != null and zipCd != ''">
+            ZIP_CD = #{zipCd},
+        </if>
+        BASE_ADDR = #{baseAddr},
+        <if test="detailAddr != null">
+            DETAIL_ADDR = #{detailAddr},
+        </if>
+        REG_DT = now()
+        WHERE ADDR_ID = #{addrId}
+    </update>
+
+    <delete id="deleteAddress" parameterType="integer">
+        DELETE
+        FROM TB_ADDRESS
+        WHERE ADDR_ID = #{id};
+    </delete>
+
+    <insert id="insertNewAddress" parameterType="TbAddress">
+        INSERT INTO TB_ADDRESS (ADDR_NAME, RECEIVER, PHONE_NUMBER, ZIP_CD, BASE_ADDR, DETAIL_ADDR, REG_DT, USER_ID)
+        VALUES (#{addrName}, #{receiver}, #{phoneNumber}, #{zipCd}, #{baseAddr}, #{detailAddr}, now(), #{userId})
+    </insert>
+
     <select id="selectAddressListByUserId" parameterType="java.lang.String"
             resultType="com.lumit.shop.common.model.TbAddress">
         SELECT *
+        FROM TB_ADDRESS t
+                 INNER JOIN TB_LOGIN l ON t.USER_ID = l.USER_ID
+        ORDER BY CASE
+                     WHEN l.DEFAULT_ADDR = t.ADDR_ID THEN 0
+                     ELSE 1 END;
+    </select>
+
+    <select id="selectAddressById" parameterType="integer" resultType="TbAddress">
+        SELECT *
         FROM TB_ADDRESS
-        WHERE USER_ID = #{userId}
-        ORDER BY `REG_DT` DESC
+        WHERE ADDR_ID = #{id};
     </select>
 
 
@@ -156,8 +191,18 @@
         <if test="phone != null">
             PHONE=#{phone},
         </if>
+        <if test="defaultAddr != null">
+            DEFAULT_ADDR=#{defaultAddr},
+        </if>
         MOD_ID=#{modId},
         MOD_DT=now()
+        WHERE USER_ID = #{userId}
+    </update>
+    <update id="removeAuthCode" parameterType="String">
+        UPDATE TB_LOGIN
+        SET AUTH_CODE = NULL,
+            MOD_ID=#{userId},
+            MOD_DT=now()
         WHERE USER_ID = #{userId}
     </update>
 

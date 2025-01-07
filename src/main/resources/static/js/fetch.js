@@ -6,13 +6,12 @@ const FETCH = {
      * @returns any
      */
     async get(url, callbackFunc = null) {
-        const response = await fetch(url).then(res => {
-            return res.json()
-        }).then(res => res)
+        const response = await fetch(url).then(res =>
+            res).then(res => res)
         if (callbackFunc != null) {
             return await callbackFunc(response)
         }
-        return await response;
+        return response;
     },
     /**
      *

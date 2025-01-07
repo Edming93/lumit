@@ -27,7 +27,7 @@ public interface UserService {
 
     int insertAdmin(TbLogin tbLogin);
 
-    ModalInfo updateUserInfo(UserInfoDto userInfo, HttpSession httpSession);
+    ServiceCode updateUserInfo(UserInfoDto userInfo);
 
     boolean isIdDuplicated(String id);
 
@@ -38,6 +38,14 @@ public interface UserService {
     int insertAddress(TbAddress tbAddress);
 
     int updateDefaultAddr(TbLogin tbLogin);
+
+    ServiceCode updateAddress(TbAddress tbAddress);
+
+    ServiceCode deleteAddress(int id);
+
+    ServiceCode insertNewAddress(TbAddress tbAddress);
+
+    TbAddress selectAddressById(int id);
 
     List<TbAddress> selectAddressListByUserId(String userId);
 

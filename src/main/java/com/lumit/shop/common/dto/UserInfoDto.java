@@ -19,4 +19,5 @@ public class UserInfoDto {
     private String phone;
     private String code;
     private String modId;
+    private int defaultAddr;
 }

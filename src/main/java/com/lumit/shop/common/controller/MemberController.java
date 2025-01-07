@@ -1,6 +1,7 @@
 package com.lumit.shop.common.controller;
 
 import com.lumit.shop.common.constants.ServiceCode;
+import com.lumit.shop.common.data.Modal;
 import com.lumit.shop.common.data.ModalInfo;
 import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.model.TbAddress;
@@ -30,23 +31,26 @@ public class MemberController {
     private final String SIGNUP_FORM = "/common/auth/signupForm";
     private final String FIND_USER = "/common/auth/findUser";
     private final UserService userService;
-    private final UserDetailsService userDetailsService;
+
+    private final HttpSession session;
 
     @GetMapping("/edit")
-    public String userInfo(Model model, HttpSession session) {
+    public String userInfo(Model model, @RequestParam(required = false) boolean addr) {
+        if (addr) {
+            model.addAttribute("openAddressBook", true);
+        }
         User user = userService.selectByUserId(SecurityUtils.getPrincipal().getUserId()).userMapping();
-        ModalInfo modalInfo = (ModalInfo) session.getAttribute("modalInfo");
-        List<TbAddress> addressBook = userService.selectAddressListByUserId(user.getUserId());
-        session.removeAttribute("modalInfo");
         model.addAttribute("user", user);
-        model.addAttribute("addressBook", addressBook);
-        model.addAttribute("modalInfo", modalInfo);
-        System.out.println(modalInfo);
+        List<TbAddress> addressList = userService.selectAddressListByUserId(user.getUserId());
+        model.addAttribute("addressBook", addressList);
+        Modal modal = (Modal) session.getAttribute("modal");
+        session.removeAttribute("modal");
+        model.addAttribute("modal", modal);
         return "/member/userInfo";
     }
 
     @GetMapping("/createUser")
-    public String getSignUp(Principal principal, HttpSession session, Model model) {
+    public String getSignUp(Principal principal, Model model) {
         SignUpDto signUpDto = new SignUpDto();
         if (principal != null) {
             TbLogin user = userService.selectByUserId(principal.getName());
@@ -103,6 +107,9 @@ public class MemberController {
 
     @GetMapping("/findUser")
     public String findUser(Model model, @RequestParam(value = "info", required = false) String info) {
+        Modal modal = (Modal) session.getAttribute("modal");
+        model.addAttribute("modal", modal);
+        session.removeAttribute("modal");
         if ((info != null) && info.equals("pwd")) {
             model.addAttribute("info", "pwd");
         } else {

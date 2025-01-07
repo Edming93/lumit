@@ -3,6 +3,7 @@ package com.lumit.shop.common.service;
 import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.common.constants.Role;
 import com.lumit.shop.common.constants.ServiceCode;
+import com.lumit.shop.common.data.Modal;
 import com.lumit.shop.common.data.ModalInfo;
 import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.dto.UserInfoDto;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
+    private final HttpSession session;
 
     // TBLOGIN 관련
     @Override
@@ -131,10 +133,41 @@ public class UserServiceImpl implements UserService {
         return userRepository.updateDefaultAddr(tbLogin);
     }
 
+    @Override
+    public ServiceCode updateAddress(TbAddress tbAddress) {
+        int result = userRepository.updateAddress(tbAddress);
+        if (result > 0) {
+            return ServiceCode.UPDATED;
+        }
+        return ServiceCode.UNKNOWN;
+    }
+
+    @Override
+    public ServiceCode deleteAddress(int id) {
+        int result = userRepository.deleteAddress(id);
+        if (result > 0) {
+            return ServiceCode.DELETED;
+        }
+        return ServiceCode.UNKNOWN;
+    }
+
+    @Override
+    public ServiceCode insertNewAddress(TbAddress tbAddress) {
+        int result = userRepository.insertNewAddress(tbAddress);
+        if (result > 0) {
+            return ServiceCode.SUCCESS;
+        }
+        return ServiceCode.UNKNOWN;
+    }
 
     @Override
     public List<TbAddress> selectAddressListByUserId(String userId) {
         return userRepository.selectAddressListByUserId(userId);
+    }
+
+    @Override
+    public TbAddress selectAddressById(int id) {
+        return userRepository.selectAddressById(id);
     }
 
     @Override
@@ -180,50 +213,42 @@ public class UserServiceImpl implements UserService {
         if (result <= 0) {
             return ServiceCode.UNKNOWN;
         }
-        SecurityUtils.refreshPrincipal();
         return ServiceCode.UPDATED;
     }
 
     @Override
-    public ModalInfo updateUserInfo(UserInfoDto userInfo, HttpSession session) {
+    public ServiceCode updateUserInfo(UserInfoDto userInfo) {
         User user = userRepository.selectByUserId(userInfo.getUserId()).userMapping();
         String id = SecurityUtils.getPrincipal().getUserId();
-        ModalInfo modalInfo = null;
         if (!id.equals(user.getUserId()) && !user.getRole().equals(Role.SUPER_ADMIN)) {
-            modalInfo = new ModalInfo(ModalInfo.Title.USERINFO, ServiceCode.UNAUTHORIZED);
-            return modalInfo;
+            return ServiceCode.UNAUTHORIZED;
         }
         if (userInfo.getName() != null) {
             if (user.getName().equals(userInfo.getName())) {
-                modalInfo = new ModalInfo(ModalInfo.Title.NICK, ServiceCode.NOT_MODIFIED);
-                return modalInfo;
+                return ServiceCode.NOT_MODIFIED;
             }
-            modalInfo = new ModalInfo(ModalInfo.Title.NICK, ServiceCode.UPDATED);
         }
-        if (userInfo.getEmail() != null) {
-            modalInfo = new ModalInfo(ModalInfo.Title.SEND_EMAIL, ServiceCode.SUCCESS);
-        }
-        if (userInfo.getCurrent() != null && userInfo.getCurrent() != "") {
+        if (userInfo.getCurrent() != null) {
             if (!passwordEncoder.matches(userInfo.getCurrent(), user.getPassword())) {
-                modalInfo = new ModalInfo(ModalInfo.Title.PASSWORD, ServiceCode.UNAUTHORIZED);
-                return modalInfo;
+                return ServiceCode.UNAUTHORIZED;
             }
             userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
-            modalInfo = new ModalInfo(ModalInfo.Title.PASSWORD, ServiceCode.UPDATED);
+        }
+        if (userInfo.getEmail() != null) {
+            try {
+                userRepository.removeAuthCode(userInfo.getUserId());
+            } catch (Exception e) {
+                return ServiceCode.UNKNOWN;
+            }
         }
         userInfo.setUserId(id);
         userInfo.setModId(user.getUserId());
         int result = userRepository.updateUserInfo(userInfo);
         if (result < 1) {
-            if (modalInfo.getTitle().equals(ModalInfo.Title.NICK)) {
-                return new ModalInfo(ModalInfo.Title.NICK, ServiceCode.UNKNOWN);
-            } else if (modalInfo.getTitle().equals(ModalInfo.Title.PASSWORD)) {
-                return new ModalInfo(ModalInfo.Title.PASSWORD, ServiceCode.UNKNOWN);
-            }
-            return new ModalInfo(ModalInfo.Title.USERINFO, ServiceCode.UNKNOWN);
+            return ServiceCode.UNKNOWN;
         }
         SecurityUtils.refreshPrincipal();
-        return new ModalInfo(modalInfo.getTitle(modalInfo.getTitle()), ServiceCode.UPDATED);
+        return ServiceCode.UPDATED;
     }
 
     // 유효성 검사 메소드
@@ -235,5 +260,4 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
-
 }
