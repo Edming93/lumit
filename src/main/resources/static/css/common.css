@@ -162,6 +162,10 @@
     color: #3D3D3D;
 }
 
+.tableScroll tr:first-child {
+    background-color: #a9aec1;
+}
+
 #draggable tr.hover {
     background-color: #876453;
     color: white;
@@ -171,7 +175,10 @@
     width: 90% !important;
     margin: 0 !important;
     padding: 0.3rem 0.2rem 0.3rem 0.2rem !important;
+}
 
+.inputAddr::placeholder {
+    color: white;
 }
 
 .inputAddr.readonly {

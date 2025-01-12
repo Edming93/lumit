@@ -76,11 +76,12 @@
                                 <tr th:if="${T(com.lumit.shop.common.model.TbAddress).simpleName == item.Class.simpleName}"
                                     th:each="item: ${content}">
                                     <input type="hidden" th:value="${item.addrId}">
-                                    <td><input class="inputAddr readonly" maxlength="10"
+                                    <td><input class="inputAddr readonly" maxlength="10" placeholder="배송지명"
                                                th:value="${item.addrName}"
                                     >
                                     </td>
                                     <td><input class="inputAddr readonly" type="text" readonly="readonly"
+                                               placeholder="받는 사람"
                                                th:value="${item.receiver}"
                                     >
                                     </td>
@@ -95,7 +96,8 @@
                                     </td>
                                     <td>
                                         <input class="inputAddr readonly" type="text" readonly="readonly"
-                                               th:value="${item.phoneNumber.length() == 11 ? #strings.substring(item.phoneNumber, 0, 3) + '-' + #strings.substring(item.phoneNumber, 3, 7) + '-' + #strings.substring(item.phoneNumber, 7, 11): ''}"
+                                               th:value="${item.phoneNumber}"
+                                               placeholder="전화번호"
                                                oninput="phoneValidate(event)">
                                     </td>
                                     <td>
@@ -244,32 +246,44 @@
             });
         }
 
+        function deleteNewLine() {
+            const newLine = document.querySelector("#newLine")
+            newLine.parentNode.removeChild(newLine);
+        }
+
         function newAddrForm() {
+            const newLine = document.querySelector("#newLine")
+            if (newLine) {
+                return false;
+            }
             const table = document.querySelector("#draggable")
             const tbody = table.querySelector("tbody");
-            tbody.insertAdjacentHTML("beforeend", `<tr>
-                                    <td><input class="inputAddr" maxlength="10"
+
+            tbody.insertAdjacentHTML("beforeend", `<tr id="newLine">
+                                    <td><input class="inputAddr modify" maxlength="10"
                                     placeholder="배송지명"
                                     >
                                     </td>
-                                    <td><input class="inputAddr" type="text"
+                                    <td><input class="inputAddr modify" type="text"
                                     placeholder="받는 사람"
                                     >
                                     </td>
                                     <td>
-                                    <input style="display: none" name="addrCell" class="inputAddr">
+                                    <input style="display: none" name="addrCell modify" class="inputAddr">
                                         <button class="addrBtn" style="display: inline;" onclick="daumPostcode(event)">주소
                                             검색
                                         </button>
 
                                     </td>
                                     <td>
-                                        <input class="inputAddr" type="text"
+                                        <input class="inputAddr modify" type="text"
+                                        placeholder="전화번호"
                                                oninput="phoneValidate(event)">
                                     </td>
                                     <td>
                                         <div style="display:inline" class="completeBtn">
                                             <button onclick="submitNewAddr(event)">저장</button>
+                                            <button onclick="deleteNewLine()">취소</button>
                                         </div>
                                     </td>
                                 </tr>`)
