@@ -81,14 +81,16 @@
 	}
 	
 	function afterGetList(response) {
-		console.log(response);
 		console.log("----------response::")
+		console.log(response);
+		
 	    PAGE.paging(response.totalPages, response.number, response.totalElements, "getList")
 	    resultTable(response)
 	}
 	
 	
 	function resultTable(response) {
+		console.log(response.content)
 	    document.querySelector("#boardListBody").innerHTML = "";
 
 	    if (response.size > 0) {

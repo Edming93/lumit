@@ -1,4 +1,6 @@
-$(document).ready(function() {
+let codeList = [];
+
+$(document).ready(async function() {
 	initDatePicker();
 	setCntPerPageInit();
 })
@@ -8,6 +10,38 @@ function pageReload() {
 	location.href = location.pathname + '?' + newQueryParams;
 }
 
+async function getCodeList() {
+    const codeRes = await axios.post('/common/codeList', {});
+    if(!codeRes || !codeRes.data) {
+    	alert("codeList를 불러오는데 실패했습니다.");
+    	return;
+    }
+    
+    codeList = codeRes.data.list;
+    
+} 
+
+function initTextEditor() {
+	// 텍스트에디터 기초 세팅
+	tinymce.init({
+		language:"ko_KR",
+	    selector: 'textarea',
+	    height:500,
+	    plugins: [
+	      // Core editing features
+	      'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+	    ],
+	    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+	    tinycomments_mode: 'embedded',
+	    tinycomments_author: 'Author name',
+	    mergetags_list: [
+	      { value: 'First.Name', title: 'First Name' },
+	      { value: 'Email', title: 'Email' },
+	    ],
+	    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+	});
+}
+    
 function initDatePicker() {
 	$(".datepickerInput").each(function () {
 		$(this).datepicker({
@@ -158,9 +192,13 @@ function createSelectOptions(selectId, collection, options) {
 		}
 		collection.forEach(item => {		
 			$(`#${selectId}`).append(
-				options.selectedValue === item[options.keyNm] ?
-					`<option value="${item[options.keyNm]}" selected>${item[options.valueNm]}</option>`
-					:`<option value="${item[options.keyNm]}">${item[options.valueNm]}</option>`
+				options.colorCd && options.selectedValue === item[options.keyNm]
+				? `<option value="${item[options.keyNm]}" data-colorCd=${item[options.colorCd]} selected>${item[options.valueNm]}</option>`
+				: options.colorCd
+				? `<option value="${item[options.keyNm]}" data-colorCd=${item[options.colorCd]}>${item[options.valueNm]}</option>`
+				: options.selectedValue === item[options.keyNm] 
+				? `<option value="${item[options.keyNm]}" selected>${item[options.valueNm]}</option>`
+				: `<option value="${item[options.keyNm]}">${item[options.valueNm]}</option>`
 			);
 		});
 	}

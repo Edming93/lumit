@@ -17,34 +17,16 @@
         </div>
     </div>
 </div>
-</body>
-<script th:inline="javascript">
-    document.addEventListener("DOMContentLoaded", async function () {
-        sideBar.setting();
-        
-        await getCodeList();
-    })
-</script>
-
 <script th:inline="javascript">
     let defaultUrl = [[${session.defaultUrl}]];
-    let codeList = [];
-    
     getSiteId(defaultUrl);
     
     let menuList = [[${session.menuList}]];
     
-    async function getCodeList() {
-	    const codeRes = await axios.post('/common/codeList', {});
-	    
-	    if(!codeRes || !codeRes.data) {
-	    	alert("codeList를 불러오는데 실패했습니다.");
-	    	return;
-	    }
-	    
-	    codeList = codeRes.data.list;
-    } 
-    
+    document.addEventListener("DOMContentLoaded", function () {
+        sideBar.setting();
+    });
+
     
 // 메뉴 정보 공통화 할 일 있으면 사용
 //  let selectUrl = window.location.pathname.replace(/\/[^/]+$/, '') + "/**";;
@@ -52,4 +34,5 @@
 //  $("#menuNm").html(selectMenu.menuName);
     
 </script>
+</body>
 </html>
