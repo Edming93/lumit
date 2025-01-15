@@ -4,14 +4,17 @@
 <mapper namespace="com.lumit.shop.admin.repository.ProductRepository">
     <sql id="searchWhere">
         WHERE 1=1
-        <if test="title != '' and title neq null">
-            AND TITLE LIKE CONCAT('%', #{title}, '%')
+        <if test="productName != '' and productName neq null">
+            AND PRODUCT_NAME LIKE CONCAT('%', #{productName}, '%')
         </if>
-        <if test="content != '' and content neq null">
-            AND CONTENT LIKE CONCAT('%', #{content}, '%')
+        <if test="productCd != '' and productCd neq null">
+            AND PRODUCT_CD LIKE CONCAT('%', #{productCd}, '%')
         </if>
-        <if test="categories != '' and categories neq null">
-            AND CATEGORIES = #{categories}
+        <if test="status != '' and status neq null">
+            AND STATUS = #{status}
+        </if>
+        <if test="dpStatus != '' and dpStatus neq null">
+            AND DP_STATUS = #{dpStatus}
         </if>
     </sql>
     <select id="selectProductList" resultType="com.lumit.shop.common.model.TbProduct">
@@ -19,8 +22,141 @@
         FROM
         	TB_PRODUCT
         <include refid="searchWhere"></include>
-        AND
-        	DEL_YN = 'N'
         ORDER BY REG_DT DESC
     </select>
+    
+    <select id="selectPageableProductList" parameterType="RequestList" resultType="TbProduct">
+        SELECT *
+        FROM
+        	TB_PRODUCT
+        <where>
+        	1=1
+			<if test="data.productName != '' and data.productName neq null">
+			    AND PRODUCT_NAME LIKE CONCAT('%', #{data.productName}, '%')
+			</if>
+			<if test="data.productCd != '' and data.productCd neq null">
+				AND PRODUCT_CD = #{data.productCd}
+			</if>
+			<if test="data.status != '' and data.status neq null">
+			    AND STATUS LIKE CONCAT('%', #{data.status}, '%')
+			</if>
+			<if test="data.dpStatus != '' and data.dpStatus neq null">
+				AND DP_STATUS = #{data.dpStatus}
+			</if>
+		</where>
+        ORDER BY REG_ID DESC
+        LIMIT #{pageable.offset}, #{data.cntPerPage}
+    </select>
+    
+   	<select id="selectCountProductList" parameterType="TbProduct" resultType="int">
+        SELECT COUNT(*) AS CNT
+        FROM
+        	TB_PRODUCT
+        <where>
+        	1=1
+			<if test="data.productName != '' and data.productName neq null">
+			    AND PRODUCT_NAME LIKE CONCAT('%', #{data.productName}, '%')
+			</if>
+			<if test="data.productCd != '' and data.productCd neq null">
+				AND PRODUCT_CD = #{data.productCd}
+			</if>
+			<if test="data.status != '' and data.status neq null">
+			    AND STATUS LIKE CONCAT('%', #{data.status}, '%')
+			</if>
+			<if test="data.dpStatus != '' and data.dpStatus neq null">
+				AND DP_STATUS = #{data.dpStatus}
+			</if>
+		</where>
+    </select>
+    
+   	<insert id="insertProduct" parameterType="com.lumit.shop.common.model.TbProduct">
+	    INSERT INTO PRODUCT_TABLE (
+	        PRODUCT_NAME
+	        , PRODUCT_CD
+	        , PRICE
+	        , DIS_PRICE
+	        , CONTENT
+	        , SUMMATION
+	        , STOCKS
+	        , SALES
+	        , STATUS
+	        , DP_STATUS
+	        , WATT
+	        , DELIVERY_FEE
+	        , REG_ID
+	        , REG_DT
+	        , MOD_ID
+	        , MOD_DT
+	    )
+	    VALUES (
+	        #{productName}
+	        , #{productCd}
+	        , #{price}
+	        , #{disPrice}
+	        , #{content}
+	        , #{summation}
+	        , #{stocks}
+	        , #{sales}
+	        , #{status}
+	        , #{dpStatus}
+	        , #{watt}
+	        , #{deliveryFee}
+	        , #{regId}
+	        , #{regDt}
+	        , #{modId}
+	        , #{modDt}
+	    )
+    </insert>
+    
+    <update id="updateProduct" parameterType="com.lumit.shop.common.model.TbProduct">
+        UPDATE
+        	TB_PRODUCT
+        SET
+        	MOD_ID = #{modId}
+        	, MOD_DT = NOW()
+        <if test="productName != '' and productName != null">
+            , PRODUCT_NAME = #{productName}
+        </if>
+        <if test="productCd != '' and productCd != null">
+            , PRODUCT_CD = #{productCd}
+        </if>
+        <if test="price != '' and price != null">
+            , PRICE = #{price}
+        </if>
+        <if test="disPrice != '' and disPrice != null">
+            , DIS_PRICE = #{disPrice}
+        </if>
+        <if test="content != '' and content != null">
+            , CONTENT = #{content}
+        </if>
+        <if test="summation != '' and summation != null">
+            , SUMMATION = #{summation}
+        </if>
+        <if test="stocks != '' and stocks != null">
+            , STOCKS = #{stocks}
+        </if>
+        <if test="sales != '' and sales != null">
+            , SALES = #{sales}
+        </if>
+        <if test="status != '' and status != null">
+            , STATUS = #{status}
+        </if>
+        <if test="dpStatus != '' and dpStatus != null">
+            , DP_STATUS = #{dpStatus}
+        </if>
+        <if test="watt != '' and watt != null">
+            , WATT = #{watt}
+        </if>
+        <if test="deliveryFee != '' and deliveryFee != null">
+            , DELIVERY_FEE = #{deliveryFee}
+        </if>
+        WHERE
+        	PRODUCT_ID = #{productId}
+    </update>
+    
+    <delete id="deleteProduct" parameterType="com.lumit.shop.common.model.TbProduct">
+		DELETE FROM TB_PRODUCT 
+		WHERE
+			PRODUCT_ID = #{productId}
+	</delete>
 </mapper>

@@ -109,30 +109,37 @@
 	                    <tr>
 	                        <th class="alLeft bold">무료배송 설정</th>
 	                        <td>
-								<input type="text" id="freeDeliveryFee" name="deliveryFee" class="boardInp w15" placeholder="">원 이상 주문시 무료배송
+								<input type="text" id="freeDeliveryFee" name="deliveryFee" class="boardInp w15" placeholder=""> 원 이상 주문시 무료배송
 	                        	<input type="checkbox" id="freeFeeCheck">
 	                        	<label for="freeFeeCheck">체크시 적용</label>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">색상</th>
+	                        <td>
+	                        	<div class="flexRow">
+		                            <select id="color">
+		                            </select>
+		                            <button type="button" id="addColorBtn" class="plusBtn"></button>
+	                            </div>
+	                            <div id="colorWrap"></div>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">태그</th>
+	                        <td>
+	                        	<div class="flexRow">
+		                            <select id="tag">
+		                            </select>
+	                            	<button type="button" id="addTagBtn" class="plusBtn"></button>
+	                            </div>
+	                            <div id="tagWrap"></div>
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                    	<th class="alLeft bold">상품 상세설명</th>
 	                        <td colspan="2">
 	                            <textarea id="tiny"></textarea>
-	                        </td>
-	                    </tr>
-	                    <tr>
-	                        <th class="alLeft bold">색상</th>
-	                        <td>
-	                            <select id="color">
-	                            	
-	                            </select>
-	                        </td>
-	                    </tr>
-	                    <tr>
-	                        <th class="alLeft bold">태그</th>
-	                        <td>
-	                            <select id="tag">
-	                            </select>
 	                        </td>
 	                    </tr>
 	                </tbody>
@@ -163,77 +170,64 @@ let menuCd = [[${menuCd}]];
 var files = []; // 실제 파일 담는 arr
 var fileIdx = 1;
 var beforeFiles = []; // 백업용
+let colorList = [];
+let tagList = [];
+let colorIdList = [];
+let colorText = "";
+let tagIdList = [];
+let tagText = "";
 
 let secretPw = "";
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded",async function () {
+	load();
 	
 // 	$("#freeFeeCheck").on("click",function() {
 // 		let checked = $(this).prop("checked");
 // 		console.log(checked);
 // 		$("#deliveryFee").prop("disabled",checked);
 // 	});
-	
-    // 코드리스트중에서 판매상태 리스트 가져오기
-    fetch('/common/codeList', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json' // JSON 데이터 전송 명시
-        },
-        body: JSON.stringify({grpCd:"PD_STATUS"})
-    })
-    .then(response => response.json())
-    .then(function(response) {
-    	codeList = response.list;
-		
-		createSelectOptions("status", codeList,{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
-		
-    })
-    .catch(function(error) {
-        console.log("error:", error);
-    });
-    
-    // 코드리스트중에서 진열상태 리스트 가져오기
-    fetch('/common/codeList', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json' // JSON 데이터 전송 명시
-        },
-        body: JSON.stringify({grpCd:"DP_STATUS"})
-    })
-    .then(response => response.json())
-    .then(function(response) {
-    	codeList = response.list;
-		
-		createSelectOptions("dpStatus", codeList,{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
-		
-    })
-    .catch(function(error) {
-        console.log("error:", error);
-    });
-	
-	
-	// 텍스트에디터 기초 세팅
-	tinymce.init({
-		language:"ko_KR",
-	    selector: 'textarea',
-	    height:500,
-	    plugins: [
-	      // Core editing features
-	      'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-	    ],
-	    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-	    tinycomments_mode: 'embedded',
-	    tinycomments_author: 'Author name',
-	    mergetags_list: [
-	      { value: 'First.Name', title: 'First Name' },
-	      { value: 'Email', title: 'Email' },
-	    ],
-	    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+	$("#addColorBtn").on("click",function() {
+		if(!colorIdList.some((item) => item === $("#color").val())) {
+			colorIdList.push($("#color").val());
+
+			let colorCd = $("#color").find('option:selected').data("colorcd");
+			
+			if(colorText === "") {
+				console.log('어딘데' + colorCd);
+				colorText += 
+					colorCd != null // TODO: null인것 색상표 안나오게 할것
+					? `<input type='color' value=${colorCd}> `+ $("#color").find("option:selected").text() 
+					: $("#color").find("option:selected").text();
+			}else {
+				console.log('여긴가'+ colorCd);
+				colorText += " / " + 
+				colorCd != null
+				? `<input type='color' value=${colorCd}>`+ $("#color").find("option:selected").text() 
+				: $("#color").find("option:selected").text();
+			}
+		}
+		$("#colorWrap").html(colorText);
+		console.log(colorText);
 	});
 	
+	$("#addTagBtn").on("click",function() {
+		if(!tagIdList.some((item) => item === $("#tag").val())) {
+			tagIdList.push($("#tag").val());
+
+			if(tagText === "") {
+				tagText += 
+					 $("#tag").find("option:selected").text();
+			}else {
+				tagText += " / " + 
+						$("#tag").find("option:selected").text();
+			}
+		}
+		$("#tagWrap").html(tagText);
+		console.log(tagText);
+	});
+
 	document.getElementById("registBtn").addEventListener("click", function() {
-	
 		if(confirm("등록 하시겠습니까?")) {
 			
 			let formData = new FormData(document.querySelector("#registForm"));
@@ -275,10 +269,13 @@ document.addEventListener("DOMContentLoaded", function () {
 					}
 				}
 			}
+			
 			let url = "/"+siteId+"/board/"+menuCd+"/list";
 			
 			setData(formData,url);
 		}
+		
+		
 	});
 	
 	
@@ -314,6 +311,39 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 });
+
+async function load() {
+	initTextEditor();
+	
+	await getCodeList();
+	await getColorOption();
+	await getTagOption();
+	console.log(colorList);
+	createSelectOptions("status", codeList.filter((item) => item.grpCd === 'PD_STATUS'),{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
+	createSelectOptions("dpStatus", codeList.filter((item) => item.grpCd === 'DP_STATUS'),{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
+	createSelectOptions("color", colorList,{selectedValue:'0000', keyNm:"optionId", valueNm:"optionName", colorCd:"optionCd"});
+	createSelectOptions("tag", tagList,{selectedValue:'0001', keyNm:"optionId", valueNm:"optionName"});
+}
+
+async function getColorOption() {
+	const res = await axios.get('/rest/'+siteId+'/option/list', {params:{optionDvCd:'0001'}});
+    if(!res || !res.data) {
+    	alert("color option을 불러오는데 실패했습니다.");
+    	return;
+    }
+    
+    colorList = res.data.list.content;
+}
+
+async function getTagOption() {
+	const res = await axios.get('/rest/'+siteId+'/option/list', {params:{optionDvCd:'0000'}});
+    if(!res || !res.data) {
+    	alert("tag option을 불러오는데 실패했습니다.");
+    	return;
+    }
+    
+    tagList = res.data.list.content;
+}
 
 function showSecretBox() {
 	$(".secretBox").show();
