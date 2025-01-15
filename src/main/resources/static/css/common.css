@@ -1,3 +1,47 @@
+
+:root {
+    --background-color: #FFFFFF;
+    --background-gray: #efefef;
+    --font-color: #2B2928;
+    --font-light-color: #FFFFFF;
+    --font-grey-color: #828282;
+    --text-size-small: 0.5rem;
+    --text-size-medium: 0.9rem;
+    --text-size-large: 1.2rem;
+    --text-size-larger: 1.5rem;
+    --text-size-xlarge: 2rem;
+    --nav-background-color: #513A31;
+    --active-background-color: #453129;
+    --edge-color: #4169E1;
+    --default-padding: 0.7rem;
+    --default-margin: 0.7rem;
+    --icon-color: #a9aec1;
+    --highlight-background-color: #E6E6E6;
+    --brand-color1: #CAAB9C;
+    --brand-color2: #E7DBCD;
+    --brand-color3: #9F8578;
+    --brand-color4: #876453;
+
+    --gray-white-color: #E6E4E5;
+    --white2: #E5E5E5;
+    --red-color: #D12B2B;
+    --text-color: #333333;
+    --gray-color: #F2F2F2;
+    --gray-color2: #F5F5F5;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --dark-gray-color: #7F7F7F;
+    --light-gray-color: #E6E4E5;
+    --table-line-color: #191919;
+    --input-background-color: #F7F5F6;
+    --green-color: #388E3C;
+    --table-border: #D3D3D3;
+    --table-odd: #F6F6F6;
+    --yellow-color: #EEC346;
+
+    --small-border-radius: 0.2rem;
+    --default-border-radius: 0.3rem;
+}
+
 /**
     Modal 관련 css
  */
