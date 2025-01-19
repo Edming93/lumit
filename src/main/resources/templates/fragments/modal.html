@@ -95,7 +95,7 @@
 
                                     </td>
                                     <td>
-                                        <input class="inputAddr readonly" type="text" readonly="readonly"
+                                        <input class="inputAddr readonly phoneNum" type="text" readonly="readonly"
                                                th:value="${item.phoneNumber}"
                                                placeholder="전화번호"
                                                oninput="phoneValidate(event)">
@@ -110,6 +110,7 @@
                                         </div>
                                     </td>
                                 </tr>
+
                                 </tbody>
                             </table>
                             <input type="hidden" id="zonecode">
@@ -198,6 +199,18 @@
                     inputs[i].classList.add("readonly");
                     inputs[i].classList.remove("modify");
                 }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadPhoneNum();
+        })
+
+        function loadPhoneNum() {
+            const nums = document.querySelectorAll(".phoneNum");
+            for (let i = 0; i < nums.length; i++) {
+                nums[i].value = nums[i].value.replace(/[^0-9]/g, '')
+                    .replace(/(^02.{0}|^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")
             }
         }
 

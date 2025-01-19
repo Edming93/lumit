@@ -1,53 +1,32 @@
-package com.lumit.shop.common.controller;
+package com.lumit.shop.common.controller.restController;
 
-import com.google.gson.JsonObject;
-import com.lumit.shop.admin.dto.AdminDto;
-import com.lumit.shop.board.service.BoardService;
-import com.lumit.shop.common.constants.Role;
 import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.data.Modal;
-import com.lumit.shop.common.data.ModalInfo;
 import com.lumit.shop.common.dto.ResponseDto;
-import com.lumit.shop.common.dto.SearchDto;
 import com.lumit.shop.common.dto.UserInfoDto;
-import com.lumit.shop.common.model.*;
-import com.lumit.shop.common.security.PrincipalDetails;
-import com.lumit.shop.common.service.CommonService;
-import com.lumit.shop.common.service.MenuService;
+import com.lumit.shop.common.model.TbAddress;
+import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.service.SecurityUtils;
 import com.lumit.shop.common.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api")
-public class APIController {
-
-    private final UserService userService;
-    private final BoardService boardService;
-    private final MenuService menuService;
+@RequestMapping("/api/user")
+public class UserRestControlller {
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
     private final HttpSession session;
 
     // 멤버 - 회원가입 - 중복체크api
-    @GetMapping(value = "/user/idCheck")
+    @GetMapping(value = "/idCheck")
     public @ResponseBody ResponseDto<?> idDuplicateCheck(@RequestParam(value = "id") String id) {
         if (id == null || id.isEmpty()) {
             return new ResponseDto<>("아이디를 입력해주세요", null);
@@ -65,7 +44,7 @@ public class APIController {
      *
      * @return
      */
-    @GetMapping(value = "/user/address")
+    @GetMapping(value = "/address")
     public @ResponseBody ResponseDto<?> selectAddressList() throws IOException {
         User user = SecurityUtils.getPrincipal();
         if (user == null) {
@@ -75,7 +54,7 @@ public class APIController {
         return new ResponseDto<>("", addressList);
     }
 
-    @PostMapping(value = "/user/address")
+    @PostMapping(value = "/address")
     public @ResponseBody ResponseEntity insertNewAddress(@RequestBody TbAddress data) {
         User user = SecurityUtils.getPrincipal();
         data.setUserId(user.getUserId());
@@ -87,7 +66,7 @@ public class APIController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(value = "/user/address/{id}")
+    @PutMapping(value = "/address/{id}")
     public @ResponseBody ResponseEntity updateAddrById(@PathVariable("id") int id, @RequestBody TbAddress data) {
         User user = SecurityUtils.getPrincipal();
         data.setPhoneNumber(data.getPhoneNumber().replace("-", ""));
@@ -99,7 +78,7 @@ public class APIController {
     }
 
 
-    @DeleteMapping(value = "/user/address/{id}")
+    @DeleteMapping(value = "/address/{id}")
     public @ResponseBody ResponseEntity deleteAddrById(@PathVariable("id") int id) {
         User user = SecurityUtils.getPrincipal();
         TbAddress tbAddress = userService.selectAddressById(id);
@@ -114,7 +93,7 @@ public class APIController {
     }
 
 
-    @GetMapping(value = "/user/address/default/{id}")
+    @GetMapping(value = "/address/default/{id}")
     public @ResponseBody ResponseEntity updateDefaultAddr(@PathVariable("id") int id) throws IOException {
         User user = SecurityUtils.getPrincipal();
         if (user == null) {
@@ -129,7 +108,7 @@ public class APIController {
         return ResponseEntity.ok(addressList);
     }
 
-    @PatchMapping(value = "/user/password")
+    @PatchMapping(value = "/password")
     public @ResponseBody ResponseEntity<?> changePwd(@RequestBody UserInfoDto userInfo) {
         User user = SecurityUtils.getPrincipal();
         userInfo.setUserId(user.getUserId());
@@ -143,57 +122,12 @@ public class APIController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping(value = "/user/info/{id}")
+    @PatchMapping(value = "/info/{id}")
     public @ResponseBody ResponseEntity<?> updateInfo(@PathVariable("id") String id, @RequestBody UserInfoDto userInfo) {
         userInfo.setUserId(id);
         ServiceCode sc = userService.updateUserInfo(userInfo);
         setModalSession(userInfo, sc);
         return ResponseEntity.status(200).build();
-    }
-
-    @GetMapping(value = "/boards")
-    public @ResponseBody ResponseEntity<?> boardList(String menuCd, SearchDto search, TbBoard board, @PageableDefault(size = 10) Pageable pageable) throws IOException {
-        System.out.println(menuCd);
-        System.out.println("-------------");
-        board.setMenuCd(menuCd);
-        if (search.getTitle() != null) {
-            board.setTitle(search.getTitle());
-        }
-
-        if (search.getCategories() != null) {
-            board.setCategories(search.getCategories());
-        }
-        return ResponseEntity.ok(boardService.selectPageableBoardList(board, pageable));
-    }
-
-    @DeleteMapping(value = "/admin/info/{id}")
-    public @ResponseBody ResponseEntity<?> deleteRole(@PathVariable("id") String id) {
-        ServiceCode result = userService.deleteAdmin(id);
-        if (!result.equals(ServiceCode.DELETED)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping(value = "/admin/info/{id}")
-    public @ResponseBody ResponseEntity<?> updateAdmin(@PathVariable("id") String id, @RequestBody AdminDto adminDto) {
-        ServiceCode result = userService.updateAdmin(id, adminDto);
-        if (!result.equals(ServiceCode.UPDATED)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping(value = "/common/code/{groupCode}")
-    public @ResponseBody ResponseEntity<?> getCode(@PathVariable("groupCode") String groupCode) {
-        CommonSearch commonSearch = new CommonSearch();
-        commonSearch.setGrpCd(groupCode);
-        commonSearch.setUseYn("Y");
-        List<TbMenu> result = menuService.selectMenuListByGroupCd(groupCode);
-        if (result == null || result.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(result);
     }
 
     private void setModalSession(UserInfoDto userInfoDto, ServiceCode sc) {
