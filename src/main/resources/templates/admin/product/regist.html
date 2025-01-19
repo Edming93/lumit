@@ -23,7 +23,7 @@
 	                </colgroup>
 	                <tbody>
 	                	<tr>
-	                        <th class="alLeft bold">대표 이미지</th>
+	                        <th class="alLeft bold">대표 이미지</th> <!-- 기본 1000x1000 최소 500x500 -->
 	                        <td>
 								<div class="form__input--file_wrap">
 									<div class="form__input--top_wrap">
@@ -39,9 +39,26 @@
 	                        </td>
 	                    </tr>
 	                    <tr>
+	                        <th class="alLeft bold">카테고리</th>
+	                        <td>
+	                            <select id="categoryId">
+	                            	<option>어떻게 매칭할지 고민</option>
+	                            	<option>카테고리 관리 팝업 띄우기?</option>
+	                            	<option>그 팝업안에서 카테고리 추가,수정,삭제가능?</option>
+	                            	<option>별점관리는 어떤 테이블에서? just 상품리뷰 테이블에 의존?</option>
+	                            </select>
+	                        </td>
+	                    </tr>
+	                    <tr>
 	                        <th class="alLeft bold">상품명</th>
 	                        <td>
 	                            <input type="text" id="productName" name="productName" class="boardInp w100" placeholder="상품명을 입력해주세요.">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">재고수량</th> <!-- TODO : 재고수량 10개 미만일시 대시보드에 알림 -->
+	                        <td>
+	                        	<input type="text" id="stocks" name="stocks" class="boardInp w10" placeholder="재고수량">
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -74,17 +91,6 @@
 	                            <select id="optionId">
 	                            	<option>어떻게 매칭할지 고민</option>
 	                            	<option>상품명 검색하면 상품코드 가져오기?</option>
-	                            </select>
-	                        </td>
-	                    </tr>
-	                    <tr>
-	                        <th class="alLeft bold">카테고리</th>
-	                        <td>
-	                            <select id="categoryId">
-	                            	<option>어떻게 매칭할지 고민</option>
-	                            	<option>카테고리 관리 팝업 띄우기?</option>
-	                            	<option>그 팝업안에서 카테고리 추가,수정,삭제가능?</option>
-	                            	<option>별점관리는 어떤 테이블에서? just 상품리뷰 테이블에 의존?</option>
 	                            </select>
 	                        </td>
 	                    </tr>

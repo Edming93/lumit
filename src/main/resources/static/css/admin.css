@@ -67,7 +67,7 @@ button {
 }
 
 .searchArea{width: 100%; display: flex; column-gap: 5px; margin-bottom: 45px;}
-.container select, .container input[type="text"], .container input[type="password"], .container input[type="number"]{background-color: var(--input-background-color); border: none; outline: none; border-radius: 5px; height: 32px; padding-left: 15px; padding-right: 15px; box-shadow: 0px 2px 5px var(--shadow-color); max-width: 100%; box-sizing: border-box;}
+.container select, .container input[type="text"], .container input[type="password"], .container input[type="number"]{background-color: var(--input-background-color); border: 1px solid var(--light-gray-color); outline: none; border-radius: 5px; height: 32px; padding-left: 15px; padding-right: 15px; max-width: 100%; box-sizing: border-box;}
 
 
 .container input[type="text"]:disabled {
