@@ -9,17 +9,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lumit.shop.admin.service.ProductService;
 import com.lumit.shop.common.config.ResponseBuilder;
 import com.lumit.shop.common.model.CommonSearch;
+import com.lumit.shop.common.model.TbBoard;
 import com.lumit.shop.common.model.TbProduct;
 import com.lumit.shop.common.repository.MenuRepository;
 
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -38,8 +43,14 @@ public class ProductRestController {
     
     @ResponseBody
     @PostMapping("/regist")
-    public ResponseEntity<Map<String,Object>> registProduct(@RequestBody TbProduct product) {
-        return ResponseBuilder.build(productService.registProduct(product),HttpStatus.OK);
+    public ResponseEntity<Map<String,Object>> registProduct(@ModelAttribute TbProduct product, 
+															@RequestPart(value = "files", required = false) MultipartFile[] files
+															, @RequestPart(value = "filesRep", required = false) MultipartFile[] filesRep) {
+    	System.out.println("regist ::: ");
+    	System.out.println(files);
+    	System.out.println(filesRep);
+    	System.out.println(product);
+        return ResponseBuilder.build(productService.insertProduct(product,files,filesRep),HttpStatus.OK);
     }
     
     @ResponseBody

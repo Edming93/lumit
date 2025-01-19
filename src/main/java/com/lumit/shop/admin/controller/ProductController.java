@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping(value = "/{siteId}/product")
 public class ProductController {
-    private final ProductService productService;
     private final String PRODUCT_PATH = "/admin/product";
     
     @Autowired

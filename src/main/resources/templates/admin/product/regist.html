@@ -5,6 +5,12 @@
         layout:decorate="~{admin/fragments/layout}">
 <head>
 	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+	<style>
+		.flex_align {
+			display: flex;
+	    	align-items: center;
+	    }
+	</style>
 </head>
 
 <div layout:fragment="content">
@@ -27,12 +33,12 @@
 	                        <td>
 								<div class="form__input--file_wrap">
 									<div class="form__input--top_wrap">
-									  <input class="form__input--file" id="upload" type="file" multiple>
-									  <label class="form__label--file" for="upload">내PC</label>
+									  <input class="form__input--file" id="uploadRep" type="file" multiple>
+									  <label class="form__label--file" for="uploadRep">추가</label>
 									  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
 								  	</div>
 									<div class="form__input--bottom_wrap">
-								  		<div class="form__div--file"></div>
+								  		<div class="form__div--file_rep"></div>
 									</div>
 								</div>
 	
@@ -43,9 +49,9 @@
 	                        <td>
 	                            <select id="categoryId">
 	                            	<option>어떻게 매칭할지 고민</option>
-	                            	<option>카테고리 관리 팝업 띄우기?</option>
-	                            	<option>그 팝업안에서 카테고리 추가,수정,삭제가능?</option>
-	                            	<option>별점관리는 어떤 테이블에서? just 상품리뷰 테이블에 의존?</option>
+	                            	<option value="1">카테고리 관리 팝업 띄우기?</option>
+	                            	<option value="2">그 팝업안에서 카테고리 추가,수정,삭제가능?</option>
+	                            	<option value="3">별점관리는 어떤 테이블에서? just 상품리뷰 테이블에 의존?</option>
 	                            </select>
 	                        </td>
 	                    </tr>
@@ -58,7 +64,7 @@
 	                    <tr>
 	                        <th class="alLeft bold">재고수량</th> <!-- TODO : 재고수량 10개 미만일시 대시보드에 알림 -->
 	                        <td>
-	                        	<input type="text" id="stocks" name="stocks" class="boardInp w10" placeholder="재고수량">
+	                        	<input type="text" id="stocks" name="stocks" class="boardInp w15" placeholder="재고수량">
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -82,7 +88,7 @@
 	                    <tr>
 	                        <th class="alLeft bold">상품 요약설명</th>
 	                        <td>
-	                           <input type="text" id="productName" name="productName" class="boardInp w100" placeholder="상품 요약설명을 입력해주세요.">
+	                           <input type="text" id="summation" name="summation" class="boardInp w100" placeholder="상품 요약설명을 입력해주세요.">
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -90,7 +96,7 @@
 	                        <td>
 	                            <select id="optionId">
 	                            	<option>어떻게 매칭할지 고민</option>
-	                            	<option>상품명 검색하면 상품코드 가져오기?</option>
+	                            	<option value="1">상품명 검색하면 상품코드 가져오기?</option>
 	                            </select>
 	                        </td>
 	                    </tr>
@@ -115,7 +121,7 @@
 	                    <tr>
 	                        <th class="alLeft bold">무료배송 설정</th>
 	                        <td>
-								<input type="text" id="freeDeliveryFee" name="deliveryFee" class="boardInp w15" placeholder=""> 원 이상 주문시 무료배송
+								<input type="text" id="freeDeliveryFee" name="freeDeliveryFee" class="boardInp w15" placeholder=""> 원 이상 주문시 무료배송
 	                        	<input type="checkbox" id="freeFeeCheck">
 	                        	<label for="freeFeeCheck">체크시 적용</label>
 	                        </td>
@@ -128,7 +134,7 @@
 		                            </select>
 		                            <button type="button" id="addColorBtn" class="plusBtn"></button>
 	                            </div>
-	                            <div id="colorWrap"></div>
+	                            <div id="colorWrap" class="flex_align"></div>
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -143,9 +149,19 @@
 	                        </td>
 	                    </tr>
 	                    <tr>
-	                    	<th class="alLeft bold">상품 상세설명</th>
-	                        <td colspan="2">
-	                            <textarea id="tiny"></textarea>
+	                        <th class="alLeft bold">상세 이미지</th> <!-- 기본 1000x1000 최소 500x500 -->
+	                        <td>
+								<div class="form__input--file_wrap">
+									<div class="form__input--top_wrap">
+									  <input class="form__input--file" id="upload" type="file" multiple>
+									  <label class="form__label--file" for="upload">추가</label>
+									  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
+								  	</div>
+									<div class="form__input--bottom_wrap">
+								  		<div class="form__div--file"></div>
+									</div>
+								</div>
+	
 	                        </td>
 	                    </tr>
 	                </tbody>
@@ -156,7 +172,7 @@
 	            	</div>
 	            	<div class="btnAreaCenter">
 		            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
-		                <button type="button" id="registBtn" class="commBtn mgl10 size100">작성 완료</button>
+		                <button type="button" id="registBtn" class="commBtn mgl10 size100">등록</button>
 	                </div>
 	                <div class="btnAreaRight">
 	                </div>
@@ -173,9 +189,10 @@
 <script th:inline="javascript">
 
 let menuCd = [[${menuCd}]];
-var files = []; // 실제 파일 담는 arr
-var fileIdx = 1;
-var beforeFiles = []; // 백업용
+let filesRep = []; // 실제 대표이미지 파일 담는 arr
+let files = []; // 실제 상세 이미지 파일 담는 arr
+let fileIdx = 1;
+let beforeFiles = []; // 백업용
 let colorList = [];
 let tagList = [];
 let colorIdList = [];
@@ -199,22 +216,19 @@ document.addEventListener("DOMContentLoaded",async function () {
 
 			let colorCd = $("#color").find('option:selected').data("colorcd");
 			
+			
 			if(colorText === "") {
-				console.log('어딘데' + colorCd);
-				colorText += 
-					colorCd != null // TODO: null인것 색상표 안나오게 할것
-					? `<input type='color' value=${colorCd}> `+ $("#color").find("option:selected").text() 
-					: $("#color").find("option:selected").text();
+				colorCd?
+				colorText += `<input type='color' value=${colorCd} disabled> `+ $("#color").find("option:selected").text() 
+					: colorText += $("#color").find("option:selected").text();
 			}else {
-				console.log('여긴가'+ colorCd);
-				colorText += " / " + 
-				colorCd != null
-				? `<input type='color' value=${colorCd}>`+ $("#color").find("option:selected").text() 
-				: $("#color").find("option:selected").text();
+				colorCd ?
+				colorText += "　" + 
+				 `<input type='color' value=${colorCd} disabled> `+ $("#color").find("option:selected").text()
+				: colorText += "　" + $("#color").find("option:selected").text();
 			}
 		}
 		$("#colorWrap").html(colorText);
-		console.log(colorText);
 	});
 	
 	$("#addTagBtn").on("click",function() {
@@ -225,12 +239,11 @@ document.addEventListener("DOMContentLoaded",async function () {
 				tagText += 
 					 $("#tag").find("option:selected").text();
 			}else {
-				tagText += " / " + 
+				tagText += "　" + 
 						$("#tag").find("option:selected").text();
 			}
 		}
 		$("#tagWrap").html(tagText);
-		console.log(tagText);
 	});
 
 	document.getElementById("registBtn").addEventListener("click", function() {
@@ -246,73 +259,106 @@ document.addEventListener("DOMContentLoaded",async function () {
 					formData.append('files',files[i]);
 				}
 			}
-
-			// 텍스트에디터 내용 가져오기
-			let tinyContent = tinymce.get("tiny").getContent();
-			formData.append('content',tinyContent);
-			if($("#categories").length > 0) {
-				formData.append('categories',$("#categories").val() ?? '');
+			
+			if(filesRep.length === 0) {
+				formData.append('filesRep',[]);
+			}else {
+				for(var i=0; i<filesRep.length; i++) {
+					formData.append('filesRep',filesRep[i]);
+				}
 			}
-			formData.append('password',secretPw);
+			
+			if($("#categoryId").val() != "") {
+				formData.append("categoryId",$("#categoryId").val() ?? '');
+			}
+			if($("#optionId").val() != ""){
+				formData.append("optionId",$("#optionId").val() ?? '');
+			}
+			if($("#dpStatus").val() != "") {
+				formData.append("dpStatus",$("#dpStatus").val() ?? '');
+			}
+			if($("#status").val() != "") {
+				formData.append("status",$("#status").val() ?? '');
+			}
+
+			formData.append("colorIdList",colorIdList ?? []);
+			formData.append("tagIdList",tagIdList ?? []);
 			
 			for(let [key,value] of formData.entries()) {
-				if(key != "files") {
+				
+				if(key == "freeDeliveryFee") {
+					let deliveryFeeChk = $("#freeFeeCheck").prop("checked");
+					if(!deliveryFeeChk) {
+						formData.delete("freeDeliveryFee");
+						formData.append("freeDeliveryFee","nonFree");
+					}
+				}
+				
+				if(key != "files" && key != "filesRep" && key != "colorIdList" && key != "tagIdList") {
 					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
-						if(key == "title") {
-							alert("제목을 입력해주세요.");
-							return;
-						}
-						
-						if(key == "content") {
-							alert("내용을 입력해주세요.");
-							return;
-						}
-						
-						if(key == "categories") {
-							alert("카테고리를 선택해주세요.");
-							return;
-						}
+						alert("입력하지 않은 값이 있는지 확인해주세요.");
+						return;
 					}
 				}
 			}
 			
-			let url = "/"+siteId+"/board/"+menuCd+"/list";
+			let url = "/"+siteId+"/product/list";
 			
 			setData(formData,url);
 		}
-		
 		
 	});
 	
 	
 	// input file 커스텀 - 파일명 붙이기
-	const fileTarget = document.querySelector('.form__input--file_wrap input');
+	let fileTarget = $('.form__input--file_wrap input');
 	
 	const mb = 1024 * 1024; //1mb(메가)
 	const limitSize = mb * 10;
 	
-	fileTarget.addEventListener('change', function () { 
-		
-		for(var i=0; i<this.files.length; i++) {
-			if(files.length >= 5){
-				alert('최대 5개까지 첨부 가능합니다.');
-				break;
-			}
+	fileTarget.on('change', function () {
+		let selectId = $(this).attr('id');
+		if(selectId == 'uploadRep') {
+			for(var i=0; i< this.files.length; i++) {
+				if(files.length >= 5){
+					alert('최대 5개까지 첨부 가능합니다.');
+					break;
+				}
+				
+				var uploadSize = this.files[i].size;
 			
-			var uploadSize = this.files[i].size;
-		
-			if(limitSize < uploadSize) {
-				alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
-			}else {
-				var file = this.files[i];
-							
-				file['idx'] = fileIdx;
-				files.push(file);
-				fileIdx++;
+				if(limitSize < uploadSize) {
+					alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
+				}else {
+					var file = this.files[i];
+								
+					file['idx'] = fileIdx;
+					filesRep.push(file);
+					fileIdx++;
+				}
+			}
+		}else{
+			for(var i=0; i<this.files.length; i++) {
+				if(files.length >= 5){
+					alert('최대 5개까지 첨부 가능합니다.');
+					break;
+				}
+				
+				var uploadSize = this.files[i].size;
+			
+				if(limitSize < uploadSize) {
+					alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
+				}else {
+					var file = this.files[i];
+								
+					file['idx'] = fileIdx;
+					files.push(file);
+					fileIdx++;
+				}
 			}
 		}
 		
-		setFiles();
+		setFiles(selectId);
 		
 	});
 
@@ -367,18 +413,32 @@ function passwordSave() {
 	$(".btnSecretImg").attr("src","/images/secretMsg-on.png");
 }
 
-var fileDiv = document.querySelector('.form__div--file');
 
 // 파일 그리기
-function setFiles() {
-	var fileHtml = '';
-	_.forEach(files, function(file){
-		fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
-	})
+function setFiles(id) {
+	let fileDiv = '';
+	let fileHtml = '';
 	
-	if (fileDiv) {
-		fileDiv.innerHTML = fileHtml;
+	if(id == 'uploadRep') {
+		fileDiv = document.querySelector('.form__div--file_rep');
+		
+		fileHtml = '';
+		_.forEach(filesRep, function(file){
+			fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
+		})
+	} else {
+		fileDiv = document.querySelector('.form__div--file');
+		
+		fileHtml = '';
+		_.forEach(files, function(file){
+			fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
+		})
+	}
+	
+	if (!fileDiv) {
+		return;
 	};
+	fileDiv.innerHTML = fileHtml;
 }
 
 function deleteFileBtn(elem) {
@@ -388,24 +448,13 @@ function deleteFileBtn(elem) {
 };
 
 // 비동기 통신
-function setData(formData,url) {
-    fetch('/' + siteId + '/board/' + menuCd + '/regist', {
-        method: 'POST',
-        body: formData
-    })
-    .then(function(result) {
-		
-		if(result.ok) {
-			alert("등록이 완료되었습니다.");
-					
-			moveUrl(url);
-		}else {
-			alert("등록에 실패하였습니다.");
-		}
-		
-    })
-    .catch(function(error) {
-        console.log("error:", error);
-    });
+async function setData(formData,url) {
+	const res = await axios.post('/rest/' + siteId + '/product/regist',formData, {headers: {'Content-Type': 'multipart/form-data'}});
+	if(!res || !res.data) {
+		alert("등록에 실패하였습니다.");
+		return;
+	}
+	moveUrl(url);
+	
 }
 </script>

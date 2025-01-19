@@ -5,7 +5,7 @@
     <select id="selectFileList" resultType="com.lumit.shop.common.model.TbFile">
         SELECT *
         FROM TB_FILE
-        WHERE BOARD_ID = #{boardId}
+        WHERE PK_ID = #{pkId}
           AND MENU_CD = #{menuCd}
         ORDER BY REG_DT DESC
     </select>
@@ -15,14 +15,15 @@
         FROM TB_FILE
         WHERE FILE_ID = #{fileId}
           AND MENU_CD = #{menuCd}
-          AND BOARD_ID = #{boardId}
+          AND PK_ID = #{pkId}
         ORDER BY REG_DT DESC
     </select>
 
     <insert id="insertFiles" parameterType="com.lumit.shop.common.model.TbFile" useGeneratedKeys="true"
             keyProperty="fileId">
         INSERT INTO TB_FILE
-        ( BOARD_ID
+        ( PK_ID
+        , FILE_DV_CD
         , MENU_CD
         , FILE_NEW_NAME
         , FILE_NAME
@@ -32,7 +33,8 @@
         , FILE_EXTENSION
         , REG_ID
         , REG_DT)
-        VALUES ( #{boardId}
+        VALUES ( #{pkId}
+        	   , #{fileDvCd}
                , #{menuCd}
                , #{fileNewName}
                , #{fileName}
@@ -44,13 +46,16 @@
                , now())
     </insert>
 
-    <delete id="deleteFiles" parameterType="com.lumit.shop.common.model.TbBoard">
+    <delete id="deleteFiles" parameterType="com.lumit.shop.common.model.TbFile">
         DELETE FROM
             TB_FILE
         WHERE 
-        	BOARD_ID = #{boardId}
+        	PK_ID = #{pkId}
+        <if test="menuCd != '' and menuCd neq null">
         AND 
         	MENU_CD = #{menuCd}
+        </if>
+        
     </delete>
 
 </mapper>

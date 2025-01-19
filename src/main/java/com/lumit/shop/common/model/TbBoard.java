@@ -14,6 +14,7 @@ import lombok.ToString;
 public class TbBoard{
 	private String boardId;
 	private String menuCd;
+	private String fileDvCd;
 	private String menuDvCd;
 	private String categories;
 	private String title;

@@ -69,8 +69,9 @@
 		</where>
     </select>
     
-   	<insert id="insertProduct" parameterType="com.lumit.shop.common.model.TbProduct">
-	    INSERT INTO PRODUCT_TABLE (
+   	<insert id="insertProduct" parameterType="com.lumit.shop.common.model.TbProduct" useGeneratedKeys="true"
+            keyProperty="productId">
+	    INSERT INTO TB_PRODUCT (
 	        PRODUCT_NAME
 	        , PRODUCT_CD
 	        , PRICE
@@ -83,6 +84,8 @@
 	        , DP_STATUS
 	        , WATT
 	        , DELIVERY_FEE
+	        , FREE_DELIVERY_FEE
+	        , DEL_YN
 	        , REG_ID
 	        , REG_DT
 	        , MOD_ID
@@ -90,7 +93,7 @@
 	    )
 	    VALUES (
 	        #{productName}
-	        , #{productCd}
+	        , CONCAT('L',REPLACE(SUBSTRING(UUID(),1,15),'-',''))
 	        , #{price}
 	        , #{disPrice}
 	        , #{content}
@@ -101,10 +104,12 @@
 	        , #{dpStatus}
 	        , #{watt}
 	        , #{deliveryFee}
+	        , #{freeDeliveryFee}
+	        , #{delYn}
 	        , #{regId}
-	        , #{regDt}
+	        , NOW()
 	        , #{modId}
-	        , #{modDt}
+	        , NOW()
 	    )
     </insert>
     
@@ -150,6 +155,9 @@
         <if test="deliveryFee != '' and deliveryFee != null">
             , DELIVERY_FEE = #{deliveryFee}
         </if>
+        <if test="freeDeliveryFee != '' and freeDeliveryFee != null">
+            , FREE_DELIVERY_FEE = #{freeDeliveryFee}
+        </if>
         WHERE
         	PRODUCT_ID = #{productId}
     </update>
@@ -159,4 +167,42 @@
 		WHERE
 			PRODUCT_ID = #{productId}
 	</delete>
+	
+	<insert id="insertColorMap" parameterType="com.lumit.shop.common.model.TbProduct">
+	    INSERT INTO TB_COLOR_MAP (
+	        PRODUCT_ID
+	        , OPTION_ID
+	        , COLOR_NAME
+	        , COLOR_CD
+	    )
+	    SELECT 
+	        #{productId}
+	        , a.OPTION_ID
+	        , a.OPTION_NAME
+	        , a.OPTION_CD
+	    FROM TB_OPTION a
+	    WHERE a.OPTION_ID IN (
+	    <foreach collection="colorIdList" index="index" item="i" separator=",">
+	    	#{i} 
+	    </foreach>
+	    )
+    </insert>
+    
+    <insert id="insertTagMap" parameterType="com.lumit.shop.common.model.TbProduct">
+	    INSERT INTO TB_TAG_MAP (
+	        PRODUCT_ID
+	        , OPTION_ID
+	        , TAG_NAME
+	    )
+	    SELECT 
+	        #{productId}
+	        , a.OPTION_ID
+	        , a.OPTION_NAME
+		FROM TB_OPTION a
+		WHERE a.OPTION_ID IN (     
+	    <foreach collection="tagIdList" index="index" item="i" separator=",">
+	    	#{i} 
+	    </foreach>
+	    )
+    </insert>
 </mapper>

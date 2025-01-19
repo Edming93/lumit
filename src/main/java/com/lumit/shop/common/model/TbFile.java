@@ -3,13 +3,16 @@ package com.lumit.shop.common.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class TbFile{
 	private String fileId;
-	private String boardId;
+	private String pkId;
+	private String fileDvCd;
 	private String menuCd;
 	private String fileNewName;
 	private String fileName;
@@ -19,14 +22,5 @@ public class TbFile{
 	private String fileExtension;
 	private String regId;
 	private String regDt;
-	
-	
-	@Override
-	public String toString() {
-		return "TbFile [fileId=" + fileId + ", boardId=" + boardId + ", menuCd=" + menuCd + ", fileNewName="
-				+ fileNewName + ", fileName=" + fileName + ", fileSize=" + fileSize + ", filePath=" + filePath
-				+ ", fileType=" + fileType + ", fileExtension=" + fileExtension + ", regId=" + regId + ", regDt="
-				+ regDt + "]";
-	}
 	
 }

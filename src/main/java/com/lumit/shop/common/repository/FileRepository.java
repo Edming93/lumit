@@ -17,7 +17,7 @@ public interface FileRepository {
     
     public int insertFiles(TbFile files);
     
-    public int deleteFiles(TbBoard board);
+    public int deleteFiles(TbFile files);
     
 }
 

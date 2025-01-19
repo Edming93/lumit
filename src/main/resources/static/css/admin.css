@@ -709,7 +709,7 @@ input[type='file'] {
     white-space: nowrap;
 }
 
-.form__div--file {
+.form__div--file, .form__div--file_rep {
     display: flex;
     color: #999;
     overflow: hidden;
@@ -734,6 +734,7 @@ input[type='file'] {
 .delete_file_btn {
     color: #999;
     font-size: 16px;
+    margin-right:10px;
 }
 
 /**

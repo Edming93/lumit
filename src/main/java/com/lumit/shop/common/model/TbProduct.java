@@ -1,5 +1,6 @@
 package com.lumit.shop.common.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -21,16 +22,20 @@ public class TbProduct{
 	private String summation;
 	private String stocks;
 	private String sales;
+	private String dpStatus;
 	private String status;
 	private String watt;
 	private String stock;
 	private String deliveryFee;
+	private String FreeDeliveryFee;
 	private String delYn;
 	private String regId;
 	private String regDt;
 	private String modId;
 	private String modDt;
 	
+	private List<String> colorIdList = new ArrayList<>();
+	private List<String> tagIdList = new ArrayList<>();
 	private List<String> jsonFileList;
 
 

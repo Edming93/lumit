@@ -64,11 +64,9 @@ public class BoardServiceImpl implements BoardService {
 //        for (Field field : variables) {
 //            System.out.println(field.getName());
 //        }
-        System.out.println("tbBoard다요 :::");
-        System.out.println(tbBoard);
+        
         List<Map<String, Object>> content = boardRepository.selectPageableBoardList(requestList);
         int total = boardRepository.selectListBoardCount(tbBoard);
-        System.out.println("total ::: " + total);
         return new PageImpl<>(content, pageable, total);
     }
 
@@ -76,9 +74,6 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public Map<String, Object> insertBoard(String menuCd, TbBoard board, MultipartFile[] files) {
         Map<String, Object> result = new HashMap<String, Object>();
-        
-        System.out.println(board);
-        System.out.println("--------------");
         board.setMenuCd(menuCd);
         board.setMenuDvCd(menuRepository.selectMenuByMenuCd(menuCd).getTmplCd());
         if(board.getPassword().isEmpty()) {
@@ -137,8 +132,11 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public void uploadFiles(TbBoard board, MultipartFile[] files) {
+    	TbFile inputFile = new TbFile();
+    	inputFile.setPkId(board.getBoardId());
+    	inputFile.setMenuCd(board.getMenuCd());
     	// boardId 해당 게시물의 파일을 모두 삭제하고 다시 추가
-		fileRepository.deleteFiles(board);
+		fileRepository.deleteFiles(inputFile);
 	
 	
     	File uploadPath = new File(FILE_UPLOAD_PATH, StringUtils.getData());
@@ -191,7 +189,7 @@ public class BoardServiceImpl implements BoardService {
 	    		File saveFile = new File(uploadPath, uploadFileName);
 	    		
 	    		TbFile tbFile = new TbFile();
-	    		tbFile.setBoardId(board.getBoardId());
+	    		tbFile.setPkId(board.getBoardId());
 	    		tbFile.setMenuCd(board.getMenuCd());
 	    		tbFile.setFileName(oriFileName);
 	    		tbFile.setFileNewName(uploadFileName);
@@ -219,7 +217,7 @@ public class BoardServiceImpl implements BoardService {
     	
     	TbFile reqfile = new TbFile();
     	reqfile.setFileId(fileId);
-    	reqfile.setBoardId(boardId);
+    	reqfile.setPkId(boardId);
     	reqfile.setMenuCd(menuCd);
     	
     	TbFile resFile = fileRepository.selectFile(reqfile);
@@ -266,7 +264,7 @@ public class BoardServiceImpl implements BoardService {
     	
     	TbFile tbFile = new TbFile();
     	tbFile.setMenuCd(menuCd);
-    	tbFile.setBoardId(boardId);
+    	tbFile.setPkId(boardId);
     	
     	return fileRepository.selectFileList(tbFile);
     }
