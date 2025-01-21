@@ -4,17 +4,23 @@
 <mapper namespace="com.lumit.shop.admin.repository.ProductRepository">
     <sql id="searchWhere">
         WHERE 1=1
-        <if test="productName != '' and productName neq null">
+        <if test="productName != null and productName neq ''">
             AND PRODUCT_NAME LIKE CONCAT('%', #{productName}, '%')
         </if>
-        <if test="productCd != '' and productCd neq null">
+        <if test="productCd != null and productCd neq ''">
             AND PRODUCT_CD LIKE CONCAT('%', #{productCd}, '%')
         </if>
-        <if test="status != '' and status neq null">
+        <if test="status != null and status neq ''">
             AND STATUS = #{status}
         </if>
-        <if test="dpStatus != '' and dpStatus neq null">
+        <if test="dpStatus != null and dpStatus neq ''">
             AND DP_STATUS = #{dpStatus}
+        </if>
+        <if test='strDt != null and strDt neq ""'>
+           	AND REG_DT <![CDATA[ >=]]> DATE_FORMAT(REPLACE(#{strDt}, "-", ""), '%Y/%m/%d 00:00:00')
+        </if>
+        <if test='endDt != null and endDt neq ""'>
+        	AND REG_DT <![CDATA[ <=]]> DATE_FORMAT(REPLACE(#{endDt}, "-", ""), '%Y/%m/%d 23:59:59')
         </if>
     </sql>
     <select id="selectProductList" resultType="com.lumit.shop.common.model.TbProduct">
@@ -30,19 +36,24 @@
         FROM
         	TB_PRODUCT
         <where>
-        	1=1
-			<if test="data.productName != '' and data.productName neq null">
+			<if test="data.productName != null and data.productName neq ''">
 			    AND PRODUCT_NAME LIKE CONCAT('%', #{data.productName}, '%')
 			</if>
-			<if test="data.productCd != '' and data.productCd neq null">
+			<if test="data.productCd != null and data.productCd neq ''">
 				AND PRODUCT_CD = #{data.productCd}
 			</if>
-			<if test="data.status != '' and data.status neq null">
+			<if test="data.status != null and data.status neq ''">
 			    AND STATUS LIKE CONCAT('%', #{data.status}, '%')
 			</if>
-			<if test="data.dpStatus != '' and data.dpStatus neq null">
+			<if test="data.dpStatus != null and data.dpStatus neq ''">
 				AND DP_STATUS = #{data.dpStatus}
 			</if>
+			<if test='data.strDt != null and data.strDt neq ""'>
+	           	AND REG_DT <![CDATA[ >=]]> DATE_FORMAT(REPLACE(#{data.strDt}, "-", ""), '%Y/%m/%d 00:00:00')
+	        </if>
+	        <if test='data.endDt != null and data.endDt neq ""'>
+	        	AND REG_DT <![CDATA[ <=]]> DATE_FORMAT(REPLACE(#{data.endDt}, "-", ""), '%Y/%m/%d 23:59:59')
+	        </if>
 		</where>
         ORDER BY REG_ID DESC
         LIMIT #{pageable.offset}, #{data.cntPerPage}
@@ -54,18 +65,24 @@
         	TB_PRODUCT
         <where>
         	1=1
-			<if test="productName != '' and productName neq null">
+			<if test="productName != null and productName neq ''">
 			    AND PRODUCT_NAME LIKE CONCAT('%', #{productName}, '%')
 			</if>
-			<if test="productCd != '' and productCd neq null">
+			<if test="productCd != null and productCd neq ''">
 				AND PRODUCT_CD = #{productCd}
 			</if>
-			<if test="status != '' and status neq null">
+			<if test="status != null and status neq ''">
 			    AND STATUS LIKE CONCAT('%', #{status}, '%')
 			</if>
-			<if test="dpStatus != '' and dpStatus neq null">
+			<if test="dpStatus != null and dpStatus neq ''">
 				AND DP_STATUS = #{dpStatus}
 			</if>
+			<if test='strDt != null and strDt neq ""'>
+	           	AND REG_DT <![CDATA[ >=]]> DATE_FORMAT(REPLACE(#{strDt}, "-", ""), '%Y/%m/%d 00:00:00')
+	        </if>
+	        <if test='endDt != null and endDt neq ""'>
+	        	AND REG_DT <![CDATA[ <=]]> DATE_FORMAT(REPLACE(#{endDt}, "-", ""), '%Y/%m/%d 23:59:59')
+	        </if>
 		</where>
     </select>
     

@@ -110,9 +110,13 @@ async function getList(pageNo,cntPerPage) {
 	cntPerPage = cntPerPage ?? 10;
 	
 	let productName = $("#productName").val();
+	let strDt = $("#strDt").val();
+	let endDt = $("#endDt").val();
 	
 	params = {
 		productName : productName,
+		strDt : strDt,
+		endDt : endDt,
 		cntPerPage : cntPerPage
 	}
 	
