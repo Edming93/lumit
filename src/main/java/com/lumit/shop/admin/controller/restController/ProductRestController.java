@@ -46,10 +46,6 @@ public class ProductRestController {
     public ResponseEntity<Map<String,Object>> registProduct(@ModelAttribute TbProduct product, 
 															@RequestPart(value = "files", required = false) MultipartFile[] files
 															, @RequestPart(value = "filesRep", required = false) MultipartFile[] filesRep) {
-    	System.out.println("regist ::: ");
-    	System.out.println(files);
-    	System.out.println(filesRep);
-    	System.out.println(product);
         return ResponseBuilder.build(productService.insertProduct(product,files,filesRep),HttpStatus.OK);
     }
     

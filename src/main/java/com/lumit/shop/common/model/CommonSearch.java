@@ -12,9 +12,16 @@ import lombok.ToString;
 public class CommonSearch{
 	private String useYn;
 	private String grpCd;
+	private String strDt;
+	private String endDt;
 	private String optionName;
 	private String optionDvCd;
 	private String optionCd;
+	
+	private String productName;
+	private String productCd;
+	private String status;
+	private String dpStatus;
 	
 	private int cntPerPage = 10;
 }

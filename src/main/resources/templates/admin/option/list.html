@@ -111,7 +111,7 @@ async function getList(pageNo,cntPerPage) {
 		cntPerPage : cntPerPage
 	}
 	
-	let url = "/rest/admin/option/list?page="+pageNo;
+	// let url = "/rest/admin/option/list?page="+pageNo;
 
 	const res = await axios.get("/rest/admin/option/list?page="+pageNo, {params});
 	

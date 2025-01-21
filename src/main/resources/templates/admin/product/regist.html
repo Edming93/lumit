@@ -58,13 +58,13 @@
 	                    <tr>
 	                        <th class="alLeft bold">상품명</th>
 	                        <td>
-	                            <input type="text" id="productName" name="productName" class="boardInp w100" placeholder="상품명을 입력해주세요.">
+	                            <input type="text" id="productName" name="productName" class="boardInp w100" placeholder="상품명을 입력해주세요." maxlength="255">
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">재고수량</th> <!-- TODO : 재고수량 10개 미만일시 대시보드에 알림 -->
 	                        <td>
-	                        	<input type="text" id="stocks" name="stocks" class="boardInp w15" placeholder="재고수량">
+	                        	<input type="text" id="stocks" name="stocks" class="boardInp w15" placeholder="재고수량" maxlength="11">
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -88,7 +88,7 @@
 	                    <tr>
 	                        <th class="alLeft bold">상품 요약설명</th>
 	                        <td>
-	                           <input type="text" id="summation" name="summation" class="boardInp w100" placeholder="상품 요약설명을 입력해주세요.">
+	                           <input type="text" id="summation" name="summation" class="boardInp w100" placeholder="상품 요약설명을 입력해주세요." maxlength="1000">
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -103,25 +103,25 @@
 	                    <tr>
 	                        <th class="alLeft bold">정가</th>
 	                        <td>
-	                           <input type="text" id="price" name="price" class="boardInp w15" placeholder=""> 원
+	                           <input type="text" id="price" name="price" class="boardInp w15" placeholder="" maxlength="11"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">할인가(판매가)</th>
 	                        <td>
-	                           <input type="text" id="disPrice" name="disPrice" class="boardInp w15" placeholder=""> 원
+	                           <input type="text" id="disPrice" name="disPrice" class="boardInp w15" placeholder="" maxlength="11"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">배송비</th>
 	                        <td>
-	                           <input type="text" id="deliveryFee" name="deliveryFee" class="boardInp w15" placeholder=""> 원
+	                           <input type="text" id="deliveryFee" name="deliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">무료배송 설정</th>
 	                        <td>
-								<input type="text" id="freeDeliveryFee" name="freeDeliveryFee" class="boardInp w15" placeholder=""> 원 이상 주문시 무료배송
+								<input type="text" id="freeDeliveryFee" name="freeDeliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원 이상 주문시 무료배송
 	                        	<input type="checkbox" id="freeFeeCheck">
 	                        	<label for="freeFeeCheck">체크시 적용</label>
 	                        </td>

@@ -38,15 +38,15 @@
             </div>
         </div>
 		
-		<div class="tableWrap mgt20">
-			<table>
+		<div>
+			<table class="boardTable listTable mgt20">
 			    <colgroup>
 			        <col style="width: 5%;"/>
-			        <col style="width: 10%;"/>
+			        <col style="width: 18%;"/>
 			        <col style="width: auto;"/>
-			        <col style="width: 10%;"/>
-			        <col style="width: 10%;"/>
-			        <col style="width: 8%;"/>
+			        <col style="width: 12%;"/>
+			        <col style="width: 12%;"/>
+			        <col style="width: 12%;"/>
 			    </colgroup>
 			    <thead>
 			    <tr>
@@ -67,13 +67,136 @@
         <ul id="pagingArea" class="pagination"></ul>
     </div>
 <script th:inline="javascript">
-	$(document).ready(function() {
-		setSearchInit('searchArea');
-		
-		$("#registBtn").on("click",function() {
-			moveUrl("/" + siteId + "/product/regist");
+$(document).ready(function() {
+	// setSearchInit('searchArea');
+	load();
+	
+	$("#registBtn").on("click",function() {
+		moveUrl("/" + siteId + "/product/regist");
+	});
+	
+// 	$("#listArea").on("click", ".delBtn", function(e) {
+// 		var delProductId = $(this).attr('id').replace("del_",'');
+// 		delProduct(delProductId);
+//     });
+	
+    $("#productName").on("keydown", function (event) {
+        if (event.key === 'Enter') {
+            getList(0);
+        };
+    });
+	
+    $(".searchBtn").on("click", function(event) {
+    	getList(0);
+    });
+    
+    // 검색 결과 페이지 수 변경시
+    $('#pageSize').change(function() {
+		const cntPerPage = $(this).val();
+		const page = 1;
+		const nowParams = {page, cntPerPage};
+
+		getList(0, cntPerPage);
+	});
+});
+
+async function load() {
+	await getCodeList();
+	await getList();
+}
+
+async function getList(pageNo,cntPerPage) {
+	pageNo = pageNo ?? 0;
+	cntPerPage = cntPerPage ?? 10;
+	
+	let productName = $("#productName").val();
+	
+	params = {
+		productName : productName,
+		cntPerPage : cntPerPage
+	}
+	
+	// let url = "/rest/admin/product/list?page="+pageNo;
+	const res = await axios.get("/rest/" + siteId + "/product/list?page="+pageNo, {params});
+	if (!res || !res.data) {
+		openAlert({contents: '상품 목록을 불러오는데 실패했습니다. <br/> 다시 시도해주세요.'});
+		return;
+	};
+	
+	data = res.data.list ?? [];
+	
+	// 검색결과 노출 수 변경마다 totalPageCount 값 변경
+	const totalPageCount = Math.ceil(data.totalElements / cntPerPage);
+	
+	PAGE.paging(totalPageCount, data.number, data.totalElements, "getList");
+	
+	setList(data);
+}
+
+function setList(data){
+	$('#listArea').empty();
+	
+	productList = data.content;
+	
+	let listLength = productList.length;
+	// let productCodeList = codeList.filter((item) => {return item.grpCd === 'PRODUCT_DV_CD'});
+	
+	let cnt = 0;
+	if(listLength > 0) {
+		productList.forEach((item) => {
+			$('#listArea').append(`
+				<tr>
+					<td class='alCenter'>${PAGE.pageRowNumber(data.number, data.size, cnt++, data.totalElements)}</td>
+					<td class='alCenter'>
+						${item.productCd}
+					</td>	
+					<td class='alLeft tdTitle'>
+						${item.productName}
+					</td>
+					<td class="alCenter">
+						${formatToWon(item.price)}
+					</td>
+					<td class="alCenter">
+						${formatToWon(item.disPrice)}
+					</td>
+					<td class="alCenter">
+						${item.regDt}
+					</td>
+				</tr>
+			`);
 		});
-	})
+	}else {
+		$('#listArea').append(`
+			<tr>
+				<td class='alCenter' colspan='3'>검색 결과가 없습니다.</td>
+			</tr>
+		`);
+	}
+	
+}
+
+function formatToWon(num) {
+    if (!num) return "";
+    return Number(num).toLocaleString('ko-KR') + "원";
+  }
+  
+// async function delProduct(productId) {
+	
+// 	if(confirm("삭제 하시겠습니까?")) {
+// 		let params = {
+// 			productId : productId,
+// 		};
+		
+// 		const res = await axios.post('/rest/admin/product/delete', params);
+		
+// 		if(!res){
+// 			alert('삭제에 실패했습니다. <br/>다시 시도해주세요.');
+// 			return;
+// 		}
+		
+// 		getList(0);
+// 	}
+// };
 
 </script>
 </div>

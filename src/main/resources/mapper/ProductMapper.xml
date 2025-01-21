@@ -54,17 +54,17 @@
         	TB_PRODUCT
         <where>
         	1=1
-			<if test="data.productName != '' and data.productName neq null">
-			    AND PRODUCT_NAME LIKE CONCAT('%', #{data.productName}, '%')
+			<if test="productName != '' and productName neq null">
+			    AND PRODUCT_NAME LIKE CONCAT('%', #{productName}, '%')
 			</if>
-			<if test="data.productCd != '' and data.productCd neq null">
-				AND PRODUCT_CD = #{data.productCd}
+			<if test="productCd != '' and productCd neq null">
+				AND PRODUCT_CD = #{productCd}
 			</if>
-			<if test="data.status != '' and data.status neq null">
-			    AND STATUS LIKE CONCAT('%', #{data.status}, '%')
+			<if test="status != '' and status neq null">
+			    AND STATUS LIKE CONCAT('%', #{status}, '%')
 			</if>
-			<if test="data.dpStatus != '' and data.dpStatus neq null">
-				AND DP_STATUS = #{data.dpStatus}
+			<if test="dpStatus != '' and dpStatus neq null">
+				AND DP_STATUS = #{dpStatus}
 			</if>
 		</where>
     </select>
