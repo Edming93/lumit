@@ -206,9 +206,9 @@
     color: #3D3D3D;
 }
 
-.tableScroll tr:first-child {
-    background-color: var(--brand-color1);
-}
+/*.tableScroll tr:first-child {*/
+/*    background-color: var(--brand-color1);*/
+/*}*/
 
 #draggable tr.hover {
     background-color: #876453;

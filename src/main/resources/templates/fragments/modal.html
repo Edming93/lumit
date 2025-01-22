@@ -74,11 +74,12 @@
                                 </thead>
                                 <tbody>
                                 <tr th:if="${T(com.lumit.shop.common.model.TbAddress).simpleName == item.Class.simpleName}"
-                                    th:each="item: ${content}">
+                                    th:each="item, stat: ${content}">
                                     <input type="hidden" th:value="${item.addrId}">
-                                    <td><input class="inputAddr readonly" maxlength="10" placeholder="배송지명"
+                                    <td>
+                                        <input class="inputAddr readonly" maxlength="10" placeholder="배송지명"
                                                th:value="${item.addrName}"
-                                    >
+                                        >
                                     </td>
                                     <td><input class="inputAddr readonly" type="text" readonly="readonly"
                                                placeholder="받는 사람"
@@ -157,17 +158,9 @@
         document.addEventListener("DOMContentLoaded", function () {
             let modalName = [[${name}]] + "Modal"
             document.getElementById(modalName).style.display = "none"
+            loadPhoneNum();
         })
 
-        function hideModal(id) {
-            document.getElementById(id).style.display = "none"
-        }
-
-        function resultChange(value) {
-            const result = document.getElementById("modalResult")
-            result.value = value
-            result.dispatchEvent(new Event("change"))
-        }
 
         function modifyAddr(e) {
             const parent = e.target.parentNode.parentNode.parentElement
@@ -202,10 +195,6 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            loadPhoneNum();
-        })
-
         function loadPhoneNum() {
             const nums = document.querySelectorAll(".phoneNum");
             for (let i = 0; i < nums.length; i++) {
@@ -214,15 +203,6 @@
             }
         }
 
-        function phoneValidate(event) {
-            const value = event.currentTarget.value
-            if (value.length > 13) {
-                event.currentTarget.value = value.substring(0, 13)
-                return;
-            }
-            event.currentTarget.value = value.replace(/[^0-9]/g, '')
-                .replace(/(^02.{0}|^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")
-        }
 
         async function submitAddr(e) {
             const target = e.target.parentNode.parentNode.parentElement
@@ -255,6 +235,7 @@
                 if (res.ok) {
                     FETCH.get("/main/member/addressList")
                 }
+                alert("삭제되었습니다.")
                 location.href = "/main/member/edit?addr=true";
             });
         }
@@ -304,7 +285,6 @@
 
         async function submitNewAddr(event) {
             const target = event.target.parentNode.parentNode.parentElement
-            console.log(target)
             const inputs = target.querySelectorAll("input")
             const zonecode = document.querySelector("#zonecode").value
             const addr = inputs[2].value.split(", ");
@@ -365,17 +345,8 @@
          *
          * @param event{Event}
          */
-        function backgroundCancel(event, id, type) {
-            event.stopPropagation();
-            if (event.target == document.getElementById(id)) {
-                hideModal(id)
-                if (type == "simple") {
-                    return;
-                }
-                resultChange("cancel")
-            }
 
-        }
     </script>
     <script th:src="@{/js/sortable.js}"></script>
+    <script th:src="@{/js/modal.js}"></script>
 </div>

@@ -127,8 +127,9 @@
                 const firstRow = dragTable.querySelector("tbody tr:first-child");
                 const id = parseInt(firstRow.querySelector("input[type='hidden']").value)
                 if (id != defaultId) {
-                    FETCH.get(`/api/user/address/default/${id}`).then(res => res.json()).then(res => {
+                    FETCH.get(`/api/user/address/default/${id}`).then(res => res).then(res => {
                         defaultId = res[0].addrId;
+                        alert("기본 주소지가 변경되었습니다.");
                     })
                 }
             })

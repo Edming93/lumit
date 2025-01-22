@@ -31,7 +31,8 @@ VALUES ('M100', 'M100', '메인', '/main/**', '', '', 0, NULL),
        ('M209', 'M200', 'Q&A', '/admin/board/M209/**', 'list', '0001', 1, '<i class="fa-regular fa-clipboard"></i>'),
        ('M210', 'M200', 'FAQ', '/admin/board/M210/**', 'list', '0002', 1, '<i class="fa-regular fa-clipboard"></i>'),
        ('M211', 'M200', '주문관리', '/admin/order/**', 'dashboard', '', 1, '<i class=\"fa-solid fa-cart-shopping\"></i>'),
-       ('M212', 'M200', '옵션관리', '/admin/option/**', 'list', '', 1, '<i class=\"fa-solid fa-shirt\"></i>');
+       ('M212', 'M200', '옵션관리', '/admin/option/**', 'list', '', 1, '<i class="fa-solid fa-wrench"></i>'),
+       ('M213', 'M200', '분류관리', '/admin/category/**', 'list', '', 1, '<i class="fa-solid fa-list"></i>');
 
 
 REPLACE INTO `TB_ROLE_MENU`
@@ -53,6 +54,7 @@ VALUES (1, 'M100', 'N'),
        (1, 'M210', 'N'),
        (1, 'M211', 'N'),
        (1, 'M212', 'N'),
+       (1, 'M213', 'N'),
        (2, 'M100', 'N'),
        (2, 'M101', 'N'),
        (2, 'M102', 'N'),
@@ -78,20 +80,28 @@ VALUES (1, 'M100', 'N'),
        (3, 'M105', 'N');
 
 
-INSERT IGNORE INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`, `MOD_ID`, `MOD_DT`) VALUES
-	('CATEGORIES', '0000', '메뉴구분코드', '상품문의', 1, 'Y', NULL, 'admin', '2024-11-18 22:41:19', 'admin', '2024-11-18 22:41:13'),
-	('CATEGORIES', '0001', '메뉴구분코드', '교환&반품문의', 2, 'Y', NULL, 'admin', '2024-11-18 22:42:57', 'admin', '2024-11-18 22:41:19'),
-	('CATEGORIES', '0002', '메뉴구분코드', '배송문의', 3, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin', '2024-11-18 22:42:40'),
-	('DEL_YN', 'N', '삭제여부', '미삭제', 2, 'Y', NULL, 'admin', '2025-01-05 16:04:57', 'admin', '2025-01-05 16:04:57'),
-	('DEL_YN', 'Y', '삭제여부', '삭제', 1, 'Y', NULL, 'admin', '2025-01-05 16:04:20', 'admin', '2025-01-05 16:04:20'),
-	('DP_STATUS', 'N', '진열여부', '진열안함', 2, 'Y', NULL, 'admin', '2025-01-05 16:05:54', 'admin', '2025-01-05 16:05:54'),
-	('DP_STATUS', 'Y', '진열여부', '진열함', 1, 'Y', NULL, 'admin', '2025-01-05 16:05:54', 'admin', '2025-01-05 16:05:54'),
-	('PD_STATUS', '0000', '판매상태', '판매함', 1, 'Y', NULL, 'admin', '2025-01-05 15:58:16', 'admin', '2024-11-18 22:42:40'),
-	('PD_STATUS', '0001', '판매상태', '판매안함 (품절)', 2, 'Y', NULL, 'admin', '2025-01-05 15:58:12', 'admin', '2024-11-18 22:42:40'),
-	('OPTION_DV_CD', '0001', '옵션구분코드', '태그', 1, 'Y', NULL, 'admin', '2025-01-05 15:58:12', 'admin', '2024-11-18 22:42:40'),
-	('OPTION_DV_CD', '0001', '옵션구분코드', '색상', 2, 'Y', NULL, 'admin', '2025-01-05 15:58:12', 'admin', '2024-11-18 22:42:40');
-        
-        
+INSERT IGNORE INTO `TB_CODE` (`GRP_CD`, `CD`, `GRP_CD_NM`, `CD_NM`, `SORT_SEQ`, `USE_YN`, `CTT`, `REG_ID`, `REG_DT`,
+                              `MOD_ID`, `MOD_DT`)
+VALUES ('CATEGORIES', '0000', '메뉴구분코드', '상품문의', 1, 'Y', NULL, 'admin', '2024-11-18 22:41:19', 'admin',
+        '2024-11-18 22:41:13'),
+       ('CATEGORIES', '0001', '메뉴구분코드', '교환&반품문의', 2, 'Y', NULL, 'admin', '2024-11-18 22:42:57', 'admin',
+        '2024-11-18 22:41:19'),
+       ('CATEGORIES', '0002', '메뉴구분코드', '배송문의', 3, 'Y', NULL, 'admin', '2024-11-18 22:43:02', 'admin',
+        '2024-11-18 22:42:40'),
+       ('DEL_YN', 'N', '삭제여부', '미삭제', 2, 'Y', NULL, 'admin', '2025-01-05 16:04:57', 'admin', '2025-01-05 16:04:57'),
+       ('DEL_YN', 'Y', '삭제여부', '삭제', 1, 'Y', NULL, 'admin', '2025-01-05 16:04:20', 'admin', '2025-01-05 16:04:20'),
+       ('DP_STATUS', 'N', '진열여부', '진열안함', 2, 'Y', NULL, 'admin', '2025-01-05 16:05:54', 'admin', '2025-01-05 16:05:54'),
+       ('DP_STATUS', 'Y', '진열여부', '진열함', 1, 'Y', NULL, 'admin', '2025-01-05 16:05:54', 'admin', '2025-01-05 16:05:54'),
+       ('PD_STATUS', '0000', '판매상태', '판매함', 1, 'Y', NULL, 'admin', '2025-01-05 15:58:16', 'admin',
+        '2024-11-18 22:42:40'),
+       ('PD_STATUS', '0001', '판매상태', '판매안함 (품절)', 2, 'Y', NULL, 'admin', '2025-01-05 15:58:12', 'admin',
+        '2024-11-18 22:42:40'),
+       ('OPTION_DV_CD', '0001', '옵션구분코드', '태그', 1, 'Y', NULL, 'admin', '2025-01-05 15:58:12', 'admin',
+        '2024-11-18 22:42:40'),
+       ('OPTION_DV_CD', '0001', '옵션구분코드', '색상', 2, 'Y', NULL, 'admin', '2025-01-05 15:58:12', 'admin',
+        '2024-11-18 22:42:40');
+
+
 INSERT INTO TB_MENU
 (MENU_CD,
  MENU_GROUP_CD,
@@ -325,4 +335,55 @@ VALUES ('U0401',
         NULL,
         0,
         NULL);
+
+INSERT INTO TB_BOARD(menu_cd, menu_dv_cd, categories, title, content, password, top_fix, use_yn, del_yn, rply_yn,
+                     file_yn, view_count, reg_id, reg_dt, mod_id, mod_dt)
+VALUES ('M208', '0000', NULL, '테스트1', '<p>내용1</p>', '2996', NULL, 'N', 'N', 'N', 'N', 0, 'admin', NOW(), 'admin',
+        NOW());
+
+INSERT INTO TB_BOARD(menu_cd, menu_dv_cd, categories, title, content, password, top_fix, use_yn, del_yn, rply_yn,
+                     file_yn, view_count, reg_id, reg_dt, mod_id, mod_dt)
+VALUES ('M208', '0000', NULL, '테스트2', '<p>내용2</p>', '8774', NULL, 'N', 'N', 'N', 'N', 0, 'admin', NOW(), 'admin',
+        NOW());
+
+INSERT INTO TB_BOARD(menu_cd, menu_dv_cd, categories, title, content, password, top_fix, use_yn, del_yn, rply_yn,
+                     file_yn, view_count, reg_id, reg_dt, mod_id, mod_dt)
+VALUES ('M208', '0000', NULL, '테스트3', '<p>내용3</p>', '7192', NULL, 'N', 'N', 'N', 'N', 0, 'admin', NOW(), 'admin',
+        NOW());
+
+INSERT INTO TB_BOARD(menu_cd, menu_dv_cd, categories, title, content, password, top_fix, use_yn, del_yn, rply_yn,
+                     file_yn, view_count, reg_id, reg_dt, mod_id, mod_dt)
+VALUES ('M208', '0000', NULL, '테스트4', '<p>내용4</p>', '', NULL, 'N', 'N', 'N', 'N', 0, 'admin', NOW(), 'admin', NOW());
+
+INSERT INTO TB_BOARD(menu_cd, menu_dv_cd, categories, title, content, password, top_fix, use_yn, del_yn, rply_yn,
+                     file_yn, view_count, reg_id, reg_dt, mod_id, mod_dt)
+VALUES ('M208', '0000', NULL, '테스트5', '<p>내용5</p>', '5685', NULL, 'N', 'N', 'N', 'N', 0, 'admin', NOW(), 'admin',
+        NOW());
+
+INSERT INTO TB_BOARD(menu_cd, menu_dv_cd, categories, title, content, password, top_fix, use_yn, del_yn, rply_yn,
+                     file_yn, view_count, reg_id, reg_dt, mod_id, mod_dt)
+VALUES ('M208', '0000', NULL, '테스트6', '<p>내용6</p>', '', NULL, 'N', 'N', 'N', 'N', 0, 'admin', NOW(), 'admin', NOW());
+
+INSERT INTO TB_BOARD(menu_cd, menu_dv_cd, categories, title, content, password, top_fix, use_yn, del_yn, rply_yn,
+                     file_yn, view_count, reg_id, reg_dt, mod_id, mod_dt)
+VALUES ('M208', '0000', NULL, '테스트7', '<p>내용7</p>', '4856', NULL, 'N', 'N', 'N', 'N', 0, 'admin', NOW(), 'admin',
+        NOW());
+
+INSERT INTO TB_BOARD(menu_cd, menu_dv_cd, categories, title, content, password, top_fix, use_yn, del_yn, rply_yn,
+                     file_yn, view_count, reg_id, reg_dt, mod_id, mod_dt)
+VALUES ('M208', '0000', NULL, '테스트8', '<p>내용8</p>', '', NULL, 'N', 'N', 'N', 'N', 0, 'admin', NOW(), 'admin', NOW());
+
+INSERT INTO TB_BOARD(menu_cd, menu_dv_cd, categories, title, content, password, top_fix, use_yn, del_yn, rply_yn,
+                     file_yn, view_count, reg_id, reg_dt, mod_id, mod_dt)
+VALUES ('M208', '0000', NULL, '테스트9', '<p>내용9</p>', '8674', NULL, 'N', 'N', 'N', 'N', 0, 'admin', NOW(), 'admin',
+        NOW());
+
+INSERT INTO TB_BOARD(menu_cd, menu_dv_cd, categories, title, content, password, top_fix, use_yn, del_yn, rply_yn,
+                     file_yn, view_count, reg_id, reg_dt, mod_id, mod_dt)
+VALUES ('M208', '0000', NULL, '테스트10', '<p>내용10</p>', '9189', NULL, 'N', 'N', 'N', 'N', 0, 'admin', NOW(), 'admin',
+        NOW());
+
+
+
+
 
