@@ -207,7 +207,7 @@
 }
 
 .tableScroll tr:first-child {
-    background-color: #a9aec1;
+    background-color: var(--brand-color1);
 }
 
 #draggable tr.hover {

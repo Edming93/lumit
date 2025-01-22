@@ -7,7 +7,14 @@ const FETCH = {
      */
     async get(url, callbackFunc = null) {
         const response = await fetch(url).then(res =>
-            res).then(res => res)
+            res).then(res => {
+                try {
+                    return res.json()
+                } catch (e) {
+                    return res;
+                }
+            }
+        )
         if (callbackFunc != null) {
             return await callbackFunc(response)
         }
