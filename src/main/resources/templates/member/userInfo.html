@@ -122,17 +122,20 @@
             if (isOpen) {
                 showModal("addressBook")
             }
-            let defaultId = address[0].addrId;
-            dragTable.addEventListener("dragend", (e) => {
-                const firstRow = dragTable.querySelector("tbody tr:first-child");
-                const id = parseInt(firstRow.querySelector("input[type='hidden']").value)
-                if (id != defaultId) {
-                    FETCH.get(`/api/user/address/default/${id}`).then(res => res).then(res => {
-                        defaultId = res[0].addrId;
-                        alert("기본 주소지가 변경되었습니다.");
-                    })
-                }
-            })
+            if (address.length > 0) {
+                let defaultId = address[0].addrId;
+                dragTable.addEventListener("dragend", (e) => {
+                    const firstRow = dragTable.querySelector("tbody tr:first-child");
+                    const id = parseInt(firstRow.querySelector("input[type='hidden']").value)
+                    if (id != defaultId) {
+                        FETCH.get(`/api/user/address/default/${id}`).then(res => res).then(res => {
+                            defaultId = res[0].addrId;
+                            alert("기본 주소지가 변경되었습니다.");
+                        })
+                    }
+                })
+            }
+
             const modal = [[${modal}]]
             if (modal != null) {
                 showModal('response')

@@ -222,7 +222,7 @@
 }
 
 .inputAddr::placeholder {
-    color: white;
+    color: #333333;
 }
 
 .inputAddr.readonly {
