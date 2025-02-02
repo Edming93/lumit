@@ -53,12 +53,12 @@
                          id="addrTable">
                         <div class="tableScroll">
                             <div>
-                                &#x2022; 기본 배송지를 변경하려면 주소를 맨 위로 드래그하세요(기본 배송지 이외의 순서는 변경되지 않습니다.)
+                                &#x2022; 대표 배송지를 변경하려면 주소를 맨 위로 드래그하세요(대표 배송지 이외의 순서는 변경되지 않습니다.)
                             </div>
                             <table id="draggable" th:if="!${#lists.isEmpty(content)}">
                                 <colgroup>
-                                    <col width="10%">
                                     <col width="15%">
+                                    <col width="10%">
                                     <col width="45%">
                                     <col width="15%">
                                     <col width="15%">
@@ -68,7 +68,7 @@
                                     <th>배송지명</th>
                                     <th>받는 사람</th>
                                     <th>주소</th>
-                                    <th>전화번호</th>
+                                    <th>휴대폰번호</th>
                                     <th>편집</th>
                                 </tr>
                                 </thead>
@@ -77,9 +77,23 @@
                                     th:each="item, stat: ${content}">
                                     <input type="hidden" th:value="${item.addrId}">
                                     <td>
-                                        <input class="inputAddr readonly" maxlength="10" placeholder="배송지명"
+                                        <input th:unless="${stat.first}"
+                                               class="inputAddr readonly"
+                                               maxlength="10"
+                                               placeholder="배송지명"
+                                               readonly="readonly"
                                                th:value="${item.addrName}"
                                         >
+                                        <div th:if="${stat.first}"
+                                             style="display: flex;justify-content: center; align-items: center">
+                                            <input style="max-width: 30% !important;" class="inputAddr readonly"
+                                                   maxlength="10"
+                                                   placeholder="배송지명"
+                                                   readonly="readonly"
+                                                   th:value="${item.addrName}"
+                                            >
+                                            <div class="defaultAddrBadge">대표</div>
+                                        </div>
                                     </td>
                                     <td><input class="inputAddr readonly" type="text" readonly="readonly"
                                                placeholder="받는 사람"
@@ -88,7 +102,7 @@
                                     </td>
                                     <td>
                                         <input name="addrCell" class="inputAddr readonly"
-                                               th:value="${item.baseAddr} + ' ' +${item.detailAddr}"
+                                               th:value="${item.baseAddr} + ', ' +${item.detailAddr}"
                                                readonly="readonly">
                                         <button class="addrBtn" style="display: none;" onclick="daumPostcode(event)">주소
                                             검색
@@ -98,7 +112,7 @@
                                     <td>
                                         <input class="inputAddr readonly phoneNum" type="text" readonly="readonly"
                                                th:value="${item.phoneNumber}"
-                                               placeholder="전화번호"
+                                               placeholder="휴대폰번호"
                                                oninput="phoneValidate(event)">
                                     </td>
                                     <td>
@@ -231,13 +245,17 @@
         async function deleteAddr(event) {
             const parent = event.target.parentNode.parentNode.parentElement
             const id = parent.querySelectorAll("input")[0].value;
-            await FETCH.delete(`/api/user/address/${id}`).then((res) => {
-                if (res.ok) {
-                    FETCH.get("/main/member/addressList")
-                }
-                alert("삭제되었습니다.")
-                location.href = "/main/member/edit?addr=true";
-            });
+            let result = confirm("정말 삭제하시겠습니까?")
+            if (result) {
+                await FETCH.delete(`/api/user/address/${id}`).then((res) => {
+                    if (res.ok) {
+                        FETCH.get("/main/member/addressList")
+                    }
+                    alert("삭제되었습니다.")
+                    location.href = "/main/member/edit?addr=true";
+                });
+            }
+
         }
 
         function deleteNewLine() {

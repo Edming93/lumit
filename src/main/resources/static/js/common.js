@@ -228,10 +228,21 @@ function createRadioButtons(selectId, collection, options) {
 
 function phoneValidate(event) {
     const value = event.currentTarget.value
+
+    if (value.length > 0 && value[0] != '0') {
+        event.currentTarget.value = '';
+        alert("휴대폰 번호 형식에 맞지 않습니다.")
+        return;
+    }
+    if (value.length > 1 && value[1] != '1') {
+        event.currentTarget.value = '0';
+        alert("휴대폰 번호 형식에 맞지 않습니다.")
+        return;
+    }
     if (value.length > 13) {
         event.currentTarget.value = value.substring(0, 13)
         return;
     }
     event.currentTarget.value = value.replace(/[^0-9]/g, '')
-        .replace(/(^02.{0}|^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")
+        .replace(/(^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")
 }

@@ -136,7 +136,8 @@
 
     <update id="updateDefaultAddr" parameterType="com.lumit.shop.common.model.TbLogin">
         UPDATE TB_LOGIN
-        SET DEFAULT_ADDR=#{defaultAddr}
+        SET DEFAULT_ADDR=#{defaultAddr},
+            ADDRESS=#{address}
         WHERE USER_ID = #{userId}
     </update>
 

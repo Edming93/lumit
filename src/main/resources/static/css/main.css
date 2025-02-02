@@ -310,8 +310,7 @@ footer {
     display: flex;
     align-items: center;
     accent-color: var(--brown-font);
-    /*margin-top: 0rem;*/
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
 }
 
 .loginCheckbox > * {
@@ -334,7 +333,7 @@ footer {
 
 .loginBtn {
     width: 100%;
-    padding: 1rem;
+    padding: 0.8rem;
     background-color: var(--black-color);
     border-radius: 0.7rem;
     color: white;
@@ -393,7 +392,7 @@ footer {
 }
 
 .socialContainer {
-    margin-top: 1.4rem;
+    margin-top: 0.4rem;
     margin-bottom: 7rem;
 }
 
@@ -936,6 +935,15 @@ footer {
     border-radius: 0.2rem;
     background-color: #F5EFE6;
     color: #958177;
+}
+
+.defaultAddrBadge {
+    border: 1px solid #B84F03;
+    color: #B84F03;
+    border-radius: 0.3rem;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.2rem;
+    font-weight: 700;
 }
 
 #changePwd div {

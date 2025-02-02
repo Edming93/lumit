@@ -99,7 +99,7 @@ public class UserRestControlller {
         if (user == null) {
             return null;
         }
-        UserInfoDto infoDto = UserInfoDto.builder().userId(user.getUserId()).defaultAddr(id).build();
+        UserInfoDto infoDto = UserInfoDto.builder().userId(user.getUserId()).defaultAddr(id).address(userService.selectAddressById(id).getAddrName()).build();
         ServiceCode sc = userService.updateUserInfo(infoDto);
         List<TbAddress> addressList = userService.selectAddressListByUserId(user.getUserId());
         if (!sc.equals(ServiceCode.UPDATED)) {

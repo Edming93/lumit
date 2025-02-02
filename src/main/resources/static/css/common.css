@@ -82,21 +82,22 @@
     background-color: #F4EEE6;
     display: flex;
     justify-content: space-between;
-    padding: 0.6rem;
+    padding: 0.5rem 0.6rem;
 }
 
 .modalHeader > p {
     color: #876453;
     font-weight: 600;
     font-size: 0.9rem;
+    padding-left: 0.3rem;
+    line-height: 130%;
 }
 
 .modalHeader > button {
-    background-color: rgba(0, 0, 0, 0.2);
-    width: 1rem;
-    height: 1rem;
-    border-radius: 1rem;
-    color: white;
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 1rem !important;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -105,8 +106,9 @@
 
 .modalHeader > button > i {
     position: absolute;
-    left: 0.16rem;
-    top: 0.1rem;
+    color: white;
+    left: 0.21rem;
+    top: 0.16rem;
 }
 
 .modalContentWrapper {
@@ -145,9 +147,9 @@
     width: 100%;
     overflow: auto;
     position: relative;
-    min-height: 300px;
+    min-height: fit-content;
     min-width: 700px;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    /*box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;*/
 }
 
 .modalContentWrapper > div {
@@ -163,10 +165,11 @@
 }
 
 .modalContentWrapper th {
-    height: 30px;
+    height: 35px;
     margin: 0 auto;
-    background-color: #876453;
-    color: white;
+    /*background-color: #876453;*/
+    border-top: 1px solid #836154;
+    color: #836154;
     align-self: center;
     font-weight: 600;
     vertical-align: middle;
@@ -177,10 +180,11 @@
 
 .modalContentWrapper tr {
     text-align: center;
+    border-bottom: 1px solid #F2EFEB;
 }
 
 .modalContentWrapper td {
-    padding: 0.2rem;
+    padding: 0.3rem;
 }
 
 .modalContentWrapper tr:hover {
@@ -193,17 +197,19 @@
     width: 100%;
 }
 
-.tableBottom > div > button {
-
+.tableBottom button {
+    padding: 0.4rem 1.6rem !important;
+    border-radius: 1rem !important;
+    font-weight: 600;
 }
 
 .tableScroll > div:nth-child(1) {
-    background-color: #F4EEE6;
+    /*background-color: #F4EEE6;*/
     text-align: left;
     padding: 0.3rem;
     position: sticky;
     top: 0;
-    color: #3D3D3D;
+    color: #767676;
 }
 
 /*.tableScroll tr:first-child {*/
@@ -216,9 +222,11 @@
 }
 
 .inputAddr {
-    width: 90% !important;
+    max-width: 90% !important;
     margin: 0 !important;
     padding: 0.3rem 0.2rem 0.3rem 0.2rem !important;
+    text-align: center;
+    border: none !important;
 }
 
 .inputAddr::placeholder {
@@ -233,4 +241,14 @@
 .inputAddr.modify:focus {
     background-color: #876453;
     color: white;
+}
+
+.inputAddr.modify:focus::placeholder {
+    color: white;
+}
+
+#addrTable button {
+    border: 1px solid #CAAB9C !important;
+    background-color: #E7DBCD !important;
+    color: #876453;
 }
