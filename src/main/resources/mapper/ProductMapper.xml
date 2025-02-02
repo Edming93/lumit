@@ -32,9 +32,16 @@
     </select>
     
     <select id="selectPageableProductList" parameterType="RequestList" resultType="TbProduct">
-        SELECT *
+        SELECT a.*
+        	, b.FILE_PATH
+        	, b.FILE_NEW_NAME
         FROM
-        	TB_PRODUCT
+        	TB_PRODUCT a
+        LEFT JOIN
+        	TB_FILE b
+        ON b.MENU_CD = #{data.menuCd}
+        AND b.PK_ID = a.PRODUCT_ID
+        AND b.FILE_DV_CD = #{data.fileDvCd}
         <where>
 			<if test="data.productName != null and data.productName neq ''">
 			    AND PRODUCT_NAME LIKE CONCAT('%', #{data.productName}, '%')
@@ -55,14 +62,19 @@
 	        	AND REG_DT <![CDATA[ <=]]> DATE_FORMAT(REPLACE(#{data.endDt}, "-", ""), '%Y/%m/%d 23:59:59')
 	        </if>
 		</where>
-        ORDER BY REG_ID DESC
+        ORDER BY a.REG_DT DESC
         LIMIT #{pageable.offset}, #{data.cntPerPage}
     </select>
     
    	<select id="selectCountProductList" parameterType="TbProduct" resultType="int">
         SELECT COUNT(*) AS CNT
         FROM
-        	TB_PRODUCT
+        	TB_PRODUCT a
+        LEFT JOIN
+        	TB_FILE b
+        ON b.MENU_CD = #{menuCd}
+        AND b.PK_ID = a.PRODUCT_ID
+        AND b.FILE_DV_CD = #{fileDvCd}
         <where>
         	1=1
 			<if test="productName != null and productName neq ''">
@@ -86,6 +98,14 @@
 		</where>
     </select>
     
+    <select id="selectProductDetail" resultType="com.lumit.shop.common.model.TbProduct">
+    	SELECT a.* 
+    	FROM 
+    		TB_PRODUCT a
+    	WHERE 
+    		PRODUCT_ID = #{productId}
+    </select>
+    
    	<insert id="insertProduct" parameterType="com.lumit.shop.common.model.TbProduct" useGeneratedKeys="true"
             keyProperty="productId">
 	    INSERT INTO TB_PRODUCT (
@@ -93,6 +113,7 @@
 	        , PRODUCT_CD
 	        , PRICE
 	        , DIS_PRICE
+	        , DIS_RATE
 	        , CONTENT
 	        , SUMMATION
 	        , STOCKS
@@ -113,6 +134,7 @@
 	        , CONCAT('L',REPLACE(SUBSTRING(UUID(),1,15),'-',''))
 	        , #{price}
 	        , #{disPrice}
+	        , #{disRate}
 	        , #{content}
 	        , #{summation}
 	        , #{stocks}
@@ -222,4 +244,20 @@
 	    </foreach>
 	    )
     </insert>
+    
+    <select id="selectColorMapList" resultType="com.lumit.shop.common.model.TbMapping">
+    	SELECT * 
+    	FROM
+    		TB_COLOR_MAP
+    	WHERE
+    		PRODUCT_ID = #{productId}
+    </select>
+    
+    <select id="selectTagMapList" resultType="com.lumit.shop.common.model.TbMapping">
+    	SELECT * 
+    	FROM
+    		TB_TAG_MAP
+    	WHERE
+    		PRODUCT_ID = #{productId}
+    </select>
 </mapper>

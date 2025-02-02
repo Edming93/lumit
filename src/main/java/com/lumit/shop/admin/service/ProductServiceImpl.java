@@ -49,15 +49,21 @@ public class ProductServiceImpl implements ProductService {
     }
     
     public Page<Map<String, Object>> selectPageableProductList(CommonSearch search, Pageable pageable) {
+    	search.setMenuCd("M201");
+    	search.setFileDvCd("1001");
+    	
         RequestList<?> requestList = RequestList.builder().data(search).pageable(pageable).build();
         Field[] variables = requestList.getData().getClass().getDeclaredFields();
 
         List<Map<String, Object>> content = productRepository.selectPageableProductList(requestList);
+        System.out.println("----------");
+        System.out.println(productRepository.selectPageableProductList(requestList));
         int total = productRepository.selectCountProductList(search);
         return new PageImpl<>(content, pageable, total);
     }
 
     @Override
+    @Transactional
     public HashMap<String, Object> insertProduct(TbProduct product, MultipartFile[] files, MultipartFile[] filesRep) {
     	HashMap<String,Object> retMap = new HashMap<String,Object>();
     	
@@ -72,8 +78,8 @@ public class ProductServiceImpl implements ProductService {
     	System.out.println(product.getTagIdList());
     	
     	// 옵션 테이블에 데이터 추가
-    	if(product.getColorIdList() != null) productRepository.insertColorMap(product);
-    	if(product.getTagIdList() != null) productRepository.insertTagMap(product);
+    	if(product.getColorIdList().size() != 0) productRepository.insertColorMap(product);
+    	if(product.getTagIdList().size() != 0) productRepository.insertTagMap(product);
     	
     	if(filesRep != null || files != null) {
     		uploadFiles(product,files,filesRep);
@@ -124,7 +130,6 @@ public class ProductServiceImpl implements ProductService {
     		
 	    	// 기존 파일 DB추가
 	    	for (TbFile file : fileList) {
-	    		
 				fileRepository.insertFiles(file);
 			}
     	}
@@ -203,6 +208,20 @@ public class ProductServiceImpl implements ProductService {
     }
     
     @Override
+    public HashMap<String, Object> detailProduct(TbProduct product) {
+    	HashMap<String,Object> retMap = new HashMap<String,Object>();
+    	System.out.println("detail :::");
+    	System.out.println(productRepository.selectProductDetail(product));
+    	retMap.put("detail", productRepository.selectProductDetail(product));
+    	TbFile files = new TbFile();
+    	files.setMenuCd("M201");
+    	files.setPkId(product.getProductId());
+    	retMap.put("files", fileRepository.selectFileList(files));
+    	
+    	return retMap;
+    }
+    
+    @Override
     public HashMap<String, Object> updateProduct(TbProduct product) {
     	HashMap<String,Object> retMap = new HashMap<String,Object>();
     	
@@ -220,4 +239,19 @@ public class ProductServiceImpl implements ProductService {
     	return retMap;
     }
     
+    @Override
+    public HashMap<String, Object> selectProductColorMappingList(TbProduct product) {
+    	HashMap<String,Object> retMap = new HashMap<String,Object>();
+    	retMap.put("colorList", productRepository.selectColorMapList(product));
+    	
+    	return retMap;
+    }
+    
+    @Override
+    public HashMap<String, Object> selectProductTagMappingList(TbProduct product) {
+    	HashMap<String,Object> retMap = new HashMap<String,Object>();
+    	retMap.put("tagList", productRepository.selectTagMapList(product));
+    	
+    	return retMap;
+    }
 }

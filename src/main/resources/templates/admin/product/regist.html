@@ -107,6 +107,12 @@
 	                        </td>
 	                    </tr>
 	                    <tr>
+	                        <th class="alLeft bold">할인율 설정</th>
+	                        <td>
+	                           <input type="text" id="disRate" name="disRate" class="boardInp w15" placeholder="" value="0" maxlength="11"> %
+	                        </td>
+	                    </tr>
+	                    <tr>
 	                        <th class="alLeft bold">할인가(판매가)</th>
 	                        <td>
 	                           <input type="text" id="disPrice" name="disPrice" class="boardInp w15" placeholder="" maxlength="11"> 원
@@ -200,8 +206,6 @@ let colorText = "";
 let tagIdList = [];
 let tagText = "";
 
-let secretPw = "";
-
 document.addEventListener("DOMContentLoaded",async function () {
 	load();
 	
@@ -245,6 +249,32 @@ document.addEventListener("DOMContentLoaded",async function () {
 		}
 		$("#tagWrap").html(tagText);
 	});
+	
+	$("#disRate,#price").on("keyup",function(e) {
+		if(!$("#price").val() || !$("#disRate").val()) {
+			return;
+		}
+		
+		if($("#price").val() < 0) {
+			alert("정가가 0원 이하일 수 없습니다.");
+			return;
+		}
+		
+		if($("#disRate").val() >= 100) {
+			alert("할인율이 100% 이상일 수 없습니다.");
+			return;
+		}
+		
+		let price = $("#price").val();
+		let disRate = $("#disRate").val();
+		
+		$("#disPrice").val(price - (price * (disRate * 0.01)));
+	});
+	
+	
+	$("#disPrice").on("keyup",function(e) {
+		$("#disRate").val("0");
+	});
 
 	document.getElementById("registBtn").addEventListener("click", function() {
 		if(confirm("등록 하시겠습니까?")) {
@@ -266,6 +296,11 @@ document.addEventListener("DOMContentLoaded",async function () {
 				for(var i=0; i<filesRep.length; i++) {
 					formData.append('filesRep',filesRep[i]);
 				}
+			}
+			
+			if($("#price").val() < $("#disPrice").val()) {
+				alert("할인가가 정가보다 클 수 없습니다.");
+				return;
 			}
 			
 			if($("#categoryId").val() != "") {
@@ -294,7 +329,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 					}
 				}
 				
-				if(key != "files" && key != "filesRep" && key != "colorIdList" && key != "tagIdList") {
+				if(key != "files" && key != "filesRep" && key != "colorIdList" && key != "tagIdList" && key != "freeDeliveryFee") {
 					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
 						alert("입력하지 않은 값이 있는지 확인해주세요.");
 						return;

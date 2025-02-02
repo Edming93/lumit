@@ -5,92 +5,187 @@
         layout:decorate="~{admin/fragments/layout}">
 <head>
 	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+	<style>
+		.flex_align {
+			display: flex;
+	    	align-items: center;
+	    }
+	</style>
 </head>
 
 <div layout:fragment="content">
     <div>
-        <p class="title">공지사항 수정</p>
+        <p class="title">상품 관리 수정</p>
     </div>
 
-    <div class="boardContainer wsNorap">
-        <form id="registForm" method="post" entype="multipart/form-data">
-
-            <table class="registTable">
-                <colgroup>
-                    <col style="width: 10%;"/>
-                    <col style="width: 90%;"/>
-                </colgroup>
-                <tbody>
-                    <tr>
-                        <th class="alLeft bold">제목</th>
-                        <td>
-                            <input type="text" id="title" name="title" class="boardInp" placeholder="제목을 입력해주세요." th:value="${detail.title}">
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="alLeft bold">파일 첨부</th>
-                        <td>
-							<div class="form__input--file_wrap">
-								<div class="form__input--top_wrap">
-								  <input class="form__input--file" id="upload" type="file" multiple>
-								  <label class="form__label--file" for="upload">내PC</label>
-								  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
-							  	</div>
-								<div class="form__input--bottom_wrap">
-							  		<div class="form__div--file"></div>
+	<div class="contentWrap">
+	    <div class="boardContainer wsNorap">
+	        <form id="registForm"  method="post" entype="multipart/form-data">
+				
+	            <table class="registTable">
+	                <colgroup>
+	                    <col style="width: 10%;"/>
+	                    <col style="width: 90%;"/>
+	                </colgroup>
+	                <tbody>
+	                	<tr>
+	                        <th class="alLeft bold">대표 이미지</th> <!-- 기본 1000x1000 최소 500x500 -->
+	                        <td>
+								<div class="form__input--file_wrap">
+									<div class="form__input--top_wrap">
+									  <input class="form__input--file" id="uploadRep" type="file" multiple>
+									  <label class="form__label--file" for="uploadRep">추가</label>
+									  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
+								  	</div>
+									<div class="form__input--bottom_wrap">
+								  		<div class="form__div--file_rep"></div>
+									</div>
 								</div>
-							</div>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <textarea id="tiny">
-								<span th:utext="${detail.content}"></span>
-							</textarea>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="btnArea">
-            	<div class="btnAreaLeft">
-            		<button type="button" onclick="showSecretBox();">
-					  <img class="btnSecretImg" src="/images/secretMsg.png"/>
-					</button>
-					<div class="secretBox" style="display:none;">
-						<div class="secretHeader">
-							<div>비밀글 설정</div>
-							<div class="cancelBox">
-								<button type="button" onclick="hideSecretBox();">
-								  <img src="/images/xBox.png"/>
-								</button>
-							</div>
-						</div>
-						<div class="secretContent">
-							<div class="secretContentTop">
-								<div class="secretTitle">비밀번호 입력</div>
-								<div>
-									<input type="password" class="secretPassword" id="password" th:value="${detail.password}">
+	
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">카테고리</th>
+	                        <td>
+	                            <select id="categoryId">
+	                            	<option>어떻게 매칭할지 고민</option>
+	                            	<option value="1">카테고리 관리 팝업 띄우기?</option>
+	                            	<option value="2">그 팝업안에서 카테고리 추가,수정,삭제가능?</option>
+	                            	<option value="3">별점관리는 어떤 테이블에서? just 상품리뷰 테이블에 의존?</option>
+	                            </select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">상품명</th>
+	                        <td>
+	                            <input type="text" id="productName" name="productName" class="boardInp w100" placeholder="상품명을 입력해주세요." maxlength="255">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">재고수량</th> <!-- TODO : 재고수량 10개 미만일시 대시보드에 알림 -->
+	                        <td>
+	                        	<input type="text" id="stocks" name="stocks" class="boardInp w15" placeholder="재고수량" maxlength="11">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">상품코드</th>
+	                        <td>
+	                            <span id="productCd" class='col brand4'></span>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">진열상태</th>
+	                        <td>
+	                            <select id="dpStatus"></select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">판매상태</th>
+	                        <td>
+	                            <select id="status"></select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">상품 요약설명</th>
+	                        <td>
+	                           <input type="text" id="summation" name="summation" class="boardInp w100" placeholder="상품 요약설명을 입력해주세요." maxlength="1000">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">옵션 상품코드</th>
+	                        <td>
+	                            <select id="optionId">
+	                            	<option>어떻게 매칭할지 고민</option>
+	                            	<option value="1">상품명 검색하면 상품코드 가져오기?</option>
+	                            </select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">정가</th>
+	                        <td>
+	                           <input type="text" id="price" name="price" class="boardInp w15" placeholder="" maxlength="11"> 원
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">할인율 설정</th>
+	                        <td>
+	                           <input type="text" id="disRate" name="disRate" class="boardInp w15" placeholder="" value="0" maxlength="11"> %
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">할인가(판매가)</th>
+	                        <td>
+	                           <input type="text" id="disPrice" name="disPrice" class="boardInp w15" placeholder="" maxlength="11"> 원
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">배송비</th>
+	                        <td>
+	                           <input type="text" id="deliveryFee" name="deliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">무료배송 설정</th>
+	                        <td>
+								<input type="text" id="freeDeliveryFee" name="freeDeliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원 이상 주문시 무료배송
+	                        	<input type="checkbox" id="freeFeeCheck">
+	                        	<label for="freeFeeCheck">체크시 적용</label>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">색상</th>
+	                        <td>
+	                        	<div class="flexRow">
+		                            <select id="color">
+		                            </select>
+		                            <button type="button" id="addColorBtn" class="plusBtn"></button>
+	                            </div>
+	                            <div id="colorWrap" class="flex_align"></div>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">태그</th>
+	                        <td>
+	                        	<div class="flexRow">
+		                            <select id="tag">
+		                            </select>
+	                            	<button type="button" id="addTagBtn" class="plusBtn"></button>
+	                            </div>
+	                            <div id="tagWrap"></div>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">상세 이미지</th> <!-- 기본 1000x1000 최소 500x500 -->
+	                        <td>
+								<div class="form__input--file_wrap">
+									<div class="form__input--top_wrap">
+									  <input class="form__input--file" id="upload" type="file" multiple>
+									  <label class="form__label--file" for="upload">추가</label>
+									  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
+								  	</div>
+									<div class="form__input--bottom_wrap">
+								  		<div class="form__div--file"></div>
+									</div>
 								</div>
-							</div>
-							<div class="secretContentBt">
-								<button type="button" class="btnSecretSave" onclick="passwordSave();">
-								  저장
-								</button>
-							</div>
-						</div>
-					</div>
-            	</div>
-            	<div class="btnAreaCenter">
-	            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
-	                <button type="button" id="registBtn" class="commBtn mgl10 size100">작성 완료</button>
-                </div>
-                <div class="btnAreaRight">
-                </div>
-            </div>
-        </form>
-    </div>
+	
+	                        </td>
+	                    </tr>
+	                </tbody>
+	            </table>
+	
+	            <div class="btnArea">
+	            	<div class="btnAreaLeft">
+	            	</div>
+	            	<div class="btnAreaCenter">
+		            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
+		                <button type="button" id="registBtn" class="commBtn mgl10 size100">등록</button>
+	                </div>
+	                <div class="btnAreaRight">
+	                </div>
+	            </div>
+	        </form>
+	    </div>
+	</div>
 </div>
 </html>
 
@@ -100,46 +195,89 @@
 <script th:inline="javascript">
 
 let menuCd = [[${menuCd}]];
-let boardId = [[${detail.boardId}]];
+let productId = [[${productId}]];
+let filesRep = []; // 실제 대표이미지 파일 담는 arr
+let files = []; // 실제 상세 이미지 파일 담는 arr
+let fileIdx = 1;
+let beforeFiles = []; // 백업용
+let colorList = [];
+let tagList = [];
+let colorIdList = [];
+let colorText = "";
+let tagIdList = [];
+let tagText = "";
 
-var files = []; // 실제 파일 담는 arr
-var oriFiles = []; // 기존 파일 담는 arr
-var fileIdx = 1;
-var beforeFiles = []; // 백업용
-
-let secretPw = "";
-
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded",async function () {
+	load();
 	
-	oriFiles = [[${fileList}]];
-	setFiles();
-	
-	// 텍스트에디터 기초 세팅
-	tinymce.init({
-		language:"ko_KR",
-	    selector: 'textarea',
-	    height:500,
-	    plugins: [
-	      // Core editing features
-	      'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-	    ],
-	    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-	    tinycomments_mode: 'embedded',
-	    tinycomments_author: 'Author name',
-	    mergetags_list: [
-	      { value: 'First.Name', title: 'First Name' },
-	      { value: 'Email', title: 'Email' },
-	    ],
-	    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+	$("#addColorBtn").on("click",function() {
+		if(!colorIdList.some((item) => item === $("#color").val())) {
+			colorIdList.push($("#color").val());
+
+			let colorCd = $("#color").find('option:selected').data("colorcd");
+			
+			
+			if(colorText === "") {
+				colorCd?
+				colorText += `<input type='color' value=${colorCd} disabled> `+ $("#color").find("option:selected").text() 
+					: colorText += $("#color").find("option:selected").text();
+			}else {
+				colorCd ?
+				colorText += "　" + 
+				 `<input type='color' value=${colorCd} disabled> `+ $("#color").find("option:selected").text()
+				: colorText += "　" + $("#color").find("option:selected").text();
+			}
+		}
+		$("#colorWrap").html(colorText);
 	});
 	
-	document.getElementById("registBtn").addEventListener("click", function() {
-	
-		if(confirm("수정 하시겠습니까?")) {
-				
-			let formData = new FormData(document.querySelector("#registForm"));
+	$("#addTagBtn").on("click",function() {
+		if(!tagIdList.some((item) => item === $("#tag").val())) {
+			tagIdList.push($("#tag").val());
 
-			formData.append('boardId',boardId);
+			if(tagText === "") {
+				tagText += 
+					 $("#tag").find("option:selected").text();
+			}else {
+				tagText += "　" + 
+						$("#tag").find("option:selected").text();
+			}
+		}
+		$("#tagWrap").html(tagText);
+	});
+	
+	$("#disRate,#price").on("keyup",function(e) {
+		if(!$("#price").val() || !$("#disRate").val()) {
+			return;
+		}
+		
+		if($("#price").val() < 0) {
+			alert("정가가 0원 이하일 수 없습니다.");
+			return;
+		}
+		
+		if($("#disRate").val() >= 100) {
+			alert("할인율이 100% 이상일 수 없습니다.");
+			return;
+		}
+		
+		let price = $("#price").val();
+		let disRate = $("#disRate").val();
+		
+		$("#disPrice").val(price - (price * (disRate * 0.01)));
+	});
+	
+	
+	$("#disPrice").on("keyup",function(e) {
+		$("#disRate").val("0");
+	});
+
+	document.getElementById("registBtn").addEventListener("click", function() {
+		if(confirm("등록 하시겠습니까?")) {
+			
+			let formData = new FormData(document.querySelector("#registForm"));
+			let params = {};
+			
 			if(files.length === 0) {
 				formData.append('files',[]);
 			}else {
@@ -148,58 +286,95 @@ document.addEventListener("DOMContentLoaded", function () {
 				}
 			}
 			
-			if(oriFiles.length === 0) {
-				formData.append('jsonFileList',[])
+			if(filesRep.length === 0) {
+				formData.append('filesRep',[]);
 			}else {
-				for(var i=0; i<oriFiles.length; i++) {
-					formData.append('jsonFileList',JSON.stringify(oriFiles[i]));
+				for(var i=0; i<filesRep.length; i++) {
+					formData.append('filesRep',filesRep[i]);
 				}
 			}
 			
-			// 텍스트에디터 내용 가져오기
-			let tinyContent = tinymce.get("tiny").getContent();
-			formData.append('content',tinyContent);
-			formData.append('password',secretPw);
+			if($("#price").val() < $("#disPrice").val()) {
+				alert("할인가가 정가보다 클 수 없습니다.");
+				return;
+			}
+			
+			if($("#categoryId").val() != "") {
+				formData.append("categoryId",$("#categoryId").val() ?? '');
+			}
+			if($("#optionId").val() != ""){
+				formData.append("optionId",$("#optionId").val() ?? '');
+			}
+			if($("#dpStatus").val() != "") {
+				formData.append("dpStatus",$("#dpStatus").val() ?? '');
+			}
+			if($("#status").val() != "") {
+				formData.append("status",$("#status").val() ?? '');
+			}
+
+			formData.append("colorIdList",colorIdList ?? []);
+			formData.append("tagIdList",tagIdList ?? []);
 			
 			for(let [key,value] of formData.entries()) {
-				if(key != "files") {
+				
+				if(key == "freeDeliveryFee") {
+					let deliveryFeeChk = $("#freeFeeCheck").prop("checked");
+					if(!deliveryFeeChk) {
+						formData.delete("freeDeliveryFee");
+						formData.append("freeDeliveryFee","nonFree");
+					}
+				}
+				
+				if(key != "files" && key != "filesRep" && key != "colorIdList" && key != "tagIdList" && key != "freeDeliveryFee") {
 					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
-						if(key == "title") {
-							alert("제목을 입력해주세요.");
-							return;
-						}
-						
-						if(key == "content") {
-							alert("내용을 입력해주세요.");
-							return;
-						}
+						alert("입력하지 않은 값이 있는지 확인해주세요.");
+						return;
 					}
 				}
 			}
-			let url = "/"+siteId+"/board/"+menuCd+"/list";
+			
+			let url = "/"+siteId+"/product/list";
 			
 			setData(formData,url);
 		}
+		
 	});
 	
 	
 	// input file 커스텀 - 파일명 붙이기
-	const fileTarget = document.querySelector('.form__input--file_wrap input');
+	let fileTarget = $('.form__input--file_wrap input');
 	
 	const mb = 1024 * 1024; //1mb(메가)
 	const limitSize = mb * 10;
 	
-	fileTarget.addEventListener('change', function () {
-		
-		let fileLength = this.files.length + oriFiles.length + files.length;
-
-		for(var i=0; i< fileLength; i++) {
-			if(fileLength > 5){
-				alert('최대 5개까지 첨부 가능합니다.');
-				break;
-			}
+	fileTarget.on('change', function () {
+		let selectId = $(this).attr('id');
+		if(selectId == 'uploadRep') {
+			for(var i=0; i< this.files.length; i++) {
+				if(files.length >= 5){
+					alert('최대 5개까지 첨부 가능합니다.');
+					break;
+				}
+				
+				var uploadSize = this.files[i].size;
 			
-			if(this.files[i]) {
+				if(limitSize < uploadSize) {
+					alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
+				}else {
+					var file = this.files[i];
+								
+					file['idx'] = fileIdx;
+					filesRep.push(file);
+					fileIdx++;
+				}
+			}
+		}else{
+			for(var i=0; i<this.files.length; i++) {
+				if(files.length >= 5){
+					alert('최대 5개까지 첨부 가능합니다.');
+					break;
+				}
+				
 				var uploadSize = this.files[i].size;
 			
 				if(limitSize < uploadSize) {
@@ -214,10 +389,127 @@ document.addEventListener("DOMContentLoaded", function () {
 			}
 		}
 		
-		setFiles();
+		setFiles(selectId);
+		
 	});
 
 });
+
+async function load() {
+	initTextEditor();
+	
+	await getProductDetail();
+	await getColorMappingList();
+	await getTagMappingList();
+	
+	await getCodeList();
+	await getColorOption();
+	await getTagOption();
+	
+	createSelectOptions("status", codeList.filter((item) => item.grpCd === 'PD_STATUS'),{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
+	createSelectOptions("dpStatus", codeList.filter((item) => item.grpCd === 'DP_STATUS'),{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
+	createSelectOptions("color", colorList,{selectedValue:'0000', keyNm:"optionId", valueNm:"optionName", colorCd:"optionCd"});
+	createSelectOptions("tag", tagList,{selectedValue:'0001', keyNm:"optionId", valueNm:"optionName"});
+}
+
+async function getProductDetail() {
+	const res = await axios.post('/rest/'+siteId+'/product/detail', {productId: productId});
+    if(!res || !res.data) {
+    	alert("상품 정보를 불러오는데 실패했습니다.");
+    	return;
+    }
+    
+    let pdDetail = res.data.detail;
+    let pdFiles = res.data.files;
+    
+    $("#productName").val(pdDetail.productName);
+    $("#stocks").val(pdDetail.stocks);
+    $("#productCd").html(pdDetail.productCd);
+    $("#dpStatus").val(pdDetail.dpStatus);
+    $("#status").val(pdDetail.status);
+    $("#summation").val(pdDetail.summation);
+    $("#price").val(pdDetail.price);
+    $("#disRate").val(pdDetail.disRate);
+    $("#disPrice").val(pdDetail.disPrice);
+    $("#deliveryFee").val(pdDetail.deliveryFee);
+    $("#freeDeliveryFee").val(pdDetail.freeDeliveryFee == 'nonFree' ? '해당 없음' : pdDetail.freeDeliveryFee);
+    
+}
+
+async function getColorMappingList() {
+	const res = await axios.post('/rest/'+siteId+'/product/color-list', {productId: productId});
+    if(!res || !res.data) {
+    	alert("color mapping리스트를 불러오는데 실패했습니다.");
+    	return;
+    }
+    
+    colorList = res.data.colorList;
+    
+    _.forEach(colorList, function(color){
+    	colorIdList.push(color.optionId);
+    	
+    	if(colorText === "") {
+    		color.colorCd ?
+			colorText += 
+				`<input type='color' value=${color.colorCd} disabled> `+ color.colorName 
+			: color.colorName;
+    	} else {
+    		color.colorCd ?
+    		colorText += "　" +
+    		`<input type='color' value=${color.colorCd} disabled> `+ color.colorName 
+			: color.colorName;
+    	};
+	})
+    
+	$("#colorWrap").html(colorText);
+    
+    console.log(colorList);
+}
+
+async function getTagMappingList() {
+	const res = await axios.post('/rest/'+siteId+'/product/tag-list', {productId: productId});
+    if(!res || !res.data) {
+    	alert("tag mapping리스트를 불러오는데 실패했습니다.");
+    	return;
+    }
+    
+    tagList = res.data.tagList;
+    
+    _.forEach(tagList, function(tag){
+    	tagIdList.push(tag.optionId);
+    	
+    	if(tagText === "") {
+			tagText += tag.tagName;
+		}else {
+			tagText += "　" + tag.tagName;
+		}
+    });
+    
+    $("#tagWrap").html(tagText);
+    
+    console.log(tagList);
+}
+
+
+async function getColorOption() {
+	const res = await axios.get('/rest/'+siteId+'/option/list', {params:{optionDvCd:'0001'}});
+    if(!res || !res.data) {
+    	alert("color option을 불러오는데 실패했습니다.");
+    	return;
+    }
+    
+    colorList = res.data.list.content;
+}
+
+async function getTagOption() {
+	const res = await axios.get('/rest/'+siteId+'/option/list', {params:{optionDvCd:'0000'}});
+    if(!res || !res.data) {
+    	alert("tag option을 불러오는데 실패했습니다.");
+    	return;
+    }
+    
+    tagList = res.data.list.content;
+}
 
 function showSecretBox() {
 	$(".secretBox").show();
@@ -231,62 +523,52 @@ function passwordSave() {
 	secretPw = $("#password").val();
 	
 	alert("저장되었습니다.");
+	$(".secretBox").hide();
+	$(".btnSecretImg").attr("src","/images/secretMsg-on.png");
 }
 
 
-var fileDiv = document.querySelector('.form__div--file');
-
 // 파일 그리기
-function setFiles() {
-	var fileHtml = '';
+function setFiles(id) {
+	let fileDiv = '';
+	let fileHtml = '';
 	
-	// 기존 파일 그리기
-	_.forEach(oriFiles, function(file){
-			fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.fileId+'"class="delete_file_btn" onClick="deleteOriFileBtn(this)"> x </button>'+file.fileName+'</span>';
-		})
+	if(id == 'uploadRep') {
+		fileDiv = document.querySelector('.form__div--file_rep');
 		
-	// 새 파일 그리기
-	_.forEach(files, function(file){
+		fileHtml = '';
+		_.forEach(filesRep, function(file){
 			fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
 		})
+	} else {
+		fileDiv = document.querySelector('.form__div--file');
+		
+		fileHtml = '';
+		_.forEach(files, function(file){
+			fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
+		})
+	}
 	
-	if (fileDiv) {
-		fileDiv.innerHTML = fileHtml;
+	if (!fileDiv) {
+		return;
 	};
+	fileDiv.innerHTML = fileHtml;
 }
 
 function deleteFileBtn(elem) {
-	// 새 파일 삭제
+	// 실제 파일 삭제
 	files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")})
 	setFiles();
 };
 
-function deleteOriFileBtn(elem) {
-	// 기존 파일 삭제
-	oriFiles = _.filter(oriFiles, function(file) {return file.fileId != elem.getAttribute("data-idx")})
-	setFiles();
-}
-
-
 // 비동기 통신
-function setData(formData,url) {
-    fetch('/' + siteId + '/board/' + menuCd + '/update', {
-        method: 'POST',
-        body: formData
-    })
-    .then(function(result) {
-		if(result.ok) {
-			alert("수정이 완료되었습니다.");
-					
-			moveUrl(url);
-		}else {
-			alert("등록에 실패하였습니다.");
-		}
-		
-    })
-    .catch(function(error) {
-        console.log("error:", error);
-    });
+async function setData(formData,url) {
+	const res = await axios.post('/rest/' + siteId + '/product/regist',formData, {headers: {'Content-Type': 'multipart/form-data'}});
+	if(!res || !res.data) {
+		alert("등록에 실패하였습니다.");
+		return;
+	}
+	moveUrl(url);
+	
 }
-
 </script>
