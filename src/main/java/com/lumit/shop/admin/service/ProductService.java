@@ -11,7 +11,11 @@ import com.lumit.shop.common.model.TbProduct;
 public interface ProductService {
 
     public HashMap<String, Object> selectProductList(CommonSearch search, Pageable pageable);
-    public HashMap<String, Object> insertProduct(TbProduct option, MultipartFile[] files, MultipartFile[] filesRep);
-    public HashMap<String, Object> updateProduct(TbProduct option);
-    public HashMap<String, Object> deleteProduct(TbProduct option);
+    public HashMap<String, Object> insertProduct(TbProduct product, MultipartFile[] files, MultipartFile[] filesRep);
+    public HashMap<String, Object> detailProduct(TbProduct product);
+    public HashMap<String, Object> updateProduct(TbProduct product);
+    public HashMap<String, Object> deleteProduct(TbProduct product);
+    
+    public HashMap<String, Object> selectProductColorMappingList(TbProduct product);
+    public HashMap<String, Object> selectProductTagMappingList(TbProduct product);
 }

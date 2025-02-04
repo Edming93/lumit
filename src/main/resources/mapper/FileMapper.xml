@@ -5,17 +5,29 @@
     <select id="selectFileList" resultType="com.lumit.shop.common.model.TbFile">
         SELECT *
         FROM TB_FILE
-        WHERE PK_ID = #{pkId}
-          AND MENU_CD = #{menuCd}
+        WHERE 
+			<if test="menuCd != null and menuCd neq ''"> 
+        		MENU_CD = #{menuCd}
+        	</if>
+          	<if test="pkId != null and pkId neq ''"> 
+        		AND PK_ID = #{pkId}
+        	</if>
         ORDER BY REG_DT DESC
     </select>
 
     <select id="selectFile" resultType="com.lumit.shop.common.model.TbFile">
         SELECT *
         FROM TB_FILE
-        WHERE FILE_ID = #{fileId}
-          AND MENU_CD = #{menuCd}
-          AND PK_ID = #{pkId}
+        WHERE
+        	<if test="fileId != null and fileId neq ''"> 
+        		FILE_ID = #{fileId}
+        	</if>
+        	<if test="menuCd != null and menuCd neq ''"> 
+        		AND MENU_CD = #{menuCd}
+        	</if>
+          	<if test="pkId != null and pkId neq ''"> 
+        		AND PK_ID = #{pkId}
+        	</if>
         ORDER BY REG_DT DESC
     </select>
 

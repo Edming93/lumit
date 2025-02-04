@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.lumit.shop.common.repository.MenuRepository;
@@ -29,4 +30,9 @@ public class ProductController {
         return PRODUCT_PATH + "/regist";
     }
 
+    @GetMapping("/update/{productId}")
+    public String updateProduct(ModelMap map, @PathVariable("productId") String productId) {
+    	map.addAttribute("productId", productId);
+        return PRODUCT_PATH + "/update";
+    }
 } 

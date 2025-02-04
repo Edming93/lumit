@@ -143,7 +143,7 @@ input.w100, select.w100 {
 .datepickerWrap {
     display: flex;
     align-items: center;
-    width: 20%;
+    min-width: 20%;
 }
 
 .datepickerInput {
@@ -419,10 +419,9 @@ i {
     cursor: pointer;
     color: #876453;
     background-color: #E7DBCD;
-    width: 70px;
-    height: 35px;
     border-radius: 12px;
     font-size: 13px;
+    padding: 7px 10px;
 }
 
 .commBtn:focus {
@@ -577,7 +576,7 @@ table tbody tr td .tblBtn.delBtn {
 }
 
 .boardTable tbody tr {
-    height: 45px;
+    height: 60px;
     line-height: 45px;
     color: #9F9F9F;
     font-size: 14px;

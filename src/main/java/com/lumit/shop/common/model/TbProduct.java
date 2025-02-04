@@ -18,6 +18,7 @@ public class TbProduct{
 	private String productCd;
 	private String price;
 	private String disPrice;
+	private String disRate;
 	private String content; 
 	private String summation;
 	private String stocks;
@@ -33,6 +34,10 @@ public class TbProduct{
 	private String regDt;
 	private String modId;
 	private String modDt;
+	
+	// TbFile
+	private String filePath;
+	private String fileNewName;
 	
 	private List<String> colorIdList = new ArrayList<>();
 	private List<String> tagIdList = new ArrayList<>();

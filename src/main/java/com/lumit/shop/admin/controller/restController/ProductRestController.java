@@ -50,6 +50,12 @@ public class ProductRestController {
     }
     
     @ResponseBody
+    @PostMapping("/detail")
+    public ResponseEntity<Map<String,Object>> selectProductDetail(@RequestBody TbProduct product) {
+        return ResponseBuilder.build(productService.detailProduct(product),HttpStatus.OK);
+    }
+    
+    @ResponseBody
     @PostMapping("/update")
     public ResponseEntity<Map<String,Object>> updateProduct(@RequestBody TbProduct product) {
         return ResponseBuilder.build(productService.updateProduct(product),HttpStatus.OK);
@@ -59,6 +65,18 @@ public class ProductRestController {
     @PostMapping("/delete")
     public ResponseEntity<Map<String,Object>> deleteProduct(@RequestBody TbProduct product) {
         return ResponseBuilder.build(productService.deleteProduct(product),HttpStatus.OK);
+    }
+    
+    @ResponseBody
+    @PostMapping("/color-list")
+    public ResponseEntity<Map<String,Object>> selectProductColorList(@RequestBody TbProduct product) {
+        return ResponseBuilder.build(productService.selectProductColorMappingList(product),HttpStatus.OK);
+    }
+    
+    @ResponseBody
+    @PostMapping("/tag-list")
+    public ResponseEntity<Map<String,Object>> selectProductTagList(@RequestBody TbProduct product) {
+        return ResponseBuilder.build(productService.selectProductTagMappingList(product),HttpStatus.OK);
     }
 
 } 

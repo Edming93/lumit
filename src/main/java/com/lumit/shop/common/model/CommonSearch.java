@@ -18,10 +18,16 @@ public class CommonSearch{
 	private String optionDvCd;
 	private String optionCd;
 	
+	private String menuCd;
+	private String fileDvCd;
+	
+	private String productId;
 	private String productName;
 	private String productCd;
 	private String status;
 	private String dpStatus;
+	
+	private String optionId;
 	
 	private int cntPerPage = 10;
 }
