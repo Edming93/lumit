@@ -23,8 +23,24 @@ button {
     color: var(--text-color);
 }
 
-.searchArea{width: 100%; display: flex; column-gap: 5px; margin-bottom: 45px;}
-.container select, .container input[type="text"], .container input[type="password"], .container input[type="number"]{background-color: var(--input-background-color); border: 1px solid var(--light-gray-color); outline: none; border-radius: 5px; height: 32px; padding-left: 15px; padding-right: 15px; max-width: 100%; box-sizing: border-box;}
+.searchArea {
+    width: 100%;
+    display: flex;
+    column-gap: 5px;
+    margin-bottom: 45px;
+}
+
+.container select, .container input[type="text"], .container input[type="password"], .container input[type="number"] {
+    background-color: var(--input-background-color);
+    border: 1px solid var(--light-gray-color);
+    outline: none;
+    border-radius: 5px;
+    height: 32px;
+    padding-left: 15px;
+    padding-right: 15px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
 
 
 .container input[type="text"]:disabled {
@@ -734,7 +750,7 @@ input[type='file'] {
 .delete_file_btn {
     color: #999;
     font-size: 16px;
-    margin-right:10px;
+    margin-right: 10px;
 }
 
 /**
@@ -944,4 +960,84 @@ input::-webkit-inner-spin-button {
     width: 50px;
     height: 40px;
     cursor: pointer;
+}
+
+
+/**
+    category css
+ */
+
+.categoryTable {
+    width: 640px;
+    height: 520px;
+    border: 1px solid #B84F03;
+    display: flex;
+    justify-content: space-between;
+    /*padding: 0.5rem 0.5rem;*/
+}
+
+.cateHead {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+    width: 100%;
+    background-color: #B84F03;
+    color: white;
+    padding: 12px 0px;
+    text-align: center;
+    position: relative;
+}
+
+.cateHead button {
+    position: absolute;
+    top: 11px;
+    margin-left: 0.2rem;
+
+}
+
+.cateHead i {
+    margin: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    color: white;
+    border: 1px solid white;
+    background-color: rgba(60, 105, 221, 0.7);
+    border-radius: 0.1rem;
+}
+
+.cate {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    border-right: 1px solid grey;
+}
+
+.cate input {
+    border: 1px solid #3c69dd !important;
+    width: 80% !important;
+    height: 24px !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    /*font-size: 17px;*/
+}
+
+.cate:last-child {
+    border: none;
+}
+
+.cate li {
+    padding: 0.4rem 0.1rem;
+    /*border: 1px solid #9F9F9F;*/
+    width: 100%;
+    font-size: 0.9rem;
+    display: flex;
+}
+
+.cate li > i {
+    margin: 0 !important;
+}
+
+.mediumCate {
+}
+
+.smallCate {
 }

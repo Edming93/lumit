@@ -91,7 +91,7 @@ create table if not exists TB_CATEGORY
         primary key,
     CATEGORY_NAME varchar(50)           not null,
     USE_YN        varchar(2)            not null,
-    DEPTH         int                   not null comment '{0: 최상위, 순차로 하위}'
+    PARENT        bigint                null comment 'null: 최상위, 값이 있으면 부모의 id'
 );
 
 create table if not exists TB_CATEGORY_MAP

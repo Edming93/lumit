@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{admin/fragments/layout}"
+>
+<head>
+
+</head>
+<div layout:fragment="content">
+    <div>
+        <p class="title"><span>분류 관리</span></p>
+    </div>
+    <div id="container">
+        <div class="searchArea">
+            <input type="text" title="분류명" placeholder="분류명" id="categoryName">
+            <button class="searchBtn"></button>
+        </div>
+
+        <div class="categoryTable">
+            <div class="cate largeCate">
+                <div class="cateHead">대분류
+                    <button id="newLargeCateBtn"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <ul class='topCategoryList'></ul>
+            </div>
+            <div class="cate mediumCate">
+                <div class="cateHead">중분류</div>
+            </div>
+            <div class="cate smallCate">
+                <div class="cateHead">소분류</div>
+            </div>
+            <div class="cate detailCate">
+                <div class="cateHead">상세분류</div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", () => {
+            load();
+            loadEventListener();
+        })
+
+        function load() {
+
+            getTopParent();
+        }
+
+        function loadEventListener() {
+            const newLargeCateBtn = document.querySelector("#newLargeCateBtn")
+            newLargeCateBtn.addEventListener("click", () => {
+                const ul = document.querySelector(".topCategoryList")
+                ul.innerHTML += `<li><i class=\"fa-solid fa-folder\"></i><div><input class="newCate" type="text"></div></li>`
+                const cate = document.querySelector('.newCate')
+                cate.addEventListener("focusout", async () => {
+                    const data = fillCategoryInfo(cate.value, true, null);
+                    console.log(data)
+                    const result = await FETCH.post("/rest/admin/category/new", data)
+                    location.reload();
+                    // alert(`${cate.value} 값이 추가 될 것 입니다.`)
+                })
+            })
+        }
+
+        function fillCategoryInfo(name, isUse, parent) {
+            let cate = {
+                categoryName: name,
+                useYn: isUse === true ? 'Y' : 'N',
+                parent: parent
+            }
+            return cate
+        }
+
+        async function getTopParent() {
+            const result = await FETCH.get("/rest/admin/category/list")
+            const ul = document.querySelector(".topCategoryList")
+            for (let i = 0; i < result.length; i++) {
+                const cate = result[i];
+                ul.innerHTML += "<li><i class=\"fa-solid fa-folder\"></i><div>" + cate.categoryName + "</div></li>";
+            }
+        }
+    </script>
+</div>
+
+</html>
