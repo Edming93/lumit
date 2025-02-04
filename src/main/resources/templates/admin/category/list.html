@@ -43,7 +43,6 @@
         })
 
         function load() {
-
             getTopParent();
         }
 
@@ -51,16 +50,35 @@
             const newLargeCateBtn = document.querySelector("#newLargeCateBtn")
             newLargeCateBtn.addEventListener("click", () => {
                 const ul = document.querySelector(".topCategoryList")
-                ul.innerHTML += `<li><i class=\"fa-solid fa-folder\"></i><div><input class="newCate" type="text"></div></li>`
+                const check = document.querySelectorAll(".newCate")
+                if (check.length != 0) {
+                    return false;
+                }
+                ul.innerHTML += `<li><i class=\"fa-solid fa-folder\"></i><div><input class="newCate" type="text"></div><button class="addCateBtn"><i class="fa-solid fa-check"></i></button></li>`
                 const cate = document.querySelector('.newCate')
-                cate.addEventListener("focusout", async () => {
-                    const data = fillCategoryInfo(cate.value, true, null);
-                    console.log(data)
-                    const result = await FETCH.post("/rest/admin/category/new", data)
-                    location.reload();
-                    // alert(`${cate.value} 값이 추가 될 것 입니다.`)
+                cate.addEventListener("keypress", (evt) => {
+                    if (cate.value == "") {
+                        return false;
+                    }
+                    if (evt.key === "Enter") {
+                        addNewCategory(cate.value, null)
+                    }
+                });
+                document.querySelector(".addCateBtn").addEventListener("click", (e) => {
+                    const value = e.currentTarget.previousElementSibling.querySelector("input").value
+                    addNewCategory(value, null)
                 })
             })
+        }
+
+        async function addNewCategory(value, parentId) {
+            const data = fillCategoryInfo(value, true, parentId);
+            const result = await FETCH.post("/rest/admin/category/new", data)
+            if (result.ok) {
+                location.reload();
+            } else if (result.status == 409) {
+                alert("같은 계층에서는 동일한 이름의 카테고리를 생성할 수 없습니다.")
+            }
         }
 
         function fillCategoryInfo(name, isUse, parent) {
@@ -79,7 +97,16 @@
                 const cate = result[i];
                 ul.innerHTML += "<li><i class=\"fa-solid fa-folder\"></i><div>" + cate.categoryName + "</div></li>";
             }
+            const list = ul.querySelectorAll("li")
+            list.forEach((value, key) => {
+                value.addEventListener("click", () => {
+                    value.style.backgroundColor = "yellow"
+                    alert(`${value.textContent} 선택됨`)
+                })
+            })
         }
+
+        
     </script>
 </div>
 

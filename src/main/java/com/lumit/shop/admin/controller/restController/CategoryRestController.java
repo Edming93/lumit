@@ -4,6 +4,7 @@ import com.lumit.shop.admin.service.CategoryService;
 import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.model.TbCategory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,9 @@ public class CategoryRestController {
     @PostMapping("/new")
     public ResponseEntity<?> insertNewCategory(@RequestBody TbCategory data) {
         ServiceCode sc = categoryService.insertNewCategory(data);
+        if (sc.equals(ServiceCode.CONFLICT)) {
+            return ResponseEntity.status(409).build();
+        }
         if (!sc.equals(ServiceCode.SUCCESS)) {
             return ResponseEntity.badRequest().build();
         }

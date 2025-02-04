@@ -14,4 +14,6 @@ public interface CategoryService {
     List<TbCategory> selectChildrenCategories(int id);
 
     ServiceCode insertNewCategory(TbCategory category);
+
+    boolean isDuplicatedCategory(TbCategory category);
 }

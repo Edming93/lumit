@@ -18,4 +18,6 @@ public interface CategoryRepository {
     List<TbCategory> selectTopParentCategories();
 
     int insertNewCategory(TbCategory category);
+
+    TbCategory isDuplicatedCategory(TbCategory tbCategory);
 }

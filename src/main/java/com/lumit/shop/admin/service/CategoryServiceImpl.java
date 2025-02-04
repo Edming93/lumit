@@ -31,6 +31,18 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ServiceCode insertNewCategory(TbCategory category) {
+        if (isDuplicatedCategory(category)) {
+            return ServiceCode.CONFLICT;
+        }
         return categoryRepository.insertNewCategory(category) > 0 ? ServiceCode.SUCCESS : ServiceCode.UNKNOWN;
+    }
+
+    @Override
+    public boolean isDuplicatedCategory(TbCategory category) {
+        System.out.println("testing...");
+        if (categoryRepository.isDuplicatedCategory(category) != null) {
+            return true;
+        }
+        return false;
     }
 }
