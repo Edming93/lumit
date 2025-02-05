@@ -1029,14 +1029,17 @@ input::-webkit-inner-spin-button {
 
 
 .cate li {
-    padding: 0.6rem 0rem 0.2rem 0rem;
+    padding: 0.2rem 0rem 0.2rem 0rem;
     width: 100%;
     font-size: 0.9rem;
     display: flex;
+    align-items: center;
+    position: relative;
 }
 
 .cate li > i {
     margin: 0 !important;
+    align-content: center;
 }
 
 .mediumCate {
