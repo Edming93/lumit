@@ -150,12 +150,15 @@ function setList(data){
 	let cnt = 0;
 	if(listLength > 0) {
 		productList.forEach((item) => {
+			let lumitFiles = item.filePath ? item.filePath.substring('2') : ''
+			console.log(lumitFiles);
+			
 			$('#listArea').append(`
 				<tr>
 					<td class='alCenter'>${PAGE.pageRowNumber(data.number, data.size, cnt++, data.totalElements)}</td>
 					<td class='alCenter'>
 					 	${item.filePath ? 
-							`<img src='${item.filePath}/${item.fileNewName}' style='width:50px; height:50px; cursor:pointer; vertical-align: middle;' id='popupImg'>`
+							`<img src='${lumitFiles}/${item.fileNewName}' style='width:50px; height:50px; cursor:pointer; vertical-align: middle;' id='popupImg'>`
 							: ''
 					 	}
 					</td>
