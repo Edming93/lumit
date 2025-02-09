@@ -21,7 +21,7 @@
 			</div>
 			<button class="searchBtn"></button>
 		</div>
-		
+
         <div class="btnArea">
         	<div class="btnLeftArea">
                 <span class="searchResult bold">
@@ -37,7 +37,7 @@
                 <button type="button" id="registBtn" class="commBtn mgl10">상품 등록</button>
             </div>
         </div>
-		
+
 		<div>
 			<table class="boardTable listTable mgt20">
 			    <colgroup>
@@ -72,26 +72,26 @@
 $(document).ready(function() {
 	// setSearchInit('searchArea');
 	load();
-	
+
 	$("#registBtn").on("click",function() {
 		moveUrl("/" + siteId + "/product/regist");
 	});
-	
+
 // 	$("#listArea").on("click", ".delBtn", function(e) {
 // 		var delProductId = $(this).attr('id').replace("del_",'');
 // 		delProduct(delProductId);
 //     });
-	
+
     $("#productName").on("keydown", function (event) {
         if (event.key === 'Enter') {
             getList(0);
         };
     });
-	
+
     $(".searchBtn").on("click", function(event) {
     	getList(0);
     });
-    
+
     // 검색 결과 페이지 수 변경시
     $('#pageSize').change(function() {
 		const cntPerPage = $(this).val();
@@ -110,43 +110,43 @@ async function load() {
 async function getList(pageNo,cntPerPage) {
 	pageNo = pageNo ?? 0;
 	cntPerPage = cntPerPage ?? 10;
-	
+
 	let productName = $("#productName").val();
 	let strDt = $("#strDt").val();
 	let endDt = $("#endDt").val();
-	
+
 	params = {
 		productName : productName,
 		strDt : strDt,
 		endDt : endDt,
 		cntPerPage : cntPerPage
 	}
-	
+
 	// let url = "/rest/admin/product/list?page="+pageNo;
 	const res = await axios.get("/rest/" + siteId + "/product/list?page="+pageNo, {params});
 	if (!res || !res.data) {
 		openAlert({contents: '상품 목록을 불러오는데 실패했습니다. <br/> 다시 시도해주세요.'});
 		return;
 	};
-	
+
 	data = res.data.list ?? [];
-	
+
 	// 검색결과 노출 수 변경마다 totalPageCount 값 변경
 	const totalPageCount = Math.ceil(data.totalElements / cntPerPage);
-	
+
 	PAGE.paging(totalPageCount, data.number, data.totalElements, "getList");
-	
+
 	setList(data);
 }
 
 function setList(data){
 	$('#listArea').empty();
-	
+
 	productList = data.content;
-	
+
 	let listLength = productList.length;
 	// let productCodeList = codeList.filter((item) => {return item.grpCd === 'PRODUCT_DV_CD'});
-	
+
 	let cnt = 0;
 	if(listLength > 0) {
 		productList.forEach((item) => {
@@ -154,7 +154,7 @@ function setList(data){
 				<tr>
 					<td class='alCenter'>${PAGE.pageRowNumber(data.number, data.size, cnt++, data.totalElements)}</td>
 					<td class='alCenter'>
-					 	${item.filePath ? 
+					 	${item.filePath ?
 							`<img src='${item.filePath}/${item.fileNewName}' style='width:50px; height:50px; cursor:pointer; vertical-align: middle;' id='popupImg'>`
 							: ''
 					 	}
@@ -186,7 +186,7 @@ function setList(data){
 			</tr>
 		`);
 	}
-	
+
 }
 
 function detail(id) {
@@ -197,22 +197,22 @@ function formatToWon(num) {
     if (!num) return "";
     return Number(num).toLocaleString('ko-KR') + "원";
   }
-  
-  
+
+
 // async function delProduct(productId) {
-	
+
 // 	if(confirm("삭제 하시겠습니까?")) {
 // 		let params = {
 // 			productId : productId,
 // 		};
-		
+
 // 		const res = await axios.post('/rest/admin/product/delete', params);
-		
+
 // 		if(!res){
 // 			alert('삭제에 실패했습니다. <br/>다시 시도해주세요.');
 // 			return;
 // 		}
-		
+
 // 		getList(0);
 // 	}
 // };
