@@ -15,6 +15,7 @@
         <div class="searchArea">
             <input type="text" title="분류명" placeholder="분류명" id="categoryName">
             <button class="searchBtn"></button>
+
         </div>
 
         <div class="categoryTable">
@@ -23,16 +24,19 @@
                     <button id="newLargeCateBtn"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <ul class='topCategoryList'></ul>
+                <input type="hidden" class="parentId">
             </div>
             <div class="cate mediumCate">
                 <div class="cateHead">중분류
                     <button style="display: none" id="newMiddleCateBtn"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <ul class="middleCategoryList"></ul>
+                <input type="hidden">
             </div>
             <div class="cate smallCate">
                 <div class="cateHead">소분류</div>
                 <ul class="bottomCategoryList"></ul>
+                <input type="hidden">
             </div>
             <div class="cate detailCate">
                 <div class="cateHead">상세분류</div>
@@ -48,7 +52,7 @@
         })
 
         function load() {
-            getTopParent();
+            getParent("", ".topCategoryList")
         }
 
         function loadEventListener() {
@@ -72,6 +76,28 @@
                 document.querySelector(".addCateBtn").addEventListener("click", (e) => {
                     const value = e.currentTarget.previousElementSibling.querySelector("input").value
                     addNewCategory(value, null)
+                })
+            })
+            const newMiddleCateBtn = document.querySelector("#newMiddleCateBtn")
+            newMiddleCateBtn.addEventListener("click", () => {
+                const ul = document.querySelector(".middleCategoryList")
+                const check = document.querySelectorAll(".newCate")
+                if (check.length != 0) {
+                    return false;
+                }
+                ul.innerHTML += `<li><i class=\"fa-solid fa-folder\"></i><div><input class="newCate" type="text"></div><button class="addCateBtn"><i class="fa-solid fa-check"></i></button></li>`
+                const cate = document.querySelector('.newCate')
+                cate.addEventListener("keypress", (evt) => {
+                    if (cate.value == "") {
+                        return false;
+                    }
+                    if (evt.key === "Enter") {
+                        addNewCategory(cate.value, ul.nextElementSibling.value);
+                    }
+                });
+                document.querySelector(".addCateBtn").addEventListener("click", (e) => {
+                    const value = e.currentTarget.previousElementSibling.querySelector("input").value
+                    addNewCategory(value, ul.nextElementSibling.value)
                 })
             })
         }
@@ -101,24 +127,24 @@
             })
         }
 
-        async function getTopParent() {
-            const result = await FETCH.get("/rest/admin/category/list")
-            makeCategoryList(result, ".topCategoryList")
+        async function getParent(id, className) {
+            let result;
+            if (id != "") {
+                result = await FETCH.get(`/rest/admin/category/list/${id}`)
+            } else {
+                result = await FETCH.get("/rest/admin/category/list")
+            }
+            makeCategoryList(result, className)
         }
 
-        async function getMiddleParent(id) {
-            const result = await FETCH.get(`/rest/admin/category/list/${id}`)
-            makeCategoryList(result, ".middleCategoryList")
+        function addNewBtn(ul) {
+            const btn = ul.parentNode.nextElementSibling.querySelector("button")
+            btn.style.display = '';
         }
 
-        async function getBottomParent(id) {
-            const result = await FETCH.get(`/rest/admin/category/list/${id}`)
-            makeCategoryList(result, ".bottomCategoryList")
-        }
-
-        async function getDetailCategory(id) {
-            const result = await FETCH.get(`/rest/admin/category/list/${id}`)
-            makeCategoryList(result, ".detailCategoryList")
+        function setParentId(id, ul) {
+            const input = ul.parentNode.querySelector(".parentId")
+            input.value = id;
         }
 
         function makeCategoryList(result, className) {
@@ -136,18 +162,18 @@
                     }
                     resetBackground(list)
                     value.style.backgroundColor = "#e9d4c7"
-                    alert(`${value.textContent} 선택됨`)
+                    addNewBtn(ul)
+                    setParentId(value.querySelector("input").value, ul)
                     if (className.includes("top")) {
-                        getMiddleParent(value.querySelector("input").value)
+                        getParent(value.querySelector("input").value, ".middleCategoryList")
                     } else if (className.includes("middle")) {
-                        getBottomParent(value.querySelector("input").value)
+                        getParent(value.querySelector("input").value, ".bottomCategoryList")
                     } else if (className.includes("detail")) {
-                        getDetailCategory(value.querySelector("input").value)
+                        getParent(value.querySelector("input").value, ".detailCategoryList")
                     }
                 })
             })
         }
-
     </script>
 </div>
 
