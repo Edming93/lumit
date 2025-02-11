@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lumit.shop.admin.repository.CategoryRepository">
+    <select id="selectAllCategories" resultType="TbCategory">
+        select *
+        from TB_CATEGORY;
+    </select>
+    <select id="selectTopParentCategories" resultType="TbCategory">
+        select *
+        from TB_CATEGORY
+        where PARENT IS NULL
+    </select>
+    <select id="selectChildrenCategories" resultType="TbCategory">
+        select *
+        from TB_CATEGORY
+        where PARENT = #{parentId}
+    </select>
+    <insert id="insertNewCategory" parameterType="TbCategory">
+        insert into TB_CATEGORY (CATEGORY_NAME, USE_YN <if test="parent != 0">, PARENT</if>)
+        values (#{categoryName}, #{useYn}<if test="parent != 0">, #{parent}</if>)
+    </insert>
+    <select id="isDuplicatedCategory" parameterType="TbCategory">
+        select *
+        from TB_CATEGORY
+        where CATEGORY_NAME = #{categoryName}
+        and PARENT
+        <if test="parent == null">IS NULL</if>
+        <if test="parent != null">= #{parent}</if>
+    </select>
+</mapper>
