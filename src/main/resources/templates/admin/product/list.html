@@ -100,6 +100,46 @@ $(document).ready(function() {
 
 		getList(0, cntPerPage);
 	});
+    
+    $('#listArea').on('click','#popupImg', function() {
+		let imgUrl = $(this).attr('src');
+		
+		const tempImg = new Image();
+	    tempImg.src = imgUrl;
+		
+	    tempImg.onload = function () {
+	        const imgWidth = tempImg.width;
+	        const imgHeight = tempImg.height;
+
+	        
+	        // 팝업 크기와 위치 동적 계산
+	        const popupWidth = imgWidth + 20; // 여백 포함
+	        const popupHeight = imgHeight + 20;
+	        const screenWidth = window.screen.width;
+	        const screenHeight = window.screen.height;
+	        const left = (screenWidth - popupWidth) / 2;
+	        const top = (screenHeight - popupHeight) / 2;
+
+	        // 팝업 창 열기
+	        const popup = window.open(
+	            '',
+	            '_blank',
+	            `width=${popupWidth}px, height=${popupHeight}px, top=${top}, left=${left}`
+	        );
+
+	        popup.document.write(`
+                <style>
+                    body { margin: 0; display: flex; align-items: center; justify-content: center; height: 100%; }
+                    img { display: block; max-width: 100%; max-height: 100%; }
+                </style>
+                <img src="${imgUrl}">
+            `);
+	    };
+
+	    tempImg.onerror = function () {
+	        alert('이미지를 불러올 수 없습니다.');
+	    };
+    });
 });
 
 async function load() {
@@ -151,7 +191,6 @@ function setList(data){
 	if(listLength > 0) {
 		productList.forEach((item) => {
 			let lumitFiles = item.filePath ? item.filePath.substring('2') : ''
-			console.log(lumitFiles);
 			
 			$('#listArea').append(`
 				<tr>
@@ -185,7 +224,7 @@ function setList(data){
 	}else {
 		$('#listArea').append(`
 			<tr>
-				<td class='alCenter' colspan='3'>검색 결과가 없습니다.</td>
+				<td class='alCenter' colspan='7'>검색 결과가 없습니다.</td>
 			</tr>
 		`);
 	}

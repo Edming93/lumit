@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 				}
 			}
 			
-			if($("#price").val() < $("#disPrice").val()) {
+			if(Number($("#price").val()) < Number($("#disPrice").val())) {
 				alert("할인가가 정가보다 클 수 없습니다.");
 				return;
 			}
@@ -326,6 +326,11 @@ document.addEventListener("DOMContentLoaded",async function () {
 					if(!deliveryFeeChk) {
 						formData.delete("freeDeliveryFee");
 						formData.append("freeDeliveryFee","nonFree");
+					}else {
+						if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
+							alert("무료배송 설정에 체크하였으나 값이 없습니다.");
+							return;
+						}
 					}
 				}
 				
