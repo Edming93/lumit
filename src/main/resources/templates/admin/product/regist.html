@@ -238,7 +238,6 @@ document.addEventListener("DOMContentLoaded",async function () {
 	
 // 	$("#freeFeeCheck").on("click",function() {
 // 		let checked = $(this).prop("checked");
-// 		console.log(checked);
 // 		$("#deliveryFee").prop("disabled",checked);
 // 	});
 	$("#addColorBtn").on("click",function() {
@@ -387,7 +386,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 		let selectId = $(this).attr('id');
 		if(selectId == 'uploadRep') {
 			for(var i=0; i< this.files.length; i++) {
-				if(files.length >= 5){
+				if(filesRep.length >= 5){
 					alert('최대 5개까지 첨부 가능합니다.');
 					break;
 				}
@@ -396,9 +395,9 @@ document.addEventListener("DOMContentLoaded",async function () {
 			
 				if(limitSize < uploadSize) {
 					alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
-				}else {
+				} else {
 					var file = this.files[i];
-								
+					
 					file['idx'] = fileIdx;
 					filesRep.push(file);
 					fileIdx++;
@@ -417,7 +416,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 					alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
 				}else {
 					var file = this.files[i];
-								
+					
 					file['idx'] = fileIdx;
 					files.push(file);
 					fileIdx++;
@@ -477,7 +476,6 @@ async function load() {
 	await getCodeList();
 	await getColorOption();
 	await getTagOption();
-	console.log(colorList);
 	createSelectOptions("status", codeList.filter((item) => item.grpCd === 'PD_STATUS'),{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
 	createSelectOptions("dpStatus", codeList.filter((item) => item.grpCd === 'DP_STATUS'),{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
 	createSelectOptions("color", colorList,{selectedValue:'0000', keyNm:"optionId", valueNm:"optionName", colorCd:"optionCd"});
@@ -526,16 +524,11 @@ function setFiles(id) {
 	let fileDiv = '';
 	let fileHtml = '';
 	let idx = 1;
-	console.log(filesRep);
-	console.log(filesRep.length);
-	
 	$('.figure a img').attr('src','/images/noImage108x108.gif');
 	
-	if(filesRep.length == 0) {
-		$('.rep_a').removeClass('active');
-		$('#repImg'+ idx).find('a').removeClass('selected');
-		return;
-	}
+	// 클래스 초기화
+	$('.rep_a').removeClass('active');
+	$('.rep_a').removeClass('selected');
 	
 	if(id == 'uploadRep') {
 		$('.form__div--file_rep').addClass('mgt10');
@@ -543,21 +536,19 @@ function setFiles(id) {
 		
 		fileHtml = '';
 		
-		
-		
-		console.log("setFiles :::")
-		console.log(filesRep);
 		_.forEach(filesRep, function(file){
+			$('#repImg'+ idx).find('.rep_a').addClass('active');
+			
 			const imageSrc = URL.createObjectURL(file);
 			$('#repImg'+ idx).find('img').attr('src',imageSrc ?? '');
-			if(idx == 1) {
+			if(idx === 1) {
 				$('#repImg'+ idx).find('a').addClass('selected');
 			}
-			fileHtml += '<span class="select_file_box"><button type="button" data-id="uploadRep" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
+			
 			idx++;
+			fileHtml += '<span class="select_file_box"><button type="button" data-id="uploadRep" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
 			
 		});
-		idx = 1;
 	} else {
 		$('.form__div--file').addClass('mgt10');
 		fileDiv = document.querySelector('.form__div--file');
@@ -572,27 +563,18 @@ function setFiles(id) {
 		return;
 	};
 	
-	$('.rep_a').addClass('active');
-	
 	fileDiv.innerHTML = fileHtml;
 }
 
 function deleteFileBtn(elem) {
 	
 	if(filesRep.length > 0) {
-		console.log("1111");
-		console.log(filesRep);
 		// 실제 대표이미지 파일 삭제
 		filesRep = _.filter(filesRep, function(file) {return file.idx != elem.getAttribute("data-idx")});
-		console.log(filesRep);
 		
 	}else if(files.length > 0){
-		console.log("2222");
-		console.log(files);
 		// 실제 상세 이미지 파일 삭제
 		files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")});
-		console.log(files);
-		
 	}
 	
 	setFiles(elem.getAttribute("data-id"));
