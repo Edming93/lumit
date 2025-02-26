@@ -137,7 +137,10 @@ public class ProductServiceImpl implements ProductService {
     	if(filesRep != null) {
     		System.out.println("file ::: 대표 이미지 새 파일 추가 --------------------------");
 	    	// 새로운 파일 DB추가
-	    	for(MultipartFile file : filesRep) {
+    		//for(MultipartFile file : filesRep) {
+    		for(int i = 0; i < filesRep.length; i++) {
+    			MultipartFile file = filesRep[i];
+	    	
 	    		String oriFileName =  file.getOriginalFilename();
 	    		
 	    		UUID uuid = UUID.randomUUID(); // 랜덤 이름 생성
@@ -145,10 +148,14 @@ public class ProductServiceImpl implements ProductService {
 	    		String uploadFileName = uuid.toString() + "_" + oriFileName; //UUID(랜덤문자라생각하면편함) + 원본파일명
 	    		
 	    		File saveFile = new File(uploadPath, uploadFileName);
-	    		
+
 	    		TbFile tbFile = new TbFile();
 	    		tbFile.setPkId(product.getProductId());
-	    		tbFile.setFileDvCd("1001"); // 대표 이미지 : 1000 , 상품 이미지 : 1001 
+	    		if(i == 0) {
+	    			tbFile.setFileDvCd("1000"); // 대표 이미지 : 1000 , 상품 이미지 : 1001
+	    		} else {
+	    			tbFile.setFileDvCd("1001"); // 대표 이미지 : 1000 , 상품 이미지 : 1001
+	    		}
 	    		tbFile.setMenuCd("M201");
 	    		tbFile.setFileName(oriFileName);
 	    		tbFile.setFileNewName(uploadFileName);
