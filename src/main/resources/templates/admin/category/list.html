@@ -31,15 +31,19 @@
                     <button style="display: none" id="newMiddleCateBtn"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <ul class="middleCategoryList"></ul>
-                <input type="hidden">
+                <input type="hidden" class="parentId">
             </div>
             <div class="cate smallCate">
-                <div class="cateHead">소분류</div>
+                <div class="cateHead">소분류
+                    <button style="display: none" id="newBottomCateBtn"><i class="fa-solid fa-plus"></i></button>
+                </div>
                 <ul class="bottomCategoryList"></ul>
-                <input type="hidden">
+                <input type="hidden" class="parentId">
             </div>
             <div class="cate detailCate">
-                <div class="cateHead">상세분류</div>
+                <div class="cateHead">상세분류
+                    <button style="display: none" id="newDetailCateBtn"><i class="fa-solid fa-plus"></i></button>
+                </div>
                 <ul class="detailCategoryList"></ul>
             </div>
         </div>
@@ -52,53 +56,49 @@
         })
 
         function load() {
+            const selected = [[${selected}]];
+            console.log(selected)
             getParent("", ".topCategoryList")
         }
 
         function loadEventListener() {
             const newLargeCateBtn = document.querySelector("#newLargeCateBtn")
             newLargeCateBtn.addEventListener("click", () => {
-                const ul = document.querySelector(".topCategoryList")
-                const check = document.querySelectorAll(".newCate")
-                if (check.length != 0) {
-                    return false;
-                }
-                ul.innerHTML += `<li><i class=\"fa-solid fa-folder\"></i><div><input class="newCate" type="text"></div><button class="addCateBtn"><i class="fa-solid fa-check"></i></button></li>`
-                const cate = document.querySelector('.newCate')
-                cate.addEventListener("keypress", (evt) => {
-                    if (cate.value == "") {
-                        return false;
-                    }
-                    if (evt.key === "Enter") {
-                        addNewCategory(cate.value, null)
-                    }
-                });
-                document.querySelector(".addCateBtn").addEventListener("click", (e) => {
-                    const value = e.currentTarget.previousElementSibling.querySelector("input").value
-                    addNewCategory(value, null)
-                })
+                newInputMaker(".topCategoryList", true);
             })
-            const newMiddleCateBtn = document.querySelector("#newMiddleCateBtn")
+            const newMiddleCateBtn = document.querySelector("#newMiddleCateBtn");
             newMiddleCateBtn.addEventListener("click", () => {
-                const ul = document.querySelector(".middleCategoryList")
-                const check = document.querySelectorAll(".newCate")
-                if (check.length != 0) {
+                newInputMaker(".middleCategoryList", false)
+            })
+            const newBottomCateBtn = document.querySelector("#newBottomCateBtn")
+            newBottomCateBtn.addEventListener("click", () => {
+                newInputMaker(".bottomCategoryList", false)
+            })
+            const newDetailCateBtn = document.querySelector('#newDetailCateBtn')
+            newDetailCateBtn.addEventListener("click", () => {
+                newInputMaker(".detailCategoryList", false)
+            })
+        }
+
+        function newInputMaker(className, isTop) {
+            const ul = document.querySelector(className)
+            const check = document.querySelectorAll(".newCate")
+            if (check.length != 0) {
+                return false;
+            }
+            ul.innerHTML += `<li><i class=\"fa-solid fa-folder\"></i><div><input class="newCate" type="text"></div><button class="addCateBtn"><i class="fa-solid fa-check"></i></button></li>`
+            const cate = ul.querySelector('.newCate')
+            cate.addEventListener("keypress", (evt) => {
+                if (cate.value == "") {
                     return false;
                 }
-                ul.innerHTML += `<li><i class=\"fa-solid fa-folder\"></i><div><input class="newCate" type="text"></div><button class="addCateBtn"><i class="fa-solid fa-check"></i></button></li>`
-                const cate = document.querySelector('.newCate')
-                cate.addEventListener("keypress", (evt) => {
-                    if (cate.value == "") {
-                        return false;
-                    }
-                    if (evt.key === "Enter") {
-                        addNewCategory(cate.value, ul.nextElementSibling.value);
-                    }
-                });
-                document.querySelector(".addCateBtn").addEventListener("click", (e) => {
-                    const value = e.currentTarget.previousElementSibling.querySelector("input").value
-                    addNewCategory(value, ul.nextElementSibling.value)
-                })
+                if (evt.key === "Enter") {
+                    addNewCategory(cate.value, isTop ? null : ul.parentElement.previousElementSibling.querySelector('.parentId').value);
+                }
+            });
+            ul.querySelector(".addCateBtn").addEventListener("click", (e) => {
+                const value = e.currentTarget.previousElementSibling.querySelector("input").value
+                addNewCategory(value, isTop ? null : ul.parentElement.previousElementSibling.querySelector('.parentId').value)
             })
         }
 
@@ -106,7 +106,7 @@
             const data = fillCategoryInfo(value, true, parentId);
             const result = await FETCH.post("/rest/admin/category/new", data)
             if (result.ok) {
-                location.reload();
+                location.href = `/admin/category/list?parentId=${parentId}`
             } else if (result.status == 409) {
                 alert("같은 계층에서는 동일한 이름의 카테고리를 생성할 수 없습니다.")
             }
@@ -166,13 +166,24 @@
                     setParentId(value.querySelector("input").value, ul)
                     if (className.includes("top")) {
                         getParent(value.querySelector("input").value, ".middleCategoryList")
+                        resetList(0)
                     } else if (className.includes("middle")) {
                         getParent(value.querySelector("input").value, ".bottomCategoryList")
-                    } else if (className.includes("detail")) {
+                        resetList(1)
+                    } else if (className.includes("bottom")) {
+                        resetList(2)
                         getParent(value.querySelector("input").value, ".detailCategoryList")
                     }
                 })
             })
+        }
+
+        function resetList(depth) {
+            const depthName = ["top", "middle", "bottom", "detail"]
+            depth += 2;
+            for (let i = depth; i < 4; i++) {
+                document.querySelector(`.${depthName[i]}CategoryList`).innerHTML = "";
+            }
         }
     </script>
 </div>
