@@ -543,11 +543,12 @@ function setFiles(id) {
 		
 		fileHtml = '';
 		
-		
-		
 		console.log("setFiles :::")
 		console.log(filesRep);
 		_.forEach(filesRep, function(file){
+			
+			$('#repImg'+ idx).find('.rep_a').addClass('active');
+			
 			const imageSrc = URL.createObjectURL(file);
 			$('#repImg'+ idx).find('img').attr('src',imageSrc ?? '');
 			if(idx == 1) {
@@ -571,8 +572,6 @@ function setFiles(id) {
 	if (!fileDiv) {
 		return;
 	};
-	
-	$('.rep_a').addClass('active');
 	
 	fileDiv.innerHTML = fileHtml;
 }
