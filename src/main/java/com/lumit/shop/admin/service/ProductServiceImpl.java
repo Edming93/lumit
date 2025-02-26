@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
     
     public Page<Map<String, Object>> selectPageableProductList(CommonSearch search, Pageable pageable) {
     	search.setMenuCd("M201");
-    	search.setFileDvCd("1001");
+    	search.setFileDvCd("1000");
     	
         RequestList<?> requestList = RequestList.builder().data(search).pageable(pageable).build();
         Field[] variables = requestList.getData().getClass().getDeclaredFields();
@@ -148,7 +148,7 @@ public class ProductServiceImpl implements ProductService {
 	    		
 	    		TbFile tbFile = new TbFile();
 	    		tbFile.setPkId(product.getProductId());
-	    		tbFile.setFileDvCd("1001"); // 대표 이미지  
+	    		tbFile.setFileDvCd("1001"); // 대표 이미지 : 1000 , 상품 이미지 : 1001 
 	    		tbFile.setMenuCd("M201");
 	    		tbFile.setFileName(oriFileName);
 	    		tbFile.setFileNewName(uploadFileName);

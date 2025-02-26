@@ -44,7 +44,7 @@
         AND b.FILE_DV_CD = #{data.fileDvCd}
         <where>
 			<if test="data.productName != null and data.productName neq ''">
-			    AND PRODUCT_NAME LIKE CONCAT('%', #{data.productName}, '%')
+			    PRODUCT_NAME LIKE CONCAT('%', #{data.productName}, '%')
 			</if>
 			<if test="data.productCd != null and data.productCd neq ''">
 				AND PRODUCT_CD = #{data.productCd}
@@ -201,11 +201,13 @@
         	PRODUCT_ID = #{productId}
     </update>
     
-    <delete id="deleteProduct" parameterType="com.lumit.shop.common.model.TbProduct">
-		DELETE FROM TB_PRODUCT 
+    <update id="deleteProduct" parameterType="com.lumit.shop.common.model.TbProduct">
+		UPDATE TB_PRODUCT
+		SET 
+			DEL_YN = #{delYn}
 		WHERE
 			PRODUCT_ID = #{productId}
-	</delete>
+	</update>
 	
 	<insert id="insertColorMap" parameterType="com.lumit.shop.common.model.TbProduct">
 	    INSERT INTO TB_COLOR_MAP (

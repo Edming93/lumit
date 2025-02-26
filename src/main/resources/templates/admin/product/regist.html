@@ -20,7 +20,7 @@
 
 	<div class="contentWrap">
 	    <div class="boardContainer wsNorap">
-	        <form id="registForm"  method="post" entype="multipart/form-data">
+	        <form id="registForm"  method="post" entype="multipart/form-data" onsubmit="return false">
 				
 	            <table class="registTable">
 	                <colgroup>
@@ -31,11 +31,38 @@
 	                	<tr>
 	                        <th class="alLeft bold">대표 이미지</th> <!-- 기본 1000x1000 최소 500x500 -->
 	                        <td>
+	                        	<div class="form__input--img_wrap">
+	                        		<span class="figure" id="repImg1">
+										<a href="#none" style="cursor: default;" class="rep_a">
+											<img src="/images/noImage108x108.gif" width="108" height="108" alt="">
+										</a>
+									</span>
+									<span class="figure" id="repImg2">
+										<a href="#none" style="cursor: default;" class="rep_a">
+											<img src="/images/noImage108x108.gif" width="108" height="108" alt="">
+										</a>
+									</span>
+									<span class="figure" id="repImg3">
+										<a href="#none" style="cursor: default;" class="rep_a">
+											<img src="/images/noImage108x108.gif" width="108" height="108" alt="">
+										</a>
+									</span>
+									<span class="figure" id="repImg4">
+										<a href="#none" style="cursor: default;" class="rep_a">
+											<img src="/images/noImage108x108.gif" width="108" height="108" alt="">
+										</a>
+									</span>
+									<span class="figure" id="repImg5">
+										<a href="#none" style="cursor: default;" class="rep_a">
+											<img src="/images/noImage108x108.gif" width="108" height="108" alt="">
+										</a>
+									</span>
+	                        	</div>
 								<div class="form__input--file_wrap">
 									<div class="form__input--top_wrap">
-									  <input class="form__input--file" id="uploadRep" type="file" multiple>
-									  <label class="form__label--file" for="uploadRep">추가</label>
-									  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
+										<input class="form__input--file" id="uploadRep" type="file" multiple>
+										<label class="form__label--file" for="uploadRep">추가</label>
+										<span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
 								  	</div>
 									<div class="form__input--bottom_wrap">
 								  		<div class="form__div--file_rep"></div>
@@ -244,7 +271,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 					 $("#tag").find("option:selected").text();
 			}else {
 				tagText += "　" + 
-						$("#tag").find("option:selected").text();
+					$("#tag").find("option:selected").text();
 			}
 		}
 		$("#tagWrap").html(tagText);
@@ -402,6 +429,46 @@ document.addEventListener("DOMContentLoaded",async function () {
 		
 	});
 
+	$('.form__input--img_wrap').on('click','.figure', function() {
+		
+		let imgUrl = $(this).find('img').attr('src');
+		if(imgUrl != '/images/noImage108x108.gif') {
+			const tempImg = new Image();
+		    tempImg.src = imgUrl;
+			
+		    tempImg.onload = function () {
+		        const imgWidth = tempImg.width;
+		        const imgHeight = tempImg.height;
+
+		        // 팝업 크기와 위치 동적 계산
+		        const popupWidth = imgWidth + 20; // 여백 포함
+		        const popupHeight = imgHeight + 20;
+		        const screenWidth = window.screen.width;
+		        const screenHeight = window.screen.height;
+		        const left = (screenWidth - popupWidth) / 2;
+		        const top = (screenHeight - popupHeight) / 2;
+
+		        // 팝업 창 열기
+		        const popup = window.open(
+		            '',
+		            '_blank',
+		            `width=${popupWidth}px, height=${popupHeight}px, top=${top}, left=${left}`
+		        );
+
+		        popup.document.write(`
+	                <style>
+	                    body { margin: 0; display: flex; align-items: center; justify-content: center; height: 100%; }
+	                    img { display: block; max-width: 100%; max-height: 100%; }
+	                </style>
+	                <img src="${imgUrl}">
+	            `);
+		    };
+
+		    tempImg.onerror = function () {
+		        alert('이미지를 불러올 수 없습니다.');
+		    };
+		}
+    });
 });
 
 async function load() {
@@ -458,33 +525,77 @@ function passwordSave() {
 function setFiles(id) {
 	let fileDiv = '';
 	let fileHtml = '';
+	let idx = 1;
+	console.log(filesRep);
+	console.log(filesRep.length);
+	
+	$('.figure a img').attr('src','/images/noImage108x108.gif');
+	
+	if(filesRep.length == 0) {
+		$('.rep_a').removeClass('active');
+		$('#repImg'+ idx).find('a').removeClass('selected');
+		return;
+	}
 	
 	if(id == 'uploadRep') {
+		$('.form__div--file_rep').addClass('mgt10');
 		fileDiv = document.querySelector('.form__div--file_rep');
 		
 		fileHtml = '';
+		
+		
+		
+		console.log("setFiles :::")
+		console.log(filesRep);
 		_.forEach(filesRep, function(file){
-			fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
-		})
+			const imageSrc = URL.createObjectURL(file);
+			$('#repImg'+ idx).find('img').attr('src',imageSrc ?? '');
+			if(idx == 1) {
+				$('#repImg'+ idx).find('a').addClass('selected');
+			}
+			fileHtml += '<span class="select_file_box"><button type="button" data-id="uploadRep" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
+			idx++;
+			
+		});
+		idx = 1;
 	} else {
+		$('.form__div--file').addClass('mgt10');
 		fileDiv = document.querySelector('.form__div--file');
 		
 		fileHtml = '';
 		_.forEach(files, function(file){
-			fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
-		})
+			fileHtml += '<span class="select_file_box"><button type="button" data-id="upload" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
+		});
 	}
 	
 	if (!fileDiv) {
 		return;
 	};
+	
+	$('.rep_a').addClass('active');
+	
 	fileDiv.innerHTML = fileHtml;
 }
 
 function deleteFileBtn(elem) {
-	// 실제 파일 삭제
-	files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")})
-	setFiles();
+	
+	if(filesRep.length > 0) {
+		console.log("1111");
+		console.log(filesRep);
+		// 실제 대표이미지 파일 삭제
+		filesRep = _.filter(filesRep, function(file) {return file.idx != elem.getAttribute("data-idx")});
+		console.log(filesRep);
+		
+	}else if(files.length > 0){
+		console.log("2222");
+		console.log(files);
+		// 실제 상세 이미지 파일 삭제
+		files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")});
+		console.log(files);
+		
+	}
+	
+	setFiles(elem.getAttribute("data-id"));
 };
 
 // 비동기 통신

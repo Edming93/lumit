@@ -14,7 +14,7 @@
 
 	<div class="contentWrap">
 	    <div class="boardContainer wsNorap">
-	        <form id="registForm"  method="post" entype="multipart/form-data">
+	        <form id="registForm"  method="post" entype="multipart/form-data" onsubmit="return false">
 				
 	            <table class="registTable">
 	                <colgroup>
@@ -85,9 +85,11 @@ document.addEventListener("DOMContentLoaded", function () {
     	let selectDvCd = $(this).val();
     	console.log(selectDvCd);
     	
+    	$("#optionId").remove();
+    	
     	if(selectDvCd == '0001') {
     		$('#listArea').append(`
-    			<tr>
+    			<tr id="optionId">
                     <th class="alLeft bold">색상 지정</th>
                     <td>
                         <input type="color" id="optionCd"/>

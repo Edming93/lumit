@@ -166,7 +166,7 @@ create table if not exists TB_FILE
         primary key,
     PK_ID          int                NOT NULL,
     MENU_CD        varchar(4)         NOT NULL comment '메뉴코드',
-    FILE_DV_CD     varchar(4)         NULL comment '파일구분코드 1001: 대표 이미지 / 1002:상세 이미지',
+    FILE_DV_CD     varchar(4)         NULL comment '파일구분코드 1000: 대표 이미지 / 1001: 상품이미지 / 1002:상세 이미지',
     FILE_NEW_NAME  varchar(200)       NOT NULL,
     FILE_NAME      varchar(200)       NOT NULL,
     FILE_SIZE      varchar(255)       NOT NULL,
