@@ -14,6 +14,9 @@
     <div id="container">
     	<div class="searchArea">
 			<input type="text" title="상품명" placeholder="상품명" id="productName">
+			<input type="text" title="상품코드" placeholder="상품코드" id="productCd">
+			<select id="dpStatus"></select>
+			<select id="status"></select>
 			<div class="datepickerWrap mgl10">
 				<input type="text" class="datepickerInput" placeholder="등록시작일" readonly="readonly" id="strDt"/>
 				<span class="datepickerDash">~</span>
@@ -90,7 +93,7 @@ $(document).ready(function() {
 // 		delProduct(delProductId);
 //     });
 
-    $("#productName").on("keydown", function (event) {
+    $(".searchArea input[type='text']").on("keydown", function (event) {
         if (event.key === 'Enter') {
             getList(0);
         };
@@ -153,6 +156,8 @@ $(document).ready(function() {
 async function load() {
 	await getCodeList();
 	await getList();
+	createSelectOptions("status", codeList.filter((item) => item.grpCd === 'PD_STATUS'),{isSetAll:true, keyNm:"cd", valueNm:"cdNm"});
+	createSelectOptions("dpStatus", codeList.filter((item) => item.grpCd === 'DP_STATUS'),{isSetAll:true, keyNm:"cd", valueNm:"cdNm"});
 }
 
 async function getList(pageNo,cntPerPage) {
@@ -160,11 +165,17 @@ async function getList(pageNo,cntPerPage) {
 	cntPerPage = cntPerPage ?? 10;
 
 	let productName = $("#productName").val();
+	let productCd = $("#productCd").val();
+	let dpStatus = $("#dpStatus").val();
+	let status = $("#status").val();
 	let strDt = $("#strDt").val();
 	let endDt = $("#endDt").val();
 
 	params = {
 		productName : productName,
+		productCd : productCd,
+		dpStatus : dpStatus,
+		status : status,
 		strDt : strDt,
 		endDt : endDt,
 		cntPerPage : cntPerPage

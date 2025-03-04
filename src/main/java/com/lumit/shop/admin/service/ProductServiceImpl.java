@@ -42,7 +42,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public HashMap<String, Object> selectProductList(CommonSearch search, Pageable pageable) {
     	HashMap<String,Object> retMap = new HashMap<String,Object>();
-    	
     	retMap.put("list", this.selectPageableProductList(search, pageable));
     	
         return retMap;
@@ -51,7 +50,6 @@ public class ProductServiceImpl implements ProductService {
     public Page<Map<String, Object>> selectPageableProductList(CommonSearch search, Pageable pageable) {
     	search.setMenuCd("M201");
     	search.setFileDvCd("1000");
-    	
         RequestList<?> requestList = RequestList.builder().data(search).pageable(pageable).build();
         Field[] variables = requestList.getData().getClass().getDeclaredFields();
 
