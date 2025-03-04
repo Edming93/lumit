@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +23,7 @@ public class BoardRestController {
     private final BoardService boardService;
 
     @GetMapping(value = "/boards")
-    public @ResponseBody ResponseEntity<?> boardList(String menuCd, SearchDto search, TbBoard board, @PageableDefault(size = 10) Pageable pageable) throws IOException {
+    public @ResponseBody ResponseEntity<?> boardList(@RequestParam("menuCd") String menuCd, @ModelAttribute SearchDto search, @ModelAttribute TbBoard board, @PageableDefault(size = 10) Pageable pageable) throws IOException {
         board.setMenuCd(menuCd);
         if (search.getTitle() != null) {
             board.setTitle(search.getTitle());
