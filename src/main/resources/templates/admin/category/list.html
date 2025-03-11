@@ -105,8 +105,9 @@
         async function addNewCategory(value, parentId) {
             const data = fillCategoryInfo(value, true, parentId);
             const result = await FETCH.post("/rest/admin/category/new", data)
+            let id = parentId;
             if (result.ok) {
-                location.href = `/admin/category/list?parentId=${parentId}`
+                location.href = id ? `/admin/category/list?parentId=${parentId}` : "/admin/category/list"
             } else if (result.status == 409) {
                 alert("같은 계층에서는 동일한 이름의 카테고리를 생성할 수 없습니다.")
             }
