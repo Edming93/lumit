@@ -42,7 +42,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public HashMap<String, Object> selectProductList(CommonSearch search, Pageable pageable) {
     	HashMap<String,Object> retMap = new HashMap<String,Object>();
-    	
     	retMap.put("list", this.selectPageableProductList(search, pageable));
     	
         return retMap;
@@ -50,8 +49,7 @@ public class ProductServiceImpl implements ProductService {
     
     public Page<Map<String, Object>> selectPageableProductList(CommonSearch search, Pageable pageable) {
     	search.setMenuCd("M201");
-    	search.setFileDvCd("1001");
-    	
+    	search.setFileDvCd("1000");
         RequestList<?> requestList = RequestList.builder().data(search).pageable(pageable).build();
         Field[] variables = requestList.getData().getClass().getDeclaredFields();
 
@@ -137,7 +135,10 @@ public class ProductServiceImpl implements ProductService {
     	if(filesRep != null) {
     		System.out.println("file ::: 대표 이미지 새 파일 추가 --------------------------");
 	    	// 새로운 파일 DB추가
-	    	for(MultipartFile file : filesRep) {
+    		//for(MultipartFile file : filesRep) {
+    		for(int i = 0; i < filesRep.length; i++) {
+    			MultipartFile file = filesRep[i];
+	    	
 	    		String oriFileName =  file.getOriginalFilename();
 	    		
 	    		UUID uuid = UUID.randomUUID(); // 랜덤 이름 생성
@@ -145,10 +146,14 @@ public class ProductServiceImpl implements ProductService {
 	    		String uploadFileName = uuid.toString() + "_" + oriFileName; //UUID(랜덤문자라생각하면편함) + 원본파일명
 	    		
 	    		File saveFile = new File(uploadPath, uploadFileName);
-	    		
+
 	    		TbFile tbFile = new TbFile();
 	    		tbFile.setPkId(product.getProductId());
-	    		tbFile.setFileDvCd("1001"); // 대표 이미지  
+	    		if(i == 0) {
+	    			tbFile.setFileDvCd("1000"); // 대표 이미지 : 1000 , 상품 이미지 : 1001
+	    		} else {
+	    			tbFile.setFileDvCd("1001"); // 대표 이미지 : 1000 , 상품 이미지 : 1001
+	    		}
 	    		tbFile.setMenuCd("M201");
 	    		tbFile.setFileName(oriFileName);
 	    		tbFile.setFileNewName(uploadFileName);

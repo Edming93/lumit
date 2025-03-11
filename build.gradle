@@ -18,9 +18,11 @@ repositories {
     mavenCentral()
 }
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs.add('-parameters')
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
 }
+
+compileJava {	options.compilerArgs << '-parameters'}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'

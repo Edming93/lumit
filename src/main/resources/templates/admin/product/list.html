@@ -14,6 +14,9 @@
     <div id="container">
     	<div class="searchArea">
 			<input type="text" title="상품명" placeholder="상품명" id="productName">
+			<input type="text" title="상품코드" placeholder="상품코드" id="productCd">
+			<select id="dpStatus"></select>
+			<select id="status"></select>
 			<div class="datepickerWrap mgl10">
 				<input type="text" class="datepickerInput" placeholder="등록시작일" readonly="readonly" id="strDt"/>
 				<span class="datepickerDash">~</span>
@@ -43,10 +46,14 @@
 			    <colgroup>
 			        <col style="width: 5%;"/>
 			        <col style="width: 8%;"/>
-			        <col style="width: 13%;"/>
+			        <col style="width: 6%;"/>
+			        <col style="width: 6%;"/>
+			        <col style="width: 8%;"/>
 			        <col style="width: auto;"/>
 			        <col style="width: 10%;"/>
 			        <col style="width: 10%;"/>
+			        <col style="width: 5%;"/>
+			        <col style="width: 5%;"/>
 			        <col style="width: 12%;"/>
 			    </colgroup>
 			    <thead>
@@ -54,9 +61,13 @@
 			        <th class="alCenter">No.</th>
 			        <th class="alCenter">미리보기</th>
 			        <th class="alCenter">상품코드</th>
+			        <th class="alCenter">진열상태</th>
+			        <th class="alCenter">판매상태</th>
 			        <th class="alCenter">상품명</th>
 			        <th class="alCenter">판매가</th>
 			        <th class="alCenter">할인가</th>
+			        <th class="alCenter">재고수량</th>
+			        <th class="alCenter">판매수량</th>
 			        <th class="alCenter">등록일</th>
 			    </tr>
 			    </thead>
@@ -82,7 +93,7 @@ $(document).ready(function() {
 // 		delProduct(delProductId);
 //     });
 
-    $("#productName").on("keydown", function (event) {
+    $(".searchArea input[type='text']").on("keydown", function (event) {
         if (event.key === 'Enter') {
             getList(0);
         };
@@ -100,11 +111,53 @@ $(document).ready(function() {
 
 		getList(0, cntPerPage);
 	});
+    
+    $('#listArea').on('click','#popupImg', function() {
+		let imgUrl = $(this).attr('src');
+		
+		const tempImg = new Image();
+	    tempImg.src = imgUrl;
+		
+	    tempImg.onload = function () {
+	        const imgWidth = tempImg.width;
+	        const imgHeight = tempImg.height;
+
+	        
+	        // 팝업 크기와 위치 동적 계산
+	        const popupWidth = imgWidth + 20; // 여백 포함
+	        const popupHeight = imgHeight + 20;
+	        const screenWidth = window.screen.width;
+	        const screenHeight = window.screen.height;
+	        const left = (screenWidth - popupWidth) / 2;
+	        const top = (screenHeight - popupHeight) / 2;
+
+	        // 팝업 창 열기
+	        const popup = window.open(
+	            '',
+	            '_blank',
+	            `width=${popupWidth}px, height=${popupHeight}px, top=${top}, left=${left}`
+	        );
+
+	        popup.document.write(`
+                <style>
+                    body { margin: 0; display: flex; align-items: center; justify-content: center; height: 100%; }
+                    img { display: block; max-width: 100%; max-height: 100%; }
+                </style>
+                <img src="${imgUrl}">
+            `);
+	    };
+
+	    tempImg.onerror = function () {
+	        alert('이미지를 불러올 수 없습니다.');
+	    };
+    });
 });
 
 async function load() {
 	await getCodeList();
 	await getList();
+	createSelectOptions("status", codeList.filter((item) => item.grpCd === 'PD_STATUS'),{isSetAll:true, keyNm:"cd", valueNm:"cdNm"});
+	createSelectOptions("dpStatus", codeList.filter((item) => item.grpCd === 'DP_STATUS'),{isSetAll:true, keyNm:"cd", valueNm:"cdNm"});
 }
 
 async function getList(pageNo,cntPerPage) {
@@ -112,11 +165,17 @@ async function getList(pageNo,cntPerPage) {
 	cntPerPage = cntPerPage ?? 10;
 
 	let productName = $("#productName").val();
+	let productCd = $("#productCd").val();
+	let dpStatus = $("#dpStatus").val();
+	let status = $("#status").val();
 	let strDt = $("#strDt").val();
 	let endDt = $("#endDt").val();
 
 	params = {
 		productName : productName,
+		productCd : productCd,
+		dpStatus : dpStatus,
+		status : status,
 		strDt : strDt,
 		endDt : endDt,
 		cntPerPage : cntPerPage
@@ -150,18 +209,26 @@ function setList(data){
 	let cnt = 0;
 	if(listLength > 0) {
 		productList.forEach((item) => {
+			let lumitFiles = item.filePath ? item.filePath.substring('2') : ''
+			
 			$('#listArea').append(`
 				<tr>
 					<td class='alCenter'>${PAGE.pageRowNumber(data.number, data.size, cnt++, data.totalElements)}</td>
 					<td class='alCenter'>
-					 	${item.filePath ?
-							`<img src='${item.filePath}/${item.fileNewName}' style='width:50px; height:50px; cursor:pointer; vertical-align: middle;' id='popupImg'>`
+					 	${item.filePath ? 
+							`<img src='${lumitFiles}/${item.fileNewName}' style='width:50px; height:50px; cursor:pointer; vertical-align: middle;' id='popupImg'>`
 							: ''
 					 	}
 					</td>
 					<td class='alCenter'>
 						${item.productCd}
-					</td>	
+					</td>
+					<td class='alCenter'>
+						${item.dpStatus}
+					</td>
+					<td class='alCenter'>
+						${item.status ? codeList.find((cdItem) => cdItem.grpCd === 'PD_STATUS' && cdItem.cd == item.status).cdNm ?? '' : ''}
+					</td>
 					<td class='alLeft tdTitle'>
 						<a href="javascript: detail('${item.productId}')">
 							${item.productName}
@@ -173,6 +240,12 @@ function setList(data){
 					<td class="alCenter">
 						${formatToWon(item.disPrice)}
 					</td>
+					<td class='alCenter'>
+						${item.stocks}개
+					</td>
+					<td class='alCenter'>
+						${item.sales}개
+					</td>
 					<td class="alCenter">
 						${item.regDt}
 					</td>
@@ -182,7 +255,7 @@ function setList(data){
 	}else {
 		$('#listArea').append(`
 			<tr>
-				<td class='alCenter' colspan='3'>검색 결과가 없습니다.</td>
+				<td class='alCenter' colspan='11'>검색 결과가 없습니다.</td>
 			</tr>
 		`);
 	}

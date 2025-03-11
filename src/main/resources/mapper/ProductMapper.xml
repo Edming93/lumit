@@ -44,22 +44,22 @@
         AND b.FILE_DV_CD = #{data.fileDvCd}
         <where>
 			<if test="data.productName != null and data.productName neq ''">
-			    AND PRODUCT_NAME LIKE CONCAT('%', #{data.productName}, '%')
+			    PRODUCT_NAME LIKE CONCAT('%', #{data.productName}, '%')
 			</if>
 			<if test="data.productCd != null and data.productCd neq ''">
-				AND PRODUCT_CD = #{data.productCd}
-			</if>
-			<if test="data.status != null and data.status neq ''">
-			    AND STATUS LIKE CONCAT('%', #{data.status}, '%')
+				AND PRODUCT_CD LIKE CONCAT('%', #{data.productCd}, '%')
 			</if>
 			<if test="data.dpStatus != null and data.dpStatus neq ''">
-				AND DP_STATUS = #{data.dpStatus}
+			    AND DP_STATUS = #{data.dpStatus}
+			</if>
+			<if test="data.status != null and data.status neq ''">
+			    AND STATUS = #{data.status}
 			</if>
 			<if test='data.strDt != null and data.strDt neq ""'>
-	           	AND REG_DT <![CDATA[ >=]]> DATE_FORMAT(REPLACE(#{data.strDt}, "-", ""), '%Y/%m/%d 00:00:00')
+	           	AND a.REG_DT <![CDATA[ >=]]> DATE_FORMAT(REPLACE(#{data.strDt}, "-", ""), '%Y/%m/%d 00:00:00')
 	        </if>
 	        <if test='data.endDt != null and data.endDt neq ""'>
-	        	AND REG_DT <![CDATA[ <=]]> DATE_FORMAT(REPLACE(#{data.endDt}, "-", ""), '%Y/%m/%d 23:59:59')
+	        	AND a.REG_DT <![CDATA[ <=]]> DATE_FORMAT(REPLACE(#{data.endDt}, "-", ""), '%Y/%m/%d 23:59:59')
 	        </if>
 		</where>
         ORDER BY a.REG_DT DESC
@@ -90,10 +90,10 @@
 				AND DP_STATUS = #{dpStatus}
 			</if>
 			<if test='strDt != null and strDt neq ""'>
-	           	AND REG_DT <![CDATA[ >=]]> DATE_FORMAT(REPLACE(#{strDt}, "-", ""), '%Y/%m/%d 00:00:00')
+	           	AND a.REG_DT <![CDATA[ >=]]> DATE_FORMAT(REPLACE(#{strDt}, "-", ""), '%Y/%m/%d 00:00:00')
 	        </if>
 	        <if test='endDt != null and endDt neq ""'>
-	        	AND REG_DT <![CDATA[ <=]]> DATE_FORMAT(REPLACE(#{endDt}, "-", ""), '%Y/%m/%d 23:59:59')
+	        	AND a.REG_DT <![CDATA[ <=]]> DATE_FORMAT(REPLACE(#{endDt}, "-", ""), '%Y/%m/%d 23:59:59')
 	        </if>
 		</where>
     </select>
@@ -201,11 +201,13 @@
         	PRODUCT_ID = #{productId}
     </update>
     
-    <delete id="deleteProduct" parameterType="com.lumit.shop.common.model.TbProduct">
-		DELETE FROM TB_PRODUCT 
+    <update id="deleteProduct" parameterType="com.lumit.shop.common.model.TbProduct">
+		UPDATE TB_PRODUCT
+		SET 
+			DEL_YN = #{delYn}
 		WHERE
 			PRODUCT_ID = #{productId}
-	</delete>
+	</update>
 	
 	<insert id="insertColorMap" parameterType="com.lumit.shop.common.model.TbProduct">
 	    INSERT INTO TB_COLOR_MAP (

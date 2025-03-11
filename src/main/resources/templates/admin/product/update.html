@@ -29,7 +29,7 @@
 	                </colgroup>
 	                <tbody>
 	                	<tr>
-	                        <th class="alLeft bold">대표 이미지</th> <!-- 기본 1000x1000 최소 500x500 -->
+	                        <th class="alLeft bold">상품 이미지</th> <!-- 기본 1000x1000 최소 500x500 -->
 	                        <td>
 								<div class="form__input--file_wrap">
 									<div class="form__input--top_wrap">
@@ -179,6 +179,7 @@
 	            	<div class="btnAreaCenter">
 		            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
 		                <button type="button" id="registBtn" class="commBtn mgl10 size100">등록</button>
+		                <button type="button" id="deleteBtn" class="commBtn mgl10">삭제</button>
 	                </div>
 	                <div class="btnAreaRight">
 	                </div>
@@ -215,7 +216,6 @@ document.addEventListener("DOMContentLoaded",async function () {
 			colorIdList.push($("#color").val());
 
 			let colorCd = $("#color").find('option:selected').data("colorcd");
-			
 			
 			if(colorText === "") {
 				colorCd?
@@ -271,8 +271,21 @@ document.addEventListener("DOMContentLoaded",async function () {
 	$("#disPrice").on("keyup",function(e) {
 		$("#disRate").val("0");
 	});
+	
+	$('#deleteBtn').on('click', async function() {
+		if(confirm("삭제 하시겠습니까?")) {
+					
+			const res = await axios.post('/rest/' + siteId + '/product/delete',{productId:productId, delYn:'Y'});
+			if(!res || !res.data) {
+				alert("삭제에 실패하였습니다.");
+				return;
+			}
+			let url = "/"+siteId+"/product/list";
+			moveUrl(url);
+		}
+	});
 
-	document.getElementById("registBtn").addEventListener("click", function() {
+	$("#registBtn").on('click', function() {
 		if(confirm("등록 하시겠습니까?")) {
 			
 			let formData = new FormData(document.querySelector("#registForm"));
@@ -334,10 +347,8 @@ document.addEventListener("DOMContentLoaded",async function () {
 			}
 			
 			let url = "/"+siteId+"/product/list";
-			
 			setData(formData,url);
 		}
-		
 	});
 	
 	

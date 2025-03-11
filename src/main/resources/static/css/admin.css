@@ -362,12 +362,12 @@ i {
     color: #FFFFFF;
 }
 
-.active {
+.nav-list a.nav-link.active {
     background-color: var(--active-background-color);
     width: 100%;
 }
 
-.active i {
+.nav-list a.nav-link.active i {
     color: white;
     margin: 0;
 }
@@ -434,6 +434,14 @@ i {
 
 .mgr10 {
     margin-right: 10px;
+}
+
+.mgb10 {
+	margin-bottom: 10px;
+}
+
+.mgt10 {
+	margin-top: 10px;
 }
 
 .mgt20 {
@@ -689,6 +697,61 @@ input[type='file'] {
     overflow: hidden;
 }
 
+.form__input--img_wrap {
+	display: flex;
+    column-gap: 10px;
+	height: 108px;
+}
+
+.form__input--img_wrap .figure, .form__input--img_wrap .figure a {
+	display: block;
+	width: 108px;
+	height: 108px; 
+}
+
+/* .form__input--img_wrap .figure a::before { */
+/* 	content: '대표이미지로 설정'; */
+/* 	color: var(--brand-color4); */
+/* 	width:70px; */
+/* 	height:10px; */
+/* } */
+
+.form__input--img_wrap .figure .rep_a.active:hover img {
+	border: 3px solid var(--brand-color4);
+	box-sizing: border-box;
+}
+
+.form__input--img_wrap .figure {
+	position: relative;
+}
+
+.form__input--img_wrap .figure .rep_a.active:hover::before {
+	content: '대표이미지로 설정';
+	color: var(--brand-color4);
+	position: absolute;
+	top: -35px;
+    left: 50%;
+    z-index: 20;
+    font-size: 12px;
+    transform: translateX(-50%);
+}
+
+.form__input--img_wrap .figure .rep_a.selected::before {
+	content: '대표이미지로 설정';
+	color: var(--brand-color4);
+	position: absolute;
+	top: -35px;
+    left: 50%;
+    z-index: 20;
+    font-size: 12px;
+    transform: translateX(-50%);
+}
+
+.form__input--img_wrap .figure .rep_a.selected img {
+	border: 3px solid var(--brand-color4);
+	box-sizing: border-box;
+} 
+
 .form__input--file_wrap {
     display: flex;
     flex-direction: column;
@@ -710,7 +773,6 @@ input[type='file'] {
 
 .form__input--top_wrap {
     display: flex;
-    margin-bottom: 10px;
 }
 
 .form__span--txt {
@@ -1047,3 +1109,4 @@ input::-webkit-inner-spin-button {
 
 .smallCate {
 }
+

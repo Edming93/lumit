@@ -20,11 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.lumit.shop.admin.service.ProductService;
 import com.lumit.shop.common.config.ResponseBuilder;
 import com.lumit.shop.common.model.CommonSearch;
-import com.lumit.shop.common.model.TbBoard;
 import com.lumit.shop.common.model.TbProduct;
 import com.lumit.shop.common.repository.MenuRepository;
 
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import lombok.RequiredArgsConstructor;
 
 @Controller
