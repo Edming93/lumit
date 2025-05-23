@@ -32,22 +32,21 @@ import lombok.RequiredArgsConstructor;
 public class BoardController {
     private final BoardService boardService;
     private final String BOARD_PATH = "/board";
-    
-    @Autowired
-    MenuRepository menuRepository;
+
+    private final MenuRepository menuRepository;
 
 
     @GetMapping("/{menuCd}/list")
     public String selectBoardList(ModelMap map, @PathVariable("menuCd") String menuCd) {
         map.addAttribute("menuCd", menuCd);
-        map.addAttribute("menu",menuRepository.selectMenuByMenuCd(menuCd));
+        map.addAttribute("menu", menuRepository.selectMenuByMenuCd(menuCd));
         return BOARD_PATH + "/list";
     }
 
     @GetMapping("/{menuCd}/regist")
     public String boardRegist(ModelMap map, HttpServletRequest request, @PathVariable("menuCd") String menuCd) {
         map.addAttribute("menuCd", menuCd);
-        map.addAttribute("menu",menuRepository.selectMenuByMenuCd(menuCd));
+        map.addAttribute("menu", menuRepository.selectMenuByMenuCd(menuCd));
         return BOARD_PATH + "/regist";
     }
 
@@ -56,32 +55,32 @@ public class BoardController {
         map.addAttribute("detail", boardService.selectBoardDetail(menuCd, boardId, request, response));
         map.addAttribute("fileList", boardService.selectBoardFiles(menuCd, boardId));
         map.addAttribute("menuCd", menuCd);
-        map.addAttribute("siteId",siteId);
+        map.addAttribute("siteId", siteId);
         return BOARD_PATH + "/detail";
     }
-    
+
     @GetMapping("{menuCd}/download/{boardId}/{fileId}")
-    public ResponseEntity<Resource>  downloadFile(ModelMap map, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId, @PathVariable("fileId") String fileId) {
-        return boardService.downloadFiles(menuCd,boardId,fileId);
+    public ResponseEntity<Resource> downloadFile(ModelMap map, @PathVariable("menuCd") String menuCd, @PathVariable("boardId") String boardId, @PathVariable("fileId") String fileId) {
+        return boardService.downloadFiles(menuCd, boardId, fileId);
     }
 
     @ResponseBody
     @PostMapping("/{menuCd}/regist")
     public ResponseEntity<Map<String, Object>> inertBoard(ModelMap map
-    														, @PathVariable("menuCd") String menuCd 
-    														, @ModelAttribute TbBoard board
-    														, @RequestPart(value = "files", required = false) MultipartFile[] files) {
-    	System.out.println(board);
-    	System.out.println("-----------");
+            , @PathVariable("menuCd") String menuCd
+            , @ModelAttribute TbBoard board
+            , @RequestPart(value = "files", required = false) MultipartFile[] files) {
+        System.out.println(board);
+        System.out.println("-----------");
         return new ResponseEntity<>(boardService.insertBoard(menuCd, board, files), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/{menuCd}/update")
     public ResponseEntity<Map<String, Object>> updateBoard(ModelMap map
-    														, @PathVariable("menuCd") String menuCd 
-    														, @ModelAttribute TbBoard board
-    														, @RequestPart(value = "files", required = false) MultipartFile[] files) {
+            , @PathVariable("menuCd") String menuCd
+            , @ModelAttribute TbBoard board
+            , @RequestPart(value = "files", required = false) MultipartFile[] files) {
         return new ResponseEntity<>(boardService.updateBoard(menuCd, board, files), HttpStatus.OK);
     }
 

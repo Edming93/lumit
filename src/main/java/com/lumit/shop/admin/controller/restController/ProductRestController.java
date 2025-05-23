@@ -30,51 +30,51 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(value = "/rest/{siteId}/product")
 public class ProductRestController {
     private final ProductService productService;
-    
-    @Autowired
-    MenuRepository menuRepository;
+
+
+    private final MenuRepository menuRepository;
 
     @GetMapping("/list")
-    public ResponseEntity<Map<String,Object>> selectProductList(CommonSearch search, @PageableDefault(size = 10) Pageable pageable) {
-        return ResponseBuilder.build(productService.selectProductList(search, pageable),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> selectProductList(CommonSearch search, @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseBuilder.build(productService.selectProductList(search, pageable), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/regist")
-    public ResponseEntity<Map<String,Object>> registProduct(@ModelAttribute TbProduct product, 
-															@RequestPart(value = "files", required = false) MultipartFile[] files
-															, @RequestPart(value = "filesRep", required = false) MultipartFile[] filesRep) {
-        return ResponseBuilder.build(productService.insertProduct(product,files,filesRep),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> registProduct(@ModelAttribute TbProduct product,
+                                                             @RequestPart(value = "files", required = false) MultipartFile[] files
+            , @RequestPart(value = "filesRep", required = false) MultipartFile[] filesRep) {
+        return ResponseBuilder.build(productService.insertProduct(product, files, filesRep), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/detail")
-    public ResponseEntity<Map<String,Object>> selectProductDetail(@RequestBody TbProduct product) {
-        return ResponseBuilder.build(productService.detailProduct(product),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> selectProductDetail(@RequestBody TbProduct product) {
+        return ResponseBuilder.build(productService.detailProduct(product), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/update")
-    public ResponseEntity<Map<String,Object>> updateProduct(@RequestBody TbProduct product) {
-        return ResponseBuilder.build(productService.updateProduct(product),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> updateProduct(@RequestBody TbProduct product) {
+        return ResponseBuilder.build(productService.updateProduct(product), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/delete")
-    public ResponseEntity<Map<String,Object>> deleteProduct(@RequestBody TbProduct product) {
-        return ResponseBuilder.build(productService.deleteProduct(product),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> deleteProduct(@RequestBody TbProduct product) {
+        return ResponseBuilder.build(productService.deleteProduct(product), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/color-list")
-    public ResponseEntity<Map<String,Object>> selectProductColorList(@RequestBody TbProduct product) {
-        return ResponseBuilder.build(productService.selectProductColorMappingList(product),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> selectProductColorList(@RequestBody TbProduct product) {
+        return ResponseBuilder.build(productService.selectProductColorMappingList(product), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/tag-list")
-    public ResponseEntity<Map<String,Object>> selectProductTagList(@RequestBody TbProduct product) {
-        return ResponseBuilder.build(productService.selectProductTagMappingList(product),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> selectProductTagList(@RequestBody TbProduct product) {
+        return ResponseBuilder.build(productService.selectProductTagMappingList(product), HttpStatus.OK);
     }
 
 } 
