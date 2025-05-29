@@ -11,6 +11,8 @@ import java.util.List;
 @Repository
 public interface CategoryRepository {
 
+    TbCategory selectCategory(int categoryId);
+
     List<TbCategory> selectAllCategories();
 
     List<TbCategory> selectChildrenCategories(int parentId);

@@ -1,11 +1,15 @@
 package com.lumit.shop.admin.service;
 
+import com.lumit.shop.admin.dto.ReturnKeyAndServiceCode;
 import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.model.TbCategory;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CategoryService {
+
+    TbCategory selectCategory(int categoryId);
 
     List<TbCategory> selectAllCategories();
 
@@ -13,7 +17,7 @@ public interface CategoryService {
 
     List<TbCategory> selectChildrenCategories(int id);
 
-    ServiceCode insertNewCategory(TbCategory category);
+    ReturnKeyAndServiceCode insertNewCategory(TbCategory category);
 
     boolean isDuplicatedCategory(TbCategory category);
 }

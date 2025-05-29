@@ -2,6 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.lumit.shop.admin.repository.CategoryRepository">
+    <select id="selectCategory">
+        select *
+        from TB_CATEGORY
+        WHERE CATEGORY_ID = #{categoryId}
+    </select>
     <select id="selectAllCategories" resultType="TbCategory">
         select *
         from TB_CATEGORY;
@@ -16,7 +21,7 @@
         from TB_CATEGORY
         where PARENT = #{parentId}
     </select>
-    <insert id="insertNewCategory" parameterType="TbCategory">
+    <insert id="insertNewCategory" parameterType="TbCategory" useGeneratedKeys="true" keyProperty="categoryId">
         insert into TB_CATEGORY (CATEGORY_NAME, USE_YN <if test="parent != 0">, PARENT</if>)
         values (#{categoryName}, #{useYn}<if test="parent != 0">, #{parent}</if>)
     </insert>

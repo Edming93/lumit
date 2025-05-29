@@ -1,5 +1,6 @@
 package com.lumit.shop.admin.controller.restController;
 
+import com.lumit.shop.admin.dto.ReturnKeyAndServiceCode;
 import com.lumit.shop.admin.service.CategoryService;
 import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.model.TbCategory;
@@ -30,13 +31,14 @@ public class CategoryRestController {
 
     @PostMapping("/new")
     public ResponseEntity<?> insertNewCategory(@RequestBody TbCategory data) {
-        ServiceCode sc = categoryService.insertNewCategory(data);
-        if (sc.equals(ServiceCode.CONFLICT)) {
+        ReturnKeyAndServiceCode result = categoryService.insertNewCategory(data);
+        if (result.getSc().equals(ServiceCode.CONFLICT)) {
             return ResponseEntity.status(409).build();
         }
-        if (!sc.equals(ServiceCode.SUCCESS)) {
+        if (!result.getSc().equals(ServiceCode.SUCCESS)) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().build();
+        TbCategory insertedCategory = categoryService.selectCategory(result.getId());
+        return ResponseEntity.ok(insertedCategory);
     }
 }
