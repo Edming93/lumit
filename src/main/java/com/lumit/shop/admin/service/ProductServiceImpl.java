@@ -189,7 +189,7 @@ public class ProductServiceImpl implements ProductService {
 	    		
 	    		TbFile tbFile = new TbFile();
 	    		tbFile.setPkId(product.getProductId());
-	    		tbFile.setFileDvCd("1002"); // 대표 이미지  
+	    		tbFile.setFileDvCd("1002"); // 상세 이미지  
 	    		tbFile.setMenuCd("M201");
 	    		tbFile.setFileName(oriFileName);
 	    		tbFile.setFileNewName(uploadFileName);

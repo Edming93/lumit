@@ -716,6 +716,10 @@ input[type='file'] {
 /* 	height:10px; */
 /* } */
 
+.form__input--img_wrap .figure .rep_a.active {
+	position: relative;
+}
+
 .form__input--img_wrap .figure .rep_a.active:hover img {
 	border: 3px solid var(--brand-color4);
 	box-sizing: border-box;
@@ -725,7 +729,7 @@ input[type='file'] {
 	position: relative;
 }
 
-.form__input--img_wrap .figure .rep_a.active:hover::before {
+/* .form__input--img_wrap .figure .rep_a.active:hover::before {
 	content: '대표이미지로 설정';
 	color: var(--brand-color4);
 	position: absolute;
@@ -734,7 +738,7 @@ input[type='file'] {
     z-index: 20;
     font-size: 12px;
     transform: translateX(-50%);
-}
+} */
 
 .form__input--img_wrap .figure .rep_a.selected::before {
 	content: '대표이미지로 설정';
@@ -812,6 +816,18 @@ input[type='file'] {
     color: #999;
     font-size: 16px;
     margin-right: 10px;
+}
+
+
+.delete_img_btn {
+	width: 15px;
+	cursor: pointer;
+}
+
+.delete_img_btn.active {
+    position: absolute;
+    top:4px;
+    right:4px;
 }
 
 /**

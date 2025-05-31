@@ -31,30 +31,30 @@
 	                	<tr>
 	                        <th class="alLeft bold">상품 이미지</th> <!-- 기본 1000x1000 최소 500x500 -->
 	                        <td>
-	                        	<div class="form__input--img_wrap">
+	                        	<div id="imgList" class="form__input--img_wrap">
 	                        		<span class="figure" id="repImg1">
 										<a href="#none" style="cursor: default;" class="rep_a">
-											<img src="/images/noImage108x108.gif" width="108" height="108" alt="">
+											<img src="/images/noImage108x108.gif" class="noImg" width="108" height="108" alt="">
 										</a>
 									</span>
 									<span class="figure" id="repImg2">
 										<a href="#none" style="cursor: default;" class="rep_a">
-											<img src="/images/noImage108x108.gif" width="108" height="108" alt="">
+											<img src="/images/noImage108x108.gif" class="noImg" width="108" height="108" alt="">
 										</a>
 									</span>
 									<span class="figure" id="repImg3">
 										<a href="#none" style="cursor: default;" class="rep_a">
-											<img src="/images/noImage108x108.gif" width="108" height="108" alt="">
+											<img src="/images/noImage108x108.gif" class="noImg" width="108" height="108" alt="">
 										</a>
 									</span>
 									<span class="figure" id="repImg4">
 										<a href="#none" style="cursor: default;" class="rep_a">
-											<img src="/images/noImage108x108.gif" width="108" height="108" alt="">
+											<img src="/images/noImage108x108.gif" class="noImg" width="108" height="108" alt="">
 										</a>
 									</span>
 									<span class="figure" id="repImg5">
 										<a href="#none" style="cursor: default;" class="rep_a">
-											<img src="/images/noImage108x108.gif" width="108" height="108" alt="">
+											<img src="/images/noImage108x108.gif" class="noImg" width="108" height="108" alt="">
 										</a>
 									</span>
 	                        	</div>
@@ -472,6 +472,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 
 async function load() {
 	initTextEditor();
+	imgDragDrop();
 	
 	await getCodeList();
 	await getColorOption();
@@ -480,6 +481,30 @@ async function load() {
 	createSelectOptions("dpStatus", codeList.filter((item) => item.grpCd === 'DP_STATUS'),{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
 	createSelectOptions("color", colorList,{selectedValue:'0000', keyNm:"optionId", valueNm:"optionName", colorCd:"optionCd"});
 	createSelectOptions("tag", tagList,{selectedValue:'0001', keyNm:"optionId", valueNm:"optionName"});
+}
+
+function imgDragDrop () {
+	$("#imgList").sortable({
+		items: ".figure", // span.figure 요소만 드래그 가능
+		tolerance: "pointer", // 좀 더 부드러운 드래그
+		cursor: "move", // 마우스 커서가 이동 커서로 변함
+		update: function () {
+		
+		// 2. filesRep 순서도 실제 UI 순서에 맞춰 재정렬
+ 		const newFilesRep = [];
+		
+ 		$("#imgList .figure").each(function () {
+ 			const fileIdx = $(this).data("file-idx");
+ 			const matched = filesRep.find(f => f.idx === fileIdx);
+ 			if (matched) newFilesRep.push(matched);
+ 		});
+		
+ 		filesRep = newFilesRep;
+ 		
+ 		// console.log("드래그 이후 filesRep 순서:", filesRep.map(f => f.name || f.idx));
+ 		setFiles('uploadRep');
+		}
+	});
 }
 
 async function getColorOption() {
@@ -523,8 +548,10 @@ function passwordSave() {
 function setFiles(id) {
 	let fileDiv = '';
 	let fileHtml = '';
-	let idx = 1;
-	$('.figure a img').attr('src','/images/noImage108x108.gif');
+	let fileCancelBtn = '';
+	
+	// let idx = 1;
+	$('.figure a .noImg').attr('src','/images/noImage108x108.gif');
 	
 	// 클래스 초기화
 	$('.rep_a').removeClass('active');
@@ -535,25 +562,39 @@ function setFiles(id) {
 		fileDiv = document.querySelector('.form__div--file_rep');
 		
 		fileHtml = '';
+
+		// 이미지 우측 상단 delete버튼 초기화
+		if($('.delete_img_btn')) {
+			$('.delete_img_btn').remove();
+		}
 		
 		_.forEach(filesRep, function(file){
-			$('#repImg'+ idx).find('.rep_a').addClass('active');
+			$('#repImg'+ file.idx).find('.rep_a').addClass('active');
 			
 			const imageSrc = URL.createObjectURL(file);
-			$('#repImg'+ idx).find('img').attr('src',imageSrc ?? '');
-			if(idx === 1) {
-				$('#repImg'+ idx).find('a').addClass('selected');
-			}
+			$('#repImg'+ file.idx).find('.noImg').attr('src',imageSrc ?? '');
+			$('#repImg'+ file.idx).attr('data-file-idx', file.idx ?? '1');
 			
-			idx++;
+			// 상품 이미지 우 상단 x버튼(삭제 버튼) 추가
+			fileCancelBtn = '<img src="/images/icons/icon_cancel.png" data-id="uploadRep" data-idx="'+file.idx+'" class="delete_img_btn active" onClick="deleteFileBtn(this)">'
+			$('#repImg'+ file.idx).append(fileCancelBtn);
+			
+			// 대표이미지 강조처리 (첫 번째 요소의 <a>에만 .selected 붙이기)
+			$(".rep_a").removeClass("selected");
+			$("#imgList .figure").first().find(".rep_a").addClass("selected");
+			
 			fileHtml += '<span class="select_file_box"><button type="button" data-id="uploadRep" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
 			
 		});
+		
+		imgDragDrop(); // 드래그앤드롭 기능 연결
+		
 	} else {
 		$('.form__div--file').addClass('mgt10');
 		fileDiv = document.querySelector('.form__div--file');
 		
 		fileHtml = '';
+		fileCancelBtn = '';
 		_.forEach(files, function(file){
 			fileHtml += '<span class="select_file_box"><button type="button" data-id="upload" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
 		});
@@ -571,12 +612,11 @@ function deleteFileBtn(elem) {
 	if(filesRep.length > 0) {
 		// 실제 대표이미지 파일 삭제
 		filesRep = _.filter(filesRep, function(file) {return file.idx != elem.getAttribute("data-idx")});
-		
 	}else if(files.length > 0){
 		// 실제 상세 이미지 파일 삭제
 		files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")});
 	}
-	
+
 	setFiles(elem.getAttribute("data-id"));
 };
 
