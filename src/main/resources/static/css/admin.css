@@ -623,7 +623,10 @@ table tbody tr td .tblBtn.delBtn {
 
 .registTable > tbody > tr {
     height: 46px;
-    line-height: 46px;
+}
+
+.registTable > tbody > tr > th {
+    vertical-align: middle;
 }
 
 .size300 {

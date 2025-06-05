@@ -4,12 +4,18 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{admin/fragments/layout}">
 <head>
-	<script src="https://cdn.tiny.cloud/1/0uzc4vnstisiafaztztg0l4l11gklm6nrd7it918bcoyhz69/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+	<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 	<style>
 		.flex_align {
 			display: flex;
 	    	align-items: center;
 	    }
+	    
+	    .alLeft {
+	    	min-width: 115px;
+	    }
+	    
 	</style>
 </head>
 
@@ -181,21 +187,28 @@
 	                            <div id="tagWrap"></div>
 	                        </td>
 	                    </tr>
-	                    <tr>
-	                        <th class="alLeft bold">상세 이미지</th> <!-- 기본 1000x1000 최소 500x500 -->
-	                        <td>
-								<div class="form__input--file_wrap">
-									<div class="form__input--top_wrap">
-									  <input class="form__input--file" id="upload" type="file" multiple>
-									  <label class="form__label--file" for="upload">추가</label>
-									  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
-								  	</div>
-									<div class="form__input--bottom_wrap">
-								  		<div class="form__div--file"></div>
-									</div>
-								</div>
+<!-- 	                    <tr> -->
+<!-- 	                        <th class="alLeft bold">상세 이미지</th> 기본 1000x1000 최소 500x500 -->
+<!-- 	                        <td> -->
+<!-- 								<div class="form__input--file_wrap"> -->
+<!-- 									<div class="form__input--top_wrap"> -->
+<!-- 									  <input class="form__input--file" id="upload" type="file" multiple> -->
+<!-- 									  <label class="form__label--file" for="upload">추가</label> -->
+<!-- 									  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span> -->
+<!-- 								  	</div> -->
+<!-- 									<div class="form__input--bottom_wrap"> -->
+<!-- 								  		<div class="form__div--file"></div> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
 	
-	                        </td>
+<!-- 	                        </td> -->
+<!-- 	                    </tr> -->
+	                    <tr>
+	                    	<th class="alLeft bold">상세 페이지</th>
+	                    	<td class="textEditor">
+	                    		<div id="editor" style="min-height: 500px;">
+								</div>
+	                    	</td>
 	                    </tr>
 	                </tbody>
 	            </table>
@@ -213,7 +226,10 @@
 	        </form>
 	    </div>
 	</div>
+	<textarea name="taskDetails" id="taskDetails" rows="16" ></textarea>
 </div>
+
+
 </html>
 
 
@@ -472,7 +488,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 
 async function load() {
 	initTextEditor();
-	imgDragDrop();
+	if(files.length != 0) imgDragDrop();
 	
 	await getCodeList();
 	await getColorOption();
@@ -483,6 +499,115 @@ async function load() {
 	createSelectOptions("tag", tagList,{selectedValue:'0001', keyNm:"optionId", valueNm:"optionName"});
 }
 
+function initTextEditor () {
+	const toolbarOptions = [
+		// [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+		[{ 'font': [] }],
+		[{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+		[{ 'align': [] }],
+		[{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+		['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+		['link', 'image', 'video'],
+		
+		[{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+		['blockquote', 'code-block'],
+		// [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+		// [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+		// [{ 'direction': 'rtl' }],                         // text direction
+		
+		//  ['clean']                                         // remove formatting button
+	];
+	
+	const quill = new Quill('#editor', {
+		modules: {
+			toolbar: toolbarOptions,
+		},
+		placeholder : '상세페이지를 작성해주세요.',
+		theme: 'snow',
+		formats: [
+	        // ‘size’를 반드시 포함해야 유지 가능
+	        'font', 'size', 'bold', 'italic', 'underline', 'strike',
+	        'color', 'background', 'link', 'image', 'video',
+	        'list', 'align', 'direction', 'script', 'blockquote', 'code-block'
+	      ]
+	});
+	
+	$('.textEditor>div:eq(0)').css('min-width','800px');
+	$('input[type="text"]').css('min-width','140px')
+	
+	// 내용 변경 이벤트 처리
+	quill.on('text-change', (delta, oldDelta, source) => {
+		const content = quill.root.innerHTML; // 텍스트 편집기의 HTML 내용 가져오기
+		console.log("내용 변경 이벤트 처리 : ");
+		$('#taskDetails').val(quill.root.innerHTML);
+		
+		
+	});
+	
+	// 이미지 삽입시, 현재 서버(로컬)에서 이미지를 별도로 저장한 후 해당 경로를 반환하도록 구성
+	quill.getModule('toolbar').addHandler('image', function () {
+        selectLocalImage();
+    });
+	
+	function selectLocalImage() {
+        const fileInput = $('<input type="file">');
+        fileInput.accept = "image/*";
+
+        fileInput.click();
+
+        fileInput.on('change', function () {  // change 이벤트로 input 값이 바뀌면 실행
+
+            if ($(this).val() !== "") { // 파일이 있을때만.
+
+                var ext = $(this).val().split(".").pop().toLowerCase();
+
+                if ($.inArray(ext, ["gif", "jpg", "jpeg", "png", "bmp", "jfif"]) == -1) {
+
+                    alert("jpg, jpeg, png, bmp, gif, jfif 파일만 업로드 가능합니다.");
+                    return;
+                }
+
+
+                var fileSize = this.files[0].size;
+
+                var maxSize = 20 * 1024 * 1024;
+
+                if (fileSize > maxSize) {
+
+                    alert("업로드 가능한 최대 이미지 용량은 20MB입니다.");
+
+                    return;
+
+                }
+
+                const formData = new FormData();
+                const file = fileInput.files[0];
+                formData.append('uploadFile', file);
+
+                $.ajax({
+                    type: 'post',
+                    enctype: 'multipart/form-data',
+                    url: '/file/upload',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'text',
+                    success: function (data) {
+                        const range = quill.getSelection();
+                        quill.insertEmbed(range.index, 'image', "/file/display?fileName=" + data);
+
+                    },
+                    error: function (err) {
+                        console.log('ERROR!! ::');
+                        console.log(err);
+                    }
+                });
+
+            }
+
+        });
+    }
+} 
 function imgDragDrop () {
 	$("#imgList").sortable({
 		items: ".figure", // span.figure 요소만 드래그 가능
@@ -587,7 +712,7 @@ function setFiles(id) {
 			
 		});
 		
-		imgDragDrop(); // 드래그앤드롭 기능 연결
+		if(files.length != 0) imgDragDrop(); // 드래그앤드롭 기능 연결
 		
 	} else {
 		$('.form__div--file').addClass('mgt10');
@@ -608,7 +733,6 @@ function setFiles(id) {
 }
 
 function deleteFileBtn(elem) {
-	
 	if(filesRep.length > 0) {
 		// 실제 대표이미지 파일 삭제
 		filesRep = _.filter(filesRep, function(file) {return file.idx != elem.getAttribute("data-idx")});
