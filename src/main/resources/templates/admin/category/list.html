@@ -24,7 +24,6 @@
                     <button id="newLargeCateBtn"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <ul class='topCategoryList'></ul>
-                <input type="hidden" class="parentId">
             </div>
             <div class="cate mediumCate">
                 <div class="cateHead">중분류
@@ -81,7 +80,7 @@
             ul.innerHTML += `<li><i class=\"fa-solid fa-folder\"></i><div><input class="newCate" type="text"></div><button class="addCateBtn"><i class="fa-solid fa-check"></i></button></li>`
             const input = ul.querySelector(".newCate");
             const addBtn = ul.querySelector(".addCateBtn");
-            const parentId = isTop ? null : ul.parentElement.previousElementSibling.querySelector('.parentId').value
+            const parentId = isTop ? null : ul.nextElementSibling.value
 
 
             input.addEventListener("keypress", (e) => {
@@ -97,34 +96,19 @@
         async function addNewCategory(value, parentId, className) {
             const data = {categoryName: value, useYn: 'Y', parent: parentId}
             const result = await FETCH.post("/rest/admin/category/new", data)
-            const cateMap = {
-                ".topCategoryList": ".middleCategoryList",
-                ".middleCategoryList": ".bottomCategoryList",
-                ".bottomCategoryList": ".detailCategoryList",
-
-            }
-            if (result.ok) {
+            try {
                 const inserted = await result.json();
-                const start = document.querySelector(`input[type="hidden"][value="${inserted.parent}"]`);
+                ㄴ
+                if (depthMap[className]) {
+                    resetLowerLists(depthMap[className].resetFrom)
+                }
                 if (!inserted.parent) {
                     await getParent("", ".topCategoryList")
                 } else {
-
-                    await getParent(inserted.categoryId, cateMap[className])
-                    // while (className != ".topCategoryList") {
-                    //     const temp = upperCateMap[className]
-                    //     const parent = start.parentElement.parentElement.nextElementSibling.value
-                    //     console.log(parent)
-                    //     await getParent(parent, temp)
-                    //     className = temp
-                    // }
+                    await getParent(inserted.parent, className)
                 }
-
-
-                return;
-                location.href = parentId ? `/admin/category/list?parentId=${parentId}` : "/admin/category/list"
-                console.log(result)
-            } else if (result.status == 409) {
+            } catch (error) {
+                document.querySelector(className).querySelector(".newCate").value = ""
                 alert("같은 계층에서는 동일한 이름의 카테고리를 생성할 수 없습니다.")
             }
         }
@@ -144,7 +128,10 @@
                     <div>${c.categoryName}</div>
                 </li>
             `).join("")
-            ul.nextElementSibling.value = parentId
+            if (ulSelector != ".topCategoryList") {
+                ul.nextElementSibling.value = parentId
+            }
+
             const list = ul.querySelectorAll("li")
             list.forEach((li) => {
                 li.addEventListener("click", () => {
@@ -153,22 +140,26 @@
             })
         }
 
+        const depthMap = {
+            ".topCategoryList": {nextUl: ".middleCategoryList", resetFrom: 0},
+            ".middleCategoryList": {nextUl: ".bottomCategoryList", resetFrom: 1},
+            ".bottomCategoryList": {nextUl: ".detailCategoryList", resetFrom: 2}
+        };
+
         function handleCategoryClick(li, ulSelector) {
             const all = li.parentElement.querySelectorAll("li");
             all.forEach(el => el.style.backgroundColor = "");
             li.style.backgroundColor = "#e9d4c7"
             const parentId = li.querySelector("input").value;
+
             const ul = document.querySelector(ulSelector)
-            ul.nextElementSibling.value = parentId
-            const btn = ul.parentNode.nextElementSibling.querySelector("button")
+            if (ulSelector != ".topCategoryList" && ulSelector != ".detailCategoryList") {
+                ul.parentElement.nextElementSibling.querySelector(".parentId").value = parentId
+            }
+            const btn = ul.parentNode.nextElementSibling?.querySelector("button")
             if (btn) {
                 btn.style.display = '';
             }
-            const depthMap = {
-                ".topCategoryList": {nextUl: ".middleCategoryList", resetFrom: 0},
-                ".middleCategoryList": {nextUl: ".bottomCategoryList", resetFrom: 1},
-                ".bottomCategoryList": {nextUl: ".detailCategoryList", resetFrom: 2}
-            };
 
             const depth = depthMap[ulSelector];
             if (depth) {
@@ -179,7 +170,7 @@
 
         function resetLowerLists(fromDepth) {
             const uls = [".topCategoryList", ".middleCategoryList", ".bottomCategoryList", ".detailCategoryList"];
-            for (let i = fromDepth + 2; i < uls.length; i++) {
+            for (let i = fromDepth + 1; i < uls.length; i++) {
                 document.querySelector(uls[i]).innerHTML = "";
             }
         }
