@@ -1,0 +1,17 @@
+<!-- 관리자 공통 대시보드 레이아웃 -->
+<div class="admin-dashboard">
+    <div class="dashboard-header">
+        <h2 th:text="${title}"></h2>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card" th:each="item : ${summaryCards}">
+            <h3 th:text="${item.title}"></h3>
+            <p th:text="${item.value}"></p>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div th:replace="${contentFragment}"></div>
+    </div>
+</div>

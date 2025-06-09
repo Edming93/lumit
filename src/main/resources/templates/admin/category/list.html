@@ -58,232 +58,11 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script th:inline="javascript">
-        let currentTargetLi = null;
         document.addEventListener("DOMContentLoaded", () => {
             init();
-        })
-
-        const levels = ['topCategoryList', 'middleCategoryList', 'bottomCategoryList', 'detailCategoryList'];
-
-        levels.forEach(cls => {
-            new Sortable(document.querySelector(`.${cls}`), {
-                group: 'categories',
-                animation: 150,
-                onEnd: async function (evt) {
-                    const draggedItem = evt.item;
-                    const newParentList = evt.to;
-                    let newParentCategoryId;
-                    if (newParentList.nextElementSibling?.className == "parentId") {
-                        newParentCategoryId = newParentList.nextElementSibling?.value;
-                    } else {
-                        newParentCategoryId = '0';
-                    }
-                    if (newParentCategoryId == '') {
-                        alert("상위 카테고리가 존재하여야 이동이 가능합니다.")
-                        location.reload();
-                        return false;
-                    }
-
-                    const draggedCategoryId = draggedItem.querySelector('input[type="hidden"]').value;
-
-                    const data = {
-                        categoryId: draggedCategoryId,
-                        parent: newParentCategoryId
-                    };
-                    const res = await FETCH.patch('/rest/admin/category/move', data);
-                    if (!res.ok) {
-                        alert("카테고리 이동에 실패하였습니다.");
-                        // 원래 위치로 복구 필요 시 추가 처리
-                        location.reload();
-                        return false;
-                    }
-                    if (res.ok) {
-                        // 이동한 카테고리의 현재 위치에서 하위 리스트 초기화
-                        const listDepthMap = {
-                            "topCategoryList": 0,
-                            "middleCategoryList": 1,
-                            "bottomCategoryList": 2,
-                            "detailCategoryList": 3
-                        };
-                        const depthKey = Object.keys(listDepthMap).find(k => newParentList.classList.contains(k));
-                        if (depthKey) {
-                            resetLowerLists(listDepthMap[depthKey]);
-                        }
-
-                        // 그 후에 목록 갱신
-                        if (newParentCategoryId === '0') {
-                            await getParent("", ".topCategoryList");
-                        } else {
-                            await getParent(newParentCategoryId, `.${newParentList.className}`);
-                        }
-                    }
-                }
-            });
-        });
-        document.addEventListener("contextmenu", (e) => {
-            const li = e.target.closest("li");
-
-            if (li && li.parentElement && li.parentElement.matches(".topCategoryList, .middleCategoryList, .bottomCategoryList, .detailCategoryList")) {
-                e.preventDefault();
-                currentTargetLi = li;
-                console.log(e.target)
-                showContextMenu(e.clientX, e.clientY);
-            } else {
-                hideContextMenu();
-            }
-        });
-        document.addEventListener("click", () => {
-            hideContextMenu();
         });
 
-        document.querySelectorAll("#contextMenu .menuItem").forEach(item => {
-            item.addEventListener("click", async () => {
-                const action = item.dataset.action;
-                const categoryId = currentTargetLi.querySelector("input[type=hidden]").value;
-                const categoryNameDiv = currentTargetLi.querySelector("div");
-
-                if (action === "rename") {
-                    const currentName = categoryNameDiv.textContent.trim();
-
-                    const input = document.createElement("input");
-                    input.type = "text";
-                    input.value = currentName;
-                    input.style.width = "100%";
-                    categoryNameDiv.innerHTML = ""; // 기존 내용 제거
-                    categoryNameDiv.appendChild(input);
-                    input.focus();
-
-                    // 입력 후 엔터 또는 포커스 아웃 시 저장
-                    const save = async () => {
-                        const newName = input.value.trim();
-                        if (newName && newName !== currentName) {
-                            const data = {categoryId, categoryName: newName};
-                            const result = await FETCH.patch(`/rest/admin/category/update`, data);
-                            if (result.ok) {
-                                categoryNameDiv.textContent = newName;
-                            } else {
-                                alert("이름 변경 실패");
-                                categoryNameDiv.textContent = currentName;
-                            }
-                        } else {
-                            categoryNameDiv.textContent = currentName;
-                        }
-                    };
-
-                    input.addEventListener("blur", save);
-                    input.addEventListener("keypress", (e) => {
-                        if (e.key === "Enter") {
-                            input.blur(); // blur 이벤트로 저장 유도
-                        }
-                    });
-                } else if (action === "delete") {
-                    if (confirm("정말 삭제하시겠습니까?")) {
-                        await FETCH.delete(`/rest/admin/category/delete/${categoryId}`);
-                        currentTargetLi.remove();
-                    }
-                }
-
-                hideContextMenu();
-            });
-        });
-
-        function showContextMenu(x, y) {
-            const menu = document.getElementById("contextMenu");
-
-            menu.style.display = "block";
-            menu.style.left = `${x}px`;
-            menu.style.top = `${y}px`;
-        }
-
-        function hideContextMenu() {
-            document.getElementById("contextMenu").style.display = "none";
-        }
-
-
-        function init() {
-            getParent("", ".topCategoryList")
-            bindAddCategoryBtns()
-        }
-
-        function bindAddCategoryBtns() {
-            const btnMap = [
-                {selector: "#newLargeCateBtn", ulClass: ".topCategoryList", isTop: true},
-                {selector: "#newMiddleCateBtn", ulClass: ".middleCategoryList", isTop: false},
-                {selector: "#newBottomCateBtn", ulClass: ".bottomCategoryList", isTop: false},
-                {selector: "#newDetailCateBtn", ulClass: ".detailCategoryList", isTop: false},
-            ]
-            btnMap.forEach(({selector, ulClass, isTop}) => {
-                document.querySelector(selector).addEventListener("click", () => createNewCategoryInput(ulClass, isTop))
-            })
-        }
-
-        function createNewCategoryInput(className, isTop) {
-            const ul = document.querySelector(className)
-            const check = document.querySelectorAll(".newCate")
-            if (check.length != 0) {
-                return false;
-            }
-            ul.innerHTML += `<li><i class=\"fa-solid fa-folder\"></i><div><input class="newCate" type="text"></div><button class="addCateBtn"><i class="fa-solid fa-check"></i></button></li>`
-            const input = ul.querySelector(".newCate");
-            const addBtn = ul.querySelector(".addCateBtn");
-            const parentId = isTop ? null : ul.nextElementSibling.value
-
-
-            input.addEventListener("keypress", (e) => {
-                if (e.key === "Enter" && input.value.trim()) {
-                    addNewCategory(input.value, parentId, className);
-                }
-            });
-            addBtn.addEventListener("click", () => {
-                addNewCategory(input.value, parentId, className)
-            })
-        }
-
-        async function addNewCategory(value, parentId, className) {
-            const data = {categoryName: value, useYn: 'Y', parent: parentId}
-            const result = await FETCH.post("/rest/admin/category/new", data)
-            try {
-                const inserted = await result.json();
-                if (depthMap[className]) {
-                    resetLowerLists(depthMap[className].resetFrom)
-                }
-                if (!inserted.parent) {
-                    await getParent("", ".topCategoryList")
-                } else {
-                    await getParent(inserted.parent, className)
-                }
-            } catch (error) {
-                document.querySelector(className).querySelector(".newCate").value = ""
-                alert("같은 계층에서는 동일한 이름의 카테고리를 생성할 수 없습니다.")
-            }
-        }
-
-        async function getParent(id, className) {
-            const url = id ? `/rest/admin/category/list/${id}` : "/rest/admin/category/list"
-            const result = await FETCH.get(url)
-            renderCategoryList(result, className, id)
-        }
-
-        function renderCategoryList(categories, ulSelector, parentId) {
-            const ul = document.querySelector(ulSelector)
-            ul.innerHTML = categories.map(c => `
-                <li>
-                    <input type="hidden" value="${c.categoryId}">
-                    <i class="fa-solid fa-folder"></i>
-                    <div>${c.categoryName}</div>
-                </li>
-            `).join("")
-            if (ulSelector != ".topCategoryList") {
-                ul.nextElementSibling.value = parentId
-            }
-
-            const list = ul.querySelectorAll("li")
-            list.forEach((li) => {
-                li.addEventListener("click", () => {
-                    handleCategoryClick(li, ulSelector)
-                })
-            })
-        }
+        const depthOrder = [".topCategoryList", ".middleCategoryList", ".bottomCategoryList", ".detailCategoryList"];
 
         const depthMap = {
             ".topCategoryList": {nextUl: ".middleCategoryList", resetFrom: 0},
@@ -291,12 +70,152 @@
             ".bottomCategoryList": {nextUl: ".detailCategoryList", resetFrom: 2}
         };
 
-        function handleCategoryClick(li, ulSelector) {
-            // 기존 active 클래스 제거
-            const all = li.parentElement.querySelectorAll("li");
-            all.forEach(el => el.classList.remove("active"));
+        const listDepthMap = {
+            "topCategoryList": 0,
+            "middleCategoryList": 1,
+            "bottomCategoryList": 2,
+            "detailCategoryList": 3
+        };
 
-            // 선택 항목에 active 클래스 추가
+        function init() {
+            getParent("", ".topCategoryList");
+            bindAddCategoryBtns();
+            bindSortable();
+            bindContextMenu();
+        }
+
+        function bindSortable() {
+            depthOrder.forEach(cls => {
+                new Sortable(document.querySelector(cls), {
+                    group: 'categories',
+                    animation: 150,
+                    onEnd: async function (evt) {
+                        const draggedItem = evt.item;
+                        const newParentList = evt.to;
+                        const newParentCategoryId = getParentCategoryId(newParentList);
+                        if (!newParentCategoryId) {
+                            alert("상위 카테고리가 존재해야 이동 가능합니다.");
+                            location.reload();
+                            return;
+                        }
+
+                        const draggedCategoryId = draggedItem.querySelector('input[type="hidden"]').value;
+                        const data = {categoryId: draggedCategoryId, parent: newParentCategoryId};
+
+                        const res = await FETCH.patch('/rest/admin/category/move', data);
+                        if (!res.ok) {
+                            alert("카테고리 이동 실패");
+                            location.reload();
+                            return;
+                        }
+
+                        const depthKey = Object.keys(listDepthMap).find(k => newParentList.classList.contains(k));
+                        if (depthKey) {
+                            resetLowerLists(listDepthMap[depthKey]);
+                        }
+
+                        const nextClass = newParentCategoryId === '0' ? ".topCategoryList" : `.${newParentList.className}`;
+                        await getParent(newParentCategoryId === '0' ? "" : newParentCategoryId, nextClass);
+                    }
+                });
+            });
+        }
+
+        function getParentCategoryId(listEl) {
+            return listEl?.nextElementSibling?.className === "parentId"
+                ? listEl.nextElementSibling.value
+                : '0';
+        }
+
+        function resetLowerLists(fromDepth) {
+            for (let i = fromDepth + 1; i < depthOrder.length; i++) {
+                const ul = document.querySelector(depthOrder[i]);
+                ul.innerHTML = "";
+                ul.querySelectorAll("li.active").forEach(li => li.classList.remove("active"));
+
+                const hidden = ul.nextElementSibling;
+                if (hidden && hidden.classList.contains("parentId")) hidden.value = "";
+            }
+        }
+
+        function bindAddCategoryBtns() {
+            const btnMap = [
+                {selector: "#newLargeCateBtn", ulClass: ".topCategoryList", isTop: true},
+                {selector: "#newMiddleCateBtn", ulClass: ".middleCategoryList", isTop: false},
+                {selector: "#newBottomCateBtn", ulClass: ".bottomCategoryList", isTop: false},
+                {selector: "#newDetailCateBtn", ulClass: ".detailCategoryList", isTop: false}
+            ];
+            btnMap.forEach(({selector, ulClass, isTop}) => {
+                document.querySelector(selector).addEventListener("click", () =>
+                    createNewCategoryInput(ulClass, isTop)
+                );
+            });
+        }
+
+        function createNewCategoryInput(className, isTop) {
+            const ul = document.querySelector(className);
+            if (document.querySelectorAll(".newCate").length > 0) return;
+
+            ul.insertAdjacentHTML("beforeend", `
+        <li>
+            <i class="fa-solid fa-folder"></i>
+            <div><input class="newCate" type="text"></div>
+            <button class="addCateBtn"><i class="fa-solid fa-check"></i></button>
+        </li>
+    `);
+
+            const input = ul.querySelector(".newCate");
+            const addBtn = ul.querySelector(".addCateBtn");
+            const parentId = isTop ? null : ul.nextElementSibling.value;
+
+            input.addEventListener("keypress", (e) => {
+                if (e.key === "Enter" && input.value.trim()) {
+                    addNewCategory(input.value, parentId, className);
+                }
+            });
+            addBtn.addEventListener("click", () => addNewCategory(input.value, parentId, className));
+        }
+
+        async function addNewCategory(value, parentId, className) {
+            const data = {categoryName: value, useYn: 'Y', parent: parentId};
+            try {
+                const res = await FETCH.post("/rest/admin/category/new", data);
+                const inserted = await res.json();
+                if (depthMap[className]) resetLowerLists(depthMap[className].resetFrom);
+                await getParent(inserted.parent ?? "", className);
+            } catch {
+                document.querySelector(className).querySelector(".newCate").value = "";
+                alert("같은 계층에 동일한 이름이 존재합니다.");
+            }
+        }
+
+        async function getParent(id, className) {
+            const url = id ? `/rest/admin/category/list/${id}` : "/rest/admin/category/list";
+            const result = await FETCH.get(url);
+            renderCategoryList(result, className, id);
+        }
+
+        function renderCategoryList(categories, ulSelector, parentId) {
+            const ul = document.querySelector(ulSelector);
+            ul.innerHTML = categories.map(c => `
+        <li>
+            <input type="hidden" value="${c.categoryId}">
+            <i class="fa-solid fa-folder"></i>
+            <div>${c.categoryName}</div>
+        </li>
+    `).join("");
+
+            if (ulSelector !== ".topCategoryList") {
+                ul.nextElementSibling.value = parentId;
+            }
+
+            ul.querySelectorAll("li").forEach(li => {
+                li.addEventListener("click", () => handleCategoryClick(li, ulSelector));
+            });
+        }
+
+        function handleCategoryClick(li, ulSelector) {
+            li.parentElement.querySelectorAll("li").forEach(el => el.classList.remove("active"));
             li.classList.add("active");
 
             const parentId = li.querySelector("input").value;
@@ -307,35 +226,85 @@
             }
 
             const btn = ul.parentNode.nextElementSibling?.querySelector("button");
-            if (btn) {
-                btn.style.display = '';
-            }
+            if (btn) btn.style.display = '';
 
-            const depth = depthMap[ulSelector];
-            if (depth) {
-                getParent(parentId, depth.nextUl);
-                resetLowerLists(depth.resetFrom);
+            if (ulSelector in depthMap) {
+                getParent(parentId, depthMap[ulSelector].nextUl);
+                resetLowerLists(depthMap[ulSelector].resetFrom);
             } else if (ulSelector === ".topCategoryList") {
                 resetLowerLists(-1);
                 getParent(parentId, ".middleCategoryList");
             }
         }
 
-
-        function resetLowerLists(fromDepth) {
-            const uls = [".topCategoryList", ".middleCategoryList", ".bottomCategoryList", ".detailCategoryList"];
-            for (let i = fromDepth + 1; i < uls.length; i++) {
-                const ul = document.querySelector(uls[i]);
-
-                // li 초기화 전에 선택 상태 해제
-                ul.querySelectorAll("li.active").forEach(li => li.classList.remove("active"));
-                ul.innerHTML = "";
-
-                const parentInput = ul.nextElementSibling;
-                if (parentInput && parentInput.classList.contains("parentId")) {
-                    parentInput.value = "";
+        function bindContextMenu() {
+            document.addEventListener("contextmenu", (e) => {
+                const li = e.target.closest("li");
+                if (li && li.parentElement && li.parentElement.matches(depthOrder.join(','))) {
+                    e.preventDefault();
+                    currentTargetLi = li;
+                    showContextMenu(e.clientX, e.clientY);
+                } else {
+                    hideContextMenu();
                 }
-            }
+            });
+
+            document.addEventListener("click", hideContextMenu);
+
+            document.querySelectorAll("#contextMenu .menuItem").forEach(item => {
+                item.addEventListener("click", async () => {
+                    const action = item.dataset.action;
+                    const categoryId = currentTargetLi.querySelector("input[type=hidden]").value;
+                    const categoryNameDiv = currentTargetLi.querySelector("div");
+
+                    if (action === "rename") {
+                        const currentName = categoryNameDiv.textContent.trim();
+                        const input = document.createElement("input");
+                        input.type = "text";
+                        input.value = currentName;
+                        input.style.width = "100%";
+                        categoryNameDiv.innerHTML = "";
+                        categoryNameDiv.appendChild(input);
+                        input.focus();
+
+                        const save = async () => {
+                            const newName = input.value.trim();
+                            if (newName && newName !== currentName) {
+                                const res = await FETCH.patch(`/rest/admin/category/update`, {
+                                    categoryId,
+                                    categoryName: newName
+                                });
+                                categoryNameDiv.textContent = res.ok ? newName : currentName;
+                                if (!res.ok) alert("이름 변경 실패");
+                            } else {
+                                categoryNameDiv.textContent = currentName;
+                            }
+                        };
+                        input.addEventListener("blur", save);
+                        input.addEventListener("keypress", e => {
+                            if (e.key === "Enter") input.blur();
+                        });
+                    } else if (action === "delete") {
+                        if (confirm("정말 삭제하시겠습니까?")) {
+                            await FETCH.delete(`/rest/admin/category/delete/${categoryId}`);
+                            currentTargetLi.remove();
+                        }
+                    }
+
+                    hideContextMenu();
+                });
+            });
+        }
+
+        function showContextMenu(x, y) {
+            const menu = document.getElementById("contextMenu");
+            menu.style.display = "block";
+            menu.style.left = `${x}px`;
+            menu.style.top = `${y}px`;
+        }
+
+        function hideContextMenu() {
+            document.getElementById("contextMenu").style.display = "none";
         }
 
     </script>

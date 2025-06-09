@@ -39,15 +39,15 @@
         update TB_CATEGORY
         SET
         <if test="categoryName != '' and categoryName != null">
-            CATEGORY_NAME = #{categoryName}
+            CATEGORY_NAME = #{categoryName},
         </if>
         <if test="useYn != '' and useYn != null">
-            USE_YN = #{useYn}
+            USE_YN = #{useYn},
         </if>
         <if test="parent != null">
-            PARENT = #{parent}
+            PARENT = #{parent},
         </if>
-        , MOD_ID = #{modId}
+        MOD_ID = #{modId}
         , MOD_DT = #{modDt}
         WHERE CATEGORY_ID = #{categoryId}
     </update>

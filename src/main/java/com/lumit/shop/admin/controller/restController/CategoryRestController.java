@@ -74,10 +74,11 @@ public class CategoryRestController {
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteCategory(@RequestBody TbCategory data) {
-        data.setUseYn("N");
-        ServiceCode sc = categoryService.updateCategory(data);
+    @DeleteMapping("/delete/{categoryId}")
+    public ResponseEntity<?> deleteCategory(@PathVariable int categoryId) {
+        TbCategory category = categoryService.selectCategory(categoryId);
+        category.setUseYn("N");
+        ServiceCode sc = categoryService.updateCategory(category);
         if (!sc.equals(ServiceCode.DELETED)) {
             return ResponseEntity.ok(ApiResponse.fail("DELETE_FAILED", "삭제 되지 않았습니다."));
         } else {
