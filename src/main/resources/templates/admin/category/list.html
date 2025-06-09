@@ -46,13 +46,159 @@
                 <ul class="detailCategoryList"></ul>
                 <input type="hidden" class="parentId">
             </div>
+            <div id="contextMenu"
+                 style="display:none; position:fixed; z-index:1000; background:#fff; border:1px solid #ccc; box-shadow: 2px 2px 6px rgba(0,0,0,0.2);">
+                <ul style="list-style:none; margin:0; padding:5px 0;">
+                    <li class="menuItem" data-action="rename" style="padding:5px 15px; cursor:pointer;">이름 변경</li>
+                    <li class="menuItem" data-action="delete" style="padding:5px 15px; cursor:pointer;">삭제</li>
+                </ul>
+            </div>
         </div>
-    </div>
 
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script th:inline="javascript">
+        let currentTargetLi = null;
         document.addEventListener("DOMContentLoaded", () => {
             init();
         })
+
+        const levels = ['topCategoryList', 'middleCategoryList', 'bottomCategoryList', 'detailCategoryList'];
+
+        levels.forEach(cls => {
+            new Sortable(document.querySelector(`.${cls}`), {
+                group: 'categories',
+                animation: 150,
+                onEnd: async function (evt) {
+                    const draggedItem = evt.item;
+                    const newParentList = evt.to;
+                    let newParentCategoryId;
+                    if (newParentList.nextElementSibling?.className == "parentId") {
+                        newParentCategoryId = newParentList.nextElementSibling?.value;
+                    } else {
+                        newParentCategoryId = '0';
+                    }
+                    if (newParentCategoryId == '') {
+                        alert("상위 카테고리가 존재하여야 이동이 가능합니다.")
+                        location.reload();
+                        return false;
+                    }
+
+                    const draggedCategoryId = draggedItem.querySelector('input[type="hidden"]').value;
+
+                    const data = {
+                        categoryId: draggedCategoryId,
+                        parent: newParentCategoryId
+                    };
+                    const res = await FETCH.patch('/rest/admin/category/move', data);
+                    if (!res.ok) {
+                        alert("카테고리 이동에 실패하였습니다.");
+                        // 원래 위치로 복구 필요 시 추가 처리
+                        location.reload();
+                        return false;
+                    }
+                    if (res.ok) {
+                        // 이동한 카테고리의 현재 위치에서 하위 리스트 초기화
+                        const listDepthMap = {
+                            "topCategoryList": 0,
+                            "middleCategoryList": 1,
+                            "bottomCategoryList": 2,
+                            "detailCategoryList": 3
+                        };
+                        const depthKey = Object.keys(listDepthMap).find(k => newParentList.classList.contains(k));
+                        if (depthKey) {
+                            resetLowerLists(listDepthMap[depthKey]);
+                        }
+
+                        // 그 후에 목록 갱신
+                        if (newParentCategoryId === '0') {
+                            await getParent("", ".topCategoryList");
+                        } else {
+                            await getParent(newParentCategoryId, `.${newParentList.className}`);
+                        }
+                    }
+                }
+            });
+        });
+        document.addEventListener("contextmenu", (e) => {
+            const li = e.target.closest("li");
+
+            if (li && li.parentElement && li.parentElement.matches(".topCategoryList, .middleCategoryList, .bottomCategoryList, .detailCategoryList")) {
+                e.preventDefault();
+                currentTargetLi = li;
+                console.log(e.target)
+                showContextMenu(e.clientX, e.clientY);
+            } else {
+                hideContextMenu();
+            }
+        });
+        document.addEventListener("click", () => {
+            hideContextMenu();
+        });
+
+        document.querySelectorAll("#contextMenu .menuItem").forEach(item => {
+            item.addEventListener("click", async () => {
+                const action = item.dataset.action;
+                const categoryId = currentTargetLi.querySelector("input[type=hidden]").value;
+                const categoryNameDiv = currentTargetLi.querySelector("div");
+
+                if (action === "rename") {
+                    const currentName = categoryNameDiv.textContent.trim();
+
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.value = currentName;
+                    input.style.width = "100%";
+                    categoryNameDiv.innerHTML = ""; // 기존 내용 제거
+                    categoryNameDiv.appendChild(input);
+                    input.focus();
+
+                    // 입력 후 엔터 또는 포커스 아웃 시 저장
+                    const save = async () => {
+                        const newName = input.value.trim();
+                        if (newName && newName !== currentName) {
+                            const data = {categoryId, categoryName: newName};
+                            const result = await FETCH.patch(`/rest/admin/category/update`, data);
+                            if (result.ok) {
+                                categoryNameDiv.textContent = newName;
+                            } else {
+                                alert("이름 변경 실패");
+                                categoryNameDiv.textContent = currentName;
+                            }
+                        } else {
+                            categoryNameDiv.textContent = currentName;
+                        }
+                    };
+
+                    input.addEventListener("blur", save);
+                    input.addEventListener("keypress", (e) => {
+                        if (e.key === "Enter") {
+                            input.blur(); // blur 이벤트로 저장 유도
+                        }
+                    });
+                } else if (action === "delete") {
+                    if (confirm("정말 삭제하시겠습니까?")) {
+                        await FETCH.delete(`/rest/admin/category/delete/${categoryId}`);
+                        currentTargetLi.remove();
+                    }
+                }
+
+                hideContextMenu();
+            });
+        });
+
+        function showContextMenu(x, y) {
+            const menu = document.getElementById("contextMenu");
+
+            menu.style.display = "block";
+            menu.style.left = `${x}px`;
+            menu.style.top = `${y}px`;
+        }
+
+        function hideContextMenu() {
+            document.getElementById("contextMenu").style.display = "none";
+        }
+
 
         function init() {
             getParent("", ".topCategoryList")
@@ -98,7 +244,6 @@
             const result = await FETCH.post("/rest/admin/category/new", data)
             try {
                 const inserted = await result.json();
-                ㄴ
                 if (depthMap[className]) {
                     resetLowerLists(depthMap[className].resetFrom)
                 }
@@ -147,16 +292,21 @@
         };
 
         function handleCategoryClick(li, ulSelector) {
+            // 기존 active 클래스 제거
             const all = li.parentElement.querySelectorAll("li");
-            all.forEach(el => el.style.backgroundColor = "");
-            li.style.backgroundColor = "#e9d4c7"
-            const parentId = li.querySelector("input").value;
+            all.forEach(el => el.classList.remove("active"));
 
-            const ul = document.querySelector(ulSelector)
-            if (ulSelector != ".topCategoryList" && ulSelector != ".detailCategoryList") {
-                ul.parentElement.nextElementSibling.querySelector(".parentId").value = parentId
+            // 선택 항목에 active 클래스 추가
+            li.classList.add("active");
+
+            const parentId = li.querySelector("input").value;
+            const ul = document.querySelector(ulSelector);
+
+            if (ulSelector !== ".topCategoryList" && ulSelector !== ".detailCategoryList") {
+                ul.parentElement.nextElementSibling.querySelector(".parentId").value = parentId;
             }
-            const btn = ul.parentNode.nextElementSibling?.querySelector("button")
+
+            const btn = ul.parentNode.nextElementSibling?.querySelector("button");
             if (btn) {
                 btn.style.display = '';
             }
@@ -164,14 +314,27 @@
             const depth = depthMap[ulSelector];
             if (depth) {
                 getParent(parentId, depth.nextUl);
-                resetLowerLists(depth.resetFrom)
+                resetLowerLists(depth.resetFrom);
+            } else if (ulSelector === ".topCategoryList") {
+                resetLowerLists(-1);
+                getParent(parentId, ".middleCategoryList");
             }
         }
+
 
         function resetLowerLists(fromDepth) {
             const uls = [".topCategoryList", ".middleCategoryList", ".bottomCategoryList", ".detailCategoryList"];
             for (let i = fromDepth + 1; i < uls.length; i++) {
-                document.querySelector(uls[i]).innerHTML = "";
+                const ul = document.querySelector(uls[i]);
+
+                // li 초기화 전에 선택 상태 해제
+                ul.querySelectorAll("li.active").forEach(li => li.classList.remove("active"));
+                ul.innerHTML = "";
+
+                const parentInput = ul.nextElementSibling;
+                if (parentInput && parentInput.classList.contains("parentId")) {
+                    parentInput.value = "";
+                }
             }
         }
 

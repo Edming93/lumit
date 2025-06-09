@@ -4,9 +4,11 @@ import com.lumit.shop.admin.dto.ReturnKeyAndServiceCode;
 import com.lumit.shop.admin.repository.CategoryRepository;
 import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.model.TbCategory;
+import com.lumit.shop.common.service.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +40,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ReturnKeyAndServiceCode insertNewCategory(TbCategory category) {
+        category.setRegId(SecurityUtils.getPrincipal().getUserId());
+        category.setRegDt(LocalDateTime.now());
         if (isDuplicatedCategory(category)) {
             return ReturnKeyAndServiceCode.builder().id(null).sc(ServiceCode.CONFLICT).build();
         } else {
@@ -51,10 +55,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public boolean isDuplicatedCategory(TbCategory category) {
-        System.out.println("testing...");
         if (categoryRepository.isDuplicatedCategory(category) != null) {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public ServiceCode updateCategory(TbCategory data) {
+        System.out.println("what the..." + data);
+        data.setModId(SecurityUtils.getPrincipal().getUserId());
+        data.setModDt(LocalDateTime.now());
+        return categoryRepository.updateCategory(data) > 0 ? ServiceCode.UPDATED : ServiceCode.UNKNOWN;
     }
 }

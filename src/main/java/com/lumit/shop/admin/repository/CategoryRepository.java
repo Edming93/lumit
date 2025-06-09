@@ -22,4 +22,6 @@ public interface CategoryRepository {
     int insertNewCategory(TbCategory category);
 
     TbCategory isDuplicatedCategory(TbCategory tbCategory);
+
+    int updateCategory(TbCategory data);
 }

@@ -20,4 +20,6 @@ public interface CategoryService {
     ReturnKeyAndServiceCode insertNewCategory(TbCategory category);
 
     boolean isDuplicatedCategory(TbCategory category);
+
+    ServiceCode updateCategory(TbCategory data);
 }

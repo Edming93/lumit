@@ -91,7 +91,11 @@ create table if not exists TB_CATEGORY
         primary key,
     CATEGORY_NAME varchar(50)           not null,
     USE_YN        varchar(2)            not null,
-    PARENT        bigint                null comment 'null: 최상위, 값이 있으면 부모의 id'
+    PARENT        bigint                null comment '0: 최상위, 값이 있으면 부모의 id',
+    REG_ID        varchar(50)           null,
+    REG_DT        timestamp             null,
+    MOD_ID        varchar(50)           null,
+    MOD_DT        timestamp             null
 );
 
 create table if not exists TB_CATEGORY_MAP
