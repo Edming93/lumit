@@ -316,7 +316,7 @@ create table if not exists TB_PRODUCT
     PRICE             int                not null comment '정가',
     DIS_PRICE         int                not null comment '판매가',
     DIS_RATE          int                not null comment '할인율',
-    CONTENT           json               null comment '상품의 상세정보와 이미지들이 json 형식으로 들어감',
+    CONTENT           LONGTEXT           null comment '상품의 상세정보',
     SUMMATION         text               not null comment '상품 요약 설명',
     STOCKS            int                not null comment '재고 수량',
     SALES             int                null comment '판매 수량',
