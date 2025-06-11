@@ -4,8 +4,13 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{admin/fragments/layout}">
 <head>
-	<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
-	<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+	<!-- Jodit 에디터 라이브러리 추가 -->
+	<link
+	  rel="stylesheet"
+	  href="https://cdnjs.cloudflare.com/ajax/libs/jodit/4.2.47/es2021/jodit.min.css"
+	/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jodit/4.2.47/es2021/jodit.min.js"></script>
+
 	<style>
 		.flex_align {
 			display: flex;
@@ -206,8 +211,7 @@
 	                    <tr>
 	                    	<th class="alLeft bold">상세 페이지</th>
 	                    	<td class="textEditor">
-	                    		<div id="editor" style="min-height: 500px;">
-								</div>
+	                    		<textarea id="editor" name="content"></textarea>
 	                    	</td>
 	                    </tr>
 	                </tbody>
@@ -226,7 +230,6 @@
 	        </form>
 	    </div>
 	</div>
-	<textarea name="taskDetails" id="taskDetails" rows="16" ></textarea>
 </div>
 
 
@@ -248,6 +251,7 @@ let colorIdList = [];
 let colorText = "";
 let tagIdList = [];
 let tagText = "";
+let editor;
 
 document.addEventListener("DOMContentLoaded",async function () {
 	load();
@@ -382,6 +386,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 						return;
 					}
 				}
+
 			}
 			
 			let url = "/"+siteId+"/product/list";
@@ -500,114 +505,48 @@ async function load() {
 }
 
 function initTextEditor () {
-	const toolbarOptions = [
-		// [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-		[{ 'font': [] }],
-		[{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-		[{ 'align': [] }],
-		[{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-		['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-		['link', 'image', 'video'],
-		
-		[{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
-		['blockquote', 'code-block'],
-		// [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-		// [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-		// [{ 'direction': 'rtl' }],                         // text direction
-		
-		//  ['clean']                                         // remove formatting button
-	];
-	
-	const quill = new Quill('#editor', {
-		modules: {
-			toolbar: toolbarOptions,
-		},
-		placeholder : '상세페이지를 작성해주세요.',
-		theme: 'snow',
-		formats: [
-	        // ‘size’를 반드시 포함해야 유지 가능
-	        'font', 'size', 'bold', 'italic', 'underline', 'strike',
-	        'color', 'background', 'link', 'image', 'video',
-	        'list', 'align', 'direction', 'script', 'blockquote', 'code-block'
-	      ]
-	});
-	
-	$('.textEditor>div:eq(0)').css('min-width','800px');
-	$('input[type="text"]').css('min-width','140px')
-	
-	// 내용 변경 이벤트 처리
-	quill.on('text-change', (delta, oldDelta, source) => {
-		const content = quill.root.innerHTML; // 텍스트 편집기의 HTML 내용 가져오기
-		console.log("내용 변경 이벤트 처리 : ");
-		$('#taskDetails').val(quill.root.innerHTML);
-		
-		
-	});
-	
-	// 이미지 삽입시, 현재 서버(로컬)에서 이미지를 별도로 저장한 후 해당 경로를 반환하도록 구성
-	quill.getModule('toolbar').addHandler('image', function () {
-        selectLocalImage();
-    });
-	
-	function selectLocalImage() {
-        const fileInput = $('<input type="file">');
-        fileInput.accept = "image/*";
-
-        fileInput.click();
-
-        fileInput.on('change', function () {  // change 이벤트로 input 값이 바뀌면 실행
-
-            if ($(this).val() !== "") { // 파일이 있을때만.
-
-                var ext = $(this).val().split(".").pop().toLowerCase();
-
-                if ($.inArray(ext, ["gif", "jpg", "jpeg", "png", "bmp", "jfif"]) == -1) {
-
-                    alert("jpg, jpeg, png, bmp, gif, jfif 파일만 업로드 가능합니다.");
-                    return;
-                }
-
-
-                var fileSize = this.files[0].size;
-
-                var maxSize = 20 * 1024 * 1024;
-
-                if (fileSize > maxSize) {
-
-                    alert("업로드 가능한 최대 이미지 용량은 20MB입니다.");
-
-                    return;
-
-                }
-
-                const formData = new FormData();
-                const file = fileInput.files[0];
-                formData.append('uploadFile', file);
-
-                $.ajax({
-                    type: 'post',
-                    enctype: 'multipart/form-data',
-                    url: '/file/upload',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    dataType: 'text',
-                    success: function (data) {
-                        const range = quill.getSelection();
-                        quill.insertEmbed(range.index, 'image', "/file/display?fileName=" + data);
-
-                    },
-                    error: function (err) {
-                        console.log('ERROR!! ::');
-                        console.log(err);
-                    }
-                });
-
-            }
-
-        });
-    }
+	editor = Jodit.make('#editor', {
+	    height: 400,
+	    language: 'ko',
+	    toolbarSticky: false,
+	    uploader: {
+	      insertImageAsBase64URI: true  // 이미지 업로드를 base64 방식으로 처리 (간단용)
+	    },
+	    buttons: [
+	      // 텍스트 스타일 관련
+	      'bold', 'italic', 'underline', 'strikethrough', '|', 
+	      'fontsize', 'font', 'brush', 'paragraph', '|',
+	      // 정렬 및 목록
+	      'align', 'outdent', 'indent', '|',
+	      'ul', 'ol', '|',
+	      // 이미지/링크/클립보드
+	      'image', 'link', '|',
+	      // 편의 기능
+	      'undo', 'redo', 'hr', 'eraser', 'fullsize'
+	    ],
+	    // 글꼴 지정
+	    controls: {
+	      font: {
+	        list: {
+	          '맑은 고딕': '맑은 고딕',
+	          '돋움': '돋움',
+	          '굴림': '굴림',
+	          '바탕': '바탕',
+	          'Arial': 'Arial',
+	          'Times New Roman': 'Times New Roman',
+	          'Courier New': 'Courier New'
+	        }
+	      },
+	      fontsize: {
+	        list: [
+	          '8', '10', '12', '14', '16', '18', '24', '36', '48', '72'
+	        ]
+	      }
+	    }
+	  });
 } 
+
+
 function imgDragDrop () {
 	$("#imgList").sortable({
 		items: ".figure", // span.figure 요소만 드래그 가능
