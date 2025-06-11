@@ -488,7 +488,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 
 async function load() {
 	initTextEditor();
-	if(files.length != 0) imgDragDrop();
+	if(filesRep.length != 0) imgDragDrop();
 	
 	await getCodeList();
 	await getColorOption();
@@ -614,20 +614,25 @@ function imgDragDrop () {
 		tolerance: "pointer", // 좀 더 부드러운 드래그
 		cursor: "move", // 마우스 커서가 이동 커서로 변함
 		update: function () {
-		
-		// 2. filesRep 순서도 실제 UI 순서에 맞춰 재정렬
- 		const newFilesRep = [];
-		
- 		$("#imgList .figure").each(function () {
- 			const fileIdx = $(this).data("file-idx");
- 			const matched = filesRep.find(f => f.idx === fileIdx);
- 			if (matched) newFilesRep.push(matched);
- 		});
-		
- 		filesRep = newFilesRep;
- 		
- 		// console.log("드래그 이후 filesRep 순서:", filesRep.map(f => f.name || f.idx));
- 		setFiles('uploadRep');
+			// 2. filesRep 순서도 실제 UI 순서에 맞춰 재정렬
+	 		const newFilesRep = [];
+			
+	 		$("#imgList .figure").each(function () {
+	 			const filesIdx = $(this).data("file-idx");
+
+	 			if (filesIdx !== undefined && filesIdx !== null) {
+					const matched = filesRep.find(f => f.idx === filesIdx);
+					if (matched) {
+						newFilesRep.push(matched);
+					}
+				}
+	 		});
+			
+	 		filesRep = newFilesRep;
+	 		console.log('filesRep-----------------');
+	 		console.log(filesRep)
+	 		// console.log("드래그 이후 filesRep 순서:", filesRep.map(f => f.name || f.idx));
+	 		setFiles();
 		}
 	});
 }
@@ -671,65 +676,95 @@ function passwordSave() {
 
 // 파일 그리기
 function setFiles(id) {
-	let fileDiv = '';
+	const $imgList = $('#imgList');
+	$imgList.empty(); // 이미지 슬롯 초기화
+	
 	let fileHtml = '';
-	let fileCancelBtn = '';
+	let fileDiv;
+	let fileIdx = 1;
 	
-	// let idx = 1;
-	$('.figure a .noImg').attr('src','/images/noImage108x108.gif');
+	if (!id) id = 'uploadRep';
 	
-	// 클래스 초기화
-	$('.rep_a').removeClass('active');
-	$('.rep_a').removeClass('selected');
+	// HTML 영역 초기화
+	$('.rep_a').removeClass('active selected');
+	if ($('.delete_img_btn')) $('.delete_img_btn').remove();
 	
-	if(id == 'uploadRep') {
+	if (id === 'uploadRep') {
 		$('.form__div--file_rep').addClass('mgt10');
 		fileDiv = document.querySelector('.form__div--file_rep');
 		
+		// 대표 이미지 표시용 목록 생성
 		fileHtml = '';
-
-		// 이미지 우측 상단 delete버튼 초기화
-		if($('.delete_img_btn')) {
-			$('.delete_img_btn').remove();
+		
+		// [1] 대표 이미지 박스 다시 그리기
+		const maxSlots = 5;
+		for (let i = 0; i < maxSlots; i++) {
+		  const file = filesRep[i]; // 배열에 있는 파일 또는 undefined
+		  const slot = i + 1;
+		  const span = $('<span>', {
+		    class: 'figure',
+		    id: 'repImg' + slot,
+		    'data-file-idx': file?.idx ?? ''
+		  });
+		
+		  const anchor = $('<a>', {
+		    class: 'rep_a' + (i === 0 && file ? ' selected active' : file ? ' active' : '')
+		  });
+		
+		  const img = $('<img>', {
+		    class: 'noImg',
+		    src: file ? URL.createObjectURL(file) : '/images/noImage108x108.gif',
+		    width: 108,
+		    height: 108,
+		    alt: ''
+		  });
+		
+		  anchor.append(img);
+		  span.append(anchor);
+		
+		  // 파일이 있을 경우 삭제 버튼 추가
+		  if (file) {
+		    const cancelBtn = $('<img>', {
+		      src: '/images/icons/icon_cancel.png',
+		      class: 'delete_img_btn active',
+		      'data-id': 'uploadRep',
+		      'data-idx': file.idx,
+		      onClick: 'deleteFileBtn(this)'
+		    });
+		    span.append(cancelBtn);
+		
+		    // 파일 이름 목록 영역 HTML 추가
+		    fileHtml += `
+		      <span class="select_file_box">
+		        <button type="button" data-id="uploadRep" data-idx="${file.idx}" class="delete_file_btn" onClick="deleteFileBtn(this)">x</button>
+		        ${file.name}
+		      </span>
+		    `;
+		  }
+		
+		  $imgList.append(span);
 		}
-		
-		_.forEach(filesRep, function(file){
-			$('#repImg'+ file.idx).find('.rep_a').addClass('active');
-			
-			const imageSrc = URL.createObjectURL(file);
-			$('#repImg'+ file.idx).find('.noImg').attr('src',imageSrc ?? '');
-			$('#repImg'+ file.idx).attr('data-file-idx', file.idx ?? '1');
-			
-			// 상품 이미지 우 상단 x버튼(삭제 버튼) 추가
-			fileCancelBtn = '<img src="/images/icons/icon_cancel.png" data-id="uploadRep" data-idx="'+file.idx+'" class="delete_img_btn active" onClick="deleteFileBtn(this)">'
-			$('#repImg'+ file.idx).append(fileCancelBtn);
-			
-			// 대표이미지 강조처리 (첫 번째 요소의 <a>에만 .selected 붙이기)
-			$(".rep_a").removeClass("selected");
-			$("#imgList .figure").first().find(".rep_a").addClass("selected");
-			
-			fileHtml += '<span class="select_file_box"><button type="button" data-id="uploadRep" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
-			
-		});
-		
-		if(files.length != 0) imgDragDrop(); // 드래그앤드롭 기능 연결
-		
+	
+	  	if (filesRep.length !== 0) imgDragDrop(); // 드래그 이벤트 재연결
+	
 	} else {
-		$('.form__div--file').addClass('mgt10');
-		fileDiv = document.querySelector('.form__div--file');
-		
-		fileHtml = '';
-		fileCancelBtn = '';
-		_.forEach(files, function(file){
-			fileHtml += '<span class="select_file_box"><button type="button" data-id="upload" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
-		});
+	  // 일반 파일 업로드 영역 (대표 이미지 아님)
+	  $('.form__div--file').addClass('mgt10');
+	  fileDiv = document.querySelector('.form__div--file');
+	
+	  _.forEach(files, function(file) {
+	    fileHtml += `
+	      <span class="select_file_box">
+	        <button type="button" data-id="upload" data-idx="${file.idx}" class="delete_file_btn" onClick="deleteFileBtn(this)">x</button>
+	        ${file.name}
+	      </span>
+	    `;
+	  });
 	}
 	
-	if (!fileDiv) {
-		return;
-	};
-	
-	fileDiv.innerHTML = fileHtml;
+	if (fileDiv) {
+	  fileDiv.innerHTML = fileHtml;
+	}
 }
 
 function deleteFileBtn(elem) {
@@ -741,6 +776,7 @@ function deleteFileBtn(elem) {
 		files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")});
 	}
 
+	// $("#imgList .figure img").attr("src","/images/noImage108x108.gif");
 	setFiles(elem.getAttribute("data-id"));
 };
 

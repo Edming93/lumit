@@ -747,7 +747,7 @@ input[type='file'] {
 	content: '대표이미지로 설정';
 	color: var(--brand-color4);
 	position: absolute;
-	top: -35px;
+	top: -20px;
     left: 50%;
     z-index: 20;
     font-size: 12px;
