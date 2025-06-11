@@ -614,7 +614,7 @@ function imgDragDrop () {
 		tolerance: "pointer", // 좀 더 부드러운 드래그
 		cursor: "move", // 마우스 커서가 이동 커서로 변함
 		update: function () {
-			// 2. filesRep 순서도 실제 UI 순서에 맞춰 재정렬
+			
 	 		const newFilesRep = [];
 			
 	 		$("#imgList .figure").each(function () {
@@ -629,9 +629,7 @@ function imgDragDrop () {
 	 		});
 			
 	 		filesRep = newFilesRep;
-	 		console.log('filesRep-----------------');
-	 		console.log(filesRep)
-	 		// console.log("드래그 이후 filesRep 순서:", filesRep.map(f => f.name || f.idx));
+	 		
 	 		setFiles();
 		}
 	});
@@ -696,7 +694,7 @@ function setFiles(id) {
 		// 대표 이미지 표시용 목록 생성
 		fileHtml = '';
 		
-		// [1] 대표 이미지 박스 다시 그리기
+		// 대표 이미지 박스 다시 그리기
 		const maxSlots = 5;
 		for (let i = 0; i < maxSlots; i++) {
 		  const file = filesRep[i]; // 배열에 있는 파일 또는 undefined
