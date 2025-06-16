@@ -5,11 +5,13 @@
         layout:decorate="~{admin/fragments/layout}">
 <head>
 	<!-- Jodit 에디터 라이브러리 추가 -->
-	<link
-	  rel="stylesheet"
-	  href="https://cdnjs.cloudflare.com/ajax/libs/jodit/4.2.47/es2021/jodit.min.css"
-	/>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jodit/4.2.47/es2021/jodit.min.js"></script>
+<!-- 	<link -->
+<!-- 	  rel="stylesheet" -->
+<!-- 	  href="https://cdnjs.cloudflare.com/ajax/libs/jodit/4.2.47/es2021/jodit.min.css" -->
+<!-- 	/> -->
+<!-- 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jodit/4.2.47/es2021/jodit.min.js"></script> -->
+	<script src="/js/jodit.min.js"></script>
+	<link href="/css/jodit.min.css" rel="stylesheet">
 
 	<style>
 		.flex_align {
@@ -506,11 +508,63 @@ async function load() {
 
 function initTextEditor () {
 	editor = Jodit.make('#editor', {
-	    height: 400,
-	    language: 'ko',
-	    toolbarSticky: false,
+		enableDragAndDropFileToEditor: true,
+		language: "ko",
+	    toolbarAdaptive: false,
+	    showCharsCounter: false,
+	    showWordsCounter: false,
+	    showXPathInStatusbar: false,
+	    minHeight: 400,
+	    maxHeight: 400,
 	    uploader: {
-	      insertImageAsBase64URI: true  // 이미지 업로드를 base64 방식으로 처리 (간단용)
+	    	// 이미지 업로드를 base64 방식으로 처리 (간단용)
+			// insertImageAsBase64URI: true  
+	
+			// 서버 분리
+	        url: '/rest/' + siteId + '/product/upload-image', // 이쪽으로 파일을 전송해서 처리하고
+	        method: 'POST',
+	        format: 'json', // json 으로 응답받는곳
+	        filesVariableName: () => 'file', // ★ 서버에서 원하는 key로 보내기
+	        prepareData: function (data) {
+	            return data;
+	        },
+	        isSuccess: function (resp) {
+	            return !resp.error;
+	        },
+	        getMsg: function (resp) {
+	            return resp.msg.join !== undefined ? resp.msg.join(' ') : resp.msg;
+	        },
+	        process: function (resp) { 
+	        	// 여기서 response받아서 아래 json 형태로 path, baseurl (이게 실제 링크라고 보면 됨 base64 대신 img src url)
+	        	console.log(resp);
+	        	console.log("process ------------")
+	        	
+	            return {
+	                files: resp.images,  
+	                path: resp.path,
+	                baseurl: resp.baseurl,
+	                error: resp.error,
+	                msg: resp.msg
+	            };
+	        },
+	        error: function (e) {
+	            this.events.fire('errorPopap', [e.getMessage(), 'error', 4000]);
+	        },
+	        defaultHandlerSuccess: function (data, resp) {
+	        	console.log(data);
+	        	console.log(resp);
+	        	console.log("defaultHandlerSuccess ------------")
+	            const field = 'files';
+	            if (data[field] && data[field].length) {
+	                for (let i = 0; i < data[field].length; i += 1) {
+	                	
+	                	editor.selection.insertImage(data.baseurl + data[field][i]);
+	                }
+	            }
+	        },
+	        defaultHandlerError: function (resp) {
+	            this.events.fire('errorPopap', [this.options.uploader.getMsg(resp)]);
+	        }
 	    },
 	    buttons: [
 	      // 텍스트 스타일 관련

@@ -1,5 +1,6 @@
 package com.lumit.shop.admin.controller.restController;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +25,7 @@ import com.lumit.shop.common.config.ResponseBuilder;
 import com.lumit.shop.common.model.CommonSearch;
 import com.lumit.shop.common.model.TbProduct;
 import com.lumit.shop.common.repository.MenuRepository;
+import com.lumit.shop.common.service.fileService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(value = "/rest/{siteId}/product")
 public class ProductRestController {
     private final ProductService productService;
+    private final fileService fileService;
     
     @Autowired
     MenuRepository menuRepository;
@@ -45,6 +50,12 @@ public class ProductRestController {
 															@RequestPart(value = "files", required = false) MultipartFile[] files
 															, @RequestPart(value = "filesRep", required = false) MultipartFile[] filesRep) {
         return ResponseBuilder.build(productService.insertProduct(product,files,filesRep),HttpStatus.OK);
+    }
+    
+    @ResponseBody
+    @PostMapping("/upload-image")
+    public ResponseEntity<Map<String,Object>> registProductUploadImage(@RequestPart(value = "file" , required = false) MultipartFile file) throws IOException {
+        return ResponseBuilder.build(fileService.insertImage(file),HttpStatus.OK);
     }
     
     @ResponseBody
