@@ -509,6 +509,8 @@ function initTextEditor () {
 	    showCharsCounter: false,
 	    showWordsCounter: false,
 	    showXPathInStatusbar: false,
+	    beautifyHTML: true,            // HTML 자동 정렬
+	    sourceEditor: 'area', 
 	    minHeight: 400,
 	    maxHeight: 400,
 	    uploader: {
@@ -563,7 +565,7 @@ function initTextEditor () {
 	      'align', 'outdent', 'indent', '|',
 	      'ul', 'ol', '|',
 	      // 이미지/링크/클립보드
-	      'image', 'link', '|',
+	      'image', 'link', 'source', '|',
 	      // 편의 기능
 	      'undo', 'redo', 'hr', 'eraser', 'fullsize'
 	    ],

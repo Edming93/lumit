@@ -419,7 +419,7 @@ i {
     cursor: pointer;
     color: #876453;
     background-color: #E7DBCD;
-    border-radius: 12px;
+    border-radius: 8px;
     font-size: 13px;
     padding: 7px 10px;
 }
@@ -1129,3 +1129,6 @@ input::-webkit-inner-spin-button {
 .smallCate {
 }
 
+.textEditor img {
+	display: block;
+}
