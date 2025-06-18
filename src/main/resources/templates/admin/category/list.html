@@ -8,14 +8,24 @@
 
 </head>
 <div layout:fragment="content">
-    <div>
-        <p class="title"><span>분류 관리</span></p>
-    </div>
-    <div id="container">
+    <div id="container" class="categoryContainer">
+        <div class="categoryHeader">
+            <p class="title"><span>분류 관리</span></p>
+            <div class="help">
+                <div>드래그 -> 분류 이동</div>
+                <div>오른쪽 마우스 버튼 <i class="fa-solid fa-computer-mouse"></i> -> 기능 메뉴 열기</div>
+            </div>
+        </div>
+
         <div class="searchArea">
             <input type="text" title="분류명" placeholder="분류명" id="categoryName">
             <button class="searchBtn"></button>
-
+        </div>
+        <div class="categoryTopBar">
+            <div class="categoryTopBtns">
+                <button id="nameChange">이름 변경</button>
+                <button id="deleteCategory">삭제</button>
+            </div>
         </div>
 
         <div class="categoryTable">
@@ -24,7 +34,6 @@
                     <button id="newLargeCateBtn"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <ul class='topCategoryList'></ul>
-                <input type="hidden" class="parentId">
             </div>
             <div class="cate mediumCate">
                 <div class="cateHead">중분류
@@ -45,146 +54,316 @@
                     <button style="display: none" id="newDetailCateBtn"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <ul class="detailCategoryList"></ul>
+                <input type="hidden" class="parentId">
+            </div>
+            <div id="contextMenu"
+                 style="display:none; position:fixed; z-index:1000; background:#fff; border:1px solid #ccc; box-shadow: 2px 2px 6px rgba(0,0,0,0.2);">
+                <ul style="list-style:none; margin:0; padding:5px 0;">
+                    <li class="menuItem" data-action="rename" style="padding:5px 15px; cursor:pointer;">이름 변경</li>
+                    <li class="menuItem" data-action="delete" style="padding:5px 15px; cursor:pointer;">삭제</li>
+                </ul>
             </div>
         </div>
-    </div>
 
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", () => {
-            load();
-            loadEventListener();
-        })
+            init();
+        });
 
-        function load() {
-            const selected = [[${selected}]];
-            console.log(selected)
-            getParent("", ".topCategoryList")
+        const depthOrder = [".topCategoryList", ".middleCategoryList", ".bottomCategoryList", ".detailCategoryList"];
+
+        const depthMap = {
+            ".topCategoryList": {nextUl: ".middleCategoryList", resetFrom: 0},
+            ".middleCategoryList": {nextUl: ".bottomCategoryList", resetFrom: 1},
+            ".bottomCategoryList": {nextUl: ".detailCategoryList", resetFrom: 2}
+        };
+
+        const listDepthMap = {
+            "topCategoryList": 0,
+            "middleCategoryList": 1,
+            "bottomCategoryList": 2,
+            "detailCategoryList": 3
+        };
+
+        function init() {
+            getParent("", ".topCategoryList");
+            bindAddCategoryBtns();
+            bindSortable();
+            bindContextMenu();
         }
 
-        function loadEventListener() {
-            const newLargeCateBtn = document.querySelector("#newLargeCateBtn")
-            newLargeCateBtn.addEventListener("click", () => {
-                newInputMaker(".topCategoryList", true);
-            })
-            const newMiddleCateBtn = document.querySelector("#newMiddleCateBtn");
-            newMiddleCateBtn.addEventListener("click", () => {
-                newInputMaker(".middleCategoryList", false)
-            })
-            const newBottomCateBtn = document.querySelector("#newBottomCateBtn")
-            newBottomCateBtn.addEventListener("click", () => {
-                newInputMaker(".bottomCategoryList", false)
-            })
-            const newDetailCateBtn = document.querySelector('#newDetailCateBtn')
-            newDetailCateBtn.addEventListener("click", () => {
-                newInputMaker(".detailCategoryList", false)
-            })
+        function bindSortable() {
+            depthOrder.forEach(cls => {
+                new Sortable(document.querySelector(cls), {
+                    group: 'categories',
+                    animation: 150,
+                    onEnd: async function (evt) {
+                        const draggedItem = evt.item;
+                        const newParentList = evt.to;
+                        const newParentCategoryId = getParentCategoryId(newParentList);
+                        if (!newParentCategoryId) {
+                            alert("상위 카테고리가 선택되어 있어야 이동 가능합니다.");
+                            location.reload();
+                            return;
+                        }
+                        const draggedCategoryId = draggedItem.querySelector('input[type="hidden"]').value;
+                        const data = {categoryId: draggedCategoryId, parent: newParentCategoryId};
+                        if (data.categoryId == data.parent) {
+                            alert("자기 자신을 하위로 둘 수 없습니다.")
+                            location.reload();
+                            return;
+                        }
+
+                        const destination = newParentList.className
+                        let depth = destination.includes("top") ? "대분류" : (destination.includes("middle") ? "중분류" : (destination.includes("bottom") ? "소분류" : "상세분류"))
+                        const choice = confirm(`"${evt.item.querySelector("div").innerText}"를 ${depth}로 이동하시겠습니까?`)
+                        if (!choice) {
+                            location.reload()
+                            return;
+                        }
+                        const res = await FETCH.patch('/rest/admin/category/move', data);
+
+                        if (!res.ok) {
+                            alert("카테고리 이동 실패");
+                            location.reload();
+                            return;
+                        }
+
+                        const depthKey = Object.keys(listDepthMap).find(k => newParentList.classList.contains(k));
+                        if (depthKey) {
+                            resetLowerLists(listDepthMap[depthKey]);
+                        }
+
+                        const nextClass = newParentCategoryId === '0' ? ".topCategoryList" : `.${newParentList.className}`;
+                        await getParent(newParentCategoryId === '0' ? "" : newParentCategoryId, nextClass);
+                    }
+                });
+            });
         }
 
-        function newInputMaker(className, isTop) {
-            const ul = document.querySelector(className)
-            const check = document.querySelectorAll(".newCate")
-            if (check.length != 0) {
-                return false;
+        function getParentCategoryId(listEl) {
+            return listEl?.nextElementSibling?.className === "parentId"
+                ? listEl.nextElementSibling.value
+                : '0';
+        }
+
+        function resetLowerLists(fromDepth) {
+            for (let i = fromDepth + 1; i < depthOrder.length; i++) {
+                const ul = document.querySelector(depthOrder[i]);
+                ul.innerHTML = "";
+                ul.querySelectorAll("li.active").forEach(li => li.classList.remove("active"));
+
+                const hidden = ul.nextElementSibling;
+                if (hidden && hidden.classList.contains("parentId")) hidden.value = "";
             }
-            ul.innerHTML += `<li><i class=\"fa-solid fa-folder\"></i><div><input class="newCate" type="text"></div><button class="addCateBtn"><i class="fa-solid fa-check"></i></button></li>`
-            const cate = ul.querySelector('.newCate')
-            cate.addEventListener("keypress", (evt) => {
-                if (cate.value == "") {
-                    return false;
-                }
-                if (evt.key === "Enter") {
-                    addNewCategory(cate.value, isTop ? null : ul.parentElement.previousElementSibling.querySelector('.parentId').value);
+        }
+
+        function bindAddCategoryBtns() {
+            const btnMap = [
+                {selector: "#newLargeCateBtn", ulClass: ".topCategoryList", isTop: true},
+                {selector: "#newMiddleCateBtn", ulClass: ".middleCategoryList", isTop: false},
+                {selector: "#newBottomCateBtn", ulClass: ".bottomCategoryList", isTop: false},
+                {selector: "#newDetailCateBtn", ulClass: ".detailCategoryList", isTop: false}
+            ];
+            btnMap.forEach(({selector, ulClass, isTop}) => {
+                document.querySelector(selector).addEventListener("click", () =>
+                    createNewCategoryInput(ulClass, isTop)
+                );
+            });
+        }
+
+        function createNewCategoryInput(className, isTop) {
+            const ul = document.querySelector(className);
+            if (document.querySelectorAll(".newCate").length > 0) return;
+
+            ul.insertAdjacentHTML("beforeend", `
+        <li>
+            <i class="fa-solid fa-folder"></i>
+            <div><input class="newCate" type="text"></div>
+            <button class="addCateBtn"><i class="fa-solid fa-check"></i></button>
+        </li>
+    `);
+
+            const input = ul.querySelector(".newCate");
+            const addBtn = ul.querySelector(".addCateBtn");
+            const parentId = isTop ? null : ul.nextElementSibling.value;
+
+            input.addEventListener("keypress", (e) => {
+                if (e.key === "Enter" && input.value.trim()) {
+                    addNewCategory(input.value, parentId, className);
                 }
             });
-            ul.querySelector(".addCateBtn").addEventListener("click", (e) => {
-                const value = e.currentTarget.previousElementSibling.querySelector("input").value
-                addNewCategory(value, isTop ? null : ul.parentElement.previousElementSibling.querySelector('.parentId').value)
-            })
+            addBtn.addEventListener("click", () => addNewCategory(input.value, parentId, className));
         }
 
-        async function addNewCategory(value, parentId) {
-            const data = fillCategoryInfo(value, true, parentId);
-            const result = await FETCH.post("/rest/admin/category/new", data)
-            if (result.ok) {
-                location.href = `/admin/category/list?parentId=${parentId}`
-            } else if (result.status == 409) {
-                alert("같은 계층에서는 동일한 이름의 카테고리를 생성할 수 없습니다.")
+        async function addNewCategory(value, parentId, className) {
+            const data = {categoryName: value, useYn: 'Y', parent: parentId};
+            try {
+                const res = await FETCH.post("/rest/admin/category/new", data);
+                const inserted = await res.json();
+                if (depthMap[className]) resetLowerLists(depthMap[className].resetFrom);
+                await getParent(inserted.parent ?? "", className);
+            } catch {
+                document.querySelector(className).querySelector(".newCate").value = "";
+                alert("같은 계층에 동일한 이름이 존재합니다.");
             }
-        }
-
-        function fillCategoryInfo(name, isUse, parent) {
-            let cate = {
-                categoryName: name,
-                useYn: isUse === true ? 'Y' : 'N',
-                parent: parent
-            }
-            return cate
-        }
-
-        function resetBackground(list) {
-            list.forEach((value) => {
-                value.style.backgroundColor = "";
-            })
         }
 
         async function getParent(id, className) {
-            let result;
-            if (id != "") {
-                result = await FETCH.get(`/rest/admin/category/list/${id}`)
-            } else {
-                result = await FETCH.get("/rest/admin/category/list")
+            const url = id ? `/rest/admin/category/list/${id}` : "/rest/admin/category/list";
+            const result = await FETCH.get(url);
+            renderCategoryList(result, className, id);
+        }
+
+        function renderCategoryList(categories, ulSelector, parentId) {
+            const ul = document.querySelector(ulSelector);
+            ul.innerHTML = categories.map(c => `
+        <li>
+            <input type="hidden" value="${c.categoryId}">
+            <i class="fa-solid fa-folder"></i>
+            <div>${c.categoryName}</div>
+        </li>
+    `).join("");
+
+            if (ulSelector !== ".topCategoryList") {
+                ul.nextElementSibling.value = parentId;
             }
-            makeCategoryList(result, className)
+
+            ul.querySelectorAll("li").forEach(li => {
+                li.addEventListener("click", () => handleCategoryClick(li, ulSelector));
+            });
         }
 
-        function addNewBtn(ul) {
-            const btn = ul.parentNode.nextElementSibling.querySelector("button")
-            btn.style.display = '';
-        }
+        let lastClickedLi = null;
 
-        function setParentId(id, ul) {
-            const input = ul.parentNode.querySelector(".parentId")
-            input.value = id;
-        }
+        function handleCategoryClick(li, ulSelector) {
+            li.parentElement.querySelectorAll("li").forEach(el => el.classList.remove("active"));
+            li.classList.add("active");
 
-        function makeCategoryList(result, className) {
-            const ul = document.querySelector(className)
-            ul.innerHTML = "";
-            for (let i = 0; i < result.length; i++) {
-                const cate = result[i];
-                ul.innerHTML += "<li><input type='hidden' value='" + cate.categoryId + "'><i class=\"fa-solid fa-folder\"></i><div>" + cate.categoryName + "</div></li>";
+            lastClickedLi = li;
+
+            const parentId = li.querySelector("input").value;
+            const ul = document.querySelector(ulSelector);
+
+            if (ulSelector !== ".topCategoryList" && ulSelector !== ".detailCategoryList") {
+                ul.parentElement.nextElementSibling.querySelector(".parentId").value = parentId;
             }
-            const list = ul.querySelectorAll("li")
-            list.forEach((value) => {
-                value.addEventListener("click", () => {
-                    if (value.style.backgroundColor != "") {
-                        return false;
+
+            const btn = ul.parentNode.nextElementSibling?.querySelector("button");
+            if (btn) btn.style.display = '';
+
+            if (ulSelector in depthMap) {
+                getParent(parentId, depthMap[ulSelector].nextUl);
+                resetLowerLists(depthMap[ulSelector].resetFrom);
+            } else if (ulSelector === ".topCategoryList") {
+                resetLowerLists(-1);
+                getParent(parentId, ".middleCategoryList");
+            }
+        }
+
+        function bindContextMenu() {
+            document.addEventListener("contextmenu", (e) => {
+                const li = e.target.closest("li");
+                if (li && li.parentElement && li.parentElement.matches(depthOrder.join(','))) {
+                    e.preventDefault();
+                    window.currentTargetLi = li;
+                    showContextMenu(e.clientX, e.clientY);
+                } else {
+                    hideContextMenu();
+                }
+            });
+            document.addEventListener("click", hideContextMenu);
+
+            document.querySelectorAll("#contextMenu .menuItem").forEach(item => {
+                item.addEventListener("click", async () => {
+                    const action = item.dataset.action;
+                    await handleCategoryAction(action);
+                    hideContextMenu();
+                });
+            });
+        }
+
+        function showContextMenu(x, y) {
+            const menu = document.getElementById("contextMenu");
+            menu.style.display = "block";
+            menu.style.left = `${x}px`;
+            menu.style.top = `${y}px`;
+        }
+
+        function hideContextMenu() {
+            document.getElementById("contextMenu").style.display = "none";
+        }
+
+        async function handleCategoryAction(action) {
+            const li = window.currentTargetLi;
+            if (!li) return;
+
+            const categoryId = li.querySelector("input[type=hidden]").value;
+            const categoryNameDiv = li.querySelector("div");
+
+            if (action === "rename") {
+                const currentName = categoryNameDiv.textContent.trim();
+                const input = document.createElement("input");
+                input.type = "text";
+                input.value = currentName;
+                input.style.width = "100%";
+
+                // 이미 편집 중이면 return
+                if (categoryNameDiv.querySelector("input")) return;
+
+                categoryNameDiv.textContent = "";
+                categoryNameDiv.appendChild(input);
+                input.focus();
+
+                const save = async () => {
+                    const newName = input.value.trim();
+                    if (!newName || newName === currentName) {
+                        categoryNameDiv.textContent = currentName;
+                        return;
                     }
-                    resetBackground(list)
-                    value.style.backgroundColor = "#e9d4c7"
-                    addNewBtn(ul)
-                    setParentId(value.querySelector("input").value, ul)
-                    if (className.includes("top")) {
-                        getParent(value.querySelector("input").value, ".middleCategoryList")
-                        resetList(0)
-                    } else if (className.includes("middle")) {
-                        getParent(value.querySelector("input").value, ".bottomCategoryList")
-                        resetList(1)
-                    } else if (className.includes("bottom")) {
-                        resetList(2)
-                        getParent(value.querySelector("input").value, ".detailCategoryList")
-                    }
-                })
-            })
-        }
 
-        function resetList(depth) {
-            const depthName = ["top", "middle", "bottom", "detail"]
-            depth += 2;
-            for (let i = depth; i < 4; i++) {
-                document.querySelector(`.${depthName[i]}CategoryList`).innerHTML = "";
+                    const res = await FETCH.patch(`/rest/admin/category/update`, {
+                        categoryId,
+                        categoryName: newName
+                    });
+
+                    categoryNameDiv.textContent = res.ok ? newName : currentName;
+                    if (!res.ok) alert("이름 변경 실패");
+                };
+
+                input.addEventListener("blur", save);
+                input.addEventListener("keypress", e => {
+                    if (e.key === "Enter") input.blur();
+                });
+            } else if (action === "delete") {
+                const confirmed = confirm(`'${categoryNameDiv.innerText}'을/를 정말 삭제하시겠습니까?`);
+                if (!confirmed) return;
+
+                const res = await FETCH.delete(`/rest/admin/category/delete/${categoryId}`);
+                if (res.ok) {
+                    li.remove();
+                } else {
+                    alert("삭제 실패");
+                }
             }
         }
+
+        function triggerCategoryAction(action) {
+            if (!lastClickedLi || !lastClickedLi.classList.contains("active")) {
+                alert(action === "rename" ? "이름을 변경할 분류를 선택하세요." : "삭제할 분류를 선택하세요.");
+                return;
+            }
+
+            window.currentTargetLi = lastClickedLi;
+            handleCategoryAction(action);
+        }
+
+        document.getElementById("nameChange").addEventListener("click", () => triggerCategoryAction("rename"));
+        document.getElementById("deleteCategory").addEventListener("click", () => triggerCategoryAction("delete"));
+
+
     </script>
 </div>
 

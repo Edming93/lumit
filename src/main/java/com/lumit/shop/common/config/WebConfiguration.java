@@ -18,10 +18,9 @@ public class WebConfiguration implements WebMvcConfigurer {
         this.uploadPath = uploadPath;
     }
 
-      @Override
+    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(uploadPath)
                 .addResourceLocations(resourcePath);
     }
-
 }

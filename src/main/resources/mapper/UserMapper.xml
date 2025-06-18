@@ -2,7 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.lumit.shop.common.repository.UserRepository">
-    <select id="getUserList" resultType="com.lumit.shop.common.model.User">
+    <select id="countAllUsers">
+        SELECT COUNT(*)
+        FROM TB_LOGIN
+        WHERE STATUS = 1
+    </select>
+    <select id="countUsersToday">
+        SELECT COUNT(*)
+        FROM TB_LOGIN
+        WHERE DATE(REG_DT) = CURRENT_DATE
+    </select>
+    <select id="countAdmins">
+        SELECT COUNT(*)
+        FROM TB_LOGIN
+        WHERE ROLE_ID != 3
+    </select>
+    <select id="findRecentUsers" resultType="com.lumit.shop.common.model.User">
+        SELECT *
+        FROM TB_LOGIN
+        WHERE STATUS = 1
+        ORDER BY REG_DT
+                DESC
+        LIMIT 5
+    </select>
+    <select id="selectUserList" resultType="com.lumit.shop.common.model.User">
         SELECT *
         FROM TB_LOGIN
     </select>

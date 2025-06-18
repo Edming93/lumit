@@ -4,7 +4,7 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{admin/fragments/layout}">
-<div layout:fragment="content"
+<div th:fragment="form"
      style="display: flex; flex-direction: column;align-items: center; margin-top: 3rem;">
     <form class="formContainer" action="/admin/member/newManager" method="post" th:object="${tbLogin}">
         <div>

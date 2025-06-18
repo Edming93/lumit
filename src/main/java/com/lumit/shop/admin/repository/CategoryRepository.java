@@ -11,6 +11,8 @@ import java.util.List;
 @Repository
 public interface CategoryRepository {
 
+    TbCategory selectCategory(int categoryId);
+
     List<TbCategory> selectAllCategories();
 
     List<TbCategory> selectChildrenCategories(int parentId);
@@ -20,4 +22,6 @@ public interface CategoryRepository {
     int insertNewCategory(TbCategory category);
 
     TbCategory isDuplicatedCategory(TbCategory tbCategory);
+
+    int updateCategory(TbCategory data);
 }

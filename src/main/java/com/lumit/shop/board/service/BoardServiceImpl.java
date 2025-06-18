@@ -48,8 +48,8 @@ public class BoardServiceImpl implements BoardService {
     private final MenuRepository menuRepository;
     private final BoardRepository boardRepository;
     private final FileRepository fileRepository;
-    
-    @Value("${file.upload.path}")
+
+    @Value("${upload.path}")
     private String FILE_UPLOAD_PATH;
 
     @Override
@@ -64,7 +64,7 @@ public class BoardServiceImpl implements BoardService {
 //        for (Field field : variables) {
 //            System.out.println(field.getName());
 //        }
-        
+
         List<Map<String, Object>> content = boardRepository.selectPageableBoardList(requestList);
         int total = boardRepository.selectListBoardCount(tbBoard);
         return new PageImpl<>(content, pageable, total);
@@ -76,173 +76,173 @@ public class BoardServiceImpl implements BoardService {
         Map<String, Object> result = new HashMap<String, Object>();
         board.setMenuCd(menuCd);
         board.setMenuDvCd(menuRepository.selectMenuByMenuCd(menuCd).getTmplCd());
-        if(board.getPassword().isEmpty()) {
-        	board.setUseYn("N");
-        }else {
-        	board.setUseYn("Y");
+        if (board.getPassword().isEmpty()) {
+            board.setUseYn("N");
+        } else {
+            board.setUseYn("Y");
         }
         board.setDelYn("N");
         board.setRplyYn("N");
-        if(files != null) {
-        	board.setFileYn("Y");
-        }else {
-        	board.setFileYn("N");
+        if (files != null) {
+            board.setFileYn("Y");
+        } else {
+            board.setFileYn("N");
         }
-        
+
         board.setViewCount("0");
         board.setRegId(SecurityUtils.getPrincipal().getUserId());
         board.setModId(SecurityUtils.getPrincipal().getUserId());
 
         boardRepository.insertBoard(board);
-        
-        if(files != null) uploadFiles(board,files);
+
+        if (files != null) uploadFiles(board, files);
 
         result.put("result", "success");
 
         return result;
     }
-    
+
     @Override
     public Map<String, Object> updateBoard(String menuCd, TbBoard board, MultipartFile[] files) {
         Map<String, Object> result = new HashMap<String, Object>();
 
         board.setMenuCd(menuCd);
         board.setModId(SecurityUtils.getPrincipal().getUserId());
-        if(files != null) {
-        	board.setFileYn("Y");
-        }else {
-        	board.setFileYn("N");
+        if (files != null) {
+            board.setFileYn("Y");
+        } else {
+            board.setFileYn("N");
         }
-        
-        if(board.getPassword().isEmpty()) {
-        	board.setUseYn("N");
-        }else {
-        	board.setUseYn("Y");
+
+        if (board.getPassword().isEmpty()) {
+            board.setUseYn("N");
+        } else {
+            board.setUseYn("Y");
         }
-        
+
         boardRepository.updateBoard(board);
-        
-        uploadFiles(board,files);
+
+        uploadFiles(board, files);
 
         result.put("result", "success");
 
         return result;
     }
-    
+
     @Override
     @Transactional
     public void uploadFiles(TbBoard board, MultipartFile[] files) {
-    	TbFile inputFile = new TbFile();
-    	inputFile.setPkId(board.getBoardId());
-    	inputFile.setMenuCd(board.getMenuCd());
-    	// boardId 해당 게시물의 파일을 모두 삭제하고 다시 추가
-		fileRepository.deleteFiles(inputFile);
-	
-	
-    	File uploadPath = new File(FILE_UPLOAD_PATH, StringUtils.getData());
-    	
-    	System.out.println("upload path: "+ uploadPath);
-    	
-    	if(uploadPath.exists() == false) {
-    		uploadPath.mkdirs();
-    	}
-    	
-    	if(board.getJsonFileList() != null) {
-    		System.out.println("file ::: 기존파일추가  --------------------------");
-    		
-    		// List<String>의 형태를 List<TbFile>로 변환
-    		ObjectMapper mapper = new ObjectMapper();
-    		List<TbFile> fileList = new ArrayList<>();
-    		
-    		for (String jsonFile : board.getJsonFileList()) {
-    			
-				TbFile file;
-				try {
-					file = mapper.readValue(jsonFile, TbFile.class);
-					
-					fileList.add(file);
-				} catch (JsonMappingException e) {
-					e.printStackTrace();
-				} catch (JsonProcessingException e) {
-					e.printStackTrace();
-				}
-				
-			}
-    		
-	    	// 기존 파일 DB추가
-	    	for (TbFile file : fileList) {
-	    		
-				fileRepository.insertFiles(file);
-			}
-    	}
-    	
-    	if(files != null) {
-    		System.out.println("file ::: 새 파일 추가 --------------------------");
-	    	// 새로운 파일 DB추가
-	    	for(MultipartFile file : files) {
-	    		String oriFileName =  file.getOriginalFilename();
-	    		
-	    		UUID uuid = UUID.randomUUID(); // 랜덤 이름 생성
-	    		
-	    		String uploadFileName = uuid.toString() + "_" + oriFileName; //UUID(랜덤문자라생각하면편함) + 원본파일명
-	    		
-	    		File saveFile = new File(uploadPath, uploadFileName);
-	    		
-	    		TbFile tbFile = new TbFile();
-	    		tbFile.setPkId(board.getBoardId());
-	    		tbFile.setMenuCd(board.getMenuCd());
-	    		tbFile.setFileName(oriFileName);
-	    		tbFile.setFileNewName(uploadFileName);
-	    		tbFile.setFileSize(file.getSize()+"");
-	    		tbFile.setFilePath(uploadPath+"");
-	    		// 01 : 서버
-	    		tbFile.setFileType("01");
-	    		tbFile.setFileExtension(StringUtils.getFileExtension(oriFileName));
-	    		tbFile.setRegId(SecurityUtils.getPrincipal().getRegId());
-	    		
-	    		try {
-	    			file.transferTo(saveFile); //물리적인 파일을 해당경로에 저장한다.
-	
-	        		fileRepository.insertFiles(tbFile);
-				}catch(Exception e) {
-					// log.error(e.getMessage());
-					// log.error("error : ",e);
-				}
-	    	}
-    	}
+        TbFile inputFile = new TbFile();
+        inputFile.setPkId(board.getBoardId());
+        inputFile.setMenuCd(board.getMenuCd());
+        // boardId 해당 게시물의 파일을 모두 삭제하고 다시 추가
+        fileRepository.deleteFiles(inputFile);
+
+
+        File uploadPath = new File(FILE_UPLOAD_PATH, StringUtils.getData());
+
+        System.out.println("upload path: " + uploadPath);
+
+        if (uploadPath.exists() == false) {
+            uploadPath.mkdirs();
+        }
+
+        if (board.getJsonFileList() != null) {
+            System.out.println("file ::: 기존파일추가  --------------------------");
+
+            // List<String>의 형태를 List<TbFile>로 변환
+            ObjectMapper mapper = new ObjectMapper();
+            List<TbFile> fileList = new ArrayList<>();
+
+            for (String jsonFile : board.getJsonFileList()) {
+
+                TbFile file;
+                try {
+                    file = mapper.readValue(jsonFile, TbFile.class);
+
+                    fileList.add(file);
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            // 기존 파일 DB추가
+            for (TbFile file : fileList) {
+
+                fileRepository.insertFiles(file);
+            }
+        }
+
+        if (files != null) {
+            System.out.println("file ::: 새 파일 추가 --------------------------");
+            // 새로운 파일 DB추가
+            for (MultipartFile file : files) {
+                String oriFileName = file.getOriginalFilename();
+
+                UUID uuid = UUID.randomUUID(); // 랜덤 이름 생성
+
+                String uploadFileName = uuid.toString() + "_" + oriFileName; //UUID(랜덤문자라생각하면편함) + 원본파일명
+
+                File saveFile = new File(uploadPath, uploadFileName);
+
+                TbFile tbFile = new TbFile();
+                tbFile.setPkId(board.getBoardId());
+                tbFile.setMenuCd(board.getMenuCd());
+                tbFile.setFileName(oriFileName);
+                tbFile.setFileNewName(uploadFileName);
+                tbFile.setFileSize(file.getSize() + "");
+                tbFile.setFilePath(uploadPath + "");
+                // 01 : 서버
+                tbFile.setFileType("01");
+                tbFile.setFileExtension(StringUtils.getFileExtension(oriFileName));
+                tbFile.setRegId(SecurityUtils.getPrincipal().getRegId());
+
+                try {
+                    file.transferTo(saveFile); //물리적인 파일을 해당경로에 저장한다.
+
+                    fileRepository.insertFiles(tbFile);
+                } catch (Exception e) {
+                    // log.error(e.getMessage());
+                    // log.error("error : ",e);
+                }
+            }
+        }
     }
-    
+
     @Override
     public ResponseEntity<Resource> downloadFiles(String menuCd, String boardId, String fileId) {
-    	
-    	TbFile reqfile = new TbFile();
-    	reqfile.setFileId(fileId);
-    	reqfile.setPkId(boardId);
-    	reqfile.setMenuCd(menuCd);
-    	
-    	TbFile resFile = fileRepository.selectFile(reqfile);
-    	
-    	try {
-	    	String fileName = resFile.getFileName();
-	    	String fileNewName = resFile.getFileNewName();
-	    	
-	    	String encodedFilename = URLEncoder.encode(fileName, "UTF-8");
-	    	
-	    	Path filePath = Paths.get(resFile.getFilePath()).resolve(fileNewName).normalize();
-	    	
-	    	Resource resource = new UrlResource(filePath.toUri());
-	        if (!resource.exists()) {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-	        }
-	    	
-	        return ResponseEntity.ok()
-	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"")
-	                .body(resource);
-    	
-    	} catch (Exception e) {
+
+        TbFile reqfile = new TbFile();
+        reqfile.setFileId(fileId);
+        reqfile.setPkId(boardId);
+        reqfile.setMenuCd(menuCd);
+
+        TbFile resFile = fileRepository.selectFile(reqfile);
+
+        try {
+            String fileName = resFile.getFileName();
+            String fileNewName = resFile.getFileNewName();
+
+            String encodedFilename = URLEncoder.encode(fileName, "UTF-8");
+
+            Path filePath = Paths.get(resFile.getFilePath()).resolve(fileNewName).normalize();
+
+            Resource resource = new UrlResource(filePath.toUri());
+            if (!resource.exists()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"")
+                    .body(resource);
+
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        } 
-    			
+        }
+
     }
 
 
@@ -258,15 +258,15 @@ public class BoardServiceImpl implements BoardService {
 
         return boardRepository.selectBoardDetail(menuCd, boardId);
     }
-    
+
     @Override
     public List<TbFile> selectBoardFiles(String menuCd, String boardId) {
-    	
-    	TbFile tbFile = new TbFile();
-    	tbFile.setMenuCd(menuCd);
-    	tbFile.setPkId(boardId);
-    	
-    	return fileRepository.selectFileList(tbFile);
+
+        TbFile tbFile = new TbFile();
+        tbFile.setMenuCd(menuCd);
+        tbFile.setPkId(boardId);
+
+        return fileRepository.selectFileList(tbFile);
     }
 
     @Override
