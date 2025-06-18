@@ -6,7 +6,7 @@
 <div th:fragment="modal(title,content, choice, name, type)">
     <div th:if="${type} == 'prompt'">
         <div th:attr="onclick=|backgroundCancel(event, '${name}Modal', 'prompt')|" class="simpleModalOverlay"
-             th:id="${name}+Modal">
+             th:id="${name}+Modal" style="display: none">
             <div class="simpleModalWindow">
                 <div class="modalHeader">
                     <p th:utext="${title}"></p>

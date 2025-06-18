@@ -515,7 +515,7 @@ i {
 
 .title {
     font-size: var(--text-size-xlarge);
-    margin-bottom: 1rem;
+    /*margin-bottom: 1rem;*/
 }
 
 .linkBtn {
@@ -1029,12 +1029,12 @@ input::-webkit-inner-spin-button {
  */
 
 .categoryTable {
-    width: 640px;
     height: 520px;
     border: 1px solid #B84F03;
     display: flex;
     justify-content: space-between;
     /*padding: 0.5rem 0.5rem;*/
+    border-radius: 0.3rem;
 }
 
 .cateHead {
@@ -1097,6 +1097,7 @@ input::-webkit-inner-spin-button {
     display: flex;
     align-items: center;
     position: relative;
+    cursor: pointer;
 }
 
 .cate li > i {
@@ -1112,4 +1113,200 @@ input::-webkit-inner-spin-button {
 
 li.active {
     background-color: #e9d4c7;
+}
+
+.categoryContainer {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    min-width: 640px;
+}
+
+.categoryTopBar {
+    display: flex;
+    justify-content: flex-end; /* 버튼을 오른쪽 끝으로 */
+    align-items: center;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.categoryHeader {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.searchArea {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+
+.categoryTopBtns {
+    align-self: flex-end;
+}
+
+.categoryTopBtns button {
+    background-color: #b45000;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.categoryTopBtns button:hover {
+    background-color: #913b00;
+}
+
+.help {
+    font-size: 0.8rem;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
+    white-space: nowrap;
+}
+
+.help > * {
+    color: var(--brand-color4);
+}
+
+.help i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    margin: 0;
+    width: auto;
+    height: auto;
+}
+
+.dashboard-header {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: #3e2e1e;
+    border-left: 5px solid #5b3e29;
+    padding-left: 1rem;
+    letter-spacing: -0.8px;
+}
+
+.dashboard-grid {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+}
+
+.dashboard-card {
+    background: linear-gradient(145deg, #ffffff, #f2f2f2);
+    border-radius: 1rem;
+    padding: 2rem 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    flex: 1;
+    min-width: 200px;
+
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.dashboard-card h3 {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+}
+
+.dashboard-card p {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 0.25rem;
+    color: #222;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-card i {
+    font-size: 2rem;
+    color: #5b3e29;
+    margin-bottom: 0.7rem;
+}
+
+.dashboard-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #888;
+    font-weight: normal;
+}
+
+.dashboard-card p {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0.4rem 0 0 0;
+    color: #222;
+}
+
+.dashboard-content {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.tabMenu {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: -1px;
+    /*padding-left: 0.2rem;*/
+}
+
+.tabMenu button {
+    background-color: #f8f8f8;
+    color: #5b3e29;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tabMenu button:hover {
+    background-color: #f0eae6;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    transform: translateY(-2px);
+}
+
+.tabMenu .linkBtn.active {
+    background-color: #5b3e29;
+    color: #fff;
+    font-weight: 600;
+    border: 1px solid #5b3e29;
+    border-bottom: 1px solid white;
+    border-radius: 0.5rem 0.5rem 0 0;
+    position: relative;
+    top: 1px;
+    z-index: 2;
+}
+
+.tabContentContainer {
+    border: 1px solid #ccc;
+    border-radius: 0 0 0.6rem 0.6rem;
+    background-color: white;
+    padding: 2rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    margin-top: -1px;
 }

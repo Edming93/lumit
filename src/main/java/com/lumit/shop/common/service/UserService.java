@@ -15,7 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    public List<User> getUserList();
+
+    public List<User> findRecentUsers();
+
+    public List<User> selectUserList();
 
     List<User> selectAdminList();
 
@@ -56,4 +59,10 @@ public interface UserService {
     List<User> selectOldAdminList();
 
     ServiceCode updateTempPwd(UserInfoDto userInfo);
+
+    long countAllUsers();     // SELECT COUNT(*) FROM TB_LOGIN WHERE USE_YN = 'Y'
+
+    long countUsersToday();   // SELECT COUNT(*) FROM TB_LOGIN WHERE DATE(REG_DT) = CURRENT_DATE
+
+    long countAdmins();       // SELECT COUNT(*) FROM TB_LOGIN WHERE ROLE = 'ADMIN'
 }

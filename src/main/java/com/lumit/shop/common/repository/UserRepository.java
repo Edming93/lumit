@@ -19,8 +19,10 @@ import com.lumit.shop.common.model.User;
 @Repository
 public interface UserRepository {
 
+    List<User> findRecentUsers();
+
     //select
-    List<User> getUserList();
+    List<User> selectUserList();
 
     List<User> selectAdminList();
 
@@ -66,4 +68,10 @@ public interface UserRepository {
     int deleteAdmin(AdminDto adminDto);
 
     int removeAuthCode(String userId);
+
+    long countAllUsers();
+
+    long countUsersToday();
+
+    long countAdmins();
 }
