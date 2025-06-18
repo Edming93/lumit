@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-        layout:decorate="~{admin/fragments/layout}">
-<div layout:fragment="content">
+
+<div>
     <div th:replace="~{fragments/modal::modal('운영자 정보 관리','정말 삭제하시겠습니까?', '삭제', 'delete','prompt')}"></div>
     <div th:replace="~{fragments/modal::modal('운영자 정보 관리','정말 수정하시겠습니까?', '수정','update','prompt')}"></div>
     <input id="modalResult" type="hidden" value=""/>
@@ -28,7 +23,7 @@
             <tbody>
             <tr th:each="admin : ${adminList}">
                 <td>
-                    <select th:attr="onchange=|roleChange(event, this, '${admin.roleId}')|">
+                    <select onchange="roleChange(event, this, '[[${admin.roleId}]]')">
                         <option th:selected="${admin.roleId == '1'}" value="1">총괄</option>
                         <option th:selected="${admin.roleId == '2'}" value="2">기본</option>
                     </select>
@@ -93,6 +88,7 @@
          * @param value
          */
         function roleChange(event, element, value) {
+            console.log(value)
             const btn = element.nextElementSibling
             if (event.target.value == value) {
                 btn.setAttribute("disabled", true)

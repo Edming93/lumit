@@ -2,30 +2,53 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.lumit.shop.admin.repository.CategoryRepository">
+    <select id="selectCategory">
+        select *
+        from TB_CATEGORY
+        WHERE CATEGORY_ID = #{categoryId};
+    </select>
     <select id="selectAllCategories" resultType="TbCategory">
         select *
-        from TB_CATEGORY;
+        from TB_CATEGORY
+        WHERE USE_YN = 'Y';
     </select>
     <select id="selectTopParentCategories" resultType="TbCategory">
         select *
         from TB_CATEGORY
-        where PARENT IS NULL
+        where PARENT = 0
+          AND USE_YN = 'Y';
     </select>
     <select id="selectChildrenCategories" resultType="TbCategory">
         select *
         from TB_CATEGORY
         where PARENT = #{parentId}
+          AND USE_YN = 'Y';
     </select>
-    <insert id="insertNewCategory" parameterType="TbCategory">
-        insert into TB_CATEGORY (CATEGORY_NAME, USE_YN <if test="parent != 0">, PARENT</if>)
-        values (#{categoryName}, #{useYn}<if test="parent != 0">, #{parent}</if>)
+    <insert id="insertNewCategory" parameterType="TbCategory" useGeneratedKeys="true" keyProperty="categoryId">
+        insert into TB_CATEGORY (CATEGORY_NAME, USE_YN, PARENT, REG_ID, REG_DT)
+        values (#{categoryName}, #{useYn}, #{parent}, #{regId}, #{regDt})
     </insert>
     <select id="isDuplicatedCategory" parameterType="TbCategory">
         select *
         from TB_CATEGORY
         where CATEGORY_NAME = #{categoryName}
-        and PARENT
-        <if test="parent == null">IS NULL</if>
-        <if test="parent != null">= #{parent}</if>
+          and PARENT = #{parent}
+          AND USE_YN = 'Y';
     </select>
+    <update id="updateCategory" parameterType="TbCategory">
+        update TB_CATEGORY
+        SET
+        <if test="categoryName != '' and categoryName != null">
+            CATEGORY_NAME = #{categoryName},
+        </if>
+        <if test="useYn != '' and useYn != null">
+            USE_YN = #{useYn},
+        </if>
+        <if test="parent != null">
+            PARENT = #{parent},
+        </if>
+        MOD_ID = #{modId}
+        , MOD_DT = #{modDt}
+        WHERE CATEGORY_ID = #{categoryId}
+    </update>
 </mapper>

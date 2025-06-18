@@ -30,10 +30,16 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final HttpSession session;
 
+
+    @Override
+    public List<User> findRecentUsers() {
+        return userRepository.findRecentUsers();
+    }
+
     // TBLOGIN 관련
     @Override
-    public List<User> getUserList() {
-        return userRepository.getUserList();
+    public List<User> selectUserList() {
+        return userRepository.selectUserList();
     }
 
     @Override
@@ -214,6 +220,21 @@ public class UserServiceImpl implements UserService {
             return ServiceCode.UNKNOWN;
         }
         return ServiceCode.UPDATED;
+    }
+
+    @Override
+    public long countAllUsers() {
+        return userRepository.countAllUsers();
+    }
+
+    @Override
+    public long countUsersToday() {
+        return userRepository.countUsersToday();
+    }
+
+    @Override
+    public long countAdmins() {
+        return userRepository.countAdmins();
     }
 
     @Override
