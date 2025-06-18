@@ -1310,3 +1310,12 @@ li.active {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     margin-top: -1px;
 }
+
+.registTable > tbody > tr {
+    height: 46px;
+    line-height: 46px;
+}
+
+.registTable > tbody > tr > th {
+    vertical-align: middle;
+}
