@@ -583,8 +583,6 @@ async function getProductDetail() {
     let pdDetail = res.data.detail;
     let pdFiles = res.data.files;
     
-    console.log(pdFiles);
-    
     $("#productName").val(pdDetail.productName);
     $("#stocks").val(pdDetail.stocks);
     $("#productCd").html(pdDetail.productCd);
@@ -598,14 +596,11 @@ async function getProductDetail() {
     $("#freeDeliveryFee").val(pdDetail.freeDeliveryFee == 'nonFree' ? '해당 없음' : pdDetail.freeDeliveryFee);
     editor.setEditorValue(pdDetail.content);
     
-    console.log("정보 넣기 전 filesRep---");
-    console.log(filesRep);
-
     filesRep = pdFiles.map((file, index) => {
     	let imgPath = file.filePath;
     	
     	let imgUrl = imgPath.slice(2) + "/" + file.fileNewName;
-    	console.log(imgUrl)
+    	
     	return {
     		idx: index + 1, // 기존 코드와 일치하도록 번호 부여
     	    name: file.fileName,
@@ -616,9 +611,6 @@ async function getProductDetail() {
     	    fileId: file.fileId // 나중에 수정 저장할 때 필요하면 이 ID로 처리
     	}
     });
-    
-    console.log("정보 넣은 후 filesRep---");
-    console.log(filesRep);
     
     setFiles();
     
@@ -663,8 +655,6 @@ async function getColorMappingList() {
 	})
     
 	$("#colorWrap").html(colorText);
-    
-    console.log(colorList);
 }
 
 async function getTagMappingList() {
@@ -687,8 +677,6 @@ async function getTagMappingList() {
     });
     
     $("#tagWrap").html(tagText);
-    
-    console.log(tagList);
 }
 
 
@@ -755,7 +743,6 @@ function setFiles(id) {
 		const maxSlots = 5;
 		for (let i = 0; i < maxSlots; i++) {
 		  const file = filesRep[i]; // 배열에 있는 파일 또는 undefined
-		  console.log(i+1 + " ::: " +file);
 		  
 		  const slot = i + 1;
 		  const span = $('<span>', {
