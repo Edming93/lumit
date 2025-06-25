@@ -28,7 +28,7 @@
           	<if test="pkId != null and pkId neq ''"> 
         		AND PK_ID = #{pkId}
         	</if>
-        ORDER BY REG_DT DESC
+        ORDER BY FILE_SEQ ASC ,REG_DT DESC 
     </select>
 
     <insert id="insertFiles" parameterType="com.lumit.shop.common.model.TbFile" useGeneratedKeys="true"
@@ -43,6 +43,7 @@
         , FILE_PATH
         , FILE_TYPE
         , FILE_EXTENSION
+        , FILE_SEQ
         , REG_ID
         , REG_DT)
         VALUES ( #{pkId}
@@ -54,12 +55,14 @@
                , #{filePath}
                , #{fileType}
                , #{fileExtension}
+               , #{fileSeq}
                , #{regId}
                , now())
     </insert>
 
     <delete id="deleteFiles" parameterType="com.lumit.shop.common.model.TbFile">
-        DELETE FROM
+        DELETE 
+        FROM
             TB_FILE
         WHERE 
         	PK_ID = #{pkId}
@@ -67,7 +70,6 @@
         AND 
         	MENU_CD = #{menuCd}
         </if>
-        
     </delete>
 
 </mapper>

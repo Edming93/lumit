@@ -5,16 +5,17 @@
         layout:decorate="~{admin/fragments/layout}">
 <head>
 	<!-- Jodit 에디터 라이브러리 추가 -->
-	<link
-	  rel="stylesheet"
-	  href="https://cdnjs.cloudflare.com/ajax/libs/jodit/4.2.47/es2021/jodit.min.css"
-	/>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jodit/4.2.47/es2021/jodit.min.js"></script>
+	<script src="/js/jodit.min.js"></script>
+	<link href="/css/jodit.min.css" rel="stylesheet">
 	
 	<style>
 		.flex_align {
 			display: flex;
 	    	align-items: center;
+	    }
+	    
+	    .alLeft {
+	    	min-width: 115px;
 	    }
 	</style>
 </head>
@@ -200,7 +201,7 @@
 	            	</div>
 	            	<div class="btnAreaCenter">
 		            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
-		                <button type="button" id="registBtn" class="commBtn mgl10 size100">등록</button>
+		                <button type="button" id="updateBtn" class="commBtn mgl10 size100">저장</button>
 		                <button type="button" id="deleteBtn" class="commBtn mgl10">삭제</button>
 	                </div>
 	                <div class="btnAreaRight">
@@ -230,6 +231,7 @@ let colorText = "";
 let tagIdList = [];
 let tagText = "";
 let editor;
+let newFilesList = [];
 
 document.addEventListener("DOMContentLoaded",async function () {
 	load();
@@ -308,31 +310,76 @@ document.addEventListener("DOMContentLoaded",async function () {
 		}
 	});
 
-	$("#registBtn").on('click', function() {
-		if(confirm("등록 하시겠습니까?")) {
+	$("#updateBtn").on('click', function() {
+		if(confirm("저장 하시겠습니까?")) {
 			
 			let formData = new FormData(document.querySelector("#registForm"));
 			let params = {};
 			
-			if(files.length === 0) {
-				formData.append('files',[]);
-			}else {
-				for(var i=0; i<files.length; i++) {
-					formData.append('files',files[i]);
-				}
-			}
+// 			if(files.length === 0) {
+// 				formData.append('files',[]);
+// 			}else {
+// 				for(var i=0; i<files.length; i++) {
+// 					formData.append('files',files[i]);
+// 				}
+// 			}
 			
 			if(filesRep.length === 0) {
 				formData.append('filesRep',[]);
 			}else {
 				for(var i=0; i<filesRep.length; i++) {
-					formData.append('filesRep',filesRep[i]);
+					
+					if(filesRep[i].file) {
+						// 새로 추가한 파일
+						formData.append('filesRep',filesRep[i].file);
+						const jsonFile = {
+							fileSeq: i + 1,
+							fileDvCd: i == 0 ? '1000' : '1001',
+							pkId: productId
+						}
+						
+						newFilesList.push(jsonFile);
+						console.log("if문 :: "+i+1 + " 번째 파일 :::")
+						console.log(jsonFile);
+						
+					}else {
+						
+						// 기존 파일
+						const jsonFile = {
+							fileId : filesRep[i].fileId,
+							pkId: productId,
+							fileDvCd: i == 0 ? '1000' : '1001',
+							menuCd: filesRep[i].menuCd,
+							fileName: filesRep[i].name,
+							fileNewName: filesRep[i].newName,
+							filePath: filesRep[i].url,
+							fileSize: filesRep[i].size,
+							fileType: filesRep[i].type,
+							fileExtension: filesRep[i].ext,
+							fileSeq: i+1,
+							regId : 'admin'
+						};
+						formData.append('jsonFilesList',jsonFile)
+						
+						console.log("else문 :: "+i+1 + " 번째 파일 :::")
+						console.log(jsonFile);
+					}
 				}
 			}
+			
+			// 기존 이미지 이외 새로 추가한 files의 seq를 저장하기 위한 json정보
+			formData.append('newFilesList', JSON.stringify(newFilesList));
+
+			console.log('-------------------저장버튼 클릭 시 filesRep:::-----------')
+			console.log(filesRep);
 			
 			if($("#price").val() < $("#disPrice").val()) {
 				alert("할인가가 정가보다 클 수 없습니다.");
 				return;
+			}
+			
+			if(productId) {
+				formData.append("productId", productId ?? '');
 			}
 			
 			if($("#categoryId").val() != "") {
@@ -398,15 +445,16 @@ document.addEventListener("DOMContentLoaded",async function () {
 				}else {
 					var file = this.files[i];
 								
-					// file['idx'] = fileIdx; 필요 없어졌음 TODO:: 나중에 한번에 정리
+					file['idx'] = filesRep.length > 0 ? filesRep[filesRep.length-1].idx + 1 : 1;
 					
 					// 기존 detail에서 가져온 값이랑 포맷을 맞추기 위함
 					let newFile = {
-						idx: filesRep[filesRep.length-1].idx + 1,
+						idx: file['idx'],
 						name: file.name,
 						size: file.size,
 						type: file.type,
-						file: file // ← 이게 있어야 img에 src를 넣을 때 createObjectURL 가능
+						file: file, // ← 이게 있어야 img에 src를 넣을 때 createObjectURL 가능
+						isSaved: false, // 이건 기존 파일이 아님을 구분하기 위한 flag
 					};
 					
 					filesRep.push(newFile);
@@ -466,6 +514,8 @@ function initTextEditor () {
 	    showXPathInStatusbar: false,
 	    beautifyHTML: true,            // HTML 자동 정렬
 	    sourceEditor: 'area', 
+	    maxWidth: 940,
+	    minWidth: 940,
 	    minHeight: 400,
 	    maxHeight: 400,
 	    uploader: {
@@ -555,18 +605,21 @@ function imgDragDrop () {
 			
 	 		const newFilesRep = [];
 			
-	 		$("#imgList .figure").each(function () {
+	 		$("#imgList .figure").each(function (index) {
 	 			const filesIdx = $(this).data("file-idx");
 
 	 			if (filesIdx !== undefined && filesIdx !== null) {
 					const matched = filesRep.find(f => f.idx === filesIdx);
 					if (matched) {
+						matched.fileSeq = index + 1;
 						newFilesRep.push(matched);
 					}
 				}
 	 		});
 			
 	 		filesRep = newFilesRep;
+	 		
+	 		console.log(filesRep);
 	 		
 	 		setFiles();
 		}
@@ -597,37 +650,40 @@ async function getProductDetail() {
     editor.setEditorValue(pdDetail.content);
     
     filesRep = pdFiles.map((file, index) => {
-    	let imgPath = file.filePath;
-    	
-    	let imgUrl = imgPath.slice(2) + "/" + file.fileNewName;
     	
     	return {
-    		idx: index + 1, // 기존 코드와 일치하도록 번호 부여
+    		idx: file.fileSeq, // 기존 코드와 일치하도록 번호 부여
     	    name: file.fileName,
+    	    newName: file.fileNewName,
+    	    ext: file.fileExtension,
     	    size: Number(file.fileSize),
-    	    type: getMimeType(file.fileExtension), // 예: "image/jpeg"
-    	    url: imgUrl, // 이미지 src로 사용할 URL
-    	    isSaved: true, // 👈 이건 기존 파일임을 구분하기 위한 flag
+    	    menuCd : file.menuCd,
+    	    type: file.fileType, // 01: 서버, 02: 스토리지서버, 03: blob
+    	    url: file.filePath, // 이미지 src로 사용할 URL
+    	    seq: file.fileSeq,
+    	    isSaved: true, // 이건 기존 파일임을 구분하기 위한 flag
     	    fileId: file.fileId // 나중에 수정 저장할 때 필요하면 이 ID로 처리
     	}
-    });
+    }).sort((a,b) => a.seq - b.seq);
+    
+    console.log(filesRep);
     
     setFiles();
     
 }
 
-function getMimeType(extension) {
-	const map = {
-		jpg: 'image/jpeg',
-		jpeg: 'image/jpeg',
-		png: 'image/png',
-		gif: 'image/gif',
-		jfif: 'image/jpeg',
-		webp: 'image/webp'
-	};
+// function getMimeType(extension) {
+// 	const map = {
+// 		jpg: 'image/jpeg',
+// 		jpeg: 'image/jpeg',
+// 		png: 'image/png',
+// 		gif: 'image/gif',
+// 		jfif: 'image/jpeg',
+// 		webp: 'image/webp'
+// 	};
 	
-	return map[extension.toLowerCase()] || 'application/octet-stream';
-}
+// 	return map[extension.toLowerCase()] || 'application/octet-stream';
+// }
 
 async function getColorMappingList() {
 	const res = await axios.post('/rest/'+siteId+'/product/color-list', {productId: productId});
@@ -742,23 +798,27 @@ function setFiles(id) {
 		// 대표 이미지 박스 다시 그리기
 		const maxSlots = 5;
 		for (let i = 0; i < maxSlots; i++) {
-		  const file = filesRep[i]; // 배열에 있는 파일 또는 undefined
+			const file = filesRep[i]; // 배열에 있는 파일 또는 undefined
 		  
-		  const slot = i + 1;
-		  const span = $('<span>', {
-		    class: 'figure',
-		    id: 'repImg' + slot,
-		    'data-file-idx': file?.idx ?? ''
-		  });
+			const slot = i + 1;
+			const span = $('<span>', {
+				class: 'figure',
+				id: 'repImg' + slot,
+				'data-file-idx': file?.idx ?? ''
+		  	});
 		
-		  const anchor = $('<a>', {
-		    class: 'rep_a' + (i === 0 && file ? ' selected active' : file ? ' active' : '')
-		  });
+			const anchor = $('<a>', {
+				class: 'rep_a' + (i === 0 && file ? ' selected active' : file ? ' active' : '')
+			});
 		
 		  const img = $('<img>', {
 		    class: 'noImg',
 		    // 기존 DB정보와 새로 업로드된 이미지의 정보를 맞춰주기 위해서 setFiles에서 file.url / file.file의 형태로 넣어줌
-		    src: file?.url ? file.url : file?.file ? URL.createObjectURL(file.file) : '/images/noImage108x108.gif',
+		    src: file?.url ? 
+		    		file?.url.slice(2) + "/" + file?.newName 
+		    		: file?.file 
+		    				? URL.createObjectURL(file.file) 
+		    						: '/images/noImage108x108.gif',
 		    width: 108,
 		    height: 108,
 		    alt: ''
@@ -813,14 +873,21 @@ function setFiles(id) {
 }
 
 function deleteFileBtn(elem) {
-	// 실제 파일 삭제
-	files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")})
-	setFiles();
+	if(filesRep.length > 0) {
+		// 실제 대표이미지 파일 삭제
+		filesRep = _.filter(filesRep, function(file) {return file.idx != elem.getAttribute("data-idx")});
+	}else if(files.length > 0){
+		// 실제 상세 이미지 파일 삭제
+		files = _.filter(files, function(file) {return file.idx != elem.getAttribute("data-idx")});
+	}
+
+	// $("#imgList .figure img").attr("src","/images/noImage108x108.gif");
+	setFiles(elem.getAttribute("data-id"));
 };
 
 // 비동기 통신
 async function setData(formData,url) {
-	const res = await axios.post('/rest/' + siteId + '/product/regist',formData, {headers: {'Content-Type': 'multipart/form-data'}});
+	const res = await axios.post('/rest/' + siteId + '/product/update',formData, {headers: {'Content-Type': 'multipart/form-data'}});
 	if(!res || !res.data) {
 		alert("등록에 실패하였습니다.");
 		return;

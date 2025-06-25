@@ -20,7 +20,7 @@ public class TbFile{
 	private String filePath;
 	private String fileType;
 	private String fileExtension;
+	private int fileSeq;
 	private String regId;
 	private String regDt;
-	
 }

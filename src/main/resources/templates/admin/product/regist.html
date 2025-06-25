@@ -248,6 +248,7 @@ let colorText = "";
 let tagIdList = [];
 let tagText = "";
 let editor;
+let newFilesList = [];
 
 document.addEventListener("DOMContentLoaded",async function () {
 	load();
@@ -337,7 +338,16 @@ document.addEventListener("DOMContentLoaded",async function () {
 			}else {
 				for(var i=0; i<filesRep.length; i++) {
 					formData.append('filesRep',filesRep[i]);
+					
+					const jsonFile = {
+						fileSeq: i + 1,
+						fileDvCd: i == 0 ? '1000' : '1001',
+					}
+					
+					newFilesList.push(jsonFile);
 				}
+				
+				formData.append('newFilesList', JSON.stringify(newFilesList));
 			}
 			
 			if(Number($("#price").val()) < Number($("#disPrice").val())) {
@@ -509,7 +519,9 @@ function initTextEditor () {
 	    showWordsCounter: false,
 	    showXPathInStatusbar: false,
 	    beautifyHTML: true,            // HTML 자동 정렬
-	    sourceEditor: 'area', 
+	    sourceEditor: 'area',
+	    maxWidth: 940,
+	    minWidth: 940,
 	    minHeight: 400,
 	    maxHeight: 400,
 	    uploader: {

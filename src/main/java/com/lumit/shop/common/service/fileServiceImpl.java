@@ -95,14 +95,14 @@ public class fileServiceImpl implements fileService {
     		uploadPath.mkdirs();
     	}
     	
-    	if(product.getJsonFileList() != null) {
+    	if(product.getJsonFilesList() != null) {
     		System.out.println("file ::: 기존파일추가  --------------------------");
     		
     		// List<String>의 형태를 List<TbFile>로 변환
     		ObjectMapper mapper = new ObjectMapper();
     		List<TbFile> fileList = new ArrayList<>();
     		
-    		for (String jsonFile : product.getJsonFileList()) {
+    		for (String jsonFile : product.getJsonFilesList()) {
     			
 				TbFile file;
 				try {

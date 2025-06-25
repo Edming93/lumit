@@ -36,8 +36,6 @@ public class OptionServiceImpl implements OptionService {
         RequestList<?> requestList = RequestList.builder().data(search).pageable(pageable).build();
         Field[] variables = requestList.getData().getClass().getDeclaredFields();
 
-        System.out.println("search다요 :::");
-        System.out.println(search);
         List<Map<String, Object>> content = optionRepository.selectPageableOptionList(requestList);
         int total = optionRepository.selectCountOptionList(search);
         return new PageImpl<>(content, pageable, total);
