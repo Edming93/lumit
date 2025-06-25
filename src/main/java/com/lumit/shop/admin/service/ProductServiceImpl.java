@@ -93,8 +93,62 @@ public class ProductServiceImpl implements ProductService {
         TbFile inputFile = new TbFile();
         inputFile.setPkId(product.getProductId());
 
-        // boardId 해당 게시물의 파일을 모두 삭제하고 다시 추가
-        fileRepository.deleteFiles(inputFile);
+    	// boardId 해당 게시물의 파일을 모두 삭제하고 다시 추가
+		fileRepository.deleteFiles(inputFile);
+	
+    	File uploadPath = new File(FILE_UPLOAD_PATH, StringUtils.getData());
+    	
+    	System.out.println("upload path: "+ uploadPath);
+    	
+    	if(uploadPath.exists() == false) {
+    		uploadPath.mkdirs();
+    	}
+    	
+    	if(product.getJsonFileList() != null) {
+    		System.out.println("file ::: 기존파일추가  --------------------------");
+    		
+    		// List<String>의 형태를 List<TbFile>로 변환
+    		ObjectMapper mapper = new ObjectMapper();
+    		List<TbFile> fileList = new ArrayList<>();
+    		
+    		for (String jsonFile : product.getJsonFileList()) {
+    			
+				TbFile file;
+				try {
+					file = mapper.readValue(jsonFile, TbFile.class);
+					
+					fileList.add(file);
+				} catch (JsonMappingException e) {
+					e.printStackTrace();
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+				}
+				
+			}
+    		
+	    	// 기존 파일 DB추가
+	    	for (TbFile file : fileList) {
+				fileRepository.insertFiles(file);
+			}
+    	}
+    	
+    	if(filesRep != null) {
+    		System.out.println("file ::: 대표 이미지 새 파일 추가 --------------------------");
+	    	// 새로운 파일 DB추가
+    		//for(MultipartFile file : filesRep) {
+    		for(int i = 0; i < filesRep.length; i++) {
+    			MultipartFile file = filesRep[i];
+	    	
+	    		String oriFileName =  file.getOriginalFilename();
+	    		
+	    		UUID uuid = UUID.randomUUID(); // 랜덤 이름 생성
+	    		
+	    		String uploadFileName = uuid.toString() + "_" + oriFileName; //UUID(랜덤문자라생각하면편함) + 원본파일명
+	    		
+	    		File saveFile = new File(uploadPath, uploadFileName);
+        
+		        // boardId 해당 게시물의 파일을 모두 삭제하고 다시 추가
+		        fileRepository.deleteFiles(inputFile);
 
 	    		TbFile tbFile = new TbFile();
 	    		tbFile.setPkId(product.getProductId());

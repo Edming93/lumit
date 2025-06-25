@@ -37,17 +37,43 @@
 	                	<tr>
 	                        <th class="alLeft bold">상품 이미지</th> <!-- 기본 1000x1000 최소 500x500 -->
 	                        <td>
+	                        	<div id="imgList" class="form__input--img_wrap">
+	                        		<span class="figure" id="repImg1">
+										<a href="#none" style="cursor: default;" class="rep_a">
+											<img src="/images/noImage108x108.gif" class="noImg" width="108" height="108" alt="">
+										</a>
+									</span>
+									<span class="figure" id="repImg2">
+										<a href="#none" style="cursor: default;" class="rep_a">
+											<img src="/images/noImage108x108.gif" class="noImg" width="108" height="108" alt="">
+										</a>
+									</span>
+									<span class="figure" id="repImg3">
+										<a href="#none" style="cursor: default;" class="rep_a">
+											<img src="/images/noImage108x108.gif" class="noImg" width="108" height="108" alt="">
+										</a>
+									</span>
+									<span class="figure" id="repImg4">
+										<a href="#none" style="cursor: default;" class="rep_a">
+											<img src="/images/noImage108x108.gif" class="noImg" width="108" height="108" alt="">
+										</a>
+									</span>
+									<span class="figure" id="repImg5">
+										<a href="#none" style="cursor: default;" class="rep_a">
+											<img src="/images/noImage108x108.gif" class="noImg" width="108" height="108" alt="">
+										</a>
+									</span>
+	                        	</div>
 								<div class="form__input--file_wrap">
 									<div class="form__input--top_wrap">
-									  <input class="form__input--file" id="uploadRep" type="file" multiple>
-									  <label class="form__label--file" for="uploadRep">추가</label>
-									  <span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
+										<input class="form__input--file" id="uploadRep" type="file" multiple>
+										<label class="form__label--file" for="uploadRep">추가</label>
+										<span class="form__span--txt">※ 최대 5개까지 첨부 가능합니다.</span>
 								  	</div>
 									<div class="form__input--bottom_wrap">
 								  		<div class="form__div--file_rep"></div>
 									</div>
 								</div>
-	
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -357,6 +383,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 	
 	fileTarget.on('change', function () {
 		let selectId = $(this).attr('id');
+		
 		if(selectId == 'uploadRep') {
 			for(var i=0; i< this.files.length; i++) {
 				if(files.length >= 5){
@@ -371,12 +398,21 @@ document.addEventListener("DOMContentLoaded",async function () {
 				}else {
 					var file = this.files[i];
 								
-					file['idx'] = fileIdx;
-					filesRep.push(file);
-					fileIdx++;
+					// file['idx'] = fileIdx; 필요 없어졌음 TODO:: 나중에 한번에 정리
+					
+					// 기존 detail에서 가져온 값이랑 포맷을 맞추기 위함
+					let newFile = {
+						idx: filesRep[filesRep.length-1].idx + 1,
+						name: file.name,
+						size: file.size,
+						type: file.type,
+						file: file // ← 이게 있어야 img에 src를 넣을 때 createObjectURL 가능
+					};
+					
+					filesRep.push(newFile);
 				}
 			}
-		}else{
+		}else{ // TODO :: 원래는 대표이미지, 상세이미지 둘 다 비슷한 방식으로 저장하려 했으나, textEditor 도입으로 분기 필요 없어짐. 정리예정
 			for(var i=0; i<this.files.length; i++) {
 				if(files.length >= 5){
 					alert('최대 5개까지 첨부 가능합니다.');
@@ -398,13 +434,13 @@ document.addEventListener("DOMContentLoaded",async function () {
 		}
 		
 		setFiles(selectId);
-		
 	});
 
 });
 
 async function load() {
 	initTextEditor();
+	if(filesRep.length != 0) imgDragDrop();
 	
 	await getProductDetail();
 	await getColorMappingList();
@@ -422,11 +458,59 @@ async function load() {
 
 function initTextEditor () {
 	editor = Jodit.make('#editor', {
-	    height: 400,
-	    language: 'ko',
-	    toolbarSticky: false,
+		enableDragAndDropFileToEditor: true,
+		language: "ko",
+	    toolbarAdaptive: false,
+	    showCharsCounter: false,
+	    showWordsCounter: false,
+	    showXPathInStatusbar: false,
+	    beautifyHTML: true,            // HTML 자동 정렬
+	    sourceEditor: 'area', 
+	    minHeight: 400,
+	    maxHeight: 400,
 	    uploader: {
-	      insertImageAsBase64URI: true  // 이미지 업로드를 base64 방식으로 처리 (간단용)
+	    	// 이미지 업로드를 base64 방식으로 처리 (간단용)
+			// insertImageAsBase64URI: true  
+	
+			// 서버 분리
+	        url: '/rest/' + siteId + '/product/upload-image',
+	        method: 'POST',
+	        format: 'json',
+	        filesVariableName: () => 'file', // ★ 서버에서 원하는 key로 보내기
+	        prepareData: function (data) {
+	            return data;
+	        },
+	        isSuccess: function (resp) {
+	            return !resp.error;
+	        },
+	        getMsg: function (resp) {
+	            return resp.msg.join !== undefined ? resp.msg.join(' ') : resp.msg;
+	        },
+	        process: function (resp) { 
+	        	// 여기서 response받아서 아래 json 형태로 path, baseurl (이게 실제 링크라고 보면 됨 base64 대신 img src url)
+	            return {
+	                files: resp.images,  
+	                path: resp.path,
+	                baseurl: resp.baseurl,
+	                error: resp.error,
+	                msg: resp.msg
+	            };
+	        },
+	        error: function (e) {
+	            this.events.fire('errorPopap', [e.getMessage(), 'error', 4000]);
+	        },
+	        defaultHandlerSuccess: function (data, resp) {
+	            const field = 'files';
+	            if (data[field] && data[field].length) {
+	                for (let i = 0; i < data[field].length; i += 1) {
+	                	
+	                	editor.selection.insertImage(data.baseurl + data[field][i]);
+	                }
+	            }
+	        },
+	        defaultHandlerError: function (resp) {
+	            this.events.fire('errorPopap', [this.options.uploader.getMsg(resp)]);
+	        }
 	    },
 	    buttons: [
 	      // 텍스트 스타일 관련
@@ -436,7 +520,7 @@ function initTextEditor () {
 	      'align', 'outdent', 'indent', '|',
 	      'ul', 'ol', '|',
 	      // 이미지/링크/클립보드
-	      'image', 'link', '|',
+	      'image', 'link', 'source', '|',
 	      // 편의 기능
 	      'undo', 'redo', 'hr', 'eraser', 'fullsize'
 	    ],
@@ -462,6 +546,33 @@ function initTextEditor () {
 	  });
 } 
 
+function imgDragDrop () {
+	$("#imgList").sortable({
+		items: ".figure", // span.figure 요소만 드래그 가능
+		tolerance: "pointer", // 좀 더 부드러운 드래그
+		cursor: "move", // 마우스 커서가 이동 커서로 변함
+		update: function () {
+			
+	 		const newFilesRep = [];
+			
+	 		$("#imgList .figure").each(function () {
+	 			const filesIdx = $(this).data("file-idx");
+
+	 			if (filesIdx !== undefined && filesIdx !== null) {
+					const matched = filesRep.find(f => f.idx === filesIdx);
+					if (matched) {
+						newFilesRep.push(matched);
+					}
+				}
+	 		});
+			
+	 		filesRep = newFilesRep;
+	 		
+	 		setFiles();
+		}
+	});
+}
+
 async function getProductDetail() {
 	const res = await axios.post('/rest/'+siteId+'/product/detail', {productId: productId});
     if(!res || !res.data) {
@@ -472,7 +583,7 @@ async function getProductDetail() {
     let pdDetail = res.data.detail;
     let pdFiles = res.data.files;
     
-    console.log(pdDetail.content);
+    console.log(pdFiles);
     
     $("#productName").val(pdDetail.productName);
     $("#stocks").val(pdDetail.stocks);
@@ -487,6 +598,43 @@ async function getProductDetail() {
     $("#freeDeliveryFee").val(pdDetail.freeDeliveryFee == 'nonFree' ? '해당 없음' : pdDetail.freeDeliveryFee);
     editor.setEditorValue(pdDetail.content);
     
+    console.log("정보 넣기 전 filesRep---");
+    console.log(filesRep);
+
+    filesRep = pdFiles.map((file, index) => {
+    	let imgPath = file.filePath;
+    	
+    	let imgUrl = imgPath.slice(2) + "/" + file.fileNewName;
+    	console.log(imgUrl)
+    	return {
+    		idx: index + 1, // 기존 코드와 일치하도록 번호 부여
+    	    name: file.fileName,
+    	    size: Number(file.fileSize),
+    	    type: getMimeType(file.fileExtension), // 예: "image/jpeg"
+    	    url: imgUrl, // 이미지 src로 사용할 URL
+    	    isSaved: true, // 👈 이건 기존 파일임을 구분하기 위한 flag
+    	    fileId: file.fileId // 나중에 수정 저장할 때 필요하면 이 ID로 처리
+    	}
+    });
+    
+    console.log("정보 넣은 후 filesRep---");
+    console.log(filesRep);
+    
+    setFiles();
+    
+}
+
+function getMimeType(extension) {
+	const map = {
+		jpg: 'image/jpeg',
+		jpeg: 'image/jpeg',
+		png: 'image/png',
+		gif: 'image/gif',
+		jfif: 'image/jpeg',
+		webp: 'image/webp'
+	};
+	
+	return map[extension.toLowerCase()] || 'application/octet-stream';
 }
 
 async function getColorMappingList() {
@@ -583,29 +731,98 @@ function passwordSave() {
 
 // 파일 그리기
 function setFiles(id) {
-	let fileDiv = '';
-	let fileHtml = '';
+	const $imgList = $('#imgList');
+	$imgList.empty(); // 이미지 슬롯 초기화
 	
-	if(id == 'uploadRep') {
+	let fileHtml = '';
+	let fileDiv;
+	let fileIdx = 1;
+	
+	if (!id) id = 'uploadRep';
+	
+	// HTML 영역 초기화
+	$('.rep_a').removeClass('active selected');
+	if ($('.delete_img_btn')) $('.delete_img_btn').remove();
+	
+	if (id === 'uploadRep') {
+		$('.form__div--file_rep').addClass('mgt10');
 		fileDiv = document.querySelector('.form__div--file_rep');
 		
+		// 대표 이미지 표시용 목록 생성
 		fileHtml = '';
-		_.forEach(filesRep, function(file){
-			fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
-		})
-	} else {
-		fileDiv = document.querySelector('.form__div--file');
 		
-		fileHtml = '';
-		_.forEach(files, function(file){
-			fileHtml += '<span class="select_file_box"><button type="button" data-idx="'+file.idx+'"class="delete_file_btn" onClick="deleteFileBtn(this)"> x </button>'+file.name+'</span>';
-		})
+		// 대표 이미지 박스 다시 그리기
+		const maxSlots = 5;
+		for (let i = 0; i < maxSlots; i++) {
+		  const file = filesRep[i]; // 배열에 있는 파일 또는 undefined
+		  console.log(i+1 + " ::: " +file);
+		  
+		  const slot = i + 1;
+		  const span = $('<span>', {
+		    class: 'figure',
+		    id: 'repImg' + slot,
+		    'data-file-idx': file?.idx ?? ''
+		  });
+		
+		  const anchor = $('<a>', {
+		    class: 'rep_a' + (i === 0 && file ? ' selected active' : file ? ' active' : '')
+		  });
+		
+		  const img = $('<img>', {
+		    class: 'noImg',
+		    // 기존 DB정보와 새로 업로드된 이미지의 정보를 맞춰주기 위해서 setFiles에서 file.url / file.file의 형태로 넣어줌
+		    src: file?.url ? file.url : file?.file ? URL.createObjectURL(file.file) : '/images/noImage108x108.gif',
+		    width: 108,
+		    height: 108,
+		    alt: ''
+		  });
+		
+		  anchor.append(img);
+		  span.append(anchor);
+		
+		  // 파일이 있을 경우 삭제 버튼 추가
+		  if (file) {
+		    const cancelBtn = $('<img>', {
+		      src: '/images/icons/icon_cancel.png',
+		      class: 'delete_img_btn active',
+		      'data-id': 'uploadRep',
+		      'data-idx': file.idx,
+		      onClick: 'deleteFileBtn(this)'
+		    });
+		    span.append(cancelBtn);
+		
+		    // 파일 이름 목록 영역 HTML 추가
+		    fileHtml += `
+		      <span class="select_file_box">
+		        <button type="button" data-id="uploadRep" data-idx="${file.idx}" class="delete_file_btn" onClick="deleteFileBtn(this)">x</button>
+		        ${file.name}
+		      </span>
+		    `;
+		  }
+		
+		  $imgList.append(span);
+		}
+	
+	  	if (filesRep.length !== 0) imgDragDrop(); // 드래그 이벤트 재연결
+	
+	} else {
+	  // 일반 파일 업로드 영역 (대표 이미지 아님)
+	  $('.form__div--file').addClass('mgt10');
+	  fileDiv = document.querySelector('.form__div--file');
+	
+	  _.forEach(files, function(file) {
+	    fileHtml += `
+	      <span class="select_file_box">
+	        <button type="button" data-id="upload" data-idx="${file.idx}" class="delete_file_btn" onClick="deleteFileBtn(this)">x</button>
+	        ${file.name}
+	      </span>
+	    `;
+	  });
 	}
 	
-	if (!fileDiv) {
-		return;
-	};
-	fileDiv.innerHTML = fileHtml;
+	if (fileDiv) {
+	  fileDiv.innerHTML = fileHtml;
+	}
 }
 
 function deleteFileBtn(elem) {

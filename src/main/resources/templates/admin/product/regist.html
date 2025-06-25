@@ -76,7 +76,6 @@
 								  		<div class="form__div--file_rep"></div>
 									</div>
 								</div>
-	
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -421,7 +420,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 					fileIdx++;
 				}
 			}
-		}else{
+		}else{ // TODO :: 원래는 대표이미지, 상세이미지 둘 다 비슷한 방식으로 저장하려 했으나, textEditor 도입으로 분기 필요 없어짐. 정리예정
 			for(var i=0; i<this.files.length; i++) {
 				if(files.length >= 5){
 					alert('최대 5개까지 첨부 가능합니다.');

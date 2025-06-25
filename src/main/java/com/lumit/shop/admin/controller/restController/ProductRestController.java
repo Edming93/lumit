@@ -35,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductRestController {
     private final ProductService productService;
 
+    private final fileService fileService;
 
     private final MenuRepository menuRepository;
 
