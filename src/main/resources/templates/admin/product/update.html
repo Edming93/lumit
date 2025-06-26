@@ -316,14 +316,6 @@ document.addEventListener("DOMContentLoaded",async function () {
 			let formData = new FormData(document.querySelector("#registForm"));
 			let params = {};
 			
-// 			if(files.length === 0) {
-// 				formData.append('files',[]);
-// 			}else {
-// 				for(var i=0; i<files.length; i++) {
-// 					formData.append('files',files[i]);
-// 				}
-// 			}
-			
 			if(filesRep.length === 0) {
 				formData.append('filesRep',[]);
 			}else {
@@ -341,9 +333,6 @@ document.addEventListener("DOMContentLoaded",async function () {
 						}
 						
 						newJsonFilesList.push(jsonFile);
-						
-						console.log("if문 :: "+ (i+1) + " 번째 파일 :::")
-						console.log(jsonFile);
 						
 					}else {
 						
@@ -365,16 +354,11 @@ document.addEventListener("DOMContentLoaded",async function () {
 						
 						formData.append('jsonFilesList', JSON.stringify(jsonFile))
 						
-						console.log("else문 :: "+ (i+1) + " 번째 파일 :::")
-						console.log(jsonFile);
 					}
 				}
 			}
 			
 			formData.append('newJsonFilesList', JSON.stringify(newJsonFilesList));
-
-			console.log('-------------------저장버튼 클릭 시 filesRep:::-----------')
-			console.log(filesRep);
 			
 			if($("#price").val() < $("#disPrice").val()) {
 				alert("할인가가 정가보다 클 수 없습니다.");
@@ -622,9 +606,6 @@ function imgDragDrop () {
 			
 	 		filesRep = newFilesRep;
 	 		
-	 		console.log('imgDragDrop-------------');
-	 		console.log(filesRep);
-	 		
 	 		setFiles();
 		}
 	});
@@ -669,9 +650,6 @@ async function getProductDetail() {
     	    fileId: file.fileId // 나중에 수정 저장할 때 필요하면 이 ID로 처리
     	}
     }).sort((a,b) => a.seq - b.seq);
-    
-    console.log('detail 정보------------')
-    console.log(filesRep);
     
     setFiles();
     
