@@ -231,7 +231,7 @@ let colorText = "";
 let tagIdList = [];
 let tagText = "";
 let editor;
-let newFilesList = [];
+let newJsonFilesList = [];
 
 document.addEventListener("DOMContentLoaded",async function () {
 	load();
@@ -332,14 +332,17 @@ document.addEventListener("DOMContentLoaded",async function () {
 					if(filesRep[i].file) {
 						// 새로 추가한 파일
 						formData.append('filesRep',filesRep[i].file);
+						
+						// 기존 이미지 이외 새로 추가한 files의 seq를 저장하기 위한 보조 json정보
 						const jsonFile = {
 							fileSeq: i + 1,
 							fileDvCd: i == 0 ? '1000' : '1001',
 							pkId: productId
 						}
 						
-						newFilesList.push(jsonFile);
-						console.log("if문 :: "+i+1 + " 번째 파일 :::")
+						newJsonFilesList.push(jsonFile);
+						
+						console.log("if문 :: "+ (i+1) + " 번째 파일 :::")
 						console.log(jsonFile);
 						
 					}else {
@@ -359,16 +362,16 @@ document.addEventListener("DOMContentLoaded",async function () {
 							fileSeq: i+1,
 							regId : 'admin'
 						};
-						formData.append('jsonFilesList',jsonFile)
 						
-						console.log("else문 :: "+i+1 + " 번째 파일 :::")
+						formData.append('jsonFilesList', JSON.stringify(jsonFile))
+						
+						console.log("else문 :: "+ (i+1) + " 번째 파일 :::")
 						console.log(jsonFile);
 					}
 				}
 			}
 			
-			// 기존 이미지 이외 새로 추가한 files의 seq를 저장하기 위한 json정보
-			formData.append('newFilesList', JSON.stringify(newFilesList));
+			formData.append('newJsonFilesList', JSON.stringify(newJsonFilesList));
 
 			console.log('-------------------저장버튼 클릭 시 filesRep:::-----------')
 			console.log(filesRep);
@@ -619,6 +622,7 @@ function imgDragDrop () {
 			
 	 		filesRep = newFilesRep;
 	 		
+	 		console.log('imgDragDrop-------------');
 	 		console.log(filesRep);
 	 		
 	 		setFiles();
@@ -666,6 +670,7 @@ async function getProductDetail() {
     	}
     }).sort((a,b) => a.seq - b.seq);
     
+    console.log('detail 정보------------')
     console.log(filesRep);
     
     setFiles();

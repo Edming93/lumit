@@ -42,7 +42,7 @@ public class TbProduct{
 	private List<String> colorIdList = new ArrayList<>();
 	private List<String> tagIdList = new ArrayList<>();
 	private List<String> jsonFilesList;
-	private String newFilesList;
+	private String newJsonFilesList;
 
 
 	

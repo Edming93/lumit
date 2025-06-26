@@ -111,26 +111,23 @@ public class ProductServiceImpl implements ProductService {
     		
     		for (String jsonFile : product.getJsonFilesList()) {
     			
-    			System.out.println("jsonFile -----------------");
-    			System.out.println(jsonFile.toString());
-    			
 				try {
-					fileList = mapper.readValue(
-	        	            product.getNewFilesList(),
-	        	            new TypeReference<List<TbFile>>() {}
-	        	    );
+					TbFile file = mapper.readValue(jsonFile, TbFile.class);
 					
-					// fileList.add(fileList);
+					fileList.add(file);
 					
-				} catch (JsonMappingException e) {
-					e.printStackTrace();
 				} catch (JsonProcessingException e) {
-					e.printStackTrace();
-				}
-				System.out.println("기존파일 ----");
-				System.out.println(fileList);
-				
+		            e.printStackTrace();  // 로깅 또는 예외처리
+		        }
 			}
+    		
+    	    // TODO :: 디버깅 출력 추후 삭제
+    	    for (TbFile file : fileList) {
+    	        System.out.println("기존파일 ----");
+    	        System.out.println("파일명: " + file.getFileName());
+    	        System.out.println("경로: " + file.getFilePath());
+    	        System.out.println("시퀀스: " + file.getFileSeq());
+    	    }
     		
 	    	// 기존 파일 DB추가
 	    	for (TbFile file : fileList) {
@@ -144,16 +141,16 @@ public class ProductServiceImpl implements ProductService {
     		//for(MultipartFile file : filesRep) {
     		
     		
-    		if(product.getNewFilesList() != null && !product.getNewFilesList().isEmpty()) {
+    		if(product.getNewJsonFilesList() != null && !product.getNewJsonFilesList().isEmpty()) {
     		
-        		System.out.println(product.getNewFilesList());
+        		System.out.println(product.getNewJsonFilesList());
         		
         		ObjectMapper objectMapper = new ObjectMapper();
         		List<TbFile> parsedFileList = new ArrayList<>();
 
         		try {
         	        parsedFileList = objectMapper.readValue(
-        	            product.getNewFilesList(),
+        	            product.getNewJsonFilesList(),
         	            new TypeReference<List<TbFile>>() {}
         	        );
         	    } catch (JsonProcessingException e) {
@@ -265,8 +262,7 @@ public class ProductServiceImpl implements ProductService {
         if (product.getColorIdList().size() != 0) productRepository.insertColorMap(product);
         if (product.getTagIdList().size() != 0) productRepository.insertTagMap(product);
 
-        if (filesRep != null || files != null) {
-        	System.out.println("타는지 궁금합니다.");
+        if (filesRep != null || files != null || product.getJsonFilesList() != null) {
             uploadFiles(product, files, filesRep);
 
             retMap.put("fileUpdate", "success");

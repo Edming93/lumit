@@ -248,7 +248,7 @@ let colorText = "";
 let tagIdList = [];
 let tagText = "";
 let editor;
-let newFilesList = [];
+let newJsonFilesList = [];
 
 document.addEventListener("DOMContentLoaded",async function () {
 	load();
@@ -339,15 +339,16 @@ document.addEventListener("DOMContentLoaded",async function () {
 				for(var i=0; i<filesRep.length; i++) {
 					formData.append('filesRep',filesRep[i]);
 					
+					// 새로 추가한 files의 seq를 저장하기 위한 보조 json정보
 					const jsonFile = {
 						fileSeq: i + 1,
 						fileDvCd: i == 0 ? '1000' : '1001',
 					}
 					
-					newFilesList.push(jsonFile);
+					newJsonFilesList.push(jsonFile);
 				}
 				
-				formData.append('newFilesList', JSON.stringify(newFilesList));
+				formData.append('newJsonFilesList', JSON.stringify(newJsonFilesList));
 			}
 			
 			if(Number($("#price").val()) < Number($("#disPrice").val())) {
@@ -612,12 +613,13 @@ function imgDragDrop () {
 			
 	 		const newFilesRep = [];
 			
-	 		$("#imgList .figure").each(function () {
+	 		$("#imgList .figure").each(function (index) {
 	 			const filesIdx = $(this).data("file-idx");
 
 	 			if (filesIdx !== undefined && filesIdx !== null) {
 					const matched = filesRep.find(f => f.idx === filesIdx);
 					if (matched) {
+						matched.fileSeq = index + 1;
 						newFilesRep.push(matched);
 					}
 				}
