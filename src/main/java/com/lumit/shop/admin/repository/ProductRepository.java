@@ -25,6 +25,9 @@ public interface ProductRepository {
     public int updateProduct(TbProduct product);
     public int deleteProduct(TbProduct product);
     
+    public int deleteColorMap(TbProduct product);
+    public int deleteTagMap(TbProduct product);
+    
     public int insertColorMap(TbProduct product);
     public int insertTagMap(TbProduct product);
     

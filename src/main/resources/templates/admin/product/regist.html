@@ -76,7 +76,6 @@
 								  		<div class="form__div--file_rep"></div>
 									</div>
 								</div>
-	
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -249,6 +248,7 @@ let colorText = "";
 let tagIdList = [];
 let tagText = "";
 let editor;
+let newJsonFilesList = [];
 
 document.addEventListener("DOMContentLoaded",async function () {
 	load();
@@ -338,7 +338,17 @@ document.addEventListener("DOMContentLoaded",async function () {
 			}else {
 				for(var i=0; i<filesRep.length; i++) {
 					formData.append('filesRep',filesRep[i]);
+					
+					// 새로 추가한 files의 seq를 저장하기 위한 보조 json정보
+					const jsonFile = {
+						fileSeq: i + 1,
+						fileDvCd: i == 0 ? '1000' : '1001',
+					}
+					
+					newJsonFilesList.push(jsonFile);
 				}
+				
+				formData.append('newJsonFilesList', JSON.stringify(newJsonFilesList));
 			}
 			
 			if(Number($("#price").val()) < Number($("#disPrice").val())) {
@@ -421,7 +431,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 					fileIdx++;
 				}
 			}
-		}else{
+		}else{ // TODO :: 원래는 대표이미지, 상세이미지 둘 다 비슷한 방식으로 저장하려 했으나, textEditor 도입으로 분기 필요 없어짐. 정리예정
 			for(var i=0; i<this.files.length; i++) {
 				if(files.length >= 5){
 					alert('최대 5개까지 첨부 가능합니다.');
@@ -510,7 +520,9 @@ function initTextEditor () {
 	    showWordsCounter: false,
 	    showXPathInStatusbar: false,
 	    beautifyHTML: true,            // HTML 자동 정렬
-	    sourceEditor: 'area', 
+	    sourceEditor: 'area',
+	    maxWidth: 940,
+	    minWidth: 940,
 	    minHeight: 400,
 	    maxHeight: 400,
 	    uploader: {
@@ -601,12 +613,13 @@ function imgDragDrop () {
 			
 	 		const newFilesRep = [];
 			
-	 		$("#imgList .figure").each(function () {
+	 		$("#imgList .figure").each(function (index) {
 	 			const filesIdx = $(this).data("file-idx");
 
 	 			if (filesIdx !== undefined && filesIdx !== null) {
 					const matched = filesRep.find(f => f.idx === filesIdx);
 					if (matched) {
+						matched.fileSeq = index + 1;
 						newFilesRep.push(matched);
 					}
 				}

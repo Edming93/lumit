@@ -759,6 +759,17 @@ input[type='file'] {
     padding: 10px 0px;
 }
 
+.delete_img_btn {
+	width: 15px;
+	cursor: pointer;
+}
+
+.delete_img_btn.active {
+    position: absolute;
+    top:4px;
+    right:4px;
+}
+
 .form__label--file {
     width: 60px;
     line-height: 25px;

@@ -20,6 +20,7 @@ public class CommonSearch{
 	
 	private String menuCd;
 	private String fileDvCd;
+	private String delYn;
 	
 	private String productId;
 	private String productName;
