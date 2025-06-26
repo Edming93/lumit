@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(value = "/rest/{siteId}/product")
 public class ProductRestController {
     private final ProductService productService;
-
+    private final fileService fileService;
 
     private final MenuRepository menuRepository;
 
@@ -53,10 +53,10 @@ public class ProductRestController {
 
     @ResponseBody
     @PostMapping("/upload-image")
-    public ResponseEntity<Map<String,Object>> registProductUploadImage(@RequestPart(value = "file" , required = false) MultipartFile file) throws IOException {
-        return ResponseBuilder.build(fileService.insertImage(file),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> registProductUploadImage(@RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        return ResponseBuilder.build(fileService.insertImage(file), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/detail")
     public ResponseEntity<Map<String, Object>> selectProductDetail(@RequestBody TbProduct product) {

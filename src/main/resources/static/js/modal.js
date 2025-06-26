@@ -1,20 +1,23 @@
-function backgroundCancel(event, id, type) {
-    event.stopPropagation();
-    if (event.target == document.getElementById(id)) {
-        hideModal(id)
-        if (type == "simple") {
-            return;
+function resultChange(type) {
+    const modalResult = document.getElementById("modalResult");
+    modalResult.value = type;
+    modalResult.dispatchEvent(new Event("change"));
+}
+
+function backgroundCancel(event, modalId, type) {
+    if (event.target.classList.contains("simpleModalOverlay")) {
+        hideModal(modalId);
+        if (type === 'prompt') {
+            const modalResult = document.getElementById("modalResult");
+            modalResult.value = 'cancel';
+            modalResult.dispatchEvent(new Event("change"));
         }
-        resultChange("cancel")
     }
 }
 
-function hideModal(id) {
-    document.getElementById(id).style.display = "none"
-}
-
-function resultChange(value) {
-    const result = document.getElementById("modalResult")
-    result.value = value
-    result.dispatchEvent(new Event("change"))
+function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    }
 }

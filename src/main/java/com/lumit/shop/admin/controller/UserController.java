@@ -39,18 +39,13 @@ public class UserController {
         return "admin/user/dashboard"; // dashboardLayout 사용
     }
 
-    @GetMapping("/test-menu")
-    public String testMenu() {
-        return "admin/user/menu";  // .html 없이 경로만
-    }
-
-    @GetMapping("/new")
+    @GetMapping("/new-manager")
     public String newUserForm(Model model) {
         model.addAttribute("tbLogin", new TbLogin());
-        return "admin/user/userForm";
+        return "admin/user/form";
     }
 
-    @PostMapping("/new")
+    @PostMapping("/new-manager")
     public String createUser(@Valid @ModelAttribute("tbLogin") TbLogin tbLogin,
                              BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
@@ -76,10 +71,10 @@ public class UserController {
         return "redirect:/admin/user";
     }
 
-    @GetMapping("/edit")
+    @GetMapping("/customers")
     public String editUserForm(Model model) {
         // TODO: 수정 대상 사용자 정보를 넘길 수 있도록 구현
-        return "admin/user/editUser";
+        return "admin/user/customers";
     }
 
     @GetMapping("/manager")

@@ -9,22 +9,52 @@
 </head>
 <div layout:fragment="content">
     <div id="container" class="categoryContainer">
-        <div class="categoryHeader">
-            <p class="title"><span>분류 관리</span></p>
-            <div class="help">
-                <div>드래그 -> 분류 이동</div>
-                <div>오른쪽 마우스 버튼 <i class="fa-solid fa-computer-mouse"></i> -> 기능 메뉴 열기</div>
+        <div class="dashboard-header">
+            카테고리 관리
+            <span class="help-tooltip">
+                <i class="fa-regular fa-circle-question"></i>
+                <span class="tooltip-text">
+                  드래그 → 분류 이동<br>
+                  오른쪽 마우스 버튼 <i class="fa-solid fa-computer-mouse"></i> → 기능 메뉴 열기
+                </span>
+            </span>
+        </div>
+
+        <div class="dashboard-grid category-dashboard-grid">
+            <div class="dashboard-card">
+                <i class="fa-solid fa-layer-group"></i>
+                <h3>대분류</h3>
+                <p id="largeCount">0</p>
+            </div>
+            <div class="dashboard-card">
+                <i class="fa-solid fa-sitemap"></i>
+                <h3>중분류</h3>
+                <p id="middleCount">0</p>
+            </div>
+            <div class="dashboard-card">
+                <i class="fa-solid fa-list"></i>
+                <h3>소분류</h3>
+                <p id="smallCount">0</p>
+            </div>
+            <div class="dashboard-card">
+                <i class="fa-solid fa-bars"></i>
+                <h3>상세분류</h3>
+                <p id="detailCount">0</p>
             </div>
         </div>
 
-        <div class="searchArea">
-            <input type="text" title="분류명" placeholder="분류명" id="categoryName">
-            <button class="searchBtn"></button>
-        </div>
         <div class="categoryTopBar">
-            <div class="categoryTopBtns">
-                <button id="nameChange">이름 변경</button>
-                <button id="deleteCategory">삭제</button>
+            <div class="categoryTopControls">
+                <div class="searchArea">
+                    <input type="text" title="분류명" placeholder="분류명" id="categoryName">
+                    <button class="searchBtn cateSearchBtn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+                <div class="categoryTopBtns">
+                    <button class="commBtn" id="nameChange">이름 변경</button>
+                    <button class="commBtn" id="deleteCategory">삭제</button>
+                </div>
             </div>
         </div>
 
@@ -234,6 +264,8 @@
             ul.querySelectorAll("li").forEach(li => {
                 li.addEventListener("click", () => handleCategoryClick(li, ulSelector));
             });
+
+            updateCategoryCounts()
         }
 
         let lastClickedLi = null;
@@ -363,6 +395,12 @@
         document.getElementById("nameChange").addEventListener("click", () => triggerCategoryAction("rename"));
         document.getElementById("deleteCategory").addEventListener("click", () => triggerCategoryAction("delete"));
 
+        function updateCategoryCounts() {
+            document.getElementById("largeCount").innerText = document.querySelectorAll(".topCategoryList li").length;
+            document.getElementById("middleCount").innerText = document.querySelectorAll(".middleCategoryList li").length;
+            document.getElementById("smallCount").innerText = document.querySelectorAll(".bottomCategoryList li").length;
+            document.getElementById("detailCount").innerText = document.querySelectorAll(".detailCategoryList li").length;
+        }
 
     </script>
 </div>

@@ -2,25 +2,30 @@
      xmlns:th="http://www.thymeleaf.org"
      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <div class="tabMenu">
-        <button class="linkBtn" sec:authorize="hasAnyRole('SUPER_ADMIN')"
-                onclick="loadTabContent('/admin/user/manager')">관리자 편집
+        <button class="linkBtn" data-url="/admin/user/manager"
+                sec:authorize="hasAnyRole('SUPER_ADMIN')">관리자 편집
         </button>
-        <button class="linkBtn" onclick="loadTabContent('/admin/user/new-tab')">새로운 관리자 생성하기</button>
-        <button class="linkBtn" onclick="loadTabContent('/admin/user/edit-tab')">일반 회원 관리하기</button>
+        <button class="linkBtn" data-url="/admin/user/new-manager">새로운 관리자 생성하기</button>
+        <button class="linkBtn" data-url="/admin/user/customers">일반 회원 관리하기</button>
     </div>
     <div id="tab-content-container" class="tabContentContainer">
-        <!-- 여기에 fragment가 비동기로 삽입됨 -->
     </div>
+    <script th:src="@{/js/admin-manager.js}"></script>
+    <script th:src="@{/js/modal.js}"></script>
     <script th:inline="javascript">
 
-
-        function loadTabContent(url) {
+        async function loadTabContent(url) {
             const container = document.getElementById("tab-content-container");
             container.innerHTML = '<p>로딩 중...</p>';
-            fetch(url)
-                .then(r => r.text())
-                .then(html => container.innerHTML = html)
-                .catch(err => container.innerHTML = '<p>불러오기 실패</p>');
+
+            try {
+                const response = await fetch(url);
+                const html = await response.text();
+                container.innerHTML = html;
+            } catch (err) {
+                container.innerHTML = '<p>불러오기 실패</p>';
+                console.error("탭 콘텐츠 로딩 실패:", err);
+            }
         }
 
         function activateTab(btn) {

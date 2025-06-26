@@ -3,52 +3,60 @@
     <div th:replace="~{fragments/modal::modal('운영자 정보 관리','정말 삭제하시겠습니까?', '삭제', 'delete','prompt')}"></div>
     <div th:replace="~{fragments/modal::modal('운영자 정보 관리','정말 수정하시겠습니까?', '수정','update','prompt')}"></div>
     <input id="modalResult" type="hidden" value=""/>
-    <div class="adminContainer">
+    <div class="adminPageWrapper">
         <h1 class="title">운영자 계정 관리</h1>
-        <table class="adminTable">
+        <div class="adminScrollableBox">
+            <div class="adminSection">
+                <h2 class="sectionTitle">활성 운영자</h2>
+                <table class="adminTable">
             <colgroup>
-                <col style="width: 25%;">
-                <col style="width: 35%;">
+                <col style="width: 20%;">
+                <col style="width: 40%;">
                 <col style="width: 30%;">
                 <col style="width: 10%;">
             </colgroup>
             <thead>
             <tr>
-                <th>권한 레벨</th>
                 <th>운영자 아이디</th>
                 <th>운영자명</th>
+                <th>권한 레벨</th>
                 <th>권한 삭제</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="admin : ${adminList}">
-                <td>
-                    <select onchange="roleChange(event, this, '[[${admin.roleId}]]')">
-                        <option th:selected="${admin.roleId == '1'}" value="1">총괄</option>
-                        <option th:selected="${admin.roleId == '2'}" value="2">기본</option>
-                    </select>
-                    <button th:attr="onclick=|updateInfo(this, '${admin.userId}', 'role')|" disabled class="editBtn">
-                        수정
-                    </button>
-                </td>
                 <td th:text="${admin.userId}"></td>
-                <td class="inputNameBox"><input th:attr="oninput=|nameChange(event, this, '${admin.name}')|"
+                <td>
+                    <div class="nameEditWrapper">
+                        <input type="text" th:attr="oninput=|nameChange(event, this, '${admin.name}')|"
                                                 th:value="${admin.name}">
-                    <button th:attr="onclick=|updateInfo(this, '${admin.userId}', 'name')|" disabled class="editBtn"
-                            type="button">수정
-                    </button>
+                        <button th:attr="onclick=|updateInfo(this, '${admin.userId}', 'name')|" disabled class="editBtn"
+                                type="button">수정
+                        </button>
+                    </div>
                 </td>
                 <td>
-                    <button th:attr="onclick=|deleteInfo('${admin.userId}')|"><i class="fa-solid fa-trash-can"></i>
-                    </button>
+                    <div class="roleEditWrapper">
+                        <select onchange="roleChange(event, this, '[[${admin.roleId}]]')">
+                            <option th:selected="${admin.roleId == '1'}" value="1">총괄</option>
+                            <option th:selected="${admin.roleId == '2'}" value="2">기본</option>
+                        </select>
+                        <button th:attr="onclick=|updateInfo(this, '${admin.userId}', 'role')|" disabled class="editBtn">
+                            수정
+                        </button>
+                    </div>
+                </td>
+                <td>
+                    <div class="iconCell" th:attr="onclick=|deleteInfo('${admin.userId}')|"><i class="fa-solid fa-trash-can"></i>
+                    </div>
                 </td>
             </tr>
             </tbody>
         </table>
-    </div>
-    <div class="adminContainer">
-        <h1 class="title">권한이 삭제된 운영자</h1>
-        <table class="adminTable">
+            </div>
+            <div class="adminSection">
+                <h2 class="sectionTitle">권한이 삭제된 운영자</h2>
+                <table class="adminTable">
             <colgroup>
                 <col style="width: 20%;">
                 <col style="width: 20%;">
@@ -78,6 +86,9 @@
             </tr>
             </tbody>
         </table>
+            </div>
+        </div>
+    </div>
     </div>
     <script th:inline="javascript">
 
