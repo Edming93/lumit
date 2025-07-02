@@ -288,6 +288,7 @@ input.w100, select.w100 {
 .container {
     width: 100%;
     padding: 10px;
+    overflow: auto;
     box-sizing: border-box;
     position: relative;
     height: 100vh;
@@ -1576,12 +1577,13 @@ li.active {
 /* 에디터 안에 CSS가 무시되지 않도록 강제 */
 .jodit-wysiwyg b,
 .jodit-wysiwyg strong {
-  font-weight: bold !important;
+    font-weight: bold !important;
 }
 
 .jodit-wysiwyg i,
 .jodit-wysiwyg em {
-  font-style: italic !important;
+    font-style: italic !important;
+}
 
 .toast {
     position: fixed;
