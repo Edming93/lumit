@@ -10,13 +10,15 @@
             <div class="simpleModalWindow">
                 <div class="modalHeader">
                     <p th:utext="${title}"></p>
-                    <button th:attr="onclick=|hideModal('${name}Modal')|"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" th:attr="onclick=|hideModal('${name}Modal')|"><i
+                            class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="modalContentWrapper">
                     <p th:utext="${content}"></p>
                     <div style="display: flex; flex-direction: row; justify-content: space-between">
-                        <button class="decisionBtn" onclick="resultChange('action')" th:text="${choice}"></button>
-                        <button class="cancelBtn" onclick="resultChange('cancel')" th:text="취소"></button>
+                        <button type="button" class="decisionBtn" onclick="resultChange('action')"
+                                th:text="${choice}"></button>
+                        <button type="button" class="cancelBtn" onclick="resultChange('cancel')" th:text="취소"></button>
                     </div>
                 </div>
             </div>
@@ -28,13 +30,15 @@
             <div class="simpleModalWindow">
                 <div class="modalHeader">
                     <p th:utext="${title}"></p>
-                    <button th:attr="onclick=|hideModal('${name}Modal')|"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" th:attr="onclick=|hideModal('${name}Modal')|"><i
+                            class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="modalContentWrapper">
                     <p th:utext="${content}">
                     </p>
                     <div>
-                        <button class="decisionBtn" th:attr="onclick=|hideModal('${name}Modal')|" th:text="확인"></button>
+                        <button type="button" class="decisionBtn" th:attr="onclick=|hideModal('${name}Modal')|"
+                                th:text="확인"></button>
                     </div>
                 </div>
             </div>
@@ -117,11 +121,12 @@
                                     </td>
                                     <td>
                                         <div class="defaultBtns">
-                                            <button class="modifyBtn" th:text="수정" onclick="modifyAddr(event)"></button>
-                                            <button th:text="삭제" onclick="deleteAddr(event)"></button>
+                                            <button type="button" class="modifyBtn" th:text="수정"
+                                                    onclick="modifyAddr(event)"></button>
+                                            <button type="button" th:text="삭제" onclick="deleteAddr(event)"></button>
                                         </div>
                                         <div style="display:none" class="completeBtn">
-                                            <button th:text="저장" onclick="submitAddr(event)"></button>
+                                            <button type="button" th:text="저장" onclick="submitAddr(event)"></button>
                                         </div>
                                     </td>
                                 </tr>

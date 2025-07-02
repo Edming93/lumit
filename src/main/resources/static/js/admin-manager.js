@@ -21,20 +21,25 @@ async function updateInfo(element, id, type) {
         if (!result) {
             return false;
         }
-        if (type === 'reset') {
-            return await FETCH.patch(`/api/admin/info/${id}`, {});
+        if (type == 'reset') {
+            return await FETCH.patch(`/api/admin/info/${id}`, {})
         }
-        const value = element.previousElementSibling.value;
-        if (type === 'role') {
-            return await FETCH.patch(`/api/admin/info/${id}`, {roleId: value});
-        } else if (type === 'name') {
-            return await FETCH.patch(`/api/admin/info/${id}`, {name: value});
+        const value = element.previousElementSibling.value
+
+        if (type == 'role') {
+            return await FETCH.patch(`/api/admin/info/${id}`, {roleId: value})
+        } else if (type == 'name') {
+            return await FETCH.patch(`/api/admin/info/${id}`, {name: value})
         }
-    });
+    })
     if (!result) {
+        showToast("오류 발생", 3000);
         return false;
     }
-    location.reload();
+
+    showToast("수정 완료");
+    hideModal("update")
+    // location.reload();
 }
 
 async function deleteInfo(id) {
@@ -51,22 +56,23 @@ async function deleteInfo(id) {
 }
 
 async function showModal(type) {
-    if (type === 'update') {
-        document.getElementById("updateModal").style.display = 'flex';
-    } else if (type === 'delete') {
-        document.getElementById("deleteModal").style.display = 'flex';
-    }
+    const result = document.getElementById("modalResult");
     return new Promise(function (resolve) {
-        const result = document.getElementById("modalResult");
-        result.addEventListener("change", function () {
+        const listener = function () {
             if (result.value === 'action') {
                 hideModal(type);
-                setTimeout(() => resolve(true), 100);
+                resolve(true);
             } else if (result.value === 'cancel') {
                 hideModal(type);
-                setTimeout(() => resolve(false), 100);
+                resolve(false);
             }
-        });
+            result.removeEventListener("change", listener);
+        };
+        result.addEventListener("change", listener);
+
+        // ✅ 모달 열기
+        const modalId = type === "update" ? "updateModal" : "deleteModal";
+        document.getElementById(modalId).style.display = "flex";
     });
 }
 
@@ -76,4 +82,18 @@ function hideModal(type) {
     } else if (type === 'delete') {
         document.getElementById("deleteModal").style.display = 'none';
     }
+}
+
+function showToast(message, duration = 2000) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.remove("hidden");
+    toast.classList.add("show");
+    console.log("토스트 실행됨")
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => {
+            toast.classList.add("hidden");
+        }, 300); // fade-out 애니메이션 시간과 맞춰줌
+    }, duration);
 }

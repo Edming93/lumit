@@ -16,6 +16,7 @@
         SELECT COUNT(*)
         FROM TB_LOGIN
         WHERE ROLE_ID != 3
+          AND STATUS = 1
     </select>
     <select id="findRecentUsers" resultType="com.lumit.shop.common.model.User">
         SELECT *

@@ -288,7 +288,7 @@ input.w100, select.w100 {
 .container {
     width: 100%;
     padding: 10px;
-    overflow-y: auto;
+    overflow-y: hidden;
     box-sizing: border-box;
     position: relative;
     height: 100vh;
@@ -304,10 +304,6 @@ input.w100, select.w100 {
     flex-direction: row;
     width: 100%;
     overflow: hidden;
-}
-
-.formContainer * {
-    margin-bottom: 1rem;
 }
 
 .nav-tab {
@@ -635,29 +631,58 @@ table tbody tr td .tblBtn.delBtn {
     width: 100px;
 }
 
-.formContainer {
+.adminFormLayout {
     display: flex;
     flex-direction: column;
-    width: 50%;
-    max-width: 400px;
+    gap: 2rem;
+    height: 50vh;
+    padding: 2rem;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.adminListBox {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow-y: auto;
+}
+
+.formContainer {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    overflow-y: auto;
+    max-height: 100%;
 }
 
 .inputContainer {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
-/*.inputContainer > * {*/
-/*    padding: 0.4rem;*/
-/*}*/
-
-.inputContainer > input {
-    border-bottom: 1px black solid;
-    width: 70%;
+.inputContainer label {
+    flex: 0 0 120px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #111827;
 }
 
+.inputContainer input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+}
 
 .pagination {
     display: flex;
@@ -760,14 +785,14 @@ input[type='file'] {
 }
 
 .delete_img_btn {
-	width: 15px;
-	cursor: pointer;
+    width: 15px;
+    cursor: pointer;
 }
 
 .delete_img_btn.active {
     position: absolute;
-    top:4px;
-    right:4px;
+    top: 4px;
+    right: 4px;
 }
 
 .form__label--file {
@@ -894,6 +919,7 @@ admin/member/user/updateManager
     background-color: #eef2ff;
 }
 
+
 .nameEditWrapper {
     display: flex;
     align-items: center;
@@ -941,11 +967,28 @@ admin/member/user/updateManager
 }
 
 .adminTable select {
-    width: auto;
+    width: 70%;
     min-width: 80px;
-    max-width: 120px;
-    padding: 4px 6px;
     font-size: 13px;
+    text-align: center;
+}
+
+.adminTable select {
+    min-width: 120px;
+    /*padding: 6px 10px;*/
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-sizing: border-box;
+    background-color: white;
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px 14px;
+}
+
+.adminTable select option {
+    white-space: nowrap;
 }
 
 .adminTable button {
@@ -960,6 +1003,7 @@ admin/member/user/updateManager
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+
 .adminTable button:hover {
     background-color: #4338ca;
     color: white;
@@ -971,21 +1015,77 @@ admin/member/user/updateManager
     cursor: not-allowed;
 }
 
-.adminTable i.fa-trash-can {
+.deleteBtn {
+    width: 36px;
+    height: 36px;
+    background-color: #ef4444 !important; /* 빨간 배경 */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
 
-    color: #ef4444;
-    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    transition: background-color 0.2s ease;
 }
 
-.adminTable i.fa-rotate-right {
-    color: var(--gray-color2);
+.deleteBtn:hover {
+    background-color: #dc2626 !important; /* hover 시 더 진하게 */
 }
+
+.deleteBtn i {
+    font-size: 16px;
+    color: white;
+    line-height: 1;
+    display: block;
+    margin: 0 auto;
+    padding-top: 4px;
+}
+
 
 .adminTable td:last-child {
     padding: 0;
     text-align: center;
     vertical-align: middle;
 }
+
+.btnWrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.restoreBtn {
+    width: 36px;
+    height: 36px;
+    background-color: #6366f1 !important;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.restoreBtn i {
+    font-size: 16px;
+    color: white;
+    line-height: 1;
+    display: block;
+    margin: 0 auto;
+    padding-top: 4px;
+}
+
+
+.restoreBtn:hover {
+    background-color: #4338ca; /* hover시 더 진해짐 */
+}
+
 
 .iconCell {
     display: flex;
@@ -1250,6 +1350,8 @@ li.active {
 
 .cateSearchBtn i {
     margin: 0 auto;
+    padding-top: 10px;
+
 }
 
 .categoryTopControls {
@@ -1470,4 +1572,31 @@ li.active {
 
 .registTable > tbody > tr > th {
     vertical-align: middle;
+}
+
+
+.toast {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.hidden {
+    display: none;
 }

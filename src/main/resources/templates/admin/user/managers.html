@@ -30,8 +30,8 @@
                     <div class="nameEditWrapper">
                         <input type="text" th:attr="oninput=|nameChange(event, this, '${admin.name}')|"
                                                 th:value="${admin.name}">
-                        <button th:attr="onclick=|updateInfo(this, '${admin.userId}', 'name')|" disabled class="editBtn"
-                                type="button">수정
+                        <button type="button" th:attr="onclick=|updateInfo(this, '${admin.userId}', 'name')|" disabled class="editBtn"
+                                >수정
                         </button>
                     </div>
                 </td>
@@ -41,13 +41,14 @@
                             <option th:selected="${admin.roleId == '1'}" value="1">총괄</option>
                             <option th:selected="${admin.roleId == '2'}" value="2">기본</option>
                         </select>
-                        <button th:attr="onclick=|updateInfo(this, '${admin.userId}', 'role')|" disabled class="editBtn">
+                        <button type="button" th:attr="onclick=|updateInfo(this, '${admin.userId}', 'role')|" disabled class="editBtn">
                             수정
                         </button>
                     </div>
                 </td>
                 <td>
-                    <div class="iconCell" th:attr="onclick=|deleteInfo('${admin.userId}')|"><i class="fa-solid fa-trash-can"></i>
+                    <div class="btnWrapper" th:attr="onclick=|deleteInfo('${admin.userId}')|">
+                        <button class="deleteBtn"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 </td>
             </tr>
@@ -80,8 +81,10 @@
                 <td th:text="${admin.modId}"></td>
                 <td th:text="${@StringUtils.setDetailDateFormat(admin.modDt)}"></td>
                 <td>
-                    <button th:attr="onclick=|updateInfo(null, '${admin.userId}', 'reset')|"><i class="fa-solid fa-rotate-right"></i></i>
+                    <div class="btnWrapper">
+                    <button class="restoreBtn" th:attr="onclick=|updateInfo(null, '${admin.userId}', 'reset')|"><i class="fa-solid fa-rotate-right"></i></i>
                     </button>
+                    </div>
                 </td>
             </tr>
             </tbody>
@@ -89,6 +92,7 @@
             </div>
         </div>
     </div>
+    <div id="toast" class="toast hidden"></div>
     </div>
     <script th:inline="javascript">
 
@@ -108,6 +112,32 @@
             }
         }
 
+        async function updateInfo(element, id, type) {
+            alert("???????")
+            let result = await showModal("update").then(async function (result) {
+                if (!result) {
+                    return false;
+                }
+                if (type == 'reset') {
+                    return await FETCH.patch(`/api/admin/info/${id}`, {})
+                }
+                const value = element.previousElementSibling.value
+
+                if (type == 'role') {
+                    return await FETCH.patch(`/api/admin/info/${id}`, {roleId: value})
+                } else if (type == 'name') {
+                    return await FETCH.patch(`/api/admin/info/${id}`, {name: value})
+                }
+            })
+            if (!result) {
+                showToast("오류 발생", 3000);
+                return false;
+            }
+
+            showToast("수정 완료");
+            hideModal("update")
+            // location.reload();
+        }
         /**
          *
          * @param event
@@ -131,26 +161,6 @@
          * @param id
          * @param userId
          */
-        async function updateInfo(element, id, type) {
-            let result = await showModal("update").then(async function (result) {
-                if (!result) {
-                    return false;
-                }
-                if (type == 'reset') {
-                    return await FETCH.patch(`/api/admin/info/${id}`, {})
-                }
-                const value = element.previousElementSibling.value
-                if (type == 'role') {
-                    return await FETCH.patch(`/api/admin/info/${id}`, {roleId: value})
-                } else if (type == 'name') {
-                    return await FETCH.patch(`/api/admin/info/${id}`, {name: value})
-                }
-            })
-            if (!result) {
-                return false;
-            }
-            location.reload();
-        }
 
         async function deleteInfo(id) {
             let result = await showModal("delete").then(async function (result) {
@@ -163,41 +173,8 @@
                 return false;
             }
             console.log(result)
-            location.reload();
+            // location.reload();
         }
 
-
-        async function showModal(type) {
-            if (type == 'update') {
-                document.getElementById("updateModal").style.display = 'flex'
-            } else if (type == 'delete') {
-                document.getElementById("deleteModal").style.display = 'flex'
-            }
-            return new Promise(function (resolve) {
-                const result = document.getElementById("modalResult");
-                result.addEventListener("change", function () {
-                    console.log(result.value)
-                    if (result.value == 'action') {
-                        hideModal(type)
-                        setTimeout(function () {
-                            resolve(true)
-                        }, 100);
-                    } else if (result.value == 'cancel') {
-                        hideModal(type)
-                        setTimeout(function () {
-                            resolve(false)
-                        }, 100);
-                    }
-                })
-            });
-        }
-
-        function hideModal(type) {
-            if (type == 'update') {
-                document.getElementById("updateModal").style.display = 'none'
-            } else if (type == 'delete') {
-                document.getElementById("deleteModal").style.display = 'none'
-            }
-        }
     </script>
 </div>
