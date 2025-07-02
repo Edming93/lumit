@@ -19,11 +19,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @RequestMapping("/list")
-    public String categoryMain(@RequestParam(required = false) Integer parentId, Model model) {
-        if (parentId != null) {
-            List<TbCategory> tbCategory = categoryService.selectChildrenCategories(parentId);
-            model.addAttribute("selected", tbCategory);
-        }
+    public String categoryMain() {
         return BASE_PATH + "/list";
     }
 
