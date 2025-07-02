@@ -420,28 +420,55 @@ document.addEventListener("DOMContentLoaded",async function () {
 		
 		if(selectId == 'uploadRep') {
 			for(var i=0; i< this.files.length; i++) {
+				let addFile = this.files[i];
+				
 				if(files.length >= 5){
 					alert('최대 5개까지 첨부 가능합니다.');
 					break;
+				}
+
+				let isDplChk = false;
+				
+				_.forEach(filesRep, function(file) {
+
+					if(file?.file) {
+						if(file?.file.name === addFile.name) {
+							isDplChk = true;
+						}
+						return;
+					}else if(file?.url) {
+						if(file?.name === addFile.name) {
+							isDplChk = true;
+						}
+						return;
+					}
+					
+				})
+				
+				if(isDplChk) {
+					alert('동일한 파일 명이 존재합니다.');
+					continue;
 				}
 				
 				var uploadSize = this.files[i].size;
 			
 				if(limitSize < uploadSize) {
 					alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
+					continue;
 				}else {
-					var file = this.files[i];
-								
-					file['idx'] = filesRep.length > 0 ? filesRep[filesRep.length-1].idx + 1 : 1;
+					
+					addFile['idx'] = filesRep.length > 0 ? filesRep[filesRep.length-1].idx + 1 : 1;
+					addFile['blobUrl'] = URL.createObjectURL(addFile);
 					
 					// 기존 detail에서 가져온 값이랑 포맷을 맞추기 위함
 					let newFile = {
-						idx: file['idx'],
-						name: file.name,
-						size: file.size,
-						type: file.type,
-						file: file, // ← 이게 있어야 img에 src를 넣을 때 createObjectURL 가능
+						idx: addFile['idx'],
+						name: addFile.name,
+						size: addFile.size,
+						type: addFile.type,
+						file: addFile, // ← 이게 있어야 img에 src를 넣을 때 createObjectURL 가능
 						isSaved: false, // 이건 기존 파일이 아님을 구분하기 위한 flag
+						blobUrl: addFile['blobUrl']
 					};
 					
 					filesRep.push(newFile);
@@ -467,7 +494,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 				}
 			}
 		}
-		
+		$(this).val('');
 		setFiles(selectId);
 	});
 
@@ -645,6 +672,7 @@ async function getProductDetail() {
     	    menuCd : file.menuCd,
     	    type: file.fileType, // 01: 서버, 02: 스토리지서버, 03: blob
     	    url: file.filePath, // 이미지 src로 사용할 URL
+    	    fileDvCd: file.fileDvCd,
     	    seq: file.fileSeq,
     	    isSaved: true, // 이건 기존 파일임을 구분하기 위한 flag
     	    fileId: file.fileId // 나중에 수정 저장할 때 필요하면 이 ID로 처리
@@ -759,6 +787,8 @@ function passwordSave() {
 // 파일 그리기
 function setFiles(id) {
 	const $imgList = $('#imgList');
+	console.log(filesRep);
+	console.log("-----------------------")
 	$imgList.empty(); // 이미지 슬롯 초기화
 	
 	let fileHtml = '';
@@ -783,7 +813,15 @@ function setFiles(id) {
 		for (let i = 0; i < maxSlots; i++) {
 			const file = filesRep[i]; // 배열에 있는 파일 또는 undefined
 		  
+			let blobUrl = '';
+			
+			if (file?.file) {
+			    URL.revokeObjectURL(file?.file); // 메모리 누수 방지
+			    blobUrl = URL.createObjectURL(file.file);
+			}
+			console.log(blobUrl);
 			const slot = i + 1;
+			
 			const span = $('<span>', {
 				class: 'figure',
 				id: 'repImg' + slot,
@@ -793,44 +831,44 @@ function setFiles(id) {
 			const anchor = $('<a>', {
 				class: 'rep_a' + (i === 0 && file ? ' selected active' : file ? ' active' : '')
 			});
+			
+			const img = $('<img>', {
+				class: 'noImg',
+				// 기존 DB정보와 새로 업로드된 이미지의 정보를 맞춰주기 위해서 setFiles에서 file.url / file.file의 형태로 넣어줌
+				src: file?.url ? 
+						file?.url.slice(2) + "/" + file?.newName 
+						: file?.file 
+								? file?.file.blobUrl
+										: '/images/noImage108x108.gif',
+				width: 108,
+				height: 108,
+				alt: ''
+			});
+			
+			anchor.append(img);
+			span.append(anchor);
 		
-		  const img = $('<img>', {
-		    class: 'noImg',
-		    // 기존 DB정보와 새로 업로드된 이미지의 정보를 맞춰주기 위해서 setFiles에서 file.url / file.file의 형태로 넣어줌
-		    src: file?.url ? 
-		    		file?.url.slice(2) + "/" + file?.newName 
-		    		: file?.file 
-		    				? URL.createObjectURL(file.file) 
-		    						: '/images/noImage108x108.gif',
-		    width: 108,
-		    height: 108,
-		    alt: ''
-		  });
+			// 파일이 있을 경우 삭제 버튼 추가
+			if (file) {
+			  const cancelBtn = $('<img>', {
+			    src: '/images/icons/icon_cancel.png',
+			    class: 'delete_img_btn active',
+			    'data-id': 'uploadRep',
+			    'data-idx': file.idx,
+			    onClick: 'deleteFileBtn(this)'
+			  });
+			  span.append(cancelBtn);
+			
+			  // 파일 이름 목록 영역 HTML 추가
+			  fileHtml += `
+			    <span class="select_file_box">
+			      <button type="button" data-id="uploadRep" data-idx="${file.idx}" class="delete_file_btn" onClick="deleteFileBtn(this)">x</button>
+			      ${file.name}
+			    </span>
+			  `;
+			}
 		
-		  anchor.append(img);
-		  span.append(anchor);
-		
-		  // 파일이 있을 경우 삭제 버튼 추가
-		  if (file) {
-		    const cancelBtn = $('<img>', {
-		      src: '/images/icons/icon_cancel.png',
-		      class: 'delete_img_btn active',
-		      'data-id': 'uploadRep',
-		      'data-idx': file.idx,
-		      onClick: 'deleteFileBtn(this)'
-		    });
-		    span.append(cancelBtn);
-		
-		    // 파일 이름 목록 영역 HTML 추가
-		    fileHtml += `
-		      <span class="select_file_box">
-		        <button type="button" data-id="uploadRep" data-idx="${file.idx}" class="delete_file_btn" onClick="deleteFileBtn(this)">x</button>
-		        ${file.name}
-		      </span>
-		    `;
-		  }
-		
-		  $imgList.append(span);
+			$imgList.append(span);
 		}
 	
 	  	if (filesRep.length !== 0) imgDragDrop(); // 드래그 이벤트 재연결
@@ -857,7 +895,13 @@ function setFiles(id) {
 
 function deleteFileBtn(elem) {
 	if(filesRep.length > 0) {
-		// 실제 대표이미지 파일 삭제
+// 		// 실제 대표이미지 파일 삭제
+// 		const img = elem.previousSibling.firstChild;
+// 		const imgUrl = img.src;
+		
+// 		// blob 중복되지 않도록 확인사살(?)작업
+// 		URL.revokeObjectURL(img.src);
+		
 		filesRep = _.filter(filesRep, function(file) {return file.idx != elem.getAttribute("data-idx")});
 	}else if(files.length > 0){
 		// 실제 상세 이미지 파일 삭제

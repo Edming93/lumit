@@ -569,6 +569,11 @@ function initTextEditor () {
 	            this.events.fire('errorPopap', [this.options.uploader.getMsg(resp)]);
 	        }
 	    },
+	    cleanHTML: {
+	    	  removeEmptyElements: false,
+	    	  replaceOldTags: false,
+	    	  removeAttributes: []
+	    },
 	    buttons: [
 	      // 텍스트 스타일 관련
 	      'bold', 'italic', 'underline', 'strikethrough', '|', 

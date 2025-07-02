@@ -727,8 +727,8 @@ input[type='file'] {
 }
 
 .form__input--img_wrap .figure .rep_a.active:hover::before {
-    content: '대표이미지로 설정';
-    color: var(--brand-color4);
+    content: '대표설정시 드래그';
+    color: var(--brand-color1);
     position: absolute;
     top: -35px;
     left: 50%;
@@ -1470,4 +1470,15 @@ li.active {
 
 .registTable > tbody > tr > th {
     vertical-align: middle;
+}
+
+/* 에디터 안에 CSS가 무시되지 않도록 강제 */
+.jodit-wysiwyg b,
+.jodit-wysiwyg strong {
+  font-weight: bold !important;
+}
+
+.jodit-wysiwyg i,
+.jodit-wysiwyg em {
+  font-style: italic !important;
 }

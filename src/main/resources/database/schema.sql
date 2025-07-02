@@ -177,6 +177,7 @@ create table if not exists TB_FILE
     FILE_TYPE      varchar(2)         NOT NULL COMMENT '01: 서버, 02: 스토리지서버, 03: blob',
     FILE_PATH      varchar(255)       NULL,
     FILE_EXTENSION varchar(255)       NULL,
+    FILE_SEQ       int(4)             NULL,
     REG_ID         varchar(50)        not null,
     REG_DT         timestamp          not null
 );
