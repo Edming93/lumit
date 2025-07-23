@@ -23,7 +23,7 @@
                 <th>권한 삭제</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="activeAdminBody" >
             <tr th:each="admin : ${adminList}">
                 <td th:text="${admin.userId}"></td>
                 <td>
@@ -37,18 +37,26 @@
                 </td>
                 <td>
                     <div class="roleEditWrapper">
-                        <select onchange="roleChange(event, this, '[[${admin.roleId}]]')">
-                            <option th:selected="${admin.roleId == '1'}" value="1">총괄</option>
-                            <option th:selected="${admin.roleId == '2'}" value="2">기본</option>
-                        </select>
-                        <button type="button" th:attr="onclick=|updateInfo(this, '${admin.userId}', 'role')|" disabled class="editBtn">
-                            수정
-                        </button>
+                        <div th:if="${#authentication.principal.userId } != ${admin.userId}" >
+                            <select onchange="roleChange(event, this, '[[${admin.roleId}]]')" >
+                                <option th:selected="${admin.roleId == '1'}" value="1">총괄</option>
+                                <option th:selected="${admin.roleId == '2'}" value="2">기본</option>
+                            </select>
+                            <button type="button" th:attr="onclick=|updateInfo(this, '${admin.userId}', 'role')|" disabled class="editBtn">
+                                수정
+                            </button>
+                        </div>
+                        <div class="lockedRole" th:unless="${#authentication.principal.userId } != ${admin.userId}"  title="본인의 계정은 수정할 수 없습니다.">
+                            <i class="fa-solid fa-lock"></i>
+                            <span th:if="${#authentication.principal.roleId == '1'}">총괄</span>
+                            <span th:if="${#authentication.principal.roleId == '2'}">총괄</span>
+                        </div>
                     </div>
                 </td>
                 <td>
                     <div class="btnWrapper" th:attr="onclick=|deleteInfo('${admin.userId}')|">
-                        <button class="deleteBtn"><i class="fa-solid fa-trash-can"></i></button>
+                        <button th:if="${#authentication.principal.userId } != ${admin.userId}" class="deleteBtn"><i class="fa-solid fa-trash-can"></i></button>
+                        <button th:if="${#authentication.principal.userId } == ${admin.userId}" style="background-color: #9F9F9F !important; opacity: 30%" class="deleteBtn" disabled title="본인의 권한은 삭제할 수 없습니다."><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 </td>
             </tr>
@@ -111,70 +119,106 @@
                 btn.removeAttribute("disabled")
             }
         }
-
-        async function updateInfo(element, id, type) {
-            alert("???????")
-            let result = await showModal("update").then(async function (result) {
-                if (!result) {
-                    return false;
-                }
-                if (type == 'reset') {
-                    return await FETCH.patch(`/api/admin/info/${id}`, {})
-                }
-                const value = element.previousElementSibling.value
-
-                if (type == 'role') {
-                    return await FETCH.patch(`/api/admin/info/${id}`, {roleId: value})
-                } else if (type == 'name') {
-                    return await FETCH.patch(`/api/admin/info/${id}`, {name: value})
-                }
-            })
-            if (!result) {
-                showToast("오류 발생", 3000);
-                return false;
-            }
-
-            showToast("수정 완료");
-            hideModal("update")
-            // location.reload();
-        }
-        /**
-         *
-         * @param event
-         * @param element{HTMLInputElement}
-         * @param value{string}
-         */
-        function nameChange(event, element, value) {
-            console.log(value);
-            console.log(event.target.value);
-            const btn = element.nextElementSibling
-            if (event.target.value == value) {
-                btn.setAttribute("disabled", true)
-            } else {
-                btn.removeAttribute("disabled")
-            }
-        }
-
-        /**
-         *
-         * @param element{HTMLSelectElement}
-         * @param id
-         * @param userId
-         */
-
-        async function deleteInfo(id) {
-            let result = await showModal("delete").then(async function (result) {
-                if (!result) {
-                    return false;
-                }
-                return await FETCH.delete(`/api/admin/info/${id}`)
-            })
-            if (!result) {
-                return false;
-            }
-            console.log(result)
-            // location.reload();
-        }
-
     </script>
+<script th:inline="javascript">
+
+    async function getSelf() {
+        return await FETCH.get("/api/admin/user/me")
+    }
+    async function fetchAdminData() {
+        try {
+            const [adminRes, oldRes] = await Promise.all([
+                fetch("/api/admin/user/list").then(r => r.json()),
+                fetch("/api/admin/user/old-list").then(r => r.json())
+            ]);
+
+            renderActiveAdmins(adminRes);
+            renderOldAdmins(oldRes);
+
+        } catch (err) {
+            console.error("관리자 데이터 불러오기 실패", err);
+        }
+    }
+
+    function renderActiveAdmins(adminList) {
+        const tbody = document.getElementById("activeAdminBody");
+        tbody.innerHTML = adminList.map(admin => `
+            <tr>
+                <td>${admin.userId}</td>
+                <td>
+                    <div class="nameEditWrapper">
+                        <input type="text" oninput="nameChange(event, this, '${admin.name}')" value="${admin.name}">
+                        <button type="button" onclick="updateInfo(this, '${admin.userId}', 'name')" disabled class="editBtn">수정</button>
+                    </div>
+                </td>
+                <td>
+                    ${renderRoleCell(admin)}
+                </td>
+                <td>
+                    <div class="btnWrapper" onclick="deleteInfo('${admin.userId}')">
+                        ${renderDeleteBtn(admin)}
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderOldAdmins(oldList) {
+        const tbody = document.getElementById("oldAdminBody");
+        tbody.innerHTML = oldList.map(admin => `
+            <tr>
+                <td style="padding: 0.8rem">${admin.userId}</td>
+                <td>${admin.name}</td>
+                <td>${admin.modId}</td>
+                <td>${admin.modDt}</td>
+                <td>
+                    <div class="btnWrapper">
+                        <button class="restoreBtn" onclick="updateInfo(null, '${admin.userId}', 'reset')">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderRoleCell(admin) {
+        const currentUserId = getSelf().then(data);
+        console.log(cu)
+        if (admin.userId !== currentUserId) {
+            return `
+                <div class="roleEditWrapper">
+                    <select onchange="roleChange(event, this, '${admin.roleId}')">
+                        <option value="1" ${admin.roleId == '1' ? 'selected' : ''}>총괄</option>
+                        <option value="2" ${admin.roleId == '2' ? 'selected' : ''}>기본</option>
+                    </select>
+                    <button type="button" onclick="updateInfo(this, '${admin.userId}', 'role')" disabled class="editBtn">수정</button>
+                </div>
+            `;
+        } else {
+            return `
+                <div class="lockedRole" title="본인의 계정은 수정할 수 없습니다.">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>${admin.roleId == '1' ? '총괄' : '기본'}</span>
+                </div>
+            `;
+        }
+    }
+
+    // function renderDeleteBtn(admin) {
+    //     const currentUserId = /* 로그인 유저 ID */;
+    //     if (admin.userId !== currentUserId) {
+    //         return `<button class="deleteBtn"><i class="fa-solid fa-trash-can"></i></button>`;
+    //     } else {
+    //         return `<button class="deleteBtn" disabled title="본인의 권한은 삭제할 수 없습니다."
+    //             style="background-color: #9F9F9F !important; opacity: 30%">
+    //             <i class="fa-solid fa-trash-can"></i>
+    //         </button>`;
+    //     }
+    // }
+
+    // 실행
+    // document.addEventListener("DOMContentLoaded", fetchAdminData);
+</script>
+
 </div>

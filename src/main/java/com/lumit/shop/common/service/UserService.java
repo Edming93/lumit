@@ -21,6 +21,9 @@ public interface UserService {
     public List<User> selectUserList();
 
     List<User> selectAdminList();
+    
+    List<User> sortWithCurrentUserFirst(List<User> users, String currentUserId);
+
 
     TbLogin selectByUserId(String userId);
 

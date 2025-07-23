@@ -22,12 +22,12 @@ async function updateInfo(element, id, type) {
             return false;
         }
         if (type == 'reset') {
-            return await FETCH.patch(`/api/admin/info/${id}`, {})
+            return await FETCH.patch(`/api/admin/user/info/${id}`, {})
         }
         const value = element.previousElementSibling.value
 
         if (type == 'role') {
-            return await FETCH.patch(`/api/admin/info/${id}`, {roleId: value})
+            return await FETCH.patch(`/api/admin/user/info/${id}`, {roleId: value})
         } else if (type == 'name') {
             return await FETCH.patch(`/api/admin/info/${id}`, {name: value})
         }
@@ -36,7 +36,12 @@ async function updateInfo(element, id, type) {
         showToast("오류 발생", 3000);
         return false;
     }
-
+    if (type === "name" || type === "role") {
+        element.setAttribute("disabled", true);
+    }
+    if (type == "reset") {
+        location.reload()
+    }
     showToast("수정 완료");
     hideModal("update")
     // location.reload();
@@ -47,7 +52,7 @@ async function deleteInfo(id) {
         if (!result) {
             return false;
         }
-        return await FETCH.delete(`/api/admin/info/${id}`);
+        return await FETCH.delete(`/api/admin/user/info/${id}`);
     });
     if (!result) {
         return false;
@@ -84,16 +89,3 @@ function hideModal(type) {
     }
 }
 
-function showToast(message, duration = 2000) {
-    const toast = document.getElementById("toast");
-    toast.textContent = message;
-    toast.classList.remove("hidden");
-    toast.classList.add("show");
-    console.log("토스트 실행됨")
-    setTimeout(() => {
-        toast.classList.remove("show");
-        setTimeout(() => {
-            toast.classList.add("hidden");
-        }, 300); // fade-out 애니메이션 시간과 맞춰줌
-    }, duration);
-}

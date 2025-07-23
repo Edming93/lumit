@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(value = "/{siteId}/product")
 public class ProductController {
     private final String PRODUCT_PATH = "/admin/product";
-    
+
     @Autowired
     MenuRepository menuRepository;
 
@@ -24,7 +24,7 @@ public class ProductController {
     public String selectProductList(ModelMap map) {
         return PRODUCT_PATH + "/list";
     }
-    
+
     @GetMapping("/regist")
     public String registProduct(ModelMap map) {
         return PRODUCT_PATH + "/regist";
@@ -32,7 +32,6 @@ public class ProductController {
 
     @GetMapping("/update/{productId}")
     public String updateProduct(ModelMap map, @PathVariable("productId") String productId) {
-    	map.addAttribute("productId", productId);
         return PRODUCT_PATH + "/update";
     }
 } 

@@ -52,7 +52,7 @@
                     </button>
                 </div>
                 <div class="categoryTopBtns">
-                    <button class="commBtn" id="nameChange">이름 변경</button>
+                    <button class="commBtn" id="nameChange">이름 변경(F2)</button>
                     <button class="commBtn" id="deleteCategory">삭제</button>
                 </div>
             </div>
@@ -100,6 +100,7 @@
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", () => {
             init();
+
         });
 
         const depthOrder = [".topCategoryList", ".middleCategoryList", ".bottomCategoryList", ".detailCategoryList"];
@@ -118,10 +119,33 @@
         };
 
         function init() {
+            const searchArea = document.querySelector(".searchArea")
+            searchArea.querySelector("button").addEventListener("click", () => {
+                getSearchResult(searchArea)
+            })
             getParent("", ".topCategoryList");
             bindAddCategoryBtns();
             bindSortable();
             bindContextMenu();
+        }
+
+        async function getSearchResult(searchArea) {
+            const target = searchArea.querySelector("input").value.trim()
+            if (target == "" || target == null) {
+                return false;
+            }
+            const result = await FETCH.get(`/rest/admin/category/search/${target}`)
+            showSearchResult(result)
+        }
+
+        function showSearchResult(result) {
+            if (result.length < 1) {
+                return false;
+            }
+            const searchArea = document.querySelector(".searchArea")
+            searchArea.innerHTML += `<div class="resultContainer"><div class="resultNumber"><span class="searchCurrent">1</span>/<span class="searchCount">${result.length}</span></div>
+<div class="pageBtnContainer"><button class="previous"><i class="fa-solid fa-chevron-left"></i></button><button class="next"><i class="fa-solid fa-chevron-right"></i></button></div>
+</div>`
         }
 
         function bindSortable() {
@@ -133,6 +157,11 @@
                         const draggedItem = evt.item;
                         const newParentList = evt.to;
                         const newParentCategoryId = getParentCategoryId(newParentList);
+                        if (evt.from == newParentList) {
+                            alert("같은 계층에서는 이동이 불가합니다.");
+                            location.reload();
+                            return;
+                        }
                         if (!newParentCategoryId) {
                             alert("상위 카테고리가 선택되어 있어야 이동 가능합니다.");
                             location.reload();
@@ -219,13 +248,14 @@
             const input = ul.querySelector(".newCate");
             const addBtn = ul.querySelector(".addCateBtn");
             const parentId = isTop ? null : ul.nextElementSibling.value;
-
             input.addEventListener("keypress", (e) => {
                 if (e.key === "Enter" && input.value.trim()) {
                     addNewCategory(input.value, parentId, className);
                 }
             });
+            input.focus();
             addBtn.addEventListener("click", () => addNewCategory(input.value, parentId, className));
+
         }
 
         async function addNewCategory(value, parentId, className) {
@@ -245,17 +275,19 @@
             const url = id ? `/rest/admin/category/list/${id}` : "/rest/admin/category/list";
             const result = await FETCH.get(url);
             renderCategoryList(result, className, id);
+            return result
         }
 
         function renderCategoryList(categories, ulSelector, parentId) {
             const ul = document.querySelector(ulSelector);
-            ul.innerHTML = categories.map(c => `
+            const html = categories.map(c => `
         <li>
             <input type="hidden" value="${c.categoryId}">
             <i class="fa-solid fa-folder"></i>
             <div>${c.categoryName}</div>
         </li>
     `).join("");
+            ul.innerHTML = html;
 
             if (ulSelector !== ".topCategoryList") {
                 ul.nextElementSibling.value = parentId;
@@ -264,13 +296,13 @@
             ul.querySelectorAll("li").forEach(li => {
                 li.addEventListener("click", () => handleCategoryClick(li, ulSelector));
             });
-
             updateCategoryCounts()
         }
 
         let lastClickedLi = null;
 
-        function handleCategoryClick(li, ulSelector) {
+        async function handleCategoryClick(li, ulSelector) {
+            window.currentTargetLi = li;
             li.parentElement.querySelectorAll("li").forEach(el => el.classList.remove("active"));
             li.classList.add("active");
 
@@ -287,11 +319,17 @@
             if (btn) btn.style.display = '';
 
             if (ulSelector in depthMap) {
-                getParent(parentId, depthMap[ulSelector].nextUl);
                 resetLowerLists(depthMap[ulSelector].resetFrom);
+                const result = await getParent(parentId, depthMap[ulSelector].nextUl);
+                if (result.length < 1) {
+                    createNewCategoryInput(depthMap[ulSelector].nextUl, false)
+                }
             } else if (ulSelector === ".topCategoryList") {
                 resetLowerLists(-1);
-                getParent(parentId, ".middleCategoryList");
+                const result = await getParent(parentId, ".middleCategoryList");
+                if (result.length < 1) {
+                    createNewCategoryInput(".middleCategoryList", true)
+                }
             }
         }
 

@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -45,31 +46,6 @@ public class UserController {
         return "admin/user/form";
     }
 
-    @PostMapping("/new-manager")
-    public String createUser(@Valid @ModelAttribute("tbLogin") TbLogin tbLogin,
-                             BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            return "admin/user/userForm";
-        }
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) auth.getPrincipal();
-
-        tbLogin.setEmail(tbLogin.getUserId() + "@lumit.com");
-        tbLogin.setPhone("추후 입력 요망");
-        tbLogin.setAddress("추후 입력 요망");
-        tbLogin.setRegId(currentUser.getUserId());
-        tbLogin.setPassword(passwordEncoder.encode(tbLogin.getPassword()));
-
-        try {
-            userService.insertAdmin(tbLogin);
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "admin/user/userForm";
-        }
-
-        return "redirect:/admin/user";
-    }
 
     @GetMapping("/customers")
     public String editUserForm(Model model) {
@@ -79,9 +55,19 @@ public class UserController {
 
     @GetMapping("/manager")
     public String manageAdmins(Model model) {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<User> adminList = userService.selectAdminList();
+        List<User> sortedList = new ArrayList<>();
+        sortedList.add(currentUser);
+        for (User user : adminList) {
+            if (!user.getUserId().equals(currentUser.getUserId())) {
+                sortedList.add(user);
+            }
+        }
+
         List<User> oldAdminList = userService.selectOldAdminList();
-        model.addAttribute("adminList", adminList);
+
+        model.addAttribute("adminList", sortedList);
         model.addAttribute("oldAdminList", oldAdminList);
         return "admin/user/managers";
     }

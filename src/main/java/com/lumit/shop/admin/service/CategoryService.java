@@ -22,4 +22,6 @@ public interface CategoryService {
     boolean isDuplicatedCategory(TbCategory category);
 
     ServiceCode updateCategory(TbCategory data);
+
+    List<TbCategory> searchCategory(String name);
 }

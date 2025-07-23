@@ -24,4 +24,6 @@ public interface CategoryRepository {
     TbCategory isDuplicatedCategory(TbCategory tbCategory);
 
     int updateCategory(TbCategory data);
+
+    List<TbCategory> searchCategory(String title);
 }

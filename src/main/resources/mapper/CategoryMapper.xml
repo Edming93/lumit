@@ -35,6 +35,11 @@
           and PARENT = #{parent}
           AND USE_YN = 'Y';
     </select>
+    <select id="searchCategory" resultType="TbCategory">
+        select *
+        from TB_CATEGORY
+        where CATEGORY_NAME LIKE '%${name}%'
+    </select>
     <update id="updateCategory" parameterType="TbCategory">
         update TB_CATEGORY
         SET

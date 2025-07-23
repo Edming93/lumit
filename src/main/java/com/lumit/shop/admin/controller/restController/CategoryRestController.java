@@ -61,6 +61,12 @@ public class CategoryRestController {
         return getResponseEntity(data);
     }
 
+    @GetMapping("/search/{name}")
+    public ResponseEntity<?> searchCategory(@PathVariable(value = "name") String name) {
+        List<TbCategory> categories = categoryService.searchCategory(name);
+        return ResponseEntity.ok(categories);
+    }
+
     private ResponseEntity<?> getResponseEntity(@RequestBody TbCategory data) {
         ServiceCode sc = categoryService.updateCategory(data);
         if (!sc.equals(ServiceCode.UPDATED)) {

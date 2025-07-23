@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -43,9 +44,17 @@ public class WebSecurityConfig {
                                 .passwordParameter("password")
                                 .successHandler(getSuccessHandler())
                 ).oauth2Login((auth) -> auth.loginPage("/login").userInfoEndpoint((end) -> end.userService(oAuth2UserService)).successHandler(getSuccessHandler()));
-        http.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).deleteCookies("JSESSIONID").invalidateHttpSession(false).logoutSuccessUrl("/"));
+        http.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).deleteCookies("JSESSIONID", "SESSION").invalidateHttpSession(true).logoutSuccessUrl("/"));
         return http.build();
     }
+
+//    application.properties
+//    server.servlet.session.timeout=1m 1분동안 미활동시 자동 로그아웃
+//
+//    @Bean
+//    public HttpSessionEventPublisher httpSessionEventPublisher() {
+//        return new HttpSessionEventPublisher();
+//    }
 
     @Bean
     public UserDetailsService getDetailsService() {

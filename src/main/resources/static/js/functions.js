@@ -231,3 +231,17 @@ function getSiteId(defaultUrl) {
         console.log("Invalid URL format");
     }
 }
+
+function showToast(message, duration = 2000) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.remove("hidden");
+    toast.classList.add("show");
+    console.log("토스트 실행됨")
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => {
+            toast.classList.add("hidden");
+        }, 300); // fade-out 애니메이션 시간과 맞춰줌
+    }, duration);
+}

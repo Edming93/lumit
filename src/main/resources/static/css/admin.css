@@ -1610,3 +1610,42 @@ li.active {
 .hidden {
     display: none;
 }
+
+.lockedRole {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 1rem; /* 전체 크기 통일 */
+}
+
+.lockedRole i {
+    font-size: 1.3rem;
+    line-height: 1;
+    margin-top: 1px; /* 조금 위로 올림 (텍스트랑 맞추기 위해) */
+}
+
+.searchCurrent {
+    background-color: #ffff00;
+}
+
+.resultNumber {
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+.resultNumber span {
+    padding: 0.2rem;
+}
+
+.resultContainer {
+    text-align: center;
+}
+
+.pageBtnContainer {
+    text-align: center;
+}
+
+.pageBtnContainer i {
+    padding: 0.5rem;
+    margin: 0;
+}

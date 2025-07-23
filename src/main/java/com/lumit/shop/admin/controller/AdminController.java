@@ -54,29 +54,6 @@ public class AdminController {
         return NEW_MANAGER_FORM;
     }
 
-    @PostMapping(MEMBER_PATH + "/newManager")
-    public String newManager(@Valid @ModelAttribute("tbLogin") TbLogin tbLogin, BindingResult bindingResult, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-
-        tbLogin.setEmail(tbLogin.getUserId() + "@lumit.com");
-        tbLogin.setPhone("추후 입력 요망");
-        tbLogin.setAddress("추후 입력 요망");
-        tbLogin.setRegId(user.getUserId());
-        tbLogin.setPassword(passwordEncoder.encode(tbLogin.getPassword()));
-        if (bindingResult.hasErrors()) {
-            return NEW_MANAGER_FORM;
-        }
-        try {
-            userService.insertAdmin(tbLogin);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("tbLogin", new TbLogin());
-            return NEW_MANAGER_FORM;
-        }
-        return "redirect:/admin";
-    }
 
     @GetMapping(MEMBER_PATH + "/updateUser")
     public String updateUser(Model model) {
@@ -85,10 +62,8 @@ public class AdminController {
 
     @GetMapping(MEMBER_PATH + "/updateManager")
     public String updateManager(Model model) {
-        List<User> adminList = userService.selectAdminList();
-        List<User> oldAdminList = userService.selectOldAdminList();
-        model.addAttribute("adminList", adminList);
-        model.addAttribute("oldAdminList", oldAdminList);
+        model.addAttribute("adminList", userService.selectAdminList());
+        model.addAttribute("oldAdminList", userService.selectOldAdminList());
         return BASE_URL + MEMBER_PATH + "/user/updateManager";
     }
 

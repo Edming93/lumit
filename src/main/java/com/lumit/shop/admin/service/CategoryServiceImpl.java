@@ -68,4 +68,9 @@ public class CategoryServiceImpl implements CategoryService {
         data.setModDt(LocalDateTime.now());
         return categoryRepository.updateCategory(data) > 0 ? ServiceCode.UPDATED : ServiceCode.UNKNOWN;
     }
+
+    @Override
+    public List<TbCategory> searchCategory(String name) {
+        return categoryRepository.searchCategory(name);
+    }
 }

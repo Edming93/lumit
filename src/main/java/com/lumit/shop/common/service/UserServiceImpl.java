@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +47,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> selectAdminList() {
         return userRepository.selectAdminList();
+    }
+
+    @Override
+    public List<User> sortWithCurrentUserFirst(List<User> users, String currentUserId) {
+        return Stream.concat(
+                users.stream().filter(u -> u.getUserId().equals(currentUserId)),
+                users.stream().filter(u -> !u.getUserId().equals(currentUserId))
+        ).collect(Collectors.toList());
     }
 
     @Override
