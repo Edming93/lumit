@@ -18,6 +18,17 @@
 	    	min-width: 115px;
 	    }
 	    
+	    .categoryContainer {
+	    	width: 100%;
+	    }
+	    
+	    .cateHead {
+	    	padding : 0;
+	    }
+	    
+	    .categoryTable {
+	    	height: 300px;
+	    }
 	</style>
 </head>
 
@@ -81,12 +92,43 @@
 	                    <tr>
 	                        <th class="alLeft bold">카테고리</th>
 	                        <td>
-	                            <select id="categoryId">
-	                            	<option>어떻게 매칭할지 고민</option>
-	                            	<option value="1">카테고리 관리 팝업 띄우기?</option>
-	                            	<option value="2">그 팝업안에서 카테고리 추가,수정,삭제가능?</option>
-	                            	<option value="3">별점관리는 어떤 테이블에서? just 상품리뷰 테이블에 의존?</option>
-	                            </select>
+	                        	<div id="container" class="categoryContainer">
+		                            <div class="categoryTable">
+							            <div class="cate largeCate">
+							                <div class="cateHead">대분류
+							                </div>
+							                <ul class='topCategoryList'></ul>
+							            </div>
+							            <div class="cate mediumCate">
+							                <div class="cateHead">중분류
+							                    <button style="display: none" id="newMiddleCateBtn"><i class="fa-solid fa-plus"></i></button>
+							                </div>
+							                <ul class="middleCategoryList"></ul>
+							                <input type="hidden" class="parentId">
+							            </div>
+							            <div class="cate smallCate">
+							                <div class="cateHead">소분류
+							                    <button style="display: none" id="newBottomCateBtn"><i class="fa-solid fa-plus"></i></button>
+							                </div>
+							                <ul class="bottomCategoryList"></ul>
+							                <input type="hidden" class="parentId">
+							            </div>
+							            <div class="cate detailCate">
+							                <div class="cateHead">상세분류
+							                    <button style="display: none" id="newDetailCateBtn"><i class="fa-solid fa-plus"></i></button>
+							                </div>
+							                <ul class="detailCategoryList"></ul>
+							                <input type="hidden" class="parentId">
+							            </div>
+							            <div id="contextMenu"
+							                 style="display:none; position:fixed; z-index:1000; background:#fff; border:1px solid #ccc; box-shadow: 2px 2px 6px rgba(0,0,0,0.2);">
+							                <ul style="list-style:none; margin:0; padding:5px 0;">
+							                    <li class="menuItem" data-action="rename" style="padding:5px 15px; cursor:pointer;">이름 변경</li>
+							                    <li class="menuItem" data-action="delete" style="padding:5px 15px; cursor:pointer;">삭제</li>
+							                </ul>
+							            </div>
+							    	</div>
+							    </div>
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -185,7 +227,7 @@
 		                            </select>
 	                            	<button type="button" id="addTagBtn" class="plusBtn"></button>
 	                            </div>
-	                            <div id="tagWrap"></div>
+	                            <div id="tagWrap" class="flex_align"></div>
 	                        </td>
 	                    </tr>
 <!-- 	                    <tr> -->
@@ -244,9 +286,7 @@ let beforeFiles = []; // 백업용
 let colorList = [];
 let tagList = [];
 let colorIdList = [];
-let colorText = "";
 let tagIdList = [];
-let tagText = "";
 let editor;
 let newJsonFilesList = [];
 
@@ -262,35 +302,36 @@ document.addEventListener("DOMContentLoaded",async function () {
 			colorIdList.push($("#color").val());
 
 			let colorCd = $("#color").find('option:selected').data("colorcd");
+			let colorVal = $("#color").find('option:selected').val();
 			
-			
-			if(colorText === "") {
-				colorCd?
-				colorText += `<input type='color' value=${colorCd} disabled> `+ $("#color").find("option:selected").text() 
-					: colorText += $("#color").find("option:selected").text();
-			}else {
-				colorCd ?
-				colorText += "　" + 
-				 `<input type='color' value=${colorCd} disabled> `+ $("#color").find("option:selected").text()
-				: colorText += "　" + $("#color").find("option:selected").text();
-			}
-		}
-		$("#colorWrap").html(colorText);
+			colorCd?
+			$("#colorWrap").append(
+				`<div class="flex_align" style="margin-right:10px;">
+				<input type="color" value=${colorCd} disabled> `+ $("#color").find("option:selected").text() 
+				+ `<img src="/images/icons/icon_cancel.png" width="15" style="margin-left:5px" class="delete_color_btn" data-val=${colorVal} onClick="deleteColorBtn(this)">
+				</div>`
+				
+			)
+			: $("#colorWrap").append($("#color").find("option:selected").text());
+
+		};
 	});
 	
 	$("#addTagBtn").on("click",function() {
+		
 		if(!tagIdList.some((item) => item === $("#tag").val())) {
 			tagIdList.push($("#tag").val());
+			
+			let tagVal = $("#tag").find('option:selected').val();
 
-			if(tagText === "") {
-				tagText += 
-					 $("#tag").find("option:selected").text();
-			}else {
-				tagText += "　" + 
-					$("#tag").find("option:selected").text();
-			}
+			$("#tagWrap").append(
+				`<div class="flex_align" style="margin-right:10px;">`
+				 + $("#tag").find("option:selected").text()
+				 + `<img src="/images/icons/icon_cancel.png" width="15" style="margin-left:5px" class="delete_tag_btn" data-val=${tagVal} onClick="deleteTagBtn(this)">
+				 </div>`
+			);
 		}
-		$("#tagWrap").html(tagText);
+		
 	});
 	
 	$("#disRate,#price").on("keyup",function(e) {
@@ -509,7 +550,84 @@ async function load() {
 	createSelectOptions("dpStatus", codeList.filter((item) => item.grpCd === 'DP_STATUS'),{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
 	createSelectOptions("color", colorList,{selectedValue:'0000', keyNm:"optionId", valueNm:"optionName", colorCd:"optionCd"});
 	createSelectOptions("tag", tagList,{selectedValue:'0001', keyNm:"optionId", valueNm:"optionName"});
+	
+	// 카테고리 영역
+	getParent("", ".topCategoryList");
+
 }
+
+async function getParent(id, className) {
+    const url = id ? `/rest/admin/category/list/${id}` : "/rest/admin/category/list";
+    const result = await FETCH.get(url);
+    renderCategoryList(result, className, id);
+    return result;
+}
+
+function renderCategoryList(categories, ulSelector, parentId) {
+    const ul = document.querySelector(ulSelector);
+    const html = categories.map(c => `
+	<li>
+	    <input type="hidden" value="${c.categoryId}">
+	    <i class="fa-solid fa-folder"></i>
+	    <div>${c.categoryName}</div>
+	</li>
+	`).join("");
+
+    ul.innerHTML = html;
+    
+    if (ulSelector !== ".topCategoryList") {
+        ul.nextElementSibling.value = parentId;
+    }
+
+    ul.querySelectorAll("li").forEach(li => {
+        li.addEventListener("click", () => handleCategoryClick(li, ulSelector));
+    });
+
+}
+
+const depthOrder = [".topCategoryList", ".middleCategoryList", ".bottomCategoryList", ".detailCategoryList"];
+
+const depthMap = {
+    ".topCategoryList": {nextUl: ".middleCategoryList", resetFrom: 0},
+    ".middleCategoryList": {nextUl: ".bottomCategoryList", resetFrom: 1},
+    ".bottomCategoryList": {nextUl: ".detailCategoryList", resetFrom: 2}
+};
+
+function resetLowerLists(fromDepth) {
+    for (let i = fromDepth + 1; i < depthOrder.length; i++) {
+        const ul = document.querySelector(depthOrder[i]);
+        ul.innerHTML = "";
+        ul.querySelectorAll("li.active").forEach(li => li.classList.remove("active"));
+
+        const hidden = ul.nextElementSibling;
+        if (hidden && hidden.classList.contains("parentId")) hidden.value = "";
+    }
+}
+
+let lastClickedLi = null;
+
+function handleCategoryClick(li, ulSelector) {
+    li.parentElement.querySelectorAll("li").forEach(el => el.classList.remove("active"));
+    li.classList.add("active");
+
+    lastClickedLi = li;
+
+    const parentId = li.querySelector("input").value;
+    const ul = document.querySelector(ulSelector);
+
+    if (ulSelector !== ".topCategoryList" && ulSelector !== ".detailCategoryList") {
+        ul.parentElement.nextElementSibling.querySelector(".parentId").value = parentId;
+    }
+
+    if (ulSelector in depthMap) {
+        getParent(parentId, depthMap[ulSelector].nextUl);
+        resetLowerLists(depthMap[ulSelector].resetFrom);
+    } else if (ulSelector === ".topCategoryList") {
+        resetLowerLists(-1);
+        getParent(parentId, ".middleCategoryList");
+    }
+}
+
 
 function initTextEditor () {
 	editor = Jodit.make('#editor', {
@@ -779,6 +897,24 @@ function deleteFileBtn(elem) {
 	// $("#imgList .figure img").attr("src","/images/noImage108x108.gif");
 	setFiles(elem.getAttribute("data-id"));
 };
+
+function deleteColorBtn(elem) {
+	if(colorIdList.length > 0) {
+		const colId = elem.getAttribute("data-val");
+		
+		colorIdList = colorIdList.filter(col => col !== colId);
+ 		elem.parentNode.remove();
+	}
+}
+
+function deleteTagBtn(elem) {
+	if(tagIdList.length > 0) {
+		const tagId = elem.getAttribute("data-val");
+		
+		tagIdList = tagIdList.filter(tag => tag !== tagId);
+ 		elem.parentNode.remove();
+	}
+}
 
 // 비동기 통신
 async function setData(formData,url) {

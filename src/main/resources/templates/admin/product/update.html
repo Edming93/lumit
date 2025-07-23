@@ -184,7 +184,7 @@
 		                            </select>
 	                            	<button type="button" id="addTagBtn" class="plusBtn"></button>
 	                            </div>
-	                            <div id="tagWrap"></div>
+	                            <div id="tagWrap" class="flex_align"></div>
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -227,9 +227,7 @@ let beforeFiles = []; // 백업용
 let colorList = [];
 let tagList = [];
 let colorIdList = [];
-let colorText = "";
 let tagIdList = [];
-let tagText = "";
 let editor;
 let newJsonFilesList = [];
 
@@ -241,34 +239,34 @@ document.addEventListener("DOMContentLoaded",async function () {
 			colorIdList.push($("#color").val());
 
 			let colorCd = $("#color").find('option:selected').data("colorcd");
+			let colorVal = $("#color").find('option:selected').val();
 			
-			if(colorText === "") {
-				colorCd?
-				colorText += `<input type='color' value=${colorCd} disabled> `+ $("#color").find("option:selected").text() 
-					: colorText += $("#color").find("option:selected").text();
-			}else {
-				colorCd ?
-				colorText += "　" + 
-				 `<input type='color' value=${colorCd} disabled> `+ $("#color").find("option:selected").text()
-				: colorText += "　" + $("#color").find("option:selected").text();
-			}
+			colorCd?
+			$("#colorWrap").append(
+				`<div class="flex_align" style="margin-right:10px;">
+				<input type="color" value=${colorCd} disabled> `+ $("#color").find("option:selected").text() 
+				+ `<img src="/images/icons/icon_cancel.png" width="15" style="margin-left:5px; cursor: pointer;" class="delete_color_btn" data-val=${colorVal} onClick="deleteColorBtn(this)">
+				</div>`
+				
+			)
+			: $("#colorWrap").append($("#color").find("option:selected").text());
 		}
-		$("#colorWrap").html(colorText);
 	});
 	
 	$("#addTagBtn").on("click",function() {
 		if(!tagIdList.some((item) => item === $("#tag").val())) {
 			tagIdList.push($("#tag").val());
 
-			if(tagText === "") {
-				tagText += 
-					 $("#tag").find("option:selected").text();
-			}else {
-				tagText += "　" + 
-						$("#tag").find("option:selected").text();
-			}
+				
+			let tagVal = $("#tag").find('option:selected').val();
+
+			$("#tagWrap").append(
+				`<div class="flex_align" style="margin-right:10px;">`
+				 + $("#tag").find("option:selected").text()
+				 + `<img src="/images/icons/icon_cancel.png" width="15" style="margin-left:5px cursor: pointer;" class="delete_tag_btn" data-val=${tagVal} onClick="deleteTagBtn(this)">
+				 </div>`
+			);
 		}
-		$("#tagWrap").html(tagText);
 	});
 	
 	$("#disRate,#price").on("keyup",function(e) {
@@ -706,22 +704,20 @@ async function getColorMappingList() {
     colorList = res.data.colorList;
     
     _.forEach(colorList, function(color){
-    	colorIdList.push(color.optionId);
+    	let colorVal = color.optionId;
+    	colorIdList.push(colorVal);
     	
-    	if(colorText === "") {
-    		color.colorCd ?
-			colorText += 
-				`<input type='color' value=${color.colorCd} disabled> `+ color.colorName 
-			: color.colorName;
-    	} else {
-    		color.colorCd ?
-    		colorText += "　" +
-    		`<input type='color' value=${color.colorCd} disabled> `+ color.colorName 
-			: color.colorName;
-    	};
+    	
+    	color.colorCd?
+		$("#colorWrap").append(
+			`<div class="flex_align" style="margin-right:10px;">
+			<input type='color' value=${color.colorCd} disabled>`+ color.colorName 
+			+ `<img src="/images/icons/icon_cancel.png" width="15" style="margin-left:5px; cursor: pointer;" class="delete_color_btn" data-val=${colorVal} onClick="deleteColorBtn(this)">
+			</div>`
+		)
+		: color.colorName;
 	})
     
-	$("#colorWrap").html(colorText);
 }
 
 async function getTagMappingList() {
@@ -734,16 +730,18 @@ async function getTagMappingList() {
     tagList = res.data.tagList;
     
     _.forEach(tagList, function(tag){
-    	tagIdList.push(tag.optionId);
+    	let tagVal = tag.optionId;
+    	tagIdList.push(tagVal);
     	
-    	if(tagText === "") {
-			tagText += tag.tagName;
-		}else {
-			tagText += "　" + tag.tagName;
-		}
+    	$("#tagWrap").append(
+			`<div class="flex_align" style="margin-right:10px;">`
+			 + tag.tagName
+			 + `<img src="/images/icons/icon_cancel.png" width="15" style="margin-left:5px; cursor: pointer;" class="delete_tag_btn" data-val=${tagVal} onClick="deleteTagBtn(this)">
+			 </div>`
+		);
+
     });
     
-    $("#tagWrap").html(tagText);
 }
 
 
@@ -911,6 +909,24 @@ function deleteFileBtn(elem) {
 	// $("#imgList .figure img").attr("src","/images/noImage108x108.gif");
 	setFiles(elem.getAttribute("data-id"));
 };
+
+function deleteColorBtn(elem) {
+	if(colorIdList.length > 0) {
+		const colId = elem.getAttribute("data-val");
+		
+		colorIdList = colorIdList.filter(col => col !== colId);
+ 		elem.parentNode.remove();
+	}
+}
+
+function deleteTagBtn(elem) {
+	if(tagIdList.length > 0) {
+		const tagId = elem.getAttribute("data-val");
+		
+		tagIdList = tagIdList.filter(tag => tag !== tagId);
+ 		elem.parentNode.remove();
+	}
+}
 
 // 비동기 통신
 async function setData(formData,url) {
