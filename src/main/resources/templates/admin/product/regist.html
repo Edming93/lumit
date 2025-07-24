@@ -20,20 +20,49 @@
 	    
 	    .categoryContainer {
 	    	width: 100%;
-	    	max-height: 305px;
+	    	max-height: 350px;
 	    }
 	    
 	    .cateHead {
-	    	padding : 0;
+	    	font-size: 1rem;
+		    width: 100%;
+		    background-color: var(--brand-color1);
+		    color: white;
+		    padding: 0px 0px;
+		    position: relative;
+		    height: 35px;
+		    justify-content: center;
+		    align-items: center;
+		    display: flex;
 	    }
 	    
 	    .categoryTable {
 	        min-height: 300px;
+	        max-height:300px;
 	    }
 	    
 	    .cate li {
 	    	padding: 0.0rem 0.3rem 0rem 0.3rem;
     		box-sizing: border-box;
+	    }
+	    
+	    .cate_add_btn {
+	    	width: 100px;
+		    line-height: 25px;
+		    background: #E7DBCD;
+		    border-radius: 5px;
+		    color: #876453;
+		    border: 1px solid #CAAB9C;
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    cursor: pointer;
+	    }
+	    
+	    #cateAddBtnArea {
+	    	padding: 10px 0px;
+    	    display: flex;
+    	    justify-content: flex-end;
 	    }
 	</style>
 </head>
@@ -99,6 +128,9 @@
 	                        <th class="alLeft bold">카테고리</th>
 	                        <td>
 	                        	<div id="container" class="categoryContainer">
+	                        		<div id="cateAddBtnArea">
+						                <button class="cate_add_btn" id="cateAddBtn">선택 후 추가</button>
+						            </div>
 		                            <div class="categoryTable">
 							            <div class="cate largeCate">
 							                <div class="cateHead">대분류
@@ -123,16 +155,10 @@
 							                <ul class="detailCategoryList"></ul>
 							                <input type="hidden" class="parentId">
 							            </div>
-							            <div id="contextMenu"
-							                 style="display:none; position:fixed; z-index:1000; background:#fff; border:1px solid #ccc; box-shadow: 2px 2px 6px rgba(0,0,0,0.2);">
-							                <ul style="list-style:none; margin:0; padding:5px 0;">
-							                    <li class="menuItem" data-action="rename" style="padding:5px 15px; cursor:pointer;">이름 변경</li>
-							                    <li class="menuItem" data-action="delete" style="padding:5px 15px; cursor:pointer;">삭제</li>
-							                </ul>
-							            </div>
 							    	</div>
 							    </div>
 	                        </td>
+	                        
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">상품명</th>
