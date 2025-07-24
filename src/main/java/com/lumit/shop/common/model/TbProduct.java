@@ -12,7 +12,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class TbProduct{
+public class TbProduct {
 	private String productId;
 	private String productName;
 	private String productCd;
