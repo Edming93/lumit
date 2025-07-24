@@ -20,6 +20,7 @@
 	    
 	    .categoryContainer {
 	    	width: 100%;
+	    	max-height: 305px;
 	    }
 	    
 	    .cateHead {
@@ -27,7 +28,12 @@
 	    }
 	    
 	    .categoryTable {
-	    	height: 300px;
+	        min-height: 300px;
+	    }
+	    
+	    .cate li {
+	    	padding: 0.0rem 0.3rem 0rem 0.3rem;
+    		box-sizing: border-box;
 	    }
 	</style>
 </head>
@@ -101,21 +107,18 @@
 							            </div>
 							            <div class="cate mediumCate">
 							                <div class="cateHead">중분류
-							                    <button style="display: none" id="newMiddleCateBtn"><i class="fa-solid fa-plus"></i></button>
 							                </div>
 							                <ul class="middleCategoryList"></ul>
 							                <input type="hidden" class="parentId">
 							            </div>
 							            <div class="cate smallCate">
 							                <div class="cateHead">소분류
-							                    <button style="display: none" id="newBottomCateBtn"><i class="fa-solid fa-plus"></i></button>
 							                </div>
 							                <ul class="bottomCategoryList"></ul>
 							                <input type="hidden" class="parentId">
 							            </div>
 							            <div class="cate detailCate">
 							                <div class="cateHead">상세분류
-							                    <button style="display: none" id="newDetailCateBtn"><i class="fa-solid fa-plus"></i></button>
 							                </div>
 							                <ul class="detailCategoryList"></ul>
 							                <input type="hidden" class="parentId">
@@ -606,7 +609,7 @@ function resetLowerLists(fromDepth) {
 
 let lastClickedLi = null;
 
-function handleCategoryClick(li, ulSelector) {
+async function handleCategoryClick(li, ulSelector) {
     li.parentElement.querySelectorAll("li").forEach(el => el.classList.remove("active"));
     li.classList.add("active");
 
