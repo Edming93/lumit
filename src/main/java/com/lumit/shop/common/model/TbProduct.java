@@ -43,9 +43,6 @@ public class TbProduct{
 	private List<String> tagIdList = new ArrayList<>();
 	private List<String> jsonFilesList;
 	private String newJsonFilesList;
-
-
-	
-	
+	private List<String> cateIdList = new ArrayList<>();
 	
 }

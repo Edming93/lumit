@@ -303,8 +303,8 @@
 		            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
 		                <button type="button" id="registBtn" class="commBtn mgl10 size100">등록</button>
 	                </div>
-	                <div class="btnAreaRight">
-	                </div>
+<!-- 	                <div class="btnAreaRight"> -->
+<!-- 	                </div> -->
 	            </div>
 	        </form>
 	    </div>
@@ -330,6 +330,9 @@ let colorIdList = [];
 let tagIdList = [];
 let editor;
 let newJsonFilesList = [];
+// 카테고리 영역
+let selectCateIdList = new Set();
+let selectCateTxtList = [];
 
 document.addEventListener("DOMContentLoaded",async function () {
 	load();
@@ -438,9 +441,10 @@ document.addEventListener("DOMContentLoaded",async function () {
 				return;
 			}
 			
-			if($("#categoryId").val() != "") {
-				formData.append("categoryId",$("#categoryId").val() ?? '');
-			}
+// 			if($("#categoryId").val() != "") {
+// 				formData.append("categoryId",$("#categoryId").val() ?? '');
+// 			}
+
 			if($("#optionId").val() != ""){
 				formData.append("optionId",$("#optionId").val() ?? '');
 			}
@@ -449,6 +453,9 @@ document.addEventListener("DOMContentLoaded",async function () {
 			}
 			if($("#status").val() != "") {
 				formData.append("status",$("#status").val() ?? '');
+			}
+			if(selectCateIdList.size > 0) {
+				formData.append("cateIdList",Array.from(selectCateIdList));
 			}
 
 			formData.append("colorIdList",colorIdList ?? []);
@@ -671,10 +678,6 @@ async function handleCategoryClick(li, ulSelector) {
 
 }
 
-
-let selectCateIdList = new Set();
-let selectCateTxtList = [];
-
 function selectCateAddBtnClick() {
 	const currentIdList = [];
     const currentTxtList = [];
@@ -772,7 +775,6 @@ function selectCateAddBtnClick() {
     // 디버깅 출력
     console.log('선택된 전체 경로들:', selectCateTxtList);
     console.log('선택된 ID들 (중복 제거):', selectCateIdList);
-
 }
 
 

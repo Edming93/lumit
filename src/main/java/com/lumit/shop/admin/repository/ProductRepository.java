@@ -26,9 +26,11 @@ public interface ProductRepository {
     
     public int insertColorMap(TbProduct product);
     public int insertTagMap(TbProduct product);
+    public int insertProductCategoryMap(TbProduct product);
     
     public List<TbMapping> selectColorMapList(TbProduct product);
     public List<TbMapping> selectTagMapList(TbProduct product);
+    
 
 }
 

@@ -71,6 +71,7 @@ public class ProductServiceImpl implements ProductService {
         product.setModId(SecurityUtils.getPrincipal().getUserId());
 
         retMap.put("insert", productRepository.insertProduct(product));
+        retMap.put("proCateIntert", productRepository.insertProductCategoryMap(product));
 
         // 옵션 테이블에 데이터 추가
         if (product.getColorIdList().size() != 0) productRepository.insertColorMap(product);
