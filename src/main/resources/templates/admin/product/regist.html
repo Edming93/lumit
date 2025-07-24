@@ -64,6 +64,14 @@
     	    display: flex;
     	    justify-content: flex-end;
 	    }
+	    
+	    .categoryList {
+	    	margin-top: 10px;
+	    	width: 100%;
+	    	min-height:100px;
+	    	border: 1px solid var(--brand-color1);
+	    	border-radius: 0.3rem;
+	    }
 	</style>
 </head>
 
@@ -129,7 +137,7 @@
 	                        <td>
 	                        	<div id="container" class="categoryContainer">
 	                        		<div id="cateAddBtnArea">
-						                <button class="cate_add_btn" id="cateAddBtn">선택 후 추가</button>
+						                <button class="cate_add_btn" id="cateAddBtn" onClick="selectCateAddBtnClick()">선택 후 추가</button>
 						            </div>
 		                            <div class="categoryTable">
 							            <div class="cate largeCate">
@@ -156,6 +164,10 @@
 							                <input type="hidden" class="parentId">
 							            </div>
 							    	</div>
+							    </div>
+							    <div class="categoryList">
+							    	<div class="cateHead">선택된 상품분류</div>
+							    		<ul class="cateBody"></ul>
 							    </div>
 	                        </td>
 	                        
@@ -636,14 +648,15 @@ function resetLowerLists(fromDepth) {
 let lastClickedLi = null;
 
 async function handleCategoryClick(li, ulSelector) {
-    li.parentElement.querySelectorAll("li").forEach(el => el.classList.remove("active"));
-    li.classList.add("active");
+
+	li.parentElement.querySelectorAll("li").forEach(el => el.classList.remove("active"));
+	li.classList.add("active");
 
     lastClickedLi = li;
 
     const parentId = li.querySelector("input").value;
     const ul = document.querySelector(ulSelector);
-
+    
     if (ulSelector !== ".topCategoryList" && ulSelector !== ".detailCategoryList") {
         ul.parentElement.nextElementSibling.querySelector(".parentId").value = parentId;
     }
@@ -655,6 +668,57 @@ async function handleCategoryClick(li, ulSelector) {
         resetLowerLists(-1);
         getParent(parentId, ".middleCategoryList");
     }
+
+}
+
+
+let selectCateIdList = new Set();
+let selectCateTxtList = [];
+
+function selectCateAddBtnClick() {
+	const currentIdList = [];
+    const currentTxtList = [];
+	
+	const cateBoxes = document.querySelectorAll('.categoryTable .cate');
+	
+	cateBoxes.forEach(function (cateBox) {
+		const activeLi = cateBox.querySelector('li.active');
+	
+		if (activeLi) {
+			const input = activeLi.querySelector('input[type="hidden"]');
+			const div = activeLi.querySelector('div');
+			
+			if(input && div) {
+				currentIdList.push(input.value);
+				currentTxtList.push(div.textContent.trim());
+			}
+		}
+	});
+	
+	console.log('선택된 카테고리 ID:', currentIdList);
+	console.log('선택된 카테고리 텍스트:', currentTxtList);
+	
+	const newPathTxt = currentTxtList.join(' > ');
+	console.log(newPathTxt);
+	const alreadyExists = selectCateTxtList.includes(newPathTxt);
+	console.log(alreadyExists)
+	
+	if(!alreadyExists) {
+		const ul = document.querySelector('.cateBody');
+		const li = document.createElement('li');
+		li.textContent = newPathTxt;
+		li.style.cssText = "padding-left: 20px;"
+		ul.appendChild(li);
+		
+		selectCateTxtList.push(newPathTxt);
+	}
+	
+	currentIdList.forEach(id => selectCateIdList.add(id));
+	
+	// TODO : 디버깅용 출력, 보여주고 지울것
+    console.log('선택된 전체 경로들:', selectCateTxtList);
+    console.log('선택된 ID들 (중복 제거):', Array.from(selectCateIdList));
+
 }
 
 
