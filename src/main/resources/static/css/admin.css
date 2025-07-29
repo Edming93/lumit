@@ -297,6 +297,7 @@ input.w100, select.w100 {
 
 .contentWrap {
     margin-top: 30px;
+    width: 55vw;
 }
 
 .wrapper {
@@ -602,7 +603,7 @@ table tbody tr td .tblBtn.delBtn {
 }
 
 .boardContainer {
-    width: 55vw;
+	width:100%;   
 }
 
 
