@@ -88,4 +88,9 @@ public class ProductRestController {
         return ResponseBuilder.build(productService.selectProductTagMappingList(product), HttpStatus.OK);
     }
 
+    @ResponseBody
+    @PostMapping("/cate-list")
+    public ResponseEntity<Map<String, Object>> selectProductCateList(@RequestBody TbProduct product) {
+        return ResponseBuilder.build(productService.selectProductCateMappingList(product), HttpStatus.OK);
+    }
 } 

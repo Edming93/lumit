@@ -30,6 +30,7 @@ public interface ProductRepository {
     
     public List<TbMapping> selectColorMapList(TbProduct product);
     public List<TbMapping> selectTagMapList(TbProduct product);
+    public List<TbMapping> selectCateMapList(TbProduct product);
     
 
 }

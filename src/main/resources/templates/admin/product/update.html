@@ -17,6 +17,61 @@
 	    .alLeft {
 	    	min-width: 115px;
 	    }
+	    
+	    .categoryContainer {
+	    	width: 100%;
+	    	max-height: 350px;
+	    }
+	    
+	    .cateHead {
+	    	font-size: 1rem;
+		    width: 100%;
+		    background-color: var(--brand-color1);
+		    color: white;
+		    padding: 0px 0px;
+		    position: relative;
+		    height: 35px;
+		    justify-content: center;
+		    align-items: center;
+		    display: flex;
+	    }
+	    
+	    .categoryTable {
+	        min-height: 300px;
+	        max-height:300px;
+	    }
+	    
+	    .cate li {
+	    	padding: 0.0rem 0.3rem 0rem 0.3rem;
+    		box-sizing: border-box;
+	    }
+	    
+	    .cate_add_btn {
+	    	width: 100px;
+		    line-height: 25px;
+		    background: #E7DBCD;
+		    border-radius: 5px;
+		    color: #876453;
+		    border: 1px solid #CAAB9C;
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    cursor: pointer;
+	    }
+	    
+	    #cateAddBtnArea {
+	    	padding: 10px 0px;
+    	    display: flex;
+    	    justify-content: flex-end;
+	    }
+	    
+	    .categoryList {
+	    	margin-top: 10px;
+	    	width: 100%;
+	    	min-height:100px;
+	    	border: 1px solid var(--brand-color1);
+	    	border-radius: 0.3rem;
+	    }
 	</style>
 </head>
 
@@ -27,7 +82,7 @@
 
 	<div class="contentWrap">
 	    <div class="boardContainer wsNorap">
-	        <form id="registForm"  method="post" entype="multipart/form-data">
+	        <form id="registForm"  method="post" entype="multipart/form-data" onsubmit="return false">
 				
 	            <table class="registTable">
 	                <colgroup>
@@ -80,12 +135,40 @@
 	                    <tr>
 	                        <th class="alLeft bold">카테고리</th>
 	                        <td>
-	                            <select id="categoryId">
-	                            	<option>어떻게 매칭할지 고민</option>
-	                            	<option value="1">카테고리 관리 팝업 띄우기?</option>
-	                            	<option value="2">그 팝업안에서 카테고리 추가,수정,삭제가능?</option>
-	                            	<option value="3">별점관리는 어떤 테이블에서? just 상품리뷰 테이블에 의존?</option>
-	                            </select>
+	                        	<div id="container" class="categoryContainer">
+	                        		<div id="cateAddBtnArea">
+						                <button type="button" class="cate_add_btn" id="cateAddBtn" onClick="selectCateAddBtnClick()">선택 후 추가</button>
+						            </div>
+		                            <div class="categoryTable">
+							            <div class="cate largeCate">
+							                <div class="cateHead">대분류
+							                </div>
+							                <ul class='topCategoryList'></ul>
+							            </div>
+							            <div class="cate mediumCate">
+							                <div class="cateHead">중분류
+							                </div>
+							                <ul class="middleCategoryList"></ul>
+							                <input type="hidden" class="parentId">
+							            </div>
+							            <div class="cate smallCate">
+							                <div class="cateHead">소분류
+							                </div>
+							                <ul class="bottomCategoryList"></ul>
+							                <input type="hidden" class="parentId">
+							            </div>
+							            <div class="cate detailCate">
+							                <div class="cateHead">상세분류
+							                </div>
+							                <ul class="detailCategoryList"></ul>
+							                <input type="hidden" class="parentId">
+							            </div>
+							    	</div>
+							    </div>
+							    <div class="categoryList">
+							    	<div class="cateHead">선택된 상품분류</div>
+							    		<ul class="cateBody"></ul>
+							    </div>
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -230,6 +313,11 @@ let colorIdList = [];
 let tagIdList = [];
 let editor;
 let newJsonFilesList = [];
+//카테고리 영역
+let selectCateIdList = new Set();
+let selectCateTxtList = [];
+let currentIdList = [];
+let currentTxtList = [];
 
 document.addEventListener("DOMContentLoaded",async function () {
 	load();
@@ -367,9 +455,6 @@ document.addEventListener("DOMContentLoaded",async function () {
 				formData.append("productId", productId ?? '');
 			}
 			
-			if($("#categoryId").val() != "") {
-				formData.append("categoryId",$("#categoryId").val() ?? '');
-			}
 			if($("#optionId").val() != ""){
 				formData.append("optionId",$("#optionId").val() ?? '');
 			}
@@ -378,6 +463,9 @@ document.addEventListener("DOMContentLoaded",async function () {
 			}
 			if($("#status").val() != "") {
 				formData.append("status",$("#status").val() ?? '');
+			}
+			if(selectCateIdList.size > 0) {
+				formData.append("cateIdList",Array.from(selectCateIdList));
 			}
 
 			formData.append("colorIdList",colorIdList ?? []);
@@ -514,6 +602,305 @@ async function load() {
 	createSelectOptions("dpStatus", codeList.filter((item) => item.grpCd === 'DP_STATUS'),{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
 	createSelectOptions("color", colorList,{selectedValue:'0000', keyNm:"optionId", valueNm:"optionName", colorCd:"optionCd"});
 	createSelectOptions("tag", tagList,{selectedValue:'0001', keyNm:"optionId", valueNm:"optionName"});
+	
+	// 카테고리 영역
+	getParent("", ".topCategoryList");
+	getCategories();
+	
+
+}
+
+async function getCategories() {
+	let params = {
+		productId : productId,
+	};
+	
+	const res = await axios.post('/rest/' + siteId + '/product/cate-list', params);
+	
+	const categories = res.data.cateList;
+	
+	if(!res || !res.data) {
+		alert("등록에 실패하였습니다.");
+		return;
+	}
+	
+	// cateId를 기준으로 cate정보를 넣음
+	const categoryMap = {};
+	categories.forEach(c => {
+		categoryMap[c.categoryId] = c;
+	});
+	
+	console.log("categoryMap:::");
+	console.log(categoryMap);
+	
+	// 최하위 노드 (상세 분류) 찾기
+	const leafNodes = categories.filter(c => {
+		return !categories.some(other => other.parent === c.categoryId);
+	});
+	
+	console.log(leafNodes);
+	
+	// 각 최하위 노드에서 경로 구성
+	leafNodes.forEach(node => {
+		const fulltxts = buildFullPath(node.categoryId, categoryMap);
+		const pathStr = fulltxts.join(' > ');
+		
+		const fullIds = buildFullIdPath(node.categoryId, categoryMap);
+		
+		// 중복 방지
+		if (!selectCateTxtList.includes(pathStr)) {
+			selectCateTxtList.push(pathStr);
+		};
+		
+		// path fullIds
+		fullIds.forEach(id => selectCateIdList.add(id));
+		currentIdList = fullIds;
+		
+		// path fulltxts
+		fulltxts.forEach(catName => {
+			const categoryId = Object.keys(categoryMap).find(
+					key => categoryMap[key].categoryName === catName
+					);
+			if (categoryId) selectCateIdList.add(categoryId);
+		});
+		
+		// DOM에 추가
+	    const ul = document.querySelector('.cateBody');
+	    const li = document.createElement('li');
+		li.textContent = pathStr + ' ';
+		li.style.cssText = "padding-left: 20px;";
+		
+		li.setAttribute('data-path', pathStr); // 나중에 비교용
+	    li.setAttribute('data-ids', currentIdList.join(',')); // 나중에 ID 추출용
+	    
+	    const btn = document.createElement('button');
+
+		btn.textContent = '✖';
+		btn.style.marginLeft = '5px';
+		btn.style.color = 'red';
+		btn.style.cursor = 'pointer';
+	    
+	    btn.addEventListener('click', function () {
+			selectCateTxtList = selectCateTxtList.filter(txt => txt !== pathStr);
+			
+			const idsToRemove = li.getAttribute('data-ids').split(',');
+			
+			// ID들 하나씩 중복 여부 체크 후 안전하게 삭제
+			idsToRemove.forEach(id => {
+				const isUsedElsewhere = selectCateTxtList.some(txt => {
+					const matchingLi = document.querySelector(`li[data-path="${txt}"]`);
+					if (!matchingLi) return false;
+					const ids = matchingLi.getAttribute('data-ids').split(',');
+					return ids.includes(id);
+				});
+				
+				if (!isUsedElsewhere) {
+					selectCateIdList.delete(id);
+				}
+			});
+			
+			li.remove();
+			// 디버깅 출력
+		    console.log('선택된 전체 경로들:', selectCateTxtList);
+		    console.log('선택된 ID들 (중복 제거):', selectCateIdList);
+	    });
+	    li.appendChild(btn);
+	    ul.appendChild(li);
+	    
+	});
+}
+
+// 카테고리 적용 txt fullPath
+function buildFullPath(categoryId, categoryMap) {
+	const path = [];
+	let current = categoryMap[categoryId];
+
+	// 부모를 찾아서 unshift로 계속 앞에 넣어줌, parent가 0이되면 멈춤
+	while (current) {
+	  path.unshift(current.categoryName); // 앞에 넣기
+	  if (!current.parent || current.parent === "0") break;
+	  current = categoryMap[current.parent];
+	}
+	
+	return path;
+}
+
+// 카테고리 적용 id fullPath
+function buildFullIdPath(categoryId, categoryMap) {
+	const ids = [];
+	let current = categoryMap[categoryId];
+	
+	// 부모를 찾아서 unshift로 계속 앞에 넣어줌, parent가 0이되면 멈춤
+	while (current) {
+	  ids.unshift(current.categoryId); // 앞에 추가
+	  if (!current.parent || current.parent === "0") break;
+	  current = categoryMap[current.parent];
+	}
+	
+	return ids;
+}
+
+async function getParent(id, className) {
+    const url = id ? `/rest/admin/category/list/${id}` : "/rest/admin/category/list";
+    const result = await FETCH.get(url);
+    renderCategoryList(result, className, id);
+    return result;
+}
+
+function renderCategoryList(categories, ulSelector, parentId) {
+    const ul = document.querySelector(ulSelector);
+    const html = categories.map(c => `
+	<li>
+	    <input type="hidden" value="${c.categoryId}">
+	    <i class="fa-solid fa-folder"></i>
+	    <div>${c.categoryName}</div>
+	</li>
+	`).join("");
+
+    ul.innerHTML = html;
+    
+    if (ulSelector !== ".topCategoryList") {
+        ul.nextElementSibling.value = parentId;
+    }
+
+    ul.querySelectorAll("li").forEach(li => {
+        li.addEventListener("click", () => handleCategoryClick(li, ulSelector));
+    });
+}
+
+const depthOrder = [".topCategoryList", ".middleCategoryList", ".bottomCategoryList", ".detailCategoryList"];
+
+const depthMap = {
+    ".topCategoryList": {nextUl: ".middleCategoryList", resetFrom: 0},
+    ".middleCategoryList": {nextUl: ".bottomCategoryList", resetFrom: 1},
+    ".bottomCategoryList": {nextUl: ".detailCategoryList", resetFrom: 2}
+};
+
+function resetLowerLists(fromDepth) {
+    for (let i = fromDepth + 1; i < depthOrder.length; i++) {
+        const ul = document.querySelector(depthOrder[i]);
+        ul.innerHTML = "";
+        ul.querySelectorAll("li.active").forEach(li => li.classList.remove("active"));
+
+        const hidden = ul.nextElementSibling;
+        if (hidden && hidden.classList.contains("parentId")) hidden.value = "";
+    }
+}
+
+let lastClickedLi = null;
+
+async function handleCategoryClick(li, ulSelector) {
+
+	li.parentElement.querySelectorAll("li").forEach(el => el.classList.remove("active"));
+	li.classList.add("active");
+
+    lastClickedLi = li;
+
+    const parentId = li.querySelector("input").value;
+    const ul = document.querySelector(ulSelector);
+    
+    if (ulSelector !== ".topCategoryList" && ulSelector !== ".detailCategoryList") {
+        ul.parentElement.nextElementSibling.querySelector(".parentId").value = parentId;
+    }
+
+    if (ulSelector in depthMap) {
+        getParent(parentId, depthMap[ulSelector].nextUl);
+        resetLowerLists(depthMap[ulSelector].resetFrom);
+    } else if (ulSelector === ".topCategoryList") {
+        resetLowerLists(-1);
+        getParent(parentId, ".middleCategoryList");
+    }
+
+}
+
+function selectCateAddBtnClick(path) {
+	const cateBoxes = document.querySelectorAll('.categoryTable .cate');
+	
+	cateBoxes.forEach(function (cateBox) {
+		const activeLi = cateBox.querySelector('li.active');
+	
+		if (activeLi) {
+			const input = activeLi.querySelector('input[type="hidden"]');
+			const div = activeLi.querySelector('div');
+			
+			if(input && div) {
+				currentIdList.push(input.value);
+				currentTxtList.push(div.textContent.trim());
+			}
+		}
+	});
+	
+	console.log('선택된 카테고리 ID:', currentIdList);
+	console.log('선택된 카테고리 텍스트:', currentTxtList);
+
+	const newPathTxt = currentTxtList.join(' > ');
+	const alreadyExists = selectCateTxtList.includes(newPathTxt);
+
+	if(!alreadyExists && currentTxtList.length > 0) {
+		const ul = document.querySelector('.cateBody');
+		const li = document.createElement('li');
+		
+		li.textContent = newPathTxt + ' ';
+		li.style.cssText = "padding-left: 20px;";
+		
+		li.setAttribute('data-path', newPathTxt); // 나중에 비교용
+	    li.setAttribute('data-ids', currentIdList.join(',')); // 나중에 ID 추출용
+		
+	    const btn = document.createElement('button');
+	    btn.textContent = '✖';
+		btn.style.marginLeft = '5px';
+		btn.style.color = 'red';
+		btn.style.cursor = 'pointer';
+	    
+		// 삭제 이벤트
+		btn.addEventListener('click', function () {
+			const path = li.getAttribute('data-path');
+			const idsToRemove = li.getAttribute('data-ids').split(',');
+
+			// 텍스트 경로 삭제
+			const pathIdx = selectCateTxtList.indexOf(path);
+
+			if (pathIdx !== -1) {
+			  selectCateTxtList.splice(pathIdx, 1);
+			}
+			
+			// ID들 하나씩 중복 여부 체크 후 안전하게 삭제
+			idsToRemove.forEach(id => {
+				const isUsedElsewhere = selectCateTxtList.some(txt => {
+					const matchingLi = document.querySelector(`li[data-path="${txt}"]`);
+					if (!matchingLi) return false;
+					const ids = matchingLi.getAttribute('data-ids').split(',');
+					return ids.includes(id);
+				});
+				
+				if (!isUsedElsewhere) {
+					selectCateIdList.delete(id);
+				}
+			});
+		
+			// DOM에서 삭제
+			li.remove();
+		
+		});
+	
+	    li.appendChild(btn);
+		ul.appendChild(li);
+		
+		// 경로, ID 배열 업데이트
+		selectCateTxtList.push(newPathTxt);
+		currentIdList.forEach(id => {
+			if (!selectCateIdList.has(id)) {
+			  selectCateIdList.add(id);
+			}
+		});
+	}
+
+    // 디버깅 출력
+    console.log('선택된 전체 경로들:', selectCateTxtList);
+    console.log('선택된 ID들 (중복 제거):', selectCateIdList);
+    
+    currentIdList = [];
+	currentTxtList = [];
 }
 
 function initTextEditor () {
@@ -527,9 +914,7 @@ function initTextEditor () {
 	    beautifyHTML: true,            // HTML 자동 정렬
 	    sourceEditor: 'area', 
 	    maxWidth: 940,
-	    minWidth: 940,
 	    minHeight: 400,
-	    maxHeight: 400,
 	    uploader: {
 	    	// 이미지 업로드를 base64 방식으로 처리 (간단용)
 			// insertImageAsBase64URI: true  

@@ -265,7 +265,19 @@
     	WHERE
     		PRODUCT_ID = #{productId}
     </select>
-    
+        
+    <select id="selectCateMapList" resultType="com.lumit.shop.common.model.TbMapping">
+    	SELECT a.*
+    		, b.CATEGORY_NAME
+    		, b.PARENT
+    	FROM
+    		TB_CATEGORY_MAP a
+    	LEFT JOIN
+    		TB_CATEGORY b
+    	ON b.CATEGORY_ID = a.CATEGORY_ID
+    	WHERE
+    		a.PRODUCT_ID = #{productId}
+    </select>
     
     <delete id="deleteColorMap" parameterType="com.lumit.shop.common.model.TbProduct">
 		DELETE 

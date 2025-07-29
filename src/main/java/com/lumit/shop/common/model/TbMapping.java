@@ -11,7 +11,12 @@ import lombok.ToString;
 @ToString
 public class TbMapping{
 	private String optionId;
+	
 	private String productId;
+	
+	private String categoryId;
+	private String categoryName;
+	private String parent;
 	
 	private String colorName;
 	private String colorCd;

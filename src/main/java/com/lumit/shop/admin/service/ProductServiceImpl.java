@@ -299,4 +299,12 @@ public class ProductServiceImpl implements ProductService {
 
         return retMap;
     }
+    
+    @Override
+    public HashMap<String, Object> selectProductCateMappingList(TbProduct product) {
+        HashMap<String, Object> retMap = new HashMap<String, Object>();
+        retMap.put("cateList", productRepository.selectCateMapList(product));
+
+        return retMap;
+    }
 }
