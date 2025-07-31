@@ -295,6 +295,14 @@
 			PRODUCT_ID = #{productId}
 	</delete>
 	
+	<delete id="deleteCateMap" parameterType="com.lumit.shop.common.model.TbProduct">
+		DELETE
+		FROM
+			TB_CATEGORY_MAP
+		WHERE
+			PRODUCT_ID = #{productId}
+	</delete>
+	
 	<insert id="insertProductCategoryMap" parameterType="com.lumit.shop.common.model.TbProduct">
         INSERT INTO TB_CATEGORY_MAP
     	(

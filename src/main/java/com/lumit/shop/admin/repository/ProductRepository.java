@@ -23,6 +23,7 @@ public interface ProductRepository {
     
     public int deleteColorMap(TbProduct product);
     public int deleteTagMap(TbProduct product);
+    public int deleteCateMap(TbProduct product);
     
     public int insertColorMap(TbProduct product);
     public int insertTagMap(TbProduct product);

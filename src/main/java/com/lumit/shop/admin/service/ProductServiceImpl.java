@@ -258,6 +258,9 @@ public class ProductServiceImpl implements ProductService {
         // 옵션 테이블에 재추가 전 데이터 삭제
         productRepository.deleteColorMap(product);
         productRepository.deleteTagMap(product);
+        productRepository.deleteCateMap(product);
+        
+        retMap.put("proCateIntert", productRepository.insertProductCategoryMap(product));
         
         // 옵션 테이블에 데이터 추가
         if (product.getColorIdList().size() != 0) productRepository.insertColorMap(product);
