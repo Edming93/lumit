@@ -246,3 +246,20 @@ function phoneValidate(event) {
     event.currentTarget.value = value.replace(/[^0-9]/g, '')
         .replace(/(^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")
 }
+
+// 공통 팝업
+function openCommonPopup(popupNm, title, width, height){
+	let _width = width ? width : '1000';
+    let _height = height ? height : '640';
+ 
+    // 팝업을 가운데 위치
+    let _left = Math.ceil(( window.screen.width - _width )/2);
+    let _top = Math.ceil(( window.screen.height - _height )/2); 
+
+	let url = `/common/popup/${popupNm}?title=` + encodeURIComponent(title);
+	console.log(encodeURIComponent(title));
+	let popupName = title + '_' + new Date().getTime(); // 이름 중복 방지
+	
+	window.open(url, popupName, `width=${_width},height=${_height},left=${_left},top=${_top},resizable=no,scrollbars=yes,status=no`);
+	
+}

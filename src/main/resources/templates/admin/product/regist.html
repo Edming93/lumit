@@ -210,10 +210,9 @@
 	                    <tr>
 	                        <th class="alLeft bold">옵션 상품코드</th>
 	                        <td>
-	                            <select id="optionId">
-	                            	<option>어떻게 매칭할지 고민</option>
-	                            	<option value="1">상품명 검색하면 상품코드 가져오기?</option>
-	                            </select>
+	                            <div>
+	                            	<button type="button" id="openCommonPopup" class="cate_add_btn">옵션 상품 추가</button>
+	                            </div>
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -582,6 +581,10 @@ document.addEventListener("DOMContentLoaded",async function () {
 		    };
 		}
     });
+	
+	$("#openCommonPopup").click(function(){
+		openCommonPopup("optionList", "상품 옵션 리스트");
+	});
 });
 
 async function load() {

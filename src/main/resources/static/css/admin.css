@@ -2,12 +2,22 @@
 @import "font.css";
 @import "common.css";
 
+html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
+}
 
 body {
     background-color: var(--background-color);
     font-family: Pretendard;
     font-size: 0.7rem;
     color: var(--font-color);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
 }
 
 a {

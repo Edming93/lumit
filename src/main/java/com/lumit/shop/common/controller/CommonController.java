@@ -8,11 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lumit.shop.common.config.ResponseBuilder;
@@ -40,6 +43,7 @@ public class CommonController {
      */
     private final String LUMIT_INDEX = "/lumit/index";
     private final String LOGIN_FORM = "/common/auth/login";
+    private final String COMM_POPUP = "/common/popup/commonPopup";
 
 
     @Value("${kakao.api_key}")
@@ -70,5 +74,15 @@ public class CommonController {
     	return ResponseBuilder.build(commonService.selectCodeListByGrpCd(search), HttpStatus.OK);
     }
 
+
+	// commonPopup
+	@GetMapping("/common/popup/{popupNm}")
+	public String commonPopup(ModelMap map, @PathVariable("popupNm") String popupNm,
+								@RequestParam(value="title",defaultValue="공통 팝업") String title) {
+		String commPopPath = "/common/popup/"+popupNm;
+		map.addAttribute("title",title);
+		map.addAttribute("commPopPath", commPopPath);
+		return COMM_POPUP;
+	}
 
 }
