@@ -23,7 +23,7 @@
 	    	max-height: 350px;
 	    }
 	    
-	    .cateHead {
+	    .cateHead, .optionHead {
 	    	font-size: 1rem;
 		    width: 100%;
 		    background-color: var(--brand-color1);
@@ -59,16 +59,16 @@
 		    cursor: pointer;
 	    }
 	    
-	    #cateAddBtnArea {
+	    .addBtnArea {
 	    	padding: 10px 0px;
     	    display: flex;
     	    justify-content: flex-end;
 	    }
 	    
-	    .categoryList {
+	    .selectList {
 	    	margin-top: 10px;
 	    	width: 100%;
-	    	min-height:100px;
+	    	min-height:83px;
 	    	border: 1px solid var(--brand-color1);
 	    	border-radius: 0.3rem;
 	    }
@@ -136,7 +136,7 @@
 	                        <th class="alLeft bold">카테고리</th>
 	                        <td>
 	                        	<div id="container" class="categoryContainer">
-	                        		<div id="cateAddBtnArea">
+	                        		<div id="cateAddBtnArea" class="addBtnArea">
 						                <button type="button" class="cate_add_btn" id="cateAddBtn" onClick="selectCateAddBtnClick()">선택 후 추가</button>
 						            </div>
 		                            <div class="categoryTable">
@@ -165,9 +165,9 @@
 							            </div>
 							    	</div>
 							    </div>
-							    <div class="categoryList">
+							    <div class="selectList">
 							    	<div class="cateHead">선택된 상품분류</div>
-							    		<ul class="cateBody"></ul>
+							    	<ul class="cateBody"></ul>
 							    </div>
 	                        </td>
 	                    </tr>
@@ -180,7 +180,7 @@
 	                    <tr>
 	                        <th class="alLeft bold">재고수량</th> <!-- TODO : 재고수량 10개 미만일시 대시보드에 알림 -->
 	                        <td>
-	                        	<input type="text" id="stocks" name="stocks" class="boardInp w15" placeholder="재고수량" maxlength="11">
+	                        	<input type="text" id="stocks" data-type="number" name="stocks" class="boardInp w15" placeholder="재고수량" maxlength="11">
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -210,39 +210,43 @@
 	                    <tr>
 	                        <th class="alLeft bold">옵션 상품코드</th>
 	                        <td>
-	                            <div>
+	                            <div class="addBtnArea">
 	                            	<button type="button" id="openCommonPopup" class="cate_add_btn">옵션 상품 추가</button>
 	                            </div>
+	                            <div class="selectList" style="margin:0;">
+							    	<div class="optionHead">선택된 옵션</div>
+							    	<ul class="optionBody"></ul>
+							    </div>
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">정가</th>
 	                        <td>
-	                           <input type="text" id="price" name="price" class="boardInp w15" placeholder="" maxlength="11"> 원
+	                           <input type="text" id="price" data-type="number" name="price" class="boardInp w15" placeholder="" maxlength="11"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">할인율 설정</th>
 	                        <td>
-	                           <input type="text" id="disRate" name="disRate" class="boardInp w15" placeholder="" value="0" maxlength="11"> %
+	                           <input type="text" id="disRate" data-type="number" name="disRate" class="boardInp w15" placeholder="" value="0" maxlength="11"> %
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">할인가(판매가)</th>
 	                        <td>
-	                           <input type="text" id="disPrice" name="disPrice" class="boardInp w15" placeholder="" maxlength="11"> 원
+	                           <input type="text" id="disPrice" data-type="number" name="disPrice" class="boardInp w15" placeholder="" maxlength="11"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">배송비</th>
 	                        <td>
-	                           <input type="text" id="deliveryFee" name="deliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원
+	                           <input type="text" id="deliveryFee" data-type="number" name="deliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">무료배송 설정</th>
 	                        <td>
-								<input type="text" id="freeDeliveryFee" name="freeDeliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원 이상 주문시 무료배송
+								<input type="text" id="freeDeliveryFee" data-type="number" name="freeDeliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원 이상 주문시 무료배송
 	                        	<input type="checkbox" id="freeFeeCheck">
 	                        	<label for="freeFeeCheck">체크시 적용</label>
 	                        </td>
@@ -393,10 +397,10 @@ document.addEventListener("DOMContentLoaded",async function () {
 			return;
 		}
 		
-		let price = $("#price").val();
-		let disRate = $("#disRate").val();
-		
-		$("#disPrice").val(price - (price * (disRate * 0.01)));
+		let price = parseNumber($("#price").val());
+		let disRate = parseNumber($("#disRate").val());
+		let discountedPrice = price - (price * (disRate * 0.01));
+		$("#disPrice").val(formatNumberWithComma(discountedPrice));
 	});
 	
 	
@@ -441,9 +445,9 @@ document.addEventListener("DOMContentLoaded",async function () {
 				return;
 			}
 
-			if($("#optionId").val() != ""){
-				formData.append("optionId",$("#optionId").val() ?? '');
-			}
+// 			if($("#optionId").val() != ""){
+// 				formData.append("optionId",$("#optionId").val() ?? '');
+// 			}
 			if($("#dpStatus").val() != "") {
 				formData.append("dpStatus",$("#dpStatus").val() ?? '');
 			}
@@ -452,13 +456,15 @@ document.addEventListener("DOMContentLoaded",async function () {
 			}
 			if(selectCateIdList.size > 0) {
 				formData.append("cateIdList",Array.from(selectCateIdList));
+			}else {
+				alert("카테고리를 선택해주세요.");
+				return;
 			}
 
 			formData.append("colorIdList",colorIdList ?? []);
 			formData.append("tagIdList",tagIdList ?? []);
 			
 			for(let [key,value] of formData.entries()) {
-				
 				if(key == "freeDeliveryFee") {
 					let deliveryFeeChk = $("#freeFeeCheck").prop("checked");
 					if(!deliveryFeeChk) {
@@ -472,7 +478,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 					}
 				}
 				
-				if(key != "files" && key != "filesRep" && key != "colorIdList" && key != "tagIdList" && key != "freeDeliveryFee") {
+				if(key != "files" && key != "filesRep" && key != "colorIdList" && key != "tagIdList" && key != "freeDeliveryFee" && key != "optionId") {
 					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
 						alert("입력하지 않은 값이 있는지 확인해주세요.");
 						return;
@@ -583,8 +589,10 @@ document.addEventListener("DOMContentLoaded",async function () {
     });
 	
 	$("#openCommonPopup").click(function(){
-		openCommonPopup("optionList", "상품 옵션 리스트");
+		openCommonPopup("optionList", "상품 옵션 리스트", "1060", "640");
 	});
+	
+	
 });
 
 async function load() {
@@ -1073,4 +1081,85 @@ async function setData(formData,url) {
 	moveUrl(url);
 	
 }
+
+// 옵션 선택 값 받는 함수
+function receiveOptionList(optionList) {
+	console.log(optionList);
+	const ul = document.querySelector('.optionBody');
+	
+	optionList.forEach(option => {
+		const productId = option.productId;
+		const productCd = option.productCd;
+		const productName = option.productName;
+		const price = option.price;
+	
+		// 중복 확인
+		if(ul.querySelector('li[data-productid="'+ productId +'"]')) {
+			alert(productName + "은(는) 이미 선택 된 옵션 상품입니다.");
+			return;
+		};
+	
+		const li = document.createElement('li');
+		li.setAttribute('data-productid', productId);
+		li.setAttribute('data-productcd', productCd);
+		li.setAttribute('data-price', price);
+		li.setAttribute('data-name', productName);
+		
+		li.style.cssText = `
+			display: flex;
+			align-items: center;
+			padding: 0px 20px;
+			font-size: 14px;
+		`;
+		
+		// 상품 정보 텍스트
+		const label = document.createElement('span');
+		label.innerHTML = `[<span style="color:red">${productCd}</span>] ${productName}`;
+		label.style.flex = '1';
+
+		// 가격 입력창
+		const priceInput = document.createElement('input');
+		priceInput.setAttribute('data-type','number');
+		priceInput.type = 'text';
+		priceInput.value = formatNumberWithComma(price);
+		priceInput.min = 0;
+		priceInput.style.cssText = `
+			width: 100px;
+			margin: 0 5px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 13px;
+		`;
+		priceInput.className = 'priceInput';
+		
+		const won = document.createElement('span');
+		won.textContent = '원'
+		
+		inputNumber();
+		// 삭제 버튼
+	    const btn = document.createElement('button');
+	    btn.textContent = 'X';
+	    btn.style.cssText = `
+	    	margin-left:10px;
+			color: red;
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			font-weight: bold;
+		`;
+	    
+	    btn.addEventListener('click', () => {
+	        ul.removeChild(li);
+	    });
+	    
+	    li.appendChild(label);
+	    li.appendChild(priceInput);
+	    li.appendChild(won);
+	    li.appendChild(btn);
+	
+	    ul.appendChild(li);
+	});
+}
+
+
 </script>

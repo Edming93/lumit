@@ -77,11 +77,15 @@ public class CommonController {
 
 	// commonPopup
 	@GetMapping("/common/popup/{popupNm}")
-	public String commonPopup(ModelMap map, @PathVariable("popupNm") String popupNm,
-								@RequestParam(value="title",defaultValue="공통 팝업") String title) {
-		String commPopPath = "/common/popup/"+popupNm;
+	public String commonPopup(ModelMap map, @PathVariable("popupNm") String popupNm
+								, @RequestParam(value="title",defaultValue="공통 팝업") String title) {
+		
+		String commPopPath = "/common/popup/" + popupNm;
+		String scriptPath = "/js/page/" + popupNm + ".js";
+		
 		map.addAttribute("title",title);
 		map.addAttribute("commPopPath", commPopPath);
+		map.addAttribute("scriptPath", scriptPath);
 		return COMM_POPUP;
 	}
 

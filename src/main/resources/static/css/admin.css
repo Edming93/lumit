@@ -6,7 +6,7 @@ html {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    height: 100%;
+    height: auto;
 }
 
 body {
@@ -29,9 +29,9 @@ button {
     padding: 0px;
 }
 
-.container * {
-    color: var(--text-color);
-}
+/* .container * { */
+/*     color: var(--text-color); */
+/* } */
 
 .searchArea {
     width: 100%;
@@ -297,7 +297,6 @@ input.w100, select.w100 {
 
 .container {
     width: 100%;
-    padding: 10px;
     overflow: auto;
     box-sizing: border-box;
     position: relative;
@@ -1143,8 +1142,11 @@ input::-webkit-inner-spin-button {
     margin-top: 15px;
 }
 
-.btnAreaLeft {
+/* center가 필요한경우는 class명 btnArea~ , 필요 없는 경우는 btnLeft~ btnRight~ 사용 */
+.btnAreaLeft, .btnAreaRight, .btnLeftArea, .btnRightArea {
     display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .btnAreaCenter {

@@ -1,97 +1,6 @@
-<!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{admin/fragments/layout}"
->
-<head>
-
-</head>
-<div layout:fragment="content">
-	<div>
-        <p class="title"><span>상품 관리</span></p>
-    </div>
-    <div id="container">
-    	<div class="searchArea">
-			<input type="text" title="상품명" placeholder="상품명" id="productName">
-			<input type="text" title="상품코드" placeholder="상품코드" id="productCd">
-			<select id="dpStatus"></select>
-			<select id="status"></select>
-			<div class="datepickerWrap mgl10">
-				<input type="text" class="datepickerInput" placeholder="등록시작일" readonly="readonly" id="strDt"/>
-				<span class="datepickerDash">~</span>
-				<input type="text" class="datepickerInput" placeholder="등록종료일" readonly="readonly" id="endDt"/>
-			</div>
-			<button class="searchBtn"></button>
-		</div>
-
-        <div class="btnArea">
-        	<div class="btnLeftArea">
-                <span class="searchResult bold">
-					검색 결과　<em id="total" class="total">00</em> /
-				</span>
-				<select id="pageSize">
-					<option value="10" selected>10</option>
-					<option value="20">20</option>
-					<option value="30">30</option>
-				</select>
-            </div>
-            <div class="btnRightArea">
-                <button type="button" id="registBtn" class="commBtn mgl10">상품 등록</button>
-            </div>
-        </div>
-
-		<div>
-			<table class="boardTable listTable mgt20">
-			    <colgroup>
-			        <col style="width: 5%;"/>
-			        <col style="width: 8%;"/>
-			        <col style="width: 6%;"/>
-			        <col style="width: 6%;"/>
-			        <col style="width: 8%;"/>
-			        <col style="width: auto;"/>
-			        <col style="width: 10%;"/>
-			        <col style="width: 10%;"/>
-			        <col style="width: 5%;"/>
-			        <col style="width: 8%;"/>
-			        <col style="width: 11%;"/>
-			    </colgroup>
-			    <thead>
-			    <tr>
-			        <th class="alCenter">No.</th>
-			        <th class="alCenter">미리보기</th>
-			        <th class="alCenter">상품코드</th>
-			        <th class="alCenter">진열상태</th>
-			        <th class="alCenter">판매상태</th>
-			        <th class="alCenter">상품명</th>
-			        <th class="alCenter">판매가</th>
-			        <th class="alCenter">할인가</th>
-			        <th class="alCenter">재고수량</th>
-			        <th class="alCenter">판매수량</th>
-			        <th class="alCenter">등록일</th>
-			    </tr>
-			    </thead>
-			    <tbody id="listArea">
-			    </tbody>
-			</table>
-		</div>
-
-        <input type="hidden" name="page" id="page" value="0"/>
-        <ul id="pagingArea" class="pagination"></ul>
-    </div>
-<script th:inline="javascript">
 $(document).ready(function() {
 	// setSearchInit('searchArea');
 	load();
-
-	$("#registBtn").on("click",function() {
-		moveUrl("/" + siteId + "/product/regist");
-	});
-
-// 	$("#listArea").on("click", ".delBtn", function(e) {
-// 		var delProductId = $(this).attr('id').replace("del_",'');
-// 		delProduct(delProductId);
-//     });
 
     $(".searchArea input[type='text']").on("keydown", function (event) {
         if (event.key === 'Enter') {
@@ -151,6 +60,7 @@ $(document).ready(function() {
 	        alert('이미지를 불러올 수 없습니다.');
 	    };
     });
+
 });
 
 async function load() {
@@ -194,6 +104,10 @@ async function getList(pageNo,cntPerPage) {
 	const totalPageCount = Math.ceil(data.totalElements / cntPerPage);
 
 	PAGE.paging(totalPageCount, data.number, data.totalElements, "getList");
+	
+	// 체크박스 초기화
+	$("input[name=chk]").prop("checked", false);
+	$("#chkSelectAll").prop("checked", false);
 
 	setList(data);
 }
@@ -202,18 +116,24 @@ function setList(data){
 	$('#listArea').empty();
 
 	productList = data.content;
-
 	let listLength = productList.length;
 	// let productCodeList = codeList.filter((item) => {return item.grpCd === 'PRODUCT_DV_CD'});
 
 	let cnt = 0;
 	if(listLength > 0) {
 		productList.forEach((item) => {
-			let lumitFiles = item.filePath ? item.filePath.substring('2') : ''
-			
+			let lumitFiles = item.filePath ? item.filePath.substring('2') : '';
 			$('#listArea').append(`
 				<tr>
-					<td class='alCenter'>${PAGE.pageRowNumber(data.number, data.size, cnt++, data.totalElements)}</td>
+					<td class='alCenter'>
+						<div class='chk_box hide_label'>
+							<input type='checkbox' id='chk_${cnt++}' name='chk' 
+							data-productcd='${item.productCd}' 
+							data-productname='${item.productName}'
+							data-price='${item.price}'
+							 value='${item.productId}'>
+                        </div>
+					</td>
 					<td class='alCenter'>
 					 	${item.filePath ? 
 							`<img src='${lumitFiles}/${item.fileNewName}' style='width:50px; height:50px; cursor:pointer; vertical-align: middle;' id='popupImg'>`
@@ -230,9 +150,7 @@ function setList(data){
 						${item.status ? codeList.find((cdItem) => cdItem.grpCd === 'PD_STATUS' && cdItem.cd == item.status).cdNm ?? '' : ''}
 					</td>
 					<td class='alLeft tdTitle'>
-						<a href="javascript: detail('${item.productId}')">
-							${item.productName}
-						</a>
+						${item.productName}
 					</td>
 					<td class="alCenter">
 						${formatToWon(item.price)}
@@ -246,51 +164,61 @@ function setList(data){
 					<td class='alCenter'>
 						${item.sales}개
 					</td>
-					<td class="alCenter">
-						${item.regDt}
-					</td>
 				</tr>
 			`);
 		});
 	}else {
 		$('#listArea').append(`
 			<tr>
-				<td class='alCenter' colspan='11'>검색 결과가 없습니다.</td>
+				<td class='alCenter' colspan='10'>검색 결과가 없습니다.</td>
 			</tr>
 		`);
 	}
-
-}
-
-function detail(id) {
-	moveUrl("/" + siteId + "/product/update/" + id);
+	
+	// 체크박스
+	$("#chkSelectAll").click(function(){
+		if($("#chkSelectAll").is(":checked")){
+			$("input[name=chk]").prop("checked", true);
+		}else{
+			$("input[name=chk]").prop("checked", false);
+		}
+	});
+	
+	$("input[name=chk]").click(function(){
+		var total = $("input[name=chk]").length;
+		var checked = $("input[name=chk]:checked").length;
+	
+		if(total != checked){
+			$("#chkSelectAll").prop("checked", false);
+		}else{
+			$("#chkSelectAll").prop("checked", true);
+		}
+	});
+	
+	$("#addBtn").on("click",function() {
+		let checkedList = new Array();
+		$("input[name=chk]").each(function() {
+			if($(this).is(":checked") == true) {
+				
+				let obj = {
+					productId: $(this).val(),
+					productCd: $(this).data("productcd"),
+					productName: $(this).data("productname"),
+					price: $(this).data("price"),
+				}
+				checkedList.push(obj);
+			};
+		});
+		
+		if(window.opener && !window.opener.closed) {
+			window.opener.receiveOptionList(checkedList);
+		};
+		
+		window.close();
+	});
 }
 
 function formatToWon(num) {
 	if (!num) return "";
 	return Number(num).toLocaleString('ko-KR') + "원";
 }
-
-
-// async function delProduct(productId) {
-
-// 	if(confirm("삭제 하시겠습니까?")) {
-// 		let params = {
-// 			productId : productId,
-// 		};
-
-// 		const res = await axios.post('/rest/admin/product/delete', params);
-
-// 		if(!res){
-// 			alert('삭제에 실패했습니다. <br/>다시 시도해주세요.');
-// 			return;
-// 		}
-
-// 		getList(0);
-// 	}
-// };
-
-</script>
-</div>
-
-</html>

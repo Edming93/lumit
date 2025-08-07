@@ -1,11 +1,71 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <div th:fragment="commPopContent">
-    <p>여기는 옵션 목록 팝업입니다.</p>
-    <ul>
-        <li>옵션 1</li>
-        <li>옵션 2</li>
-        <li>옵션 3</li>
-    </ul>
-</div>
+	<div id="container" class="container">
+   		<div class="searchArea">
+			<input type="text" title="상품명" placeholder="상품명" id="productName">
+			<select id="dpStatus"></select>
+			<select id="status"></select>
+			<button class="searchBtn"></button>
+		</div>
+	
+	    <div class="btnArea">
+	       	<div class="btnLeftArea">
+	               <span class="searchResult bold">
+					검색 결과　<em id="total" class="total">00</em> /
+				</span>
+				<select id="pageSize">
+					<option value="10" selected>10</option>
+					<option value="20">20</option>
+					<option value="30">30</option>
+				</select>
+           </div>
+	       <div class="btnRightArea">
+				<a href="javascript:;" class="commBtn" id="addBtn"><span>선택 옵션 추가</span></a>
+				<a href="javascript:;" class="commBtn" id="closeBtn"><span>닫기</span></a>
+			</div>
+		</div>
+		<div>
+			<table class="boardTable listTable mgt10">
+			    <colgroup>
+			        <col style="width: 5%;"/>
+			        <col style="width: 8%;"/>
+			        <col style="width: 6%;"/>
+			        <col style="width: 6%;"/>
+			        <col style="width: 8%;"/>
+			        <col style="width: auto;"/>
+			        <col style="width: 10%;"/>
+			        <col style="width: 10%;"/>
+			        <col style="width: 5%;"/>
+			        <col style="width: 8%;"/>
+			    </colgroup>
+			    <thead>
+			    <tr>
+			        <th class="alCenter">
+			        	<div class="chk_box hide_label">
+							<input type="checkbox" id="chkSelectAll">
+						</div>
+					</th>
+			        <th class="alCenter">미리보기</th>
+			        <th class="alCenter">상품코드</th>
+			        <th class="alCenter">진열상태</th>
+			        <th class="alCenter">판매상태</th>
+			        <th class="alCenter">상품명</th>
+			        <th class="alCenter">판매가</th>
+			        <th class="alCenter">할인가</th>
+			        <th class="alCenter">수량</th>
+			        <th class="alCenter">판매수량</th>
+			    </tr>
+			    </thead>
+			    <tbody id="listArea">
+			    </tbody>
+			</table>
+		</div>
+	
+	       <input type="hidden" name="page" id="page" value="0"/>
+	       <ul id="pagingArea" class="pagination"></ul>
+	   </div>
+	</div>
 </html>
+

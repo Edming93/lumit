@@ -4,26 +4,22 @@
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 <head>
-    <script th:src="@{/js/jquery-3.6.0.min.js}"></script>
-	<script th:src="@{/js/jquery-ui.min.js}"></script>
+	<th:block th:replace="~{admin/fragments/head :: headFragment}"></th:block>
+	<script th:if="${scriptPath != null}" th:src="@{${scriptPath}}"></script>
 	
 	<style type="text/css">
-	body {box-sizing: border-box; margin:0px;}
-	.container {margin: 0px 1.5em !important; box-sizing: border-box; height: calc(var(--vh, 1vh) * 100);}
-	.modalTitle {display: flex; justify-content: space-between; align-items: center;}
-	.commBtn {border: 1px solid #CAAB9C; cursor: pointer; color: #876453; background-color: #E7DBCD; border-radius: 8px; font-size: 13px; padding: 7px 10px; text-decoration: none;}
+		body {box-sizing: border-box; margin:0px;}
+		.container {height: unset; padding: unset;}
+		.popupContainer {margin: 25px !important; box-sizing: border-box; height: 100%;}
 	</style>
+	
 </head>
 
 <body>
-<div class="container">
-	<div class="content">
-		<div class="modalTitle">
+<div class="popupContainer">
+	<div class="popupContent">
+		<div class="popupTitle">
 			<h3 class="title" th:text="${title}"></h3>
-			<div class="btnWrap">
-				<a href="javascript:;" class="commBtn" id="addBtn"><span>추가</span></a>
-				<a href="javascript:;" class="commBtn" id="closeBtn"><span>닫기</span></a>
-			</div>
 		</div>
 		
 		<div class="commPopContainer" id="openCommonPopup">
@@ -37,9 +33,10 @@
 
 <body/>
 <script type="text/javascript">
-
-
 $(document).ready(function() {
+	let defaultUrl = '[[${session.defaultUrl}]]';
+	getSiteId(defaultUrl);
+	
 	// 팝업 닫기 버튼
 	$("#closeBtn").click(function(){
 		window.close();

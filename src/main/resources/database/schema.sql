@@ -341,12 +341,8 @@ create table if not exists TB_PRODUCT_OPTION
 (
     OPTION_ID  int         not null comment 'AUTO_INCREMENT'
         primary key,
-    `OPTION`   varchar(50) not null,
-    CONTENT    varchar(50) null,
-    PRICE      int         not null,
-    REG_ID     varchar(50) not null,
-    REG_DT     timestamp   not null,
-    STATUS     varchar(50) not null comment '일반',
+    OPTION_NAME   varchar(50) not null,
+    DIS_PRICE  int         not null,
     PRODUCT_ID int         not null comment 'AUTO_INCREMENT'
 );
 
