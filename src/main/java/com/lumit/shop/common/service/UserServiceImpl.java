@@ -45,6 +45,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public long countRecentlyActiveAdmins() {
+        return 0;
+    }
+
+    @Override
+    public long countRecentlyRegisteredAdmins() {
+        return 0;
+    }
+
+    @Override
     public List<User> selectAdminList() {
         return userRepository.selectAdminList();
     }
@@ -233,8 +243,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public long countAllUsers() {
-        return userRepository.countAllUsers();
+    public long countAllCustomers() {
+        return userRepository.countAllCustomers();
     }
 
     @Override

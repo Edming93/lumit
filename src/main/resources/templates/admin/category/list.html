@@ -52,7 +52,7 @@
                     </button>
                 </div>
                 <div class="categoryTopBtns">
-                    <button class="commBtn" id="nameChange">이름 변경(F2)</button>
+                    <button class="commBtn" id="nameChange">이름 변경</button>
                     <button class="commBtn" id="deleteCategory">삭제</button>
                 </div>
             </div>
@@ -89,7 +89,7 @@
             <div id="contextMenu"
                  style="display:none; position:fixed; z-index:1000; background:#fff; border:1px solid #ccc; box-shadow: 2px 2px 6px rgba(0,0,0,0.2);">
                 <ul style="list-style:none; margin:0; padding:5px 0;">
-                    <li class="menuItem" data-action="rename" style="padding:5px 15px; cursor:pointer;">이름 변경</li>
+                    <li class="menuItem" data-action="rename" style="padding:5px 15px; cursor:pointer;">이름 변경(F2)</li>
                     <li class="menuItem" data-action="delete" style="padding:5px 15px; cursor:pointer;">삭제</li>
                 </ul>
             </div>
@@ -100,7 +100,15 @@
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", () => {
             init();
+            document.addEventListener("keydown", (e) => {
+                if (window.currentTargetLi == null) {
+                    return;
+                }
 
+                if (e.key == "F2" || e.keyCode == 113) {
+                    handleCategoryAction("rename")
+                }
+            })
         });
 
         const depthOrder = [".topCategoryList", ".middleCategoryList", ".bottomCategoryList", ".detailCategoryList"];
@@ -117,6 +125,8 @@
             "bottomCategoryList": 2,
             "detailCategoryList": 3
         };
+
+        let isSearchMode = false;
 
         function init() {
             const searchArea = document.querySelector(".searchArea")
@@ -139,13 +149,116 @@
         }
 
         function showSearchResult(result) {
+
             if (result.length < 1) {
                 return false;
             }
             const searchArea = document.querySelector(".searchArea")
-            searchArea.innerHTML += `<div class="resultContainer"><div class="resultNumber"><span class="searchCurrent">1</span>/<span class="searchCount">${result.length}</span></div>
-<div class="pageBtnContainer"><button class="previous"><i class="fa-solid fa-chevron-left"></i></button><button class="next"><i class="fa-solid fa-chevron-right"></i></button></div>
-</div>`
+            const oldResult = searchArea.querySelector(".resultContainer");
+            if (oldResult) oldResult.remove();
+
+            searchArea.insertAdjacentHTML("beforeend", `
+        <div class="resultContainer">
+
+            <div class="resultNumber">
+                <span class="searchCurrent">1</span>/<span class="searchCount">${result.length}</span>
+            </div>
+                    <div class="pageBtnContainer">
+                <button class="previous" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="next"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+    `);
+            const prevBtn = searchArea.querySelector(".previous")
+            const nextBtn = searchArea.querySelector(".next")
+            prevBtn.addEventListener("click", () => {
+                changeResult(result, "left")
+            })
+            nextBtn.addEventListener("click", () => {
+                changeResult(result, "right");
+            })
+
+            simulateClickTree(result[0])
+        }
+
+        function resetSearchResultUI() {
+            const resultContainer = document.querySelector(".resultContainer");
+            if (resultContainer) {
+                resultContainer.remove();
+            }
+        }
+
+        async function changeResult(data, direction) {
+            const page = Number(document.querySelector(".searchCurrent").textContent);
+            if (isNaN(page)) return;
+
+            const currentIndex = page - 1;
+            let target;
+
+            if (direction === "left") {
+                if (currentIndex === 0) return;
+                target = data[currentIndex - 1];
+            } else {
+                if (currentIndex === data.length - 1) return;
+                target = data[currentIndex + 1];
+            }
+
+            await simulateClickTree(target);
+            updatePageDisplay(direction);
+        }
+
+        function triggerCategoryClickById(categoryId) {
+            const input = document.querySelector(`input[type="hidden"][value="${categoryId}"]`);
+            if (input) {
+                const li = input.closest("li");
+                if (li) {
+                    li.click();
+                }
+            }
+        }
+
+        // 📣밍지 검색결과 펼쳐지는 곳
+        async function simulateClickTree(category) {
+            isSearchMode = true
+            const parents = await FETCH.get(`/rest/admin/category/parents/${category.parent}`);
+            for (const parent of parents) {
+                triggerCategoryClickById(parent.categoryId);
+                await sleep(200); // 트리 펼쳐질 시간
+            }
+            triggerCategoryClickById(category.categoryId);
+            setTimeout(() => {
+                isSearchMode = false;
+            }, 300);
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function updatePageDisplay(direction, totalCount) {
+            const currentEl = document.querySelector(".searchCurrent");
+            let current = Number(currentEl.textContent);
+
+            if (direction === "left") current--;
+            else current++;
+
+            currentEl.textContent = current;
+
+            // ✅ 버튼 상태 업데이트
+            const prevBtn = document.querySelector(".previous");
+            const nextBtn = document.querySelector(".next");
+
+            if (current <= 1) {
+                prevBtn.setAttribute("disabled", true);
+            } else {
+                prevBtn.removeAttribute("disabled");
+            }
+
+            if (current >= totalCount) {
+                nextBtn.setAttribute("disabled", true);
+            } else {
+                nextBtn.removeAttribute("disabled");
+            }
         }
 
         function bindSortable() {
@@ -234,9 +347,10 @@
         }
 
         function createNewCategoryInput(className, isTop) {
+            document.querySelectorAll(".newCate").forEach(input => {
+                input.closest("li")?.remove();
+            });
             const ul = document.querySelector(className);
-            if (document.querySelectorAll(".newCate").length > 0) return;
-
             ul.insertAdjacentHTML("beforeend", `
         <li>
             <i class="fa-solid fa-folder"></i>
@@ -259,7 +373,12 @@
         }
 
         async function addNewCategory(value, parentId, className) {
-            const data = {categoryName: value, useYn: 'Y', parent: parentId};
+            if (value == "" || value == null) {
+                alert("카테고리 이름을 입력해주세요.")
+                document.querySelector(className).querySelector("input").focus();
+                return false;
+            }
+            const data = {categoryName: value, useYn: 'Y', parent: parentId, depth: getDepthFromClassName(className)};
             try {
                 const res = await FETCH.post("/rest/admin/category/new", data);
                 const inserted = await res.json();
@@ -302,11 +421,17 @@
         let lastClickedLi = null;
 
         async function handleCategoryClick(li, ulSelector) {
+            if (!isSearchMode) {
+                document.querySelector(".searchArea").querySelector("input").value = ""
+                resetSearchResultUI(); // ✅ 진짜 유저 클릭일 때만 초기화
+            }
+
             window.currentTargetLi = li;
             li.parentElement.querySelectorAll("li").forEach(el => el.classList.remove("active"));
             li.classList.add("active");
 
             lastClickedLi = li;
+
 
             const parentId = li.querySelector("input").value;
             const ul = document.querySelector(ulSelector);
@@ -315,6 +440,7 @@
                 ul.parentElement.nextElementSibling.querySelector(".parentId").value = parentId;
             }
 
+
             const btn = ul.parentNode.nextElementSibling?.querySelector("button");
             if (btn) btn.style.display = '';
 
@@ -322,6 +448,7 @@
                 resetLowerLists(depthMap[ulSelector].resetFrom);
                 const result = await getParent(parentId, depthMap[ulSelector].nextUl);
                 if (result.length < 1) {
+
                     createNewCategoryInput(depthMap[ulSelector].nextUl, false)
                 }
             } else if (ulSelector === ".topCategoryList") {
@@ -440,6 +567,13 @@
             document.getElementById("detailCount").innerText = document.querySelectorAll(".detailCategoryList li").length;
         }
 
+        function getDepthFromClassName(className) {
+            if (className.includes("top")) return 0;
+            if (className.includes("middle")) return 1;
+            if (className.includes("bottom")) return 2;
+            if (className.includes("detail")) return 3;
+            return null;
+        }
     </script>
 </div>
 

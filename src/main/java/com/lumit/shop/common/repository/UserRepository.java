@@ -69,9 +69,13 @@ public interface UserRepository {
 
     int removeAuthCode(String userId);
 
-    long countAllUsers();
+    long countAllCustomers();
 
     long countUsersToday();
 
     long countAdmins();
+
+    long countRecentlyActiveAdmins();
+
+    long countRecentlyRegisteredAdmins();
 }

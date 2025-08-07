@@ -2,10 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.lumit.shop.common.repository.UserRepository">
-    <select id="countAllUsers">
+    <select id="countAllCustomers">
         SELECT COUNT(*)
         FROM TB_LOGIN
         WHERE STATUS = 1
+          AND ROLE_ID = 3
     </select>
     <select id="countUsersToday">
         SELECT COUNT(*)
@@ -236,4 +237,22 @@
         SET PASSWORD=#{password}
         WHERE USER_ID = #{userId}
     </update>
+
+    <select id="countRecentlyActiveAdmins" resultType="long">
+        SELECT COUNT(DISTINCT u.USER_ID)
+        FROM TB_LOGIN_HIS h
+                 JOIN TB_LOGIN u ON h.USER_ID = u.USER_ID
+        WHERE ROLE_ID = 1
+           OR ROLE_ID = 2
+            AND h.REG_DT >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+    </select>
+
+    <select id="countRecentlyRegisteredAdmins" resultType="long">
+        SELECT COUNT(*)
+        FROM TB_LOGIN
+        WHERE ROLE_ID = 1
+           OR ROLE_ID = 2
+            AND REG_DT >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+    </select>
+
 </mapper>

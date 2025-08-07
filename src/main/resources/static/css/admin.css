@@ -1629,15 +1629,16 @@ li.active {
 }
 
 .resultNumber {
-    font-size: 1.3rem;
+    font-size: 1rem;
     text-align: center;
 }
 
 .resultNumber span {
-    padding: 0.2rem;
+    padding: 0.1rem;
 }
 
 .resultContainer {
+    /*display: flex;*/
     text-align: center;
 }
 

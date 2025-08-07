@@ -15,6 +15,7 @@ public class TbCategory {
     private String categoryName;
     private String useYn;
     private Integer parent;
+    private Integer depth;
     private String regId;
     private LocalDateTime regDt;
     private String modId;

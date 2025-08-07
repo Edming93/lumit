@@ -92,6 +92,7 @@ create table if not exists TB_CATEGORY
     CATEGORY_NAME varchar(50)           not null,
     USE_YN        varchar(2)            not null,
     PARENT        bigint                null comment '0: 최상위, 값이 있으면 부모의 id',
+    DEPTH         tinyint               not null,
     REG_ID        varchar(50)           null,
     REG_DT        timestamp             null,
     MOD_ID        varchar(50)           null,

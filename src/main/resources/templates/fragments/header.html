@@ -48,5 +48,11 @@
         </div>
 
     </div>
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", () => {
+            const result = FETCH.get("/api/common/code/M100");
+            console.log(result)
+        })
+    </script>
 </nav>
 </html>

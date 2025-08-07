@@ -22,6 +22,7 @@ import java.util.Map;
 public class CategoryRestController {
     private final CategoryService categoryService;
 
+
     @GetMapping("/list")
     public ResponseEntity<?> selectTopParentCategories() {
         List<TbCategory> categories = categoryService.selectTopParentCategories();
@@ -65,6 +66,12 @@ public class CategoryRestController {
     public ResponseEntity<?> searchCategory(@PathVariable(value = "name") String name) {
         List<TbCategory> categories = categoryService.searchCategory(name);
         return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/parents/{id}")
+    public ResponseEntity<?> getAllParentCategories(@PathVariable("id") int categoryId) {
+        List<TbCategory> parents = categoryService.getAllParents(categoryId);
+        return ResponseEntity.ok(parents);
     }
 
     private ResponseEntity<?> getResponseEntity(@RequestBody TbCategory data) {

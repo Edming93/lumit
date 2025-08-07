@@ -4,10 +4,7 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{admin/fragments/layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div layout:fragment="content">
-    <div th:replace="~{admin/fragments/dashboardLayout :: dashboardLayout(
-    title=${title},
-    summaryCards=${summaryCards}
-)}"></div>
+    <div id="summary-cards"></div>
     <div th:replace="admin/user/menu :: menuContent"></div>
 </div>
 </html>

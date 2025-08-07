@@ -24,4 +24,6 @@ public interface CategoryService {
     ServiceCode updateCategory(TbCategory data);
 
     List<TbCategory> searchCategory(String name);
+
+    List<TbCategory> getAllParents(int categoryId);
 }

@@ -1,73 +1,76 @@
 package com.lumit.shop.admin.controller.restController;
 
 import com.lumit.shop.admin.dto.AdminDto;
+import com.lumit.shop.admin.dto.SummaryCardDto;
 import com.lumit.shop.common.constants.ServiceCode;
-import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/api/admin/user")
 public class UserRestController {
+
     private final UserService userService;
 
-    private final PasswordEncoder passwordEncoder;
-
+    // 🔹 현재 로그인 유저 정보
     @GetMapping("/me")
-    public @ResponseBody ResponseEntity<?> getSelf() {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public ResponseEntity<?> getSelf() {
+        User currentUser = getCurrentUser();
+        System.out.println(currentUser);
         return ResponseEntity.ok(currentUser);
     }
 
-    @GetMapping("/managers")
-    public @ResponseBody ResponseEntity<?> selectAdminList() {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String currentUserId = currentUser.getUserId();
-
+    // 🔹 활성 운영자 목록
+    @GetMapping("/list")
+    public ResponseEntity<?> getAdminList() {
+        User currentUser = getCurrentUser();
         List<User> adminList = userService.selectAdminList();
-        List<User> sortedList = userService.sortWithCurrentUserFirst(adminList, currentUserId);
+        List<User> sortedList = userService.sortWithCurrentUserFirst(adminList, currentUser.getUserId());
         return ResponseEntity.ok(sortedList);
     }
 
-    @PostMapping("/new-manager")
-    public String createUser(@RequestBody TbLogin tbLogin,
-                             BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            return "admin/user/userForm";
-        }
+    @GetMapping("/old-list")
+    public ResponseEntity<?> getOldAdminList() {
+        List<User> oldAdminList = userService.selectOldAdminList();
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) auth.getPrincipal();
+        List<Map<String, Object>> result = oldAdminList.stream().map(user -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("userId", user.getUserId());
+            map.put("name", user.getName());
+            map.put("modId", user.getModId());
+            map.put("modDt", user.getModDt());
+            return map;
+        }).toList();
 
-        tbLogin.setEmail(tbLogin.getUserId() + "@lumit.com");
-        tbLogin.setPhone("추후 입력 요망");
-        tbLogin.setAddress("추후 입력 요망");
-        tbLogin.setRegId(currentUser.getUserId());
-        tbLogin.setPassword(passwordEncoder.encode(tbLogin.getPassword()));
-
-        try {
-            userService.insertAdmin(tbLogin);
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "admin/user/userForm";
-        }
-
-        return "redirect:/admin/user";
+        return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping(value = "/info/{id}")
-    public @ResponseBody ResponseEntity<?> deleteRole(@PathVariable("id") String id) {
+    // 🔹 운영자 정보 수정 (이름 / 권한)
+    @PatchMapping("/info/{id}")
+    public ResponseEntity<?> updateAdmin(@PathVariable("id") String id,
+                                         @RequestBody AdminDto adminDto) {
+        ServiceCode result = userService.updateAdmin(id, adminDto);
+        if (!result.equals(ServiceCode.UPDATED)) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    // 🔹 운영자 권한 삭제
+    @DeleteMapping("/info/{id}")
+    public ResponseEntity<?> deleteRole(@PathVariable("id") String id) {
+        User currentUser = getCurrentUser();
+        if (currentUser.getUserId().equals(id)) {
+            return ResponseEntity.badRequest().body("본인의 권한은 삭제할 수 없습니다.");
+        }
+
         ServiceCode result = userService.deleteAdmin(id);
         if (!result.equals(ServiceCode.DELETED)) {
             return ResponseEntity.badRequest().build();
@@ -75,12 +78,40 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping(value = "/info/{id}")
-    public @ResponseBody ResponseEntity<?> updateAdmin(@PathVariable("id") String id, @RequestBody AdminDto adminDto) {
-        ServiceCode result = userService.updateAdmin(id, adminDto);
-        if (!result.equals(ServiceCode.UPDATED)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().build();
+
+    // 🔹 관리자 요약 카드 (이미 존재하는 코드지만 유지)
+    @GetMapping("/summary/manager")
+    public List<SummaryCardDto> getManagerSummary() {
+        long adminCount = userService.countAdmins();
+        long recentActiveAdminCount = userService.countRecentlyActiveAdmins();
+        long recentlyRegisteredAdminCount = userService.countRecentlyRegisteredAdmins();
+
+        return List.of(
+                new SummaryCardDto("관리자 수", String.valueOf(adminCount), "fa-user-shield"),
+                new SummaryCardDto("최근 활동 관리자", String.valueOf(recentActiveAdminCount), "fa-clock"),
+                new SummaryCardDto("최근 등록 관리자", String.valueOf(recentlyRegisteredAdminCount), "fa-user-plus")
+        );
+    }
+
+    @GetMapping("/summary/customers")
+    public List<SummaryCardDto> getCustomersSummary() {
+        /**
+         * todo
+         * 실제 데이터 구현해야함
+         */
+        long adminCount = userService.countAllCustomers();
+        long recentActiveAdminCount = userService.countRecentlyActiveAdmins();
+        long recentlyRegisteredAdminCount = userService.countRecentlyRegisteredAdmins();
+
+        return List.of(
+                new SummaryCardDto("총 회원 수", String.valueOf(adminCount), "fa-users"),
+                new SummaryCardDto("7일간 가입자 수", String.valueOf(recentActiveAdminCount), "fa-user-plus"),
+                new SummaryCardDto("신고된 건 수", String.valueOf(recentlyRegisteredAdminCount), "fa-circle-exclamation")
+        );
+    }
+
+    // 🔹 유틸 - 현재 로그인 유저 꺼내기
+    private User getCurrentUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

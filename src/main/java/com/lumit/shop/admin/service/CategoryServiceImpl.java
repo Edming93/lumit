@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -72,5 +73,19 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<TbCategory> searchCategory(String name) {
         return categoryRepository.searchCategory(name);
+    }
+
+    @Override
+    public List<TbCategory> getAllParents(int categoryId) {
+        List<TbCategory> parents = new ArrayList<>();
+        TbCategory current = selectCategory(categoryId);
+        parents.add(0, current);
+        while (current != null && current.getParent() != null && current.getParent() != 0) {
+            current = selectCategory(current.getParent());
+            if (current != null) {
+                parents.add(0, current); // 역순으로 넣기 위해 앞에 추가
+            }
+        }
+        return parents;
     }
 }

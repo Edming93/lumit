@@ -20,8 +20,12 @@ public interface UserService {
 
     public List<User> selectUserList();
 
+    long countRecentlyActiveAdmins();
+
+    long countRecentlyRegisteredAdmins();
+
     List<User> selectAdminList();
-    
+
     List<User> sortWithCurrentUserFirst(List<User> users, String currentUserId);
 
 
@@ -63,9 +67,10 @@ public interface UserService {
 
     ServiceCode updateTempPwd(UserInfoDto userInfo);
 
-    long countAllUsers();     // SELECT COUNT(*) FROM TB_LOGIN WHERE USE_YN = 'Y'
+    long countAllCustomers();     // SELECT COUNT(*) FROM TB_LOGIN WHERE USE_YN = 'Y'
 
     long countUsersToday();   // SELECT COUNT(*) FROM TB_LOGIN WHERE DATE(REG_DT) = CURRENT_DATE
 
     long countAdmins();       // SELECT COUNT(*) FROM TB_LOGIN WHERE ROLE = 'ADMIN'
+    
 }
