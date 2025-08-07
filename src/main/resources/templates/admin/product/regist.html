@@ -71,6 +71,7 @@
 	    	min-height:83px;
 	    	border: 1px solid var(--brand-color1);
 	    	border-radius: 0.3rem;
+	    	box-sizing: border-box;
 	    }
 	</style>
 </head>
@@ -1084,10 +1085,10 @@ async function setData(formData,url) {
 
 // 옵션 선택 값 받는 함수
 function receiveOptionList(optionList) {
-	console.log(optionList);
 	const ul = document.querySelector('.optionBody');
 	
 	optionList.forEach(option => {
+		console.log(option);
 		const productId = option.productId;
 		const productCd = option.productCd;
 		const productName = option.productName;
@@ -1135,7 +1136,6 @@ function receiveOptionList(optionList) {
 		const won = document.createElement('span');
 		won.textContent = '원'
 		
-		inputNumber();
 		// 삭제 버튼
 	    const btn = document.createElement('button');
 	    btn.textContent = 'X';
@@ -1159,6 +1159,8 @@ function receiveOptionList(optionList) {
 	
 	    ul.appendChild(li);
 	});
+	
+	inputNumber();
 }
 
 
