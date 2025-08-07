@@ -18,6 +18,60 @@
 	    	min-width: 115px;
 	    }
 	    
+	    .categoryContainer {
+	    	width: 100%;
+	    	max-height: 350px;
+	    }
+	    
+	    .cateHead, .optionHead {
+	    	font-size: 1rem;
+		    width: 100%;
+		    background-color: var(--brand-color1);
+		    color: white;
+		    padding: 0px 0px;
+		    position: relative;
+		    height: 35px;
+		    justify-content: center;
+		    align-items: center;
+		    display: flex;
+	    }
+	    
+	    .categoryTable {
+	        min-height: 300px;
+	        max-height:300px;
+	    }
+	    
+	    .cate li {
+	    	padding: 0.0rem 0.3rem 0rem 0.3rem;
+    		box-sizing: border-box;
+	    }
+	    
+	    .cate_add_btn {
+	    	width: 100px;
+		    line-height: 25px;
+		    background: #E7DBCD;
+		    border-radius: 5px;
+		    color: #876453;
+		    border: 1px solid #CAAB9C;
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    cursor: pointer;
+	    }
+	    
+	    .addBtnArea {
+	    	padding: 10px 0px;
+    	    display: flex;
+    	    justify-content: flex-end;
+	    }
+	    
+	    .selectList {
+	    	margin-top: 10px;
+	    	width: 100%;
+	    	min-height:83px;
+	    	border: 1px solid var(--brand-color1);
+	    	border-radius: 0.3rem;
+	    }
 	</style>
 </head>
 
@@ -81,12 +135,40 @@
 	                    <tr>
 	                        <th class="alLeft bold">카테고리</th>
 	                        <td>
-	                            <select id="categoryId">
-	                            	<option>어떻게 매칭할지 고민</option>
-	                            	<option value="1">카테고리 관리 팝업 띄우기?</option>
-	                            	<option value="2">그 팝업안에서 카테고리 추가,수정,삭제가능?</option>
-	                            	<option value="3">별점관리는 어떤 테이블에서? just 상품리뷰 테이블에 의존?</option>
-	                            </select>
+	                        	<div id="container" class="categoryContainer">
+	                        		<div id="cateAddBtnArea" class="addBtnArea">
+						                <button type="button" class="cate_add_btn" id="cateAddBtn" onClick="selectCateAddBtnClick()">선택 후 추가</button>
+						            </div>
+		                            <div class="categoryTable">
+							            <div class="cate largeCate">
+							                <div class="cateHead">대분류
+							                </div>
+							                <ul class='topCategoryList'></ul>
+							            </div>
+							            <div class="cate mediumCate">
+							                <div class="cateHead">중분류
+							                </div>
+							                <ul class="middleCategoryList"></ul>
+							                <input type="hidden" class="parentId">
+							            </div>
+							            <div class="cate smallCate">
+							                <div class="cateHead">소분류
+							                </div>
+							                <ul class="bottomCategoryList"></ul>
+							                <input type="hidden" class="parentId">
+							            </div>
+							            <div class="cate detailCate">
+							                <div class="cateHead">상세분류
+							                </div>
+							                <ul class="detailCategoryList"></ul>
+							                <input type="hidden" class="parentId">
+							            </div>
+							    	</div>
+							    </div>
+							    <div class="selectList">
+							    	<div class="cateHead">선택된 상품분류</div>
+							    	<ul class="cateBody"></ul>
+							    </div>
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -98,7 +180,7 @@
 	                    <tr>
 	                        <th class="alLeft bold">재고수량</th> <!-- TODO : 재고수량 10개 미만일시 대시보드에 알림 -->
 	                        <td>
-	                        	<input type="text" id="stocks" name="stocks" class="boardInp w15" placeholder="재고수량" maxlength="11">
+	                        	<input type="text" id="stocks" data-type="number" name="stocks" class="boardInp w15" placeholder="재고수량" maxlength="11">
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -128,40 +210,43 @@
 	                    <tr>
 	                        <th class="alLeft bold">옵션 상품코드</th>
 	                        <td>
-	                            <select id="optionId">
-	                            	<option>어떻게 매칭할지 고민</option>
-	                            	<option value="1">상품명 검색하면 상품코드 가져오기?</option>
-	                            </select>
+	                            <div class="addBtnArea">
+	                            	<button type="button" id="openCommonPopup" class="cate_add_btn">옵션 상품 추가</button>
+	                            </div>
+	                            <div class="selectList" style="margin:0;">
+							    	<div class="optionHead">선택된 옵션</div>
+							    	<ul class="optionBody"></ul>
+							    </div>
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">정가</th>
 	                        <td>
-	                           <input type="text" id="price" name="price" class="boardInp w15" placeholder="" maxlength="11"> 원
+	                           <input type="text" id="price" data-type="number" name="price" class="boardInp w15" placeholder="" maxlength="11"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">할인율 설정</th>
 	                        <td>
-	                           <input type="text" id="disRate" name="disRate" class="boardInp w15" placeholder="" value="0" maxlength="11"> %
+	                           <input type="text" id="disRate" data-type="number" name="disRate" class="boardInp w15" placeholder="" value="0" maxlength="11"> %
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">할인가(판매가)</th>
 	                        <td>
-	                           <input type="text" id="disPrice" name="disPrice" class="boardInp w15" placeholder="" maxlength="11"> 원
+	                           <input type="text" id="disPrice" data-type="number" name="disPrice" class="boardInp w15" placeholder="" maxlength="11"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">배송비</th>
 	                        <td>
-	                           <input type="text" id="deliveryFee" name="deliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원
+	                           <input type="text" id="deliveryFee" data-type="number" name="deliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">무료배송 설정</th>
 	                        <td>
-								<input type="text" id="freeDeliveryFee" name="freeDeliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원 이상 주문시 무료배송
+								<input type="text" id="freeDeliveryFee" data-type="number" name="freeDeliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원 이상 주문시 무료배송
 	                        	<input type="checkbox" id="freeFeeCheck">
 	                        	<label for="freeFeeCheck">체크시 적용</label>
 	                        </td>
@@ -185,7 +270,7 @@
 		                            </select>
 	                            	<button type="button" id="addTagBtn" class="plusBtn"></button>
 	                            </div>
-	                            <div id="tagWrap"></div>
+	                            <div id="tagWrap" class="flex_align"></div>
 	                        </td>
 	                    </tr>
 <!-- 	                    <tr> -->
@@ -214,14 +299,14 @@
 	            </table>
 	
 	            <div class="btnArea">
-	            	<div class="btnAreaLeft">
-	            	</div>
+<!-- 	            	<div class="btnAreaLeft"> -->
+<!-- 	            	</div> -->
 	            	<div class="btnAreaCenter">
 		            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
 		                <button type="button" id="registBtn" class="commBtn mgl10 size100">등록</button>
 	                </div>
-	                <div class="btnAreaRight">
-	                </div>
+<!-- 	                <div class="btnAreaRight"> -->
+<!-- 	                </div> -->
 	            </div>
 	        </form>
 	    </div>
@@ -244,11 +329,14 @@ let beforeFiles = []; // 백업용
 let colorList = [];
 let tagList = [];
 let colorIdList = [];
-let colorText = "";
 let tagIdList = [];
-let tagText = "";
 let editor;
 let newJsonFilesList = [];
+// 카테고리 영역
+let selectCateIdList = new Set();
+let selectCateTxtList = [];
+let currentIdList = [];
+let currentTxtList = [];
 
 document.addEventListener("DOMContentLoaded",async function () {
 	load();
@@ -262,35 +350,36 @@ document.addEventListener("DOMContentLoaded",async function () {
 			colorIdList.push($("#color").val());
 
 			let colorCd = $("#color").find('option:selected').data("colorcd");
+			let colorVal = $("#color").find('option:selected').val();
 			
-			
-			if(colorText === "") {
-				colorCd?
-				colorText += `<input type='color' value=${colorCd} disabled> `+ $("#color").find("option:selected").text() 
-					: colorText += $("#color").find("option:selected").text();
-			}else {
-				colorCd ?
-				colorText += "　" + 
-				 `<input type='color' value=${colorCd} disabled> `+ $("#color").find("option:selected").text()
-				: colorText += "　" + $("#color").find("option:selected").text();
-			}
-		}
-		$("#colorWrap").html(colorText);
+			colorCd?
+			$("#colorWrap").append(
+				`<div class="flex_align" style="margin-right:10px;">
+				<input type="color" value=${colorCd} disabled> `+ $("#color").find("option:selected").text() 
+				+ `<img src="/images/icons/icon_cancel.png" width="15" style="margin-left:5px" class="delete_color_btn" data-val=${colorVal} onClick="deleteColorBtn(this)">
+				</div>`
+				
+			)
+			: $("#colorWrap").append($("#color").find("option:selected").text());
+
+		};
 	});
 	
 	$("#addTagBtn").on("click",function() {
+		
 		if(!tagIdList.some((item) => item === $("#tag").val())) {
 			tagIdList.push($("#tag").val());
+			
+			let tagVal = $("#tag").find('option:selected').val();
 
-			if(tagText === "") {
-				tagText += 
-					 $("#tag").find("option:selected").text();
-			}else {
-				tagText += "　" + 
-					$("#tag").find("option:selected").text();
-			}
+			$("#tagWrap").append(
+				`<div class="flex_align" style="margin-right:10px;">`
+				 + $("#tag").find("option:selected").text()
+				 + `<img src="/images/icons/icon_cancel.png" width="15" style="margin-left:5px" class="delete_tag_btn" data-val=${tagVal} onClick="deleteTagBtn(this)">
+				 </div>`
+			);
 		}
-		$("#tagWrap").html(tagText);
+		
 	});
 	
 	$("#disRate,#price").on("keyup",function(e) {
@@ -308,10 +397,10 @@ document.addEventListener("DOMContentLoaded",async function () {
 			return;
 		}
 		
-		let price = $("#price").val();
-		let disRate = $("#disRate").val();
-		
-		$("#disPrice").val(price - (price * (disRate * 0.01)));
+		let price = parseNumber($("#price").val());
+		let disRate = parseNumber($("#disRate").val());
+		let discountedPrice = price - (price * (disRate * 0.01));
+		$("#disPrice").val(formatNumberWithComma(discountedPrice));
 	});
 	
 	
@@ -355,25 +444,27 @@ document.addEventListener("DOMContentLoaded",async function () {
 				alert("할인가가 정가보다 클 수 없습니다.");
 				return;
 			}
-			
-			if($("#categoryId").val() != "") {
-				formData.append("categoryId",$("#categoryId").val() ?? '');
-			}
-			if($("#optionId").val() != ""){
-				formData.append("optionId",$("#optionId").val() ?? '');
-			}
+
+// 			if($("#optionId").val() != ""){
+// 				formData.append("optionId",$("#optionId").val() ?? '');
+// 			}
 			if($("#dpStatus").val() != "") {
 				formData.append("dpStatus",$("#dpStatus").val() ?? '');
 			}
 			if($("#status").val() != "") {
 				formData.append("status",$("#status").val() ?? '');
 			}
+			if(selectCateIdList.size > 0) {
+				formData.append("cateIdList",Array.from(selectCateIdList));
+			}else {
+				alert("카테고리를 선택해주세요.");
+				return;
+			}
 
 			formData.append("colorIdList",colorIdList ?? []);
 			formData.append("tagIdList",tagIdList ?? []);
 			
 			for(let [key,value] of formData.entries()) {
-				
 				if(key == "freeDeliveryFee") {
 					let deliveryFeeChk = $("#freeFeeCheck").prop("checked");
 					if(!deliveryFeeChk) {
@@ -387,7 +478,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 					}
 				}
 				
-				if(key != "files" && key != "filesRep" && key != "colorIdList" && key != "tagIdList" && key != "freeDeliveryFee") {
+				if(key != "files" && key != "filesRep" && key != "colorIdList" && key != "tagIdList" && key != "freeDeliveryFee" && key != "optionId") {
 					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
 						alert("입력하지 않은 값이 있는지 확인해주세요.");
 						return;
@@ -496,6 +587,12 @@ document.addEventListener("DOMContentLoaded",async function () {
 		    };
 		}
     });
+	
+	$("#openCommonPopup").click(function(){
+		openCommonPopup("optionList", "상품 옵션 리스트", "1060", "640");
+	});
+	
+	
 });
 
 async function load() {
@@ -509,6 +606,184 @@ async function load() {
 	createSelectOptions("dpStatus", codeList.filter((item) => item.grpCd === 'DP_STATUS'),{selectedValue:'0000', keyNm:"cd", valueNm:"cdNm"});
 	createSelectOptions("color", colorList,{selectedValue:'0000', keyNm:"optionId", valueNm:"optionName", colorCd:"optionCd"});
 	createSelectOptions("tag", tagList,{selectedValue:'0001', keyNm:"optionId", valueNm:"optionName"});
+	
+	// 카테고리 영역
+	getParent("", ".topCategoryList");
+}
+
+async function getParent(id, className) {
+    const url = id ? `/rest/admin/category/list/${id}` : "/rest/admin/category/list";
+    const result = await FETCH.get(url);
+    renderCategoryList(result, className, id);
+    return result;
+}
+
+function renderCategoryList(categories, ulSelector, parentId) {
+    const ul = document.querySelector(ulSelector);
+    const html = categories.map(c => `
+	<li>
+	    <input type="hidden" value="${c.categoryId}">
+	    <i class="fa-solid fa-folder"></i>
+	    <div>${c.categoryName}</div>
+	</li>
+	`).join("");
+
+    ul.innerHTML = html;
+    
+    if (ulSelector !== ".topCategoryList") {
+        ul.nextElementSibling.value = parentId;
+    }
+
+    ul.querySelectorAll("li").forEach(li => {
+        li.addEventListener("click", () => handleCategoryClick(li, ulSelector));
+    });
+
+}
+
+const depthOrder = [".topCategoryList", ".middleCategoryList", ".bottomCategoryList", ".detailCategoryList"];
+
+const depthMap = {
+    ".topCategoryList": {nextUl: ".middleCategoryList", resetFrom: 0},
+    ".middleCategoryList": {nextUl: ".bottomCategoryList", resetFrom: 1},
+    ".bottomCategoryList": {nextUl: ".detailCategoryList", resetFrom: 2}
+};
+
+function resetLowerLists(fromDepth) {
+    for (let i = fromDepth + 1; i < depthOrder.length; i++) {
+        const ul = document.querySelector(depthOrder[i]);
+        ul.innerHTML = "";
+        ul.querySelectorAll("li.active").forEach(li => li.classList.remove("active"));
+
+        const hidden = ul.nextElementSibling;
+        if (hidden && hidden.classList.contains("parentId")) hidden.value = "";
+    }
+}
+
+let lastClickedLi = null;
+
+async function handleCategoryClick(li, ulSelector) {
+
+	li.parentElement.querySelectorAll("li").forEach(el => el.classList.remove("active"));
+	li.classList.add("active");
+
+    lastClickedLi = li;
+
+    const parentId = li.querySelector("input").value;
+    const ul = document.querySelector(ulSelector);
+    
+    if (ulSelector !== ".topCategoryList" && ulSelector !== ".detailCategoryList") {
+        ul.parentElement.nextElementSibling.querySelector(".parentId").value = parentId;
+    }
+
+    if (ulSelector in depthMap) {
+        getParent(parentId, depthMap[ulSelector].nextUl);
+        resetLowerLists(depthMap[ulSelector].resetFrom);
+    } else if (ulSelector === ".topCategoryList") {
+        resetLowerLists(-1);
+        getParent(parentId, ".middleCategoryList");
+    }
+
+}
+
+function selectCateAddBtnClick() {
+	
+	const cateBoxes = document.querySelectorAll('.categoryTable .cate');
+	
+	cateBoxes.forEach(function (cateBox) {
+		const activeLi = cateBox.querySelector('li.active');
+	
+		if (activeLi) {
+			const input = activeLi.querySelector('input[type="hidden"]');
+			const div = activeLi.querySelector('div');
+			
+			if(input && div) {
+				currentIdList.push(input.value);
+				currentTxtList.push(div.textContent.trim());
+			}
+		}
+	});
+	
+	console.log('선택된 카테고리 ID:', currentIdList);
+	console.log('선택된 카테고리 텍스트:', currentTxtList);
+	
+	const newPathTxt = currentTxtList.join(' > ');
+	console.log(newPathTxt);
+	const alreadyExists = selectCateTxtList.includes(newPathTxt);
+	console.log(alreadyExists)
+	
+	if(!alreadyExists && currentTxtList.length > 0) {
+		const ul = document.querySelector('.cateBody');
+		const li = document.createElement('li');
+		
+		li.textContent = newPathTxt + ' ';
+		li.style.cssText = "padding-left: 20px;";
+		
+		li.setAttribute('data-path', newPathTxt); // 나중에 비교용
+	    li.setAttribute('data-ids', currentIdList.join(',')); // 나중에 ID 추출용
+		
+	    const btn = document.createElement('button');
+		btn.textContent = 'X';
+		btn.style.marginLeft = '5px';
+		btn.style.color = 'red';
+		btn.style.cursor = 'pointer';
+	    
+		// 삭제 이벤트
+		btn.addEventListener('click', function () {
+			const path = li.getAttribute('data-path');
+			const idsToRemove = li.getAttribute('data-ids').split(',');
+			
+			console.log(idsToRemove);
+			
+			
+			// 텍스트 경로 삭제
+			// selectCateTxtList = selectCateTxtList.filter(txt => txt !== path); 도 가능?
+			const pathIdx = selectCateTxtList.indexOf(path);
+
+			if (pathIdx !== -1) {
+				selectCateTxtList.splice(pathIdx, 1);
+			}
+			
+			// ID들 하나씩 중복 여부 체크 후 안전하게 삭제
+			idsToRemove.forEach(id => {
+				const isUsedElsewhere = selectCateTxtList.some(txt => {
+					const matchingLi = document.querySelector(`li[data-path="${txt}"]`);
+					if (!matchingLi) return false;
+					const ids = matchingLi.getAttribute('data-ids').split(',');
+					return ids.includes(id);
+				});
+				
+				if (!isUsedElsewhere) {
+					selectCateIdList.delete(id);
+				}
+			});
+		
+			// DOM에서 삭제
+			li.remove();
+			
+			// TODO : 디버깅용 출력, 보여주고 지울것
+		    console.log('선택된 전체 경로들:', selectCateTxtList);
+		    console.log('선택된 ID들 (중복 제거):', Array.from(selectCateIdList));
+		
+		});
+	
+	    li.appendChild(btn);
+		ul.appendChild(li);
+		
+		// 경로, ID 배열 업데이트
+		selectCateTxtList.push(newPathTxt);
+		currentIdList.forEach(id => {
+			if (!selectCateIdList.has(id)) {
+			  selectCateIdList.add(id);
+			}
+		});
+	}
+
+    // 디버깅 출력
+    console.log('선택된 전체 경로들:', selectCateTxtList);
+    console.log('선택된 ID들 (중복 제거):', selectCateIdList);
+    
+    currentIdList = [];
+    currentTxtList = [];
 }
 
 function initTextEditor () {
@@ -522,9 +797,7 @@ function initTextEditor () {
 	    beautifyHTML: true,            // HTML 자동 정렬
 	    sourceEditor: 'area',
 	    maxWidth: 940,
-	    minWidth: 940,
 	    minHeight: 400,
-	    maxHeight: 400,
 	    uploader: {
 	    	// 이미지 업로드를 base64 방식으로 처리 (간단용)
 			// insertImageAsBase64URI: true  
@@ -780,6 +1053,24 @@ function deleteFileBtn(elem) {
 	setFiles(elem.getAttribute("data-id"));
 };
 
+function deleteColorBtn(elem) {
+	if(colorIdList.length > 0) {
+		const colId = elem.getAttribute("data-val");
+		
+		colorIdList = colorIdList.filter(col => col !== colId);
+ 		elem.parentNode.remove();
+	}
+}
+
+function deleteTagBtn(elem) {
+	if(tagIdList.length > 0) {
+		const tagId = elem.getAttribute("data-val");
+		
+		tagIdList = tagIdList.filter(tag => tag !== tagId);
+ 		elem.parentNode.remove();
+	}
+}
+
 // 비동기 통신
 async function setData(formData,url) {
 	const res = await axios.post('/rest/' + siteId + '/product/regist',formData, {headers: {'Content-Type': 'multipart/form-data'}});
@@ -790,4 +1081,85 @@ async function setData(formData,url) {
 	moveUrl(url);
 	
 }
+
+// 옵션 선택 값 받는 함수
+function receiveOptionList(optionList) {
+	console.log(optionList);
+	const ul = document.querySelector('.optionBody');
+	
+	optionList.forEach(option => {
+		const productId = option.productId;
+		const productCd = option.productCd;
+		const productName = option.productName;
+		const price = option.price;
+	
+		// 중복 확인
+		if(ul.querySelector('li[data-productid="'+ productId +'"]')) {
+			alert(productName + "은(는) 이미 선택 된 옵션 상품입니다.");
+			return;
+		};
+	
+		const li = document.createElement('li');
+		li.setAttribute('data-productid', productId);
+		li.setAttribute('data-productcd', productCd);
+		li.setAttribute('data-price', price);
+		li.setAttribute('data-name', productName);
+		
+		li.style.cssText = `
+			display: flex;
+			align-items: center;
+			padding: 0px 20px;
+			font-size: 14px;
+		`;
+		
+		// 상품 정보 텍스트
+		const label = document.createElement('span');
+		label.innerHTML = `[<span style="color:red">${productCd}</span>] ${productName}`;
+		label.style.flex = '1';
+
+		// 가격 입력창
+		const priceInput = document.createElement('input');
+		priceInput.setAttribute('data-type','number');
+		priceInput.type = 'text';
+		priceInput.value = formatNumberWithComma(price);
+		priceInput.min = 0;
+		priceInput.style.cssText = `
+			width: 100px;
+			margin: 0 5px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 13px;
+		`;
+		priceInput.className = 'priceInput';
+		
+		const won = document.createElement('span');
+		won.textContent = '원'
+		
+		inputNumber();
+		// 삭제 버튼
+	    const btn = document.createElement('button');
+	    btn.textContent = 'X';
+	    btn.style.cssText = `
+	    	margin-left:10px;
+			color: red;
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			font-weight: bold;
+		`;
+	    
+	    btn.addEventListener('click', () => {
+	        ul.removeChild(li);
+	    });
+	    
+	    li.appendChild(label);
+	    li.appendChild(priceInput);
+	    li.appendChild(won);
+	    li.appendChild(btn);
+	
+	    ul.appendChild(li);
+	});
+}
+
+
 </script>

@@ -12,7 +12,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class TbProduct{
+public class TbProduct {
 	private String productId;
 	private String productName;
 	private String productCd;
@@ -43,9 +43,6 @@ public class TbProduct{
 	private List<String> tagIdList = new ArrayList<>();
 	private List<String> jsonFilesList;
 	private String newJsonFilesList;
-
-
-	
-	
+	private List<String> cateIdList = new ArrayList<>();
 	
 }

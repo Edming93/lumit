@@ -2,12 +2,22 @@
 @import "font.css";
 @import "common.css";
 
+html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    height: auto;
+}
 
 body {
     background-color: var(--background-color);
     font-family: Pretendard;
     font-size: 0.7rem;
     color: var(--font-color);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
 }
 
 a {
@@ -19,9 +29,9 @@ button {
     padding: 0px;
 }
 
-.container * {
-    color: var(--text-color);
-}
+/* .container * { */
+/*     color: var(--text-color); */
+/* } */
 
 .searchArea {
     width: 100%;
@@ -287,7 +297,6 @@ input.w100, select.w100 {
 
 .container {
     width: 100%;
-    padding: 10px;
     overflow: auto;
     box-sizing: border-box;
     position: relative;
@@ -297,6 +306,7 @@ input.w100, select.w100 {
 
 .contentWrap {
     margin-top: 30px;
+    width: 55vw;
 }
 
 .wrapper {
@@ -602,7 +612,7 @@ table tbody tr td .tblBtn.delBtn {
 }
 
 .boardContainer {
-    width: 55vw;
+	width:100%;   
 }
 
 
@@ -1132,8 +1142,11 @@ input::-webkit-inner-spin-button {
     margin-top: 15px;
 }
 
-.btnAreaLeft {
+/* center가 필요한경우는 class명 btnArea~ , 필요 없는 경우는 btnLeft~ btnRight~ 사용 */
+.btnAreaLeft, .btnAreaRight, .btnLeftArea, .btnRightArea {
     display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .btnAreaCenter {
@@ -1236,14 +1249,23 @@ input::-webkit-inner-spin-button {
 /**
     category css
  */
+ 
+.categoryContainer {
+    width: 80%;
+    min-width: 640px;
+}
 
 .categoryTable {
-    height: 520px;
     border: 1px solid var(--brand-color1);
     display: flex;
+    flex-direction: row;
+	align-items: stretch;
     justify-content: space-between;
-    /*padding: 0.5rem 0.ㅍ5rem;*/
+    /*padding: 0.5rem 0.5rem;*/
     border-radius: 0.3rem;
+    min-height: 520px;
+    max-height: 520px;
+	
 }
 
 .cateHead {
@@ -1278,6 +1300,7 @@ input::-webkit-inner-spin-button {
     flex-direction: column;
     width: 25%;
     border-right: 1px solid var(--brand-color1);
+    min-height: 100%;
 }
 
 .cate input {
@@ -1314,10 +1337,9 @@ input::-webkit-inner-spin-button {
     align-content: center;
 }
 
-.mediumCate {
-}
-
-.smallCate {
+.cate ul {
+  flex-grow: 1;
+      overflow-y: auto;
 }
 
 .textEditor img {
@@ -1326,13 +1348,6 @@ input::-webkit-inner-spin-button {
 
 li.active {
     background-color: #e9d4c7;
-}
-
-.categoryContainer {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-    min-width: 640px;
 }
 
 .categoryTopBar {

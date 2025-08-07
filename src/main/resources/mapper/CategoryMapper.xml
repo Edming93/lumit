@@ -56,4 +56,21 @@
         , MOD_DT = #{modDt}
         WHERE CATEGORY_ID = #{categoryId}
     </update>
+    
+    
+    
+    <insert id="insertCategoryMap" parameterType="TbCategory">
+        INSERT INTO TB_CATEGORY_MAP
+    	(
+    		PRODUCT_ID
+    		,CATEGORY_ID
+    	)
+    	VALUES
+    	<foreach collection="cateIdList" index="index" item="i" separator=",">
+    		(
+	    		#{i.productId}
+	    		, #{i.categoryId}
+    		)
+	    </foreach>
+    </insert>
 </mapper>

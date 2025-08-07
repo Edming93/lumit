@@ -3,6 +3,7 @@ let codeList = [];
 $(document).ready(async function () {
     initDatePicker();
     setCntPerPageInit();
+    inputNumber();
 })
 
 function pageReload() {
@@ -245,4 +246,50 @@ function phoneValidate(event) {
     }
     event.currentTarget.value = value.replace(/[^0-9]/g, '')
         .replace(/(^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3")
+}
+
+// 공통 팝업
+function openCommonPopup(popupNm, title, width, height){
+	let _width = width ? width : '1000';
+    let _height = height ? height : '640';
+ 
+    // 팝업을 가운데 위치
+    let _left = Math.ceil(( window.screen.width - _width )/2);
+    let _top = Math.ceil(( window.screen.height - _height )/2); 
+
+	let url = `/common/popup/${popupNm}?title=` + encodeURIComponent(title);
+	console.log(encodeURIComponent(title));
+	let popupName = title + '_' + new Date().getTime(); // 이름 중복 방지
+	
+	let popup = window.open(url, popupName, `width=${_width},height=${_height},left=${_left},top=${_top},resizable=no,scrollbars=yes,status=no`);
+	popup.document.title = title;
+}
+
+function formatNumberWithComma(number) {
+	// 빈 문자열 또는 NaN 방지
+	if (isNaN(number)) return '0';
+	
+	return Number(number).toLocaleString('ko-KR');
+}
+
+//input number 입력 이벤트
+function inputNumber() {
+	$("input[data-type=number]").on("keyup",function (e) {
+		// 원래 입력값
+		const rawValue = e.target.value;
+		// 콤마제외 유효성 검사
+		let cleaned = String(rawValue).replace(/[^\d]/g, '');
+		// 콤마가 붙은 새 값
+		const formatted = formatNumberWithComma(cleaned);
+		// 입력값 업데이트
+		e.target.value = formatted;
+	});
+}
+
+// 콤마 제거
+function parseNumber(value) {
+    if (typeof value === "string") {
+        return Number(value.replace(/,/g, '')) || 0;
+    }
+    return Number(value) || 0;
 }

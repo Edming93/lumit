@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+	<th:block th:replace="~{admin/fragments/head :: headFragment}"></th:block>
+	<script th:if="${scriptPath != null}" th:src="@{${scriptPath}}"></script>
+	
+	<style type="text/css">
+		body {box-sizing: border-box; margin:0px;}
+		.container {height: unset; padding: unset;}
+		.popupContainer {margin: 25px !important; box-sizing: border-box; height: 100%;}
+	</style>
+	
+</head>
+
+<body>
+<div class="popupContainer">
+	<div class="popupContent">
+		<div class="popupTitle">
+			<h3 class="title" th:text="${title}"></h3>
+		</div>
+		
+		<div class="commPopContainer" id="openCommonPopup">
+			<div class="commPopContent" th:replace="${commPopPath} :: commPopContent">
+				
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+<body/>
+<script type="text/javascript">
+$(document).ready(function() {
+	let defaultUrl = '[[${session.defaultUrl}]]';
+	getSiteId(defaultUrl);
+	
+	// 팝업 닫기 버튼
+	$("#closeBtn").click(function(){
+		window.close();
+	});
+
+});
+
+
+</script>
+</html>
