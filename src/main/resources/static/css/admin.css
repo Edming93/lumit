@@ -612,7 +612,7 @@ table tbody tr td .tblBtn.delBtn {
 }
 
 .boardContainer {
-	width:100%;   
+    width: 100%;
 }
 
 
@@ -1250,7 +1250,7 @@ input::-webkit-inner-spin-button {
 /**
     category css
  */
- 
+
 .categoryContainer {
     width: 80%;
     min-width: 640px;
@@ -1260,13 +1260,13 @@ input::-webkit-inner-spin-button {
     border: 1px solid var(--brand-color1);
     display: flex;
     flex-direction: row;
-	align-items: stretch;
+    align-items: stretch;
     justify-content: space-between;
     /*padding: 0.5rem 0.5rem;*/
     border-radius: 0.3rem;
     min-height: 520px;
     max-height: 520px;
-	
+
 }
 
 .cateHead {
@@ -1334,13 +1334,14 @@ input::-webkit-inner-spin-button {
 }
 
 .cate li > i {
-    margin: 0 !important;
+    margin-right: 0.1rem;
     align-content: center;
+    color: var(--brand-color1);
 }
 
 .cate ul {
-  flex-grow: 1;
-      overflow-y: auto;
+    flex-grow: 1;
+    overflow-y: auto;
 }
 
 .textEditor img {
@@ -1349,6 +1350,10 @@ input::-webkit-inner-spin-button {
 
 li.active {
     background-color: #e9d4c7;
+}
+
+li.active i {
+    color: white;
 }
 
 .categoryTopBar {
@@ -1665,4 +1670,5 @@ li.active {
 .pageBtnContainer i {
     padding: 0.5rem;
     margin: 0;
+    color: black;
 }
