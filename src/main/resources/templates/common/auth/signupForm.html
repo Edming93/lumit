@@ -194,7 +194,7 @@
         </div>
         <a class="helpLink" th:href="@{/login}">이미 가입하셨나요?</a>
         <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}">
-        <div id="toast" class="toast hidden"></div>
+
     </form>
     <script th:inline="javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script th:inline="javascript">
@@ -206,6 +206,8 @@
         if (errorMessage) {
             alert(errorMessage);
         }
+
+        let toast;
         const isAll = () => {
             const agreeChildren = document.getElementsByClassName("agreementChild")
             let count = 0
@@ -241,7 +243,6 @@
             let value = e.currentTarget.value;
             let re = /[0-9]/;
             if (re.test(value) === false) {
-                console.log(value)
                 e.currentTarget.value = "";
                 return;
             }
@@ -254,7 +255,6 @@
             const checkAll = document.getElementById("checkAll")
             checkAll.checked = !checkAll.checked
             const agreeChildren = document.getElementsByClassName("agreementChild")
-            console.log(agreeChildren)
             for (let i = 0; i < agreeChildren.length; i++) {
                 agreeChildren[i].checked = checkAll.checked
             }
@@ -271,9 +271,13 @@
         async function submitApi(e) {
             e.preventDefault();
 
-            // 1) 필수 유효성
+            const id = document.getElementById("id").value?.trim();
+            if (id == null || id == "") {
+                toast.error("아이디를 입력해주세요.")
+                return;
+            }
             if (!pwdValidate() || !checkPwd()) {
-                showToast("비밀번호를 확인해주세요.");
+                toast.error("비밀번호를 확인해주세요.")
                 return;
             }
             if (!agreeValidate()) return;
@@ -290,8 +294,8 @@
             const detail = document.getElementById("detailAddress").value || "";
             const fullAddress = [zonecode, addr, detail].filter(Boolean).join(", ");
 
-            const payload = {
-                userId: document.getElementById("id").value?.trim(),
+            const signUpDto = {
+                userId: id,
                 password: document.getElementById("password").value,
                 name: document.getElementById("name").value?.trim(),
                 genderCd: document.querySelector('input[name="genderCd"]:checked')?.value,
@@ -303,32 +307,22 @@
                 roleId: 3
             };
 
-            // 간단 클라이언트 유효성(아이디/이메일/폰 길이 등) 추가하고 싶으면 여기서 체크
-            if (!payload.userId || !payload.email) {
-                alert("아이디/이메일은 필수입니다.");
+            if (!signUpDto.userId || !signUpDto.email) {
+                toast.error("아이디/이메일은 필수입니다.");
                 return;
             }
 
-            // 3) CSRF 헤더 셋업
-            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content || 'X-CSRF-TOKEN';
-
-            // 4) API 호출
             try {
-                const res = await FETCH.post('/api/user/create', payload);
+                const res = await FETCH.post('/api/user/create', signUpDto);
+                const json = await safeJson(res);
                 if (res.ok) {
-                    // 201/200 성공 처리
-                    showToast("회원가입이 완료되었습니다.");
-                    // 필요 시 자동 로그인/리다이렉트
-                    // window.location.href = '/login';
+                    toast.success(json?.message || "회원가입이 완료되었습니다.", 1200);
+                    setTimeout(() => {
+                        location.href = "/login"
+                    }, 1200)
                 } else {
                     // 표준 에러 포맷 {code, message, fieldErrors[]} 가정
-                    const err = await safeJson(res);
-                    if (err?.message) {
-                        showToast(err.message);
-                    } else {
-                        alert("회원가입에 실패했습니다. 잠시 후 다시 시도해주세요.");
-                    }
+                    toast.error(json?.message || "회원가입에 실패했습니다.");
                 }
             } catch (e) {
                 console.error(e);
@@ -347,8 +341,8 @@
         function agreeValidate() {
             const requiredAgreement = document.getElementsByClassName("requiredCheck")
             for (let i = 0; i < requiredAgreement.length; i++) {
-                console.log(requiredAgreement[i].checked)
                 if (requiredAgreement[i].checked == false) {
+                    toast.error("필수 약관에 동의해주세요.")
                     alert("필수 약관에 동의해주세요.")
                     return false;
                 }
@@ -404,6 +398,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+            toast = window.__toast;
             const agreeChildren = document.getElementsByClassName("agreementChild")
             for (let i = 0; i < agreeChildren.length; i++) {
                 agreeChildren[i].addEventListener('click', function () {

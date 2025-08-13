@@ -1,69 +1,87 @@
 <!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
->
-<div>
-    <div class="userTableSection">
-        <h2>🚨 신고 이력 있는 회원</h2>
-        <table class="memberTable">
-            <thead>
-            <tr>
-                <th>닉네임</th>
-                <th>이메일</th>
-                <th>신고 횟수</th>
-                <th>가입일</th>
-                <th>정지 상태</th>
-                <th>액션</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="member : ${reportedMembers}">
-                <td th:text="${member.nickname}">닉네임</td>
-                <td th:text="${member.email}">이메일</td>
-                <td th:text="${member.reportCount}">3</td>
-                <td th:text="${#temporals.format(member.createdAt, 'yyyy-MM-dd')}">2025-07-30</td>
-                <td th:text="${member.suspended ? '정지' : '정상'}"
-                    th:classappend="${member.suspended} ? 'suspended' : 'active'"></td>
-                <td>
-                    <button th:onclick="|viewMember('${member.id}')|">보기</button>
-                    <button th:if="${!member.suspended}" th:onclick="|suspendMember('${member.id}')|">정지</button>
-                    <button th:if="${member.suspended}" th:onclick="|releaseMember('${member.id}')|">해제</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
-        <hr style="margin: 30px 0;"/>
-
-        <h2>🧾 최근 가입 회원</h2>
-        <table class="memberTable">
-            <thead>
-            <tr>
-                <th>닉네임</th>
-                <th>이메일</th>
-                <th>가입일</th>
-                <th>신고 횟수</th>
-                <th>정지 상태</th>
-                <th>액션</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="member : ${recentMembers}">
-                <td th:text="${member.nickname}">닉네임</td>
-                <td th:text="${member.email}">이메일</td>
-                <td th:text="${#temporals.format(member.createdAt, 'yyyy-MM-dd')}">2025-07-30</td>
-                <td th:text="${member.reportCount}">0</td>
-                <td th:text="${member.suspended ? '정지' : '정상'}"
-                    th:classappend="${member.suspended} ? 'suspended' : 'active'"></td>
-                <td>
-                    <button th:onclick="|viewMember('${member.id}')|">보기</button>
-                    <button th:if="${!member.suspended}" th:onclick="|suspendMember('${member.id}')|">정지</button>
-                    <button th:if="${member.suspended}" th:onclick="|releaseMember('${member.id}')|">해제</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="memberTabContainer">
+    <div class="memberSummaryBlock">
+        <h3><i class="fa-solid fa-triangle-exclamation" style="margin-right:6px;"></i> 신고 이력 있는 회원</h3>
+        <ul id="flaggedList" class="memberList"></ul>
     </div>
 
+    <hr class="memberDivider">
+
+    <div class="memberSummaryBlock">
+        <h3><i class="fa-regular fa-user" style="margin-right:6px;"></i> 최근 가입 회원</h3>
+        <ul id="recentList" class="memberList"></ul>
+    </div>
 </div>
+
+<style>
+    .memberTabContainer {
+        padding: 16px;
+    }
+
+    .memberSummaryBlock h3 {
+        margin: 4px 0 10px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .memberList {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .memberItem {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 8px;
+        border-radius: 10px;
+    }
+
+    .memberItem:hover {
+        background: #faf7f5;
+    }
+
+    .memberBadge {
+        font-size: 12px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #eee;
+    }
+
+    .memberActions {
+        margin-left: auto;
+        display: flex;
+        gap: 6px;
+    }
+
+    .memberActions button {
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        background: #fff;
+        cursor: pointer;
+    }
+
+    .memberActions button.action-danger {
+        border-color: #f3b1b1;
+    }
+
+    .memberDivider {
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 14px 0;
+    }
+
+    .memberSub {
+        color: #666;
+        font-size: 13px;
+    }
+
+    .emptyTip {
+        color: #aaa;
+        font-size: 13px;
+        margin: 8px 0 0 2px;
+    }
+</style>

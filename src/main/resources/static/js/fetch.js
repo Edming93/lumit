@@ -21,6 +21,7 @@ const FETCH = {
             const res = await fetch(url, {
                 method: "POST",
                 headers: {'Content-Type': 'application/json; charset=utf-8', ...csrfHeader()},
+                credentials: "same-origin",
                 body: JSON.stringify(requestBody)
             });
             return callbackFunc ? callbackFunc(res) : res;

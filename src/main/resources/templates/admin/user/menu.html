@@ -2,8 +2,6 @@
      xmlns:th="http://www.thymeleaf.org"
      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <div class="tabMenu">
-        <a href="#" onclick="window.open('https://st.sweettracker.co.kr/#/', 'delivery', 'width=600, height=600')"
-           target="_parent">배송 조회하기</a>
         <button class="linkBtn" data-url="/admin/user/manager"
                 sec:authorize="hasAnyRole('SUPER_ADMIN')">관리자 편집
         </button>
@@ -16,11 +14,10 @@
     <script th:src="@{/js/modal.js}"></script>
     <script th:inline="javascript">
         let currentUserId = null;
-
+        let toast;
         window.addEventListener("managerLoad", async () => {
             try {
                 const me = await FETCH.get("/api/admin/user/me").then(d => d)
-                console.log(me)
                 currentUserId = me.userId;
 
                 const [adminRes, oldRes] = await Promise.all([
@@ -28,13 +25,16 @@
                     FETCH.get("/api/admin/user/old-list").then(d => d)
                 ]);
 
-                console.log(adminRes)
                 renderActiveAdmins(adminRes);
                 renderOldAdmins(oldRes);
             } catch (err) {
                 console.error("관리자 데이터 불러오기 실패", err);
             }
         });
+
+        window.addEventListener("customersLoad", async () => {
+            alert("커스토머 창 켜짐.")
+        })
 
         function renderActiveAdmins(adminList) {
             const tbody = document.getElementById("activeAdminBody");
@@ -63,13 +63,13 @@
 
         function renderOldAdmins(oldList) {
             const tbody = document.getElementById("oldAdminBody");
-
+            console.log()
             tbody.innerHTML = oldList.map(admin => `
             <tr>
                 <td style="padding: 0.8rem">${admin.userId}</td>
                 <td>${admin.name}</td>
                 <td>${admin.modId}</td>
-                <td>${admin.modDt}</td>
+                <td>${new Date(oldList[0].modDt).toLocaleDateString()} ${new Date(oldList[0].modDt).toLocaleTimeString()}</td>
                 <td>
                     <div class="btnWrapper">
                         <button class="restoreBtn" onclick="updateInfo(null, '${admin.userId}', 'reset')">
@@ -141,6 +141,7 @@
                     }
                 } else if (url.includes("customers")) {
                     await loadSummaryCardREST("/api/admin/user/summary/customers");
+                    window.dispatchEvent(new CustomEvent("customersLoad"))
                 }
 
                 if (url.includes("new-manager")) {
@@ -187,6 +188,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", async () => {
+            toast = window.__toast;
             document.querySelectorAll(".tabMenu .linkBtn").forEach(btn => {
                 btn.addEventListener("click", () => {
                     activateTab(btn);
@@ -234,7 +236,7 @@
                     if (res.ok) {
                         alert("등록 완료");
                         // location.href = "/admin/user";
-                        loadTabContent("/admin/user/new-manager")
+                        await loadTabContent("/admin/user/new-manager")
                     } else {
                         const msg = await res.text();
                         document.getElementById("errorMessage").innerText = msg || "등록 실패";

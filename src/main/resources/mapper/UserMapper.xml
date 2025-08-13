@@ -105,8 +105,8 @@
             EMAIL=#{email},
             PHONE=#{phone},
             ADDRESS=#{address},
-            MOD_ID=#{modId},
-            MOD_DT=now()
+            REG_ID=#{regId},
+            REG_DT=now()
         WHERE SOCIAL_ID = #{socialId};
     </update>
 

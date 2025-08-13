@@ -13,26 +13,31 @@
     </div>
     <div class="container">
         <div class="content" layout:fragment="content">
-        
+
         </div>
     </div>
+    <div id="toast" class="toast hidden"></div>
 </div>
+<script th:src="@{/js/ui/toast.js}"></script>
+<script>
+    window.__toast = window.__toast || (window.Toast ? window.Toast({position: 'top-right'}) : null);
+</script>
 <script th:inline="javascript">
     let defaultUrl = [[${session.defaultUrl}]];
     getSiteId(defaultUrl);
-    
+
     let menuList = [[${session.menuList}]];
-    
+
     document.addEventListener("DOMContentLoaded", function () {
         sideBar.setting();
     });
 
-    
-// 메뉴 정보 공통화 할 일 있으면 사용
-//  let selectUrl = window.location.pathname.replace(/\/[^/]+$/, '') + "/**";;
-// 	let selectMenu = menuList.find((item) => {return item.menuUrl === selectUrl});
-//  $("#menuNm").html(selectMenu.menuName);
-    
+
+    // 메뉴 정보 공통화 할 일 있으면 사용
+    //  let selectUrl = window.location.pathname.replace(/\/[^/]+$/, '') + "/**";;
+    // 	let selectMenu = menuList.find((item) => {return item.menuUrl === selectUrl});
+    //  $("#menuNm").html(selectMenu.menuName);
+
 </script>
 </body>
 </html>

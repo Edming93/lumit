@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -42,10 +43,18 @@ public class UserRestController {
     }
 
     @PostMapping(value = "/create")
-    public @ResponseBody ResponseEntity createUser(@Valid @RequestBody SignUpDto signUpDto) {
-        int result = userService.insertUser(signUpDto.createTbLogin());
-        if (result < 1) {
-            return ResponseEntity.ok().body(new SimpleMessage("FAIL", "회원가입에 실패하였습니다."));
+    public @ResponseBody ResponseEntity createUser(@RequestBody SignUpDto signUpDto) {
+        signUpDto.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
+        if (signUpDto.getSocialId() != null) {
+            ServiceCode sc = userService.updateSocialUser(signUpDto);
+            if (!sc.equals(ServiceCode.UPDATED)) {
+                return ResponseEntity.ok().body(new SimpleMessage("FAIL", "회원가입에 실패하였습니다."));
+            }
+        } else {
+            int result = userService.insertUser(signUpDto.createTbLogin());
+            if (result < 1) {
+                return ResponseEntity.ok().body(new SimpleMessage("FAIL", "회원가입에 실패하였습니다."));
+            }
         }
         return ResponseEntity.ok().body(new SimpleMessage("OK", "회원가입이 완료되었습니다."));
     }

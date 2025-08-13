@@ -29,11 +29,11 @@ async function updateInfo(element, id, type) {
         if (type == 'role') {
             return await FETCH.patch(`/api/admin/user/info/${id}`, {roleId: value})
         } else if (type == 'name') {
-            return await FETCH.patch(`/api/admin/info/${id}`, {name: value})
+            return await FETCH.patch(`/api/admin/user/info/${id}`, {name: value})
         }
     })
-    if (!result) {
-        showToast("오류 발생", 3000);
+    if (!result.ok) {
+        toast.error("오류 발생", 3000);
         return false;
     }
     if (type === "name" || type === "role") {
@@ -42,7 +42,8 @@ async function updateInfo(element, id, type) {
     if (type == "reset") {
         location.reload()
     }
-    showToast("수정 완료");
+
+    toast.success("수정 완료");
     hideModal("update")
     // location.reload();
 }

@@ -23,7 +23,6 @@ public class UserRestController {
     @GetMapping("/me")
     public ResponseEntity<?> getSelf() {
         User currentUser = getCurrentUser();
-        System.out.println(currentUser);
         return ResponseEntity.ok(currentUser);
     }
 
@@ -51,8 +50,7 @@ public class UserRestController {
 
         return ResponseEntity.ok(result);
     }
-
-    // 🔹 운영자 정보 수정 (이름 / 권한)
+    
     @PatchMapping("/info/{id}")
     public ResponseEntity<?> updateAdmin(@PathVariable("id") String id,
                                          @RequestBody AdminDto adminDto) {

@@ -44,7 +44,6 @@ public class UserController {
 
     @GetMapping("/customers")
     public String editUserForm(Model model) {
-        // TODO: 수정 대상 사용자 정보를 넘길 수 있도록 구현
         return "admin/user/customers";
     }
 

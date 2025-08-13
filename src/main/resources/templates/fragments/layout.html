@@ -14,9 +14,15 @@
     <div class="container">
         <div class="content" layout:fragment="content"></div>
     </div>
+    <div id="toast" class="toast hidden"></div>
     <div th:replace="~{fragments/footer :: footerFragment}"></div>
 </div>
+
 <script th:src="@{/js/functions.js}"></script>
 <script th:src="@{/js/fetch.js}"></script>
+<script th:src="@{/js/ui/toast.js}"></script>
+<script>
+    window.__toast = window.__toast || (window.Toast ? window.Toast({position: 'top-right'}) : null);
+</script>
 </body>
 </html>

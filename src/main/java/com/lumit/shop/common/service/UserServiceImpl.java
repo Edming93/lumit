@@ -79,6 +79,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int insertUser(TbLogin user) {
+        user.setRegId(user.getUserId());
         return userRepository.insertUser(user);
     }
 
@@ -115,7 +116,7 @@ public class UserServiceImpl implements UserService {
     public ServiceCode updateSocialUser(SignUpDto signUpDto) {
         TbLogin user = userRepository.selectByUserId(signUpDto.getUserId());
         if (user != null) {
-            return ServiceCode.CONFLICT;
+            return ServiceCode.NOT_FOUND;
         }
         user = signUpDto.createTbLogin();
         TbAddress address = TbAddress.createAddrByUser(user);
