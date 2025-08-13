@@ -1,3 +1,9 @@
+const csrfHeader = () => {
+    const t = document.querySelector('meta[name="_csrf"]')?.content;
+    const h = document.querySelector('meta[name="_csrf_header"]')?.content || 'X-CSRF-TOKEN';
+    return t ? {[h]: t} : {};
+};
+
 const FETCH = {
     async get(url, callbackFunc = null) {
         try {
@@ -14,7 +20,7 @@ const FETCH = {
         try {
             const res = await fetch(url, {
                 method: "POST",
-                headers: {'Content-Type': 'application/json; charset=utf-8'},
+                headers: {'Content-Type': 'application/json; charset=utf-8', ...csrfHeader()},
                 body: JSON.stringify(requestBody)
             });
             return callbackFunc ? callbackFunc(res) : res;

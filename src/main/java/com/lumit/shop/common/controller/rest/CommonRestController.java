@@ -1,4 +1,4 @@
-package com.lumit.shop.common.controller.restController;
+package com.lumit.shop.common.controller.rest;
 
 import com.lumit.shop.common.model.CommonSearch;
 import com.lumit.shop.common.model.TbMenu;

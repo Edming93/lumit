@@ -1,4 +1,4 @@
-package com.lumit.shop.admin.controller.restController;
+package com.lumit.shop.admin.controller.rest;
 
 import com.lumit.shop.admin.dto.ApiResponse;
 import com.lumit.shop.admin.dto.ReturnKeyAndServiceCode;

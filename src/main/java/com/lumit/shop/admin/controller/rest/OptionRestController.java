@@ -1,4 +1,4 @@
-package com.lumit.shop.admin.controller.restController;
+package com.lumit.shop.admin.controller.rest;
 
 import java.util.Map;
 
@@ -27,31 +27,31 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(value = "/rest/{siteId}/option")
 public class OptionRestController {
     private final OptionService optionService;
-    
+
     @Autowired
     MenuRepository menuRepository;
 
     @GetMapping("/list")
-    public ResponseEntity<Map<String,Object>> selectOptionList(CommonSearch search, @PageableDefault(size = 10) Pageable pageable) {
-        return ResponseBuilder.build(optionService.selectOptionList(search, pageable),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> selectOptionList(CommonSearch search, @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseBuilder.build(optionService.selectOptionList(search, pageable), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/regist")
-    public ResponseEntity<Map<String,Object>> registOption(@RequestBody TbOption option) {
-        return ResponseBuilder.build(optionService.registOption(option),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> registOption(@RequestBody TbOption option) {
+        return ResponseBuilder.build(optionService.registOption(option), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/update")
-    public ResponseEntity<Map<String,Object>> updateOption(@RequestBody TbOption option) {
-        return ResponseBuilder.build(optionService.updateOption(option),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> updateOption(@RequestBody TbOption option) {
+        return ResponseBuilder.build(optionService.updateOption(option), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/delete")
-    public ResponseEntity<Map<String,Object>> deleteOption(@RequestBody TbOption option) {
-        return ResponseBuilder.build(optionService.deleteOption(option),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> deleteOption(@RequestBody TbOption option) {
+        return ResponseBuilder.build(optionService.deleteOption(option), HttpStatus.OK);
     }
 
 } 

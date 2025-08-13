@@ -1,4 +1,4 @@
-package com.lumit.shop.admin.controller.restController;
+package com.lumit.shop.admin.controller.rest;
 
 import com.lumit.shop.admin.dto.AdminDto;
 import com.lumit.shop.admin.dto.SummaryCardDto;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-@RestController
 @RequiredArgsConstructor
+@RestController("adminUserRestController")
 @RequestMapping("/api/admin/user")
 public class UserRestController {
 

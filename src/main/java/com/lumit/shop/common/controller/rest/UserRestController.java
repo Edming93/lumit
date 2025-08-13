@@ -1,14 +1,17 @@
-package com.lumit.shop.common.controller.restController;
+package com.lumit.shop.common.controller.rest;
 
 import com.lumit.shop.common.constants.ServiceCode;
 import com.lumit.shop.common.data.Modal;
 import com.lumit.shop.common.dto.ResponseDto;
+import com.lumit.shop.common.dto.SignUpDto;
 import com.lumit.shop.common.dto.UserInfoDto;
 import com.lumit.shop.common.model.TbAddress;
+import com.lumit.shop.common.model.TbLogin;
 import com.lumit.shop.common.model.User;
 import com.lumit.shop.common.service.SecurityUtils;
 import com.lumit.shop.common.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +23,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/user")
-public class UserRestControlller {
+public class UserRestController {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final HttpSession session;
@@ -36,6 +39,15 @@ public class UserRestControlller {
         } else {
             return new ResponseDto<>("사용가능한 아이디입니다.", true);
         }
+    }
+
+    @PostMapping(value = "/create")
+    public @ResponseBody ResponseEntity createUser(@Valid @RequestBody SignUpDto signUpDto) {
+        int result = userService.insertUser(signUpDto.createTbLogin());
+        if (result < 1) {
+            return ResponseEntity.ok().body(new SimpleMessage("FAIL", "회원가입에 실패하였습니다."));
+        }
+        return ResponseEntity.ok().body(new SimpleMessage("OK", "회원가입이 완료되었습니다."));
     }
 
     /**
@@ -150,5 +162,8 @@ public class UserRestControlller {
         }
         Modal modal = Modal.builder().title(title).content(content).build();
         session.setAttribute("modal", modal);
+    }
+
+    public record SimpleMessage(String code, String message) {
     }
 }

@@ -1,4 +1,4 @@
-package com.lumit.shop.common.controller.restController;
+package com.lumit.shop.common.controller.rest;
 
 import com.lumit.shop.board.service.BoardService;
 import com.lumit.shop.common.dto.SearchDto;

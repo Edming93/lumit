@@ -1,4 +1,4 @@
-package com.lumit.shop.admin.controller.restController;
+package com.lumit.shop.admin.controller.rest;
 
 import java.io.IOException;
 import java.util.Map;
@@ -45,16 +45,16 @@ public class ProductRestController {
     @PostMapping("/regist")
     public ResponseEntity<Map<String, Object>> registProduct(@ModelAttribute TbProduct product,
                                                              @RequestPart(value = "files", required = false) MultipartFile[] files
-                                                             , @RequestPart(value = "filesRep", required = false) MultipartFile[] filesRep) {
+            , @RequestPart(value = "filesRep", required = false) MultipartFile[] filesRep) {
         return ResponseBuilder.build(productService.insertProduct(product, files, filesRep), HttpStatus.OK);
     }
 
     @ResponseBody
     @PostMapping("/upload-image")
-    public ResponseEntity<Map<String,Object>> registProductUploadImage(@RequestPart(value = "file" , required = false) MultipartFile file) throws IOException {
-        return ResponseBuilder.build(fileService.insertImage(file),HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> registProductUploadImage(@RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        return ResponseBuilder.build(fileService.insertImage(file), HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @PostMapping("/detail")
     public ResponseEntity<Map<String, Object>> selectProductDetail(@RequestBody TbProduct product) {
@@ -64,10 +64,10 @@ public class ProductRestController {
     @ResponseBody
     @PostMapping("/update")
     public ResponseEntity<Map<String, Object>> updateProduct(@ModelAttribute TbProduct product,
-												            @RequestPart(value = "files", required = false) MultipartFile[] files
-												            , @RequestPart(value = "filesRep", required = false) MultipartFile[] filesRep) {
-    	System.out.println("update 탔습니다!");
-        return ResponseBuilder.build(productService.updateProduct(product,files,filesRep), HttpStatus.OK);
+                                                             @RequestPart(value = "files", required = false) MultipartFile[] files
+            , @RequestPart(value = "filesRep", required = false) MultipartFile[] filesRep) {
+        System.out.println("update 탔습니다!");
+        return ResponseBuilder.build(productService.updateProduct(product, files, filesRep), HttpStatus.OK);
     }
 
     @ResponseBody
