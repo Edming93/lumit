@@ -17,9 +17,9 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class TbOption {
+public class TbProductOption {
     private String optionId;
-    private String optionDvCd;
-    private String optionName;
-    private String optionCd;
+    private String oriProductId;
+    private String productName;
+    private String disPrice;
 }
