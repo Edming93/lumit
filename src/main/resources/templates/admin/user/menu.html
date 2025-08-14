@@ -14,7 +14,6 @@
     <script th:src="@{/js/modal.js}"></script>
     <script th:inline="javascript">
         let currentUserId = null;
-        let toast;
         window.addEventListener("managerLoad", async () => {
             try {
                 const me = await FETCH.get("/api/admin/user/me").then(d => d)
@@ -325,7 +324,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", async () => {
-            toast = window.__toast;
+
             document.querySelectorAll(".tabMenu .linkBtn").forEach(btn => {
                 btn.addEventListener("click", () => {
                     activateTab(btn);

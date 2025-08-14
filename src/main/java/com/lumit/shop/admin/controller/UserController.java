@@ -31,7 +31,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("")
-    public String userDashboard(Model model) {
+    public String userDashboard() {
         return "admin/user/index";
     }
 
@@ -43,12 +43,12 @@ public class UserController {
 
 
     @GetMapping("/customers")
-    public String editUserForm(Model model) {
+    public String editUserForm() {
         return "admin/user/customers";
     }
 
     @GetMapping("/manager")
-    public String manageAdmins(Model model) {
+    public String manageAdmins() {
         return "admin/user/managers";
     }
 
