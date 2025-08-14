@@ -33,7 +33,144 @@
         });
 
         window.addEventListener("customersLoad", async () => {
-            alert("커스토머 창 켜짐.")
+            (function () {
+                // ---------------- Mock Data ----------------
+                const MOCK_FLAGGED = [
+                    {userId: 'lee01', name: '이민수', status: 'WARNING', reportCount: 2, joinedAt: '2025-07-18'},
+                    {userId: 'kim02', name: '김하늘', status: 'SUSPENDED', reportCount: 5, joinedAt: '2025-06-03'},
+                    {userId: 'jung03', name: '정다은', status: 'ACTIVE', reportCount: 1, joinedAt: '2025-05-22'}
+                ];
+                const MOCK_RECENT = [
+                    {userId: 'park77', name: '박서준', status: 'ACTIVE', joinedAt: '2025-08-10'},
+                    {userId: 'choi88', name: '최민지', status: 'ACTIVE', joinedAt: '2025-08-09'},
+                    {userId: 'yoon99', name: '윤하린', status: 'ACTIVE', joinedAt: '2025-08-08'}
+                ];
+
+                // ---------------- Helpers ----------------
+                const toast = (window.__toast || (window.Toast ? window.Toast({position: 'top-right'}) : {
+                    success: (m) => alert(m), error: (m) => alert(m), info: (m) => alert(m)
+                }));
+
+                const els = {
+                    flagged: document.getElementById('flaggedList'),
+                    recent: document.getElementById('recentList')
+                };
+
+                const skeletonItem = `
+    <li class="memberItem" aria-busy="true" style="opacity:.6">
+      <div style="width:18px;height:18px;border-radius:50%;background:#eee"></div>
+      <div style="flex:1">
+        <div style="width:160px;height:12px;border-radius:6px;background:#eee;margin-bottom:6px"></div>
+        <div style="width:220px;height:10px;border-radius:6px;background:#f0f0f0"></div>
+      </div>
+      <div class="memberActions">
+        <div style="width:56px;height:28px;border-radius:8px;background:#eee"></div>
+        <div style="width:56px;height:28px;border-radius:8px;background:#eee"></div>
+      </div>
+    </li>
+  `;
+
+                function showSkeleton(ul) {
+                    ul.innerHTML = skeletonItem + skeletonItem;
+                }
+
+                function badge(status) {
+                    const s = (status || 'ACTIVE').toUpperCase();
+                    const bg = s === 'SUSPENDED' ? '#fde2e2' : s === 'WARNING' ? '#fff0d9' : '#e9f5ec';
+                    const color = s === 'SUSPENDED' ? '#c53030' : s === 'WARNING' ? '#a86207' : '#166534';
+                    return `<span class="memberBadge" style="background:${bg};color:${color}">${s}</span>`;
+                }
+
+                function itemTemplate(it, kind) {
+                    const leftIcon = kind === 'flagged'
+                        ? '<i class="fa-solid fa-circle-exclamation" style="color:#d14343;"></i>'
+                        : '<i class="fa-regular fa-user"></i>';
+
+                    const sub = kind === 'flagged'
+                        ? `닉네임/이메일/신고횟수 ${it.reportCount ?? 0}회`
+                        : `닉네임/이메일/가입일 ${it.joinedAt ?? ''}`;
+
+                    const suspended = String(it.status || '').toUpperCase() === 'SUSPENDED';
+                    const actDetail = `<button class="btn-detail" data-id="${it.userId}">상세</button>`;
+                    const actToggle = suspended
+                        ? `<button class="btn-activate" data-id="${it.userId}">해제</button>`
+                        : `<button class="btn-suspend action-danger" data-id="${it.userId}">정지</button>`;
+
+                    return `
+      <li class="memberItem">
+        ${leftIcon}
+        <div>
+          <div><strong>${it.name || it.userId}</strong> ${badge(it.status)}</div>
+          <div class="memberSub">${sub}</div>
+        </div>
+        <div class="memberActions">${actDetail}${actToggle}</div>
+      </li>
+    `;
+                }
+
+                function renderList(items, ul, kind) {
+                    if (!items.length) {
+                        ul.innerHTML = `<li class="emptyTip">${kind === 'flagged' ? '신고 이력이 있는 회원이 없습니다.' : '최근 가입한 회원이 없습니다.'}</li>`;
+                        return;
+                    }
+                    ul.innerHTML = items.map(it => itemTemplate(it, kind)).join('');
+                    ul.querySelectorAll('.btn-detail').forEach(b => b.addEventListener('click', onDetail));
+                    ul.querySelectorAll('.btn-suspend').forEach(b => b.addEventListener('click', onSuspend));
+                    ul.querySelectorAll('.btn-activate').forEach(b => b.addEventListener('click', onActivate));
+                }
+
+                // ---------- Mock actions (상태만 로컬에서 토글) ----------
+                function findAll() {
+                    return [...MOCK_FLAGGED, ...MOCK_RECENT];
+                }
+
+                function setStatus(userId, status) {
+                    const all = findAll();
+                    const t = all.find(x => x.userId === userId);
+                    if (t) t.status = status;
+                }
+
+                async function onSuspend(e) {
+                    const id = e.currentTarget.dataset.id;
+                    setStatus(id, 'SUSPENDED');
+                    toast.success('정지 처리되었습니다. (mock)');
+                    render();
+                }
+
+                async function onActivate(e) {
+                    const id = e.currentTarget.dataset.id;
+                    setStatus(id, 'ACTIVE');
+                    toast.success('해제되었습니다. (mock)');
+                    render();
+                }
+
+                function onDetail(e) {
+                    const id = e.currentTarget.dataset.id;
+                    const user = findAll().find(x => x.userId === id);
+                    toast.info(`상세 보기 (mock): ${user?.name || id}`);
+                }
+
+                // ---------- Load (mock) ----------
+                async function loadMock() {
+                    showSkeleton(els.flagged);
+                    showSkeleton(els.recent);
+                    // 네트워크 흉내: 500ms 후 렌더
+                    setTimeout(render, 500);
+                }
+
+                function render() {
+                    renderList(MOCK_FLAGGED, els.flagged, 'flagged');
+                    renderList(MOCK_RECENT, els.recent, 'recent');
+                }
+
+                // 초기화 (탭 AJAX 삽입 케이스도 지원)
+                document.addEventListener('managerLoad', loadMock);
+                if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                    setTimeout(loadMock, 0);
+                } else {
+                    document.addEventListener('DOMContentLoaded', loadMock);
+                }
+            })();
         })
 
         function renderActiveAdmins(adminList) {
@@ -247,6 +384,7 @@
             });
         }
     </script>
+
 </div>
 
 
