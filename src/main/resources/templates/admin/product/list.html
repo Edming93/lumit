@@ -241,10 +241,10 @@ function setList(data){
 						${formatToWon(item.disPrice)}
 					</td>
 					<td class='alCenter'>
-						${item.stocks}개
+						${formatNumberWithComma(item.stocks)}개
 					</td>
 					<td class='alCenter'>
-						${item.sales}개
+						${formatNumberWithComma(item.sales)}개
 					</td>
 					<td class="alCenter">
 						${item.regDt}
@@ -265,12 +265,6 @@ function setList(data){
 function detail(id) {
 	moveUrl("/" + siteId + "/product/update/" + id);
 }
-
-function formatToWon(num) {
-	if (!num) return "";
-	return Number(num).toLocaleString('ko-KR') + "원";
-}
-
 
 // async function delProduct(productId) {
 

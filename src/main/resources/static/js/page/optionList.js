@@ -130,7 +130,7 @@ function setList(data){
 							<input type='checkbox' id='chk_${cnt++}' name='chk' 
 							data-productcd='${item.productCd}' 
 							data-productname='${item.productName}'
-							data-price='${item.price}'
+							data-price='${item.disPrice}'
 							 value='${item.productId}'>
                         </div>
 					</td>

@@ -325,7 +325,6 @@
 
 
 <script th:inline="javascript">
-
 let menuCd = [[${menuCd}]];
 let filesRep = []; // 실제 대표이미지 파일 담는 arr
 let files = []; // 실제 상세 이미지 파일 담는 arr
@@ -366,7 +365,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 				
 			)
 			: $("#colorWrap").append($("#color").find("option:selected").text());
-
+		
 		};
 	});
 	
@@ -388,17 +387,17 @@ document.addEventListener("DOMContentLoaded",async function () {
 	});
 	
 	$("#disRate,#price").on("keyup",function(e) {
-		if(!$("#price").val() || !$("#disRate").val()) {
+		if(!parseNumber($("#price").val()) || parseNumber(!$("#disRate").val())) {
 			return;
 		}
 		
-		if($("#price").val() < 0) {
-			alert("정가가 0원 이하일 수 없습니다.");
+		if(parseNumber($("#price").val()) < 0) {
+			toast.error("정가가 0원 이하일 수 없습니다.");
 			return;
 		}
 		
-		if($("#disRate").val() >= 100) {
-			alert("할인율이 100% 이상일 수 없습니다.");
+		if(parseNumber($("#disRate").val()) >= 100) {
+			toast.error("할인율이 100% 이상일 수 없습니다.");
 			return;
 		}
 		
@@ -445,11 +444,11 @@ document.addEventListener("DOMContentLoaded",async function () {
 				formData.append('newJsonFilesList', JSON.stringify(newJsonFilesList));
 			}
 			
-			if(Number($("#price").val()) < Number($("#disPrice").val())) {
-				alert("할인가가 정가보다 클 수 없습니다.");
+			if(parseNumber($("#price").val()) < parseNumber($("#disPrice").val())) {
+				toast.error("할인가가 정가보다 클 수 없습니다.");
 				return;
 			}
-
+			
 // 			if($("#optionId").val() != ""){
 // 				formData.append("optionId",$("#optionId").val() ?? '');
 // 			}
@@ -462,14 +461,45 @@ document.addEventListener("DOMContentLoaded",async function () {
 			if(selectCateIdList.size > 0) {
 				formData.append("cateIdList",Array.from(selectCateIdList));
 			}else {
-				alert("카테고리를 선택해주세요.");
+				toast.error("카테고리를 선택해주세요.");
 				return;
 			}
+			
+			if($(".optionBody li").length > 0) {
+				let disPriceList = [];
+				
+				$(".optionBody li").each(function() {
+					let oriProductId = $(this).data("productid");
+					let productName = $(this).data("name");
+					let disPrice = $(this).find(".priceInput[data-productid="+oriProductId+"]").val();
+					
+					disPriceList.push({
+						oriProductId : oriProductId,
+						productName : productName,
+						disPrice : parseNumber(disPrice) ?? 0,
+					});
+					
+				});
+				
+				disPriceList.forEach((item, idx) => {
+					formData.append(`disPriceList[${idx}].oriProductId`, item.oriProductId);
+					formData.append(`disPriceList[${idx}].productName`, item.productName);
+					formData.append(`disPriceList[${idx}].disPrice`, item.disPrice);
+				})
+				
+			};
 
 			formData.append("colorIdList",colorIdList ?? []);
 			formData.append("tagIdList",tagIdList ?? []);
 			
 			for(let [key,value] of formData.entries()) {
+				
+				let $input = $("input[id='"+key+"']");
+				
+				if($input.length && $input.data("type") === "number") {
+					formData.set(key, parseNumber(value));
+				}
+				
 				if(key == "freeDeliveryFee") {
 					let deliveryFeeChk = $("#freeFeeCheck").prop("checked");
 					if(!deliveryFeeChk) {
@@ -477,7 +507,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 						formData.append("freeDeliveryFee","nonFree");
 					}else {
 						if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
-							alert("무료배송 설정에 체크하였으나 값이 없습니다.");
+							toast.error("무료배송 설정에 체크하였으나 값이 없습니다.");
 							return;
 						}
 					}
@@ -485,13 +515,18 @@ document.addEventListener("DOMContentLoaded",async function () {
 				
 				if(key != "files" && key != "filesRep" && key != "colorIdList" && key != "tagIdList" && key != "freeDeliveryFee" && key != "optionId") {
 					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
-						alert("입력하지 않은 값이 있는지 확인해주세요.");
+						toast.error("입력하지 않은 값이 있는지 확인해주세요.");
 						return;
 					}
 				}
 
 			}
 			
+			// 확인
+// 			for (let [key, value] of formData.entries()) {
+// 			    console.log(key, value);
+// 			}
+
 			let url = "/"+siteId+"/product/list";
 			
 			setData(formData,url);
@@ -511,14 +546,14 @@ document.addEventListener("DOMContentLoaded",async function () {
 		if(selectId == 'uploadRep') {
 			for(var i=0; i< this.files.length; i++) {
 				if(filesRep.length >= 5){
-					alert('최대 5개까지 첨부 가능합니다.');
+					toast.error('최대 5개까지 첨부 가능합니다.');
 					break;
 				}
 				
 				var uploadSize = this.files[i].size;
 			
 				if(limitSize < uploadSize) {
-					alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
+					toast.error('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
 				} else {
 					var file = this.files[i];
 					
@@ -530,14 +565,14 @@ document.addEventListener("DOMContentLoaded",async function () {
 		}else{ // TODO :: 원래는 대표이미지, 상세이미지 둘 다 비슷한 방식으로 저장하려 했으나, textEditor 도입으로 분기 필요 없어짐. 정리예정
 			for(var i=0; i<this.files.length; i++) {
 				if(files.length >= 5){
-					alert('최대 5개까지 첨부 가능합니다.');
+					toast.error('최대 5개까지 첨부 가능합니다.');
 					break;
 				}
 				
 				var uploadSize = this.files[i].size;
 			
 				if(limitSize < uploadSize) {
-					alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
+					toast.error('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
 				}else {
 					var file = this.files[i];
 					
@@ -588,7 +623,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 		    };
 
 		    tempImg.onerror = function () {
-		        alert('이미지를 불러올 수 없습니다.');
+		        toast.error('이미지를 불러올 수 없습니다.');
 		    };
 		}
     });
@@ -597,7 +632,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 		openCommonPopup("optionList", "상품 옵션 리스트", "1060", "640");
 	});
 	
-	
+
 });
 
 async function load() {
@@ -883,7 +918,7 @@ function initTextEditor () {
 	        ]
 	      }
 	    }
-	  });
+	});
 } 
 
 
@@ -918,7 +953,7 @@ function imgDragDrop () {
 async function getColorOption() {
 	const res = await axios.get('/rest/'+siteId+'/option/list', {params:{optionDvCd:'0001'}});
     if(!res || !res.data) {
-    	alert("color option을 불러오는데 실패했습니다.");
+    	toast.error("color option을 불러오는데 실패했습니다.");
     	return;
     }
     
@@ -928,7 +963,7 @@ async function getColorOption() {
 async function getTagOption() {
 	const res = await axios.get('/rest/'+siteId+'/option/list', {params:{optionDvCd:'0000'}});
     if(!res || !res.data) {
-    	alert("tag option을 불러오는데 실패했습니다.");
+    	toast.error("tag option을 불러오는데 실패했습니다.");
     	return;
     }
     
@@ -946,7 +981,7 @@ function hideSecretBox() {
 function passwordSave() {
 	secretPw = $("#password").val();
 	
-	alert("저장되었습니다.");
+	toast.error("저장되었습니다.");
 	$(".secretBox").hide();
 	$(".btnSecretImg").attr("src","/images/secretMsg-on.png");
 }
@@ -1080,7 +1115,7 @@ function deleteTagBtn(elem) {
 async function setData(formData,url) {
 	const res = await axios.post('/rest/' + siteId + '/product/regist',formData, {headers: {'Content-Type': 'multipart/form-data'}});
 	if(!res || !res.data) {
-		alert("등록에 실패하였습니다.");
+		toast.error("등록에 실패하였습니다.");
 		return;
 	}
 	moveUrl(url);
@@ -1097,10 +1132,11 @@ function receiveOptionList(optionList) {
 		const productCd = option.productCd;
 		const productName = option.productName;
 		const price = option.price;
-	
+		
+		
 		// 중복 확인
 		if(ul.querySelector('li[data-productid="'+ productId +'"]')) {
-			alert(productName + "은(는) 이미 선택 된 옵션 상품입니다.");
+			toast.error(productName + "은(는) 이미 선택 된 옵션 상품입니다.");
 			return;
 		};
 	
@@ -1122,14 +1158,25 @@ function receiveOptionList(optionList) {
 		label.innerHTML = `[<span style="color:red">${productCd}</span>] ${productName}`;
 		label.style.flex = '1';
 
+		// 원본 가격
+		const oriPrice = document.createElement('span');
+		oriPrice.setAttribute('data-productid', productId);
+		oriPrice.textContent = formatNumberWithComma(price);
+		oriPrice.className = 'oriPrice';
+		
+		const wonDash = document.createElement('span');
+		wonDash.textContent = '원 -';
+		
 		// 가격 입력창
 		const priceInput = document.createElement('input');
+		priceInput.setAttribute('data-productid', productId);
 		priceInput.setAttribute('data-type','number');
 		priceInput.type = 'text';
-		priceInput.value = formatNumberWithComma(price);
+		priceInput.setAttribute('placeholder','할인가격');
+		// priceInput.value = formatNumberWithComma(price);
 		priceInput.min = 0;
 		priceInput.style.cssText = `
-			width: 100px;
+			width: 80px;
 			margin: 0 5px;
 			border: 1px solid #ccc;
 			border-radius: 4px;
@@ -1139,6 +1186,13 @@ function receiveOptionList(optionList) {
 		
 		const won = document.createElement('span');
 		won.textContent = '원'
+		won.style.cssText = `margin-right:5px;`;
+		
+		const totalPrice = document.createElement('span');
+		totalPrice.setAttribute('data-productid', productId);
+		totalPrice.textContent = ' = ' + formatNumberWithComma(price) + '원';
+		totalPrice.className = 'totalPrice'; 
+		
 		
 		// 삭제 버튼
 	    const btn = document.createElement('button');
@@ -1157,11 +1211,29 @@ function receiveOptionList(optionList) {
 	    });
 	    
 	    li.appendChild(label);
+	    li.appendChild(oriPrice);
+	    li.appendChild(wonDash);
 	    li.appendChild(priceInput);
 	    li.appendChild(won);
+	    li.appendChild(totalPrice);
 	    li.appendChild(btn);
 	
 	    ul.appendChild(li);
+	});
+	
+	$(".priceInput").on('keyup',function() {
+		let productId = $(this).data('productid');
+		
+		let oriPrice = $(".oriPrice[data-productid="+productId+"]").text();
+		let priceInput = $(".priceInput[data-productid="+productId+"]");
+		
+		if(parseNumber(priceInput.val()) > parseNumber(oriPrice)) {
+			toast.error("할인가가 원금을 초과할 수 없습니다.");
+			priceInput.val(0);
+		}
+		
+		let total = parseNumber(oriPrice) - parseNumber(priceInput.val());
+		$(".totalPrice[data-productid="+productId+"]").text(" = " + formatNumberWithComma(total) + "원");
 	});
 	
 	inputNumber();

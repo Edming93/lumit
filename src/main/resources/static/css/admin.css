@@ -1140,7 +1140,6 @@ input::-webkit-inner-spin-button {
     display: flex;
     justify-content: space-between;
     margin-top: 15px;
-    min-width: 866px;
 }
 
 /* center가 필요한경우는 class명 btnArea~ , 필요 없는 경우는 btnLeft~ btnRight~ 사용 */

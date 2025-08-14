@@ -317,5 +317,24 @@
     		)
 	    </foreach>
     </insert>
+    
+    <insert id="insertProductOption" parameterType="com.lumit.shop.common.model.TbProduct">
+        INSERT INTO TB_PRODUCT_OPTION
+    	(
+    		PRODUCT_NAME
+    		, DIS_PRICE
+    		, PRODUCT_ID
+    		, ORI_PRODUCT_ID
+    	)
+    	VALUES
+    	<foreach collection="disPriceList" index="index" item="i" separator=",">
+    		(
+    			#{i.productName}
+	    		, #{i.disPrice}
+	    		, #{productId}
+	    		, #{i.oriProductId}
+    		)
+	    </foreach>
+    </insert>
 	
 </mapper>

@@ -266,12 +266,19 @@ function openCommonPopup(popupNm, title, width, height) {
     popup.document.title = title;
 }
 
+/* 뒤에 '원' 붙힐 지 말지, 둘중 하나 사용 */
 function formatNumberWithComma(number) {
-    // 빈 문자열 또는 NaN 방지
-    if (isNaN(number)) return '0';
-
-    return Number(number).toLocaleString('ko-KR');
+	// 빈 문자열 또는 NaN 방지
+	if (isNaN(number)) return '0';
+	return Number(number).toLocaleString('ko-KR');
 }
+
+function formatToWon(num) {
+	if (!num) return "";
+	return Number(num).toLocaleString('ko-KR') + "원";
+}
+
+/* 둘중 하나 사용 */
 
 //input number 입력 이벤트
 function inputNumber() {
@@ -294,3 +301,4 @@ function parseNumber(value) {
     }
     return Number(value) || 0;
 }
+

@@ -72,6 +72,10 @@ public class ProductServiceImpl implements ProductService {
 
         retMap.put("insert", productRepository.insertProduct(product));
         retMap.put("proCateIntert", productRepository.insertProductCategoryMap(product));
+        
+        if(product.getDisPriceList() != null && !product.getDisPriceList().isEmpty()) {
+        	retMap.put("productOption", productRepository.insertProductOption(product));
+        }
 
         // 옵션 테이블에 데이터 추가
         if (product.getColorIdList().size() != 0) productRepository.insertColorMap(product);

@@ -267,25 +267,25 @@ create table if not exists TB_ORDER
 
 create table if not exists TB_ORDER_DETAIL
 (
-    ORDER_DETAIL_ID int not null comment 'AUTO_INCREMENT'
+    ORDER_DETAIL_ID int AUTO_INCREMENT not null
         primary key,
-    PRODUCT_ID      int not null comment 'AUTO_INCREMENT',
-    ORDER_ID        int not null comment 'AUTO_INCREMENT',
-    PRICE           int not null,
+    PRODUCT_ID      int not null,
+    `ORDER_ID`        int not null,
+    `PRICE`           int not null,
     QUANTITY        int not null
 );
 
 create table if not exists TB_PAYMENT_PLAN
 (
-    PP_ID   int         not null comment 'AUTO_INCREMENT'
+    PP_ID   int  AUTO_INCREMENT       not null 
         primary key,
     PP_PLAN varchar(30) not null
 );
 
 create table if not exists TB_PAY_BANK
 (
-    BANK_ID        int         not null,
-    PP_ID          int         not null comment 'AUTO_INCREMENT',
+    BANK_ID        int AUTO_INCREMENT        not null,
+    PP_ID          int         not null,
     BANK_NAME      varchar(30) not null,
     BANK_CODE      int         not null,
     ORDER_AMOUNT   int         not null,
@@ -300,8 +300,8 @@ create table if not exists TB_PAY_BANK
 
 create table if not exists TB_PAY_CARD
 (
-    PC_ID           int         not null comment 'AUTO_INCREMENT',
-    PP_ID           int         not null comment 'AUTO_INCREMENT',
+    PC_ID           int  AUTO_INCREMENT       not null,
+    PP_ID           int         not null,
     CARD_COMPANY    varchar(30) not null,
     CARD_COMPANY_CD varchar(2)  not null,
     ORDER_AMOUNT    int         not null,
@@ -340,18 +340,20 @@ create table if not exists TB_PRODUCT
 
 create table if not exists TB_PRODUCT_OPTION
 (
-    OPTION_ID  int         not null comment 'AUTO_INCREMENT'
+    OPTION_ID  int AUTO_INCREMENT not null
         primary key,
-    OPTION_NAME   varchar(50) not null,
-    DIS_PRICE  int         not null,
-    PRODUCT_ID int         not null comment 'AUTO_INCREMENT'
+    PRODUCT_NAME   varchar(50) not null,
+    DIS_PRICE     int         not null comment '할인 가격 (할인 적용가격 아님, 얼마만큼 할인할건지 마이너스 가격)',
+    PRODUCT_ID    int         not null,
+    ORI_PRODUCT_ID  int       not null  
+    
 );
 
 create table if not exists TB_PRODUCT_QNA
 (
     QNA_ID          varchar(255) not null
         primary key,
-    PRODUCT_ID      int          not null comment 'AUTO_INCREMENT',
+    PRODUCT_ID      int          not null,
     USER_ID         varchar(50)  not null,
     QUESTION        text         not null,
     ANSWER          text         null,
@@ -367,9 +369,9 @@ create table if not exists TB_PRODUCT_QNA
 
 create table if not exists TB_REVIEW
 (
-    REVIEW_ID     bigint        not null comment 'AUTO_INCREMENT'
+    REVIEW_ID     bigint  AUTO_INCREMENT      not null
         primary key,
-    PRODUCT_ID    int           not null comment 'AUTO_INCREMENT',
+    PRODUCT_ID    int           not null,
     USER_ID       varchar(50)   not null,
     RATING        decimal(2, 1) not null comment '0~5점(0.5 단위)',
     REVIEW_TEXT   varchar(255)  null,
@@ -381,7 +383,7 @@ create table if not exists TB_REVIEW
 
 create table if not exists TB_ROLE
 (
-    ROLE_ID     int auto_increment comment 'AUTO_INCREMENT'
+    ROLE_ID     int auto_increment not null
         primary key,
     ROLE_NAME   varchar(50)  not null,
     ROLE_TYPE   varchar(8)   null,

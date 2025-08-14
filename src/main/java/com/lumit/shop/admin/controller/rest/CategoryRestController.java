@@ -88,7 +88,7 @@ public class CategoryRestController {
     }
 
     @DeleteMapping("/delete/{categoryId}")
-    public ResponseEntity<?> deleteCategory(@PathVariable(value = "categoryId") int categoryId) {
+    public ResponseEntity<?> deleteCategory(@PathVariable(value="categoryId") int categoryId) {
         TbCategory category = categoryService.selectCategory(categoryId);
         category.setUseYn("N");
         ServiceCode sc = categoryService.updateCategory(category);
