@@ -13,7 +13,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 
 
     // application.yml에 설정한 path를 value에 넣기
-    public WebConfiguration(@Value("${resource.path}") String resourcePath, @Value("${upload.path}") String uploadPath) {
+    public WebConfiguration(@Value("${resource.path}") String resourcePath, @Value("${file.upload.path}") String uploadPath) {
         this.resourcePath = resourcePath;
         this.uploadPath = uploadPath;
     }

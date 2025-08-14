@@ -65,8 +65,8 @@ public class fileServiceImpl implements fileService {
 
             // Jodit이 요구하는 JSON 구조에 맞춤
             retMap.put("images", List.of(fileName));          // 파일명 배열
-            retMap.put("path", "/lumitFiles/joditUpload/");    // path
-            retMap.put("baseurl", "/lumitFiles/joditUpload/");                // 실제 URL prefix
+            retMap.put("path", "/"+FILE_UPLOAD_PATH+"/joditUpload/");    // path
+            retMap.put("baseurl", "/"+FILE_UPLOAD_PATH+"/joditUpload/");                // 실제 URL prefix
             retMap.put("error", false);                       // error: false
             retMap.put("msg", "업로드 성공");                 // 메시지
 

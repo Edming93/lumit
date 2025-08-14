@@ -384,7 +384,7 @@ VALUES ('M208', '0000', NULL, '테스트10', '<p>내용10</p>', '9189', NULL, 'N
         NOW());
 
 
-INSERT IGNORE INTO `tb_option` (`OPTION_ID`, `OPTION_DV_CD`, `OPTION_NAME`, `OPTION_CD`) VALUES
+INSERT IGNORE INTO `TB_OPTION` (`OPTION_ID`, `OPTION_DV_CD`, `OPTION_NAME`, `OPTION_CD`) VALUES
 	(1, '0001', '검정', '#000000'),
 	(2, '0001', '핑크', '#ffcccc'),
 	(3, '0001', '노랑', '#fdff9e'),
@@ -393,7 +393,7 @@ INSERT IGNORE INTO `tb_option` (`OPTION_ID`, `OPTION_DV_CD`, `OPTION_NAME`, `OPT
 	(6, '0000', '차가운', NULL),
 	(7, '0000', '윤기있는', NULL);
 
-INSERT IGNORE INTO `tb_category` (`CATEGORY_ID`, `CATEGORY_NAME`, `USE_YN`, `PARENT`, `DEPTH`, `REG_ID`, `REG_DT`, `MOD_ID`, `MOD_DT`) VALUES
+INSERT IGNORE INTO `TB_CATEGORY` (`CATEGORY_ID`, `CATEGORY_NAME`, `USE_YN`, `PARENT`, `DEPTH`, `REG_ID`, `REG_DT`, `MOD_ID`, `MOD_DT`) VALUES
 	(1, '서울', 'Y', 0, 0, 'admin', '2025-08-14 16:27:40', NULL, NULL),
 	(2, '경기도', 'Y', 0, 0, 'admin', '2025-08-14 16:27:42', NULL, NULL),
 	(3, '인천', 'Y', 0, 0, 'admin', '2025-08-14 16:27:44', NULL, NULL),
