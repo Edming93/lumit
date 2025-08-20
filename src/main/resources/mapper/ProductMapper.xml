@@ -279,6 +279,18 @@
     		a.PRODUCT_ID = #{productId}
     </select>
     
+    <select id="selectProductOptionList" resultType="com.lumit.shop.common.model.TbProductOption">
+    	SELECT a.*
+    		, b.PRODUCT_CD
+    	FROM
+    		TB_PRODUCT_OPTION a
+    	LEFT JOIN
+    		TB_PRODUCT b
+    	ON a.ORI_PRODUCT_ID = b.PRODUCT_ID
+    	WHERE
+    		a.PRODUCT_ID = #{productId}
+    </select>
+    
     <delete id="deleteColorMap" parameterType="com.lumit.shop.common.model.TbProduct">
 		DELETE 
 		FROM 
@@ -303,6 +315,14 @@
 			PRODUCT_ID = #{productId}
 	</delete>
 	
+	<delete id="deleteProductOption" parameterType="com.lumit.shop.common.model.TbProduct">
+		DELETE
+		FROM
+			TB_PRODUCT_OPTION
+		WHERE
+			PRODUCT_ID = #{productId}
+	</delete>
+	
 	<insert id="insertProductCategoryMap" parameterType="com.lumit.shop.common.model.TbProduct">
         INSERT INTO TB_CATEGORY_MAP
     	(
@@ -321,16 +341,22 @@
     <insert id="insertProductOption" parameterType="com.lumit.shop.common.model.TbProduct">
         INSERT INTO TB_PRODUCT_OPTION
     	(
-    		PRODUCT_NAME
+    		OPTION_DV_CD
+    		, OPTION_NAME
+    		, OPTION_VAL
+    		, PRICE
     		, DIS_PRICE
     		, PRODUCT_ID
     		, ORI_PRODUCT_ID
     	)
     	VALUES
-    	<foreach collection="disPriceList" index="index" item="i" separator=",">
+    	<foreach collection="oriOptionList" index="index" item="i" separator=",">
     		(
-    			#{i.productName}
-	    		, #{i.disPrice}
+    			#{i.optionDvCd}
+    			, #{i.optionName}
+    			, #{i.optionVal}
+    			, #{i.price,jdbcType=VARCHAR}
+	    		, #{i.disPrice,jdbcType=VARCHAR}
 	    		, #{productId}
 	    		, #{i.oriProductId}
     		)

@@ -93,4 +93,10 @@ public class ProductRestController {
     public ResponseEntity<Map<String, Object>> selectProductCateList(@RequestBody TbProduct product) {
         return ResponseBuilder.build(productService.selectProductCateMappingList(product), HttpStatus.OK);
     }
+    
+    @ResponseBody
+    @PostMapping("/option-list")
+    public ResponseEntity<Map<String, Object>> selectProductOptionList(@RequestBody TbProduct product) {
+        return ResponseBuilder.build(productService.selectProductOptionList(product), HttpStatus.OK);
+    }
 } 

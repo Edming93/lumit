@@ -11,16 +11,16 @@ public class WebConfiguration implements WebMvcConfigurer {
     private final String resourcePath;
     private final String uploadPath;
 
-
     // application.yml에 설정한 path를 value에 넣기
-    public WebConfiguration(@Value("${resource.path}") String resourcePath, @Value("${file.upload.path}") String uploadPath) {
+    public WebConfiguration(@Value("${resource.path}") String resourcePath, @Value("${upload.path}") String uploadPath) {
         this.resourcePath = resourcePath;
         this.uploadPath = uploadPath;
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(uploadPath)
-                .addResourceLocations(resourcePath);
+        registry.addResourceHandler(uploadPath) // 가상 경로
+                .addResourceLocations(resourcePath); // 실제  파일이 있는 경로 , 실제 file:///~~ 경로를 -> 가상경로인 uploadPath로 요청 가능 하도록 설정해준 것 
     }
+    
 }

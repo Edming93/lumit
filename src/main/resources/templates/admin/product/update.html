@@ -23,7 +23,7 @@
 	    	max-height: 350px;
 	    }
 	    
-	    .cateHead {
+	    .cateHead, .optionHead {
 	    	font-size: 1rem;
 		    width: 100%;
 		    background-color: var(--brand-color1);
@@ -59,18 +59,23 @@
 		    cursor: pointer;
 	    }
 	    
-	    #cateAddBtnArea {
+	    .addBtnArea {
 	    	padding: 10px 0px;
     	    display: flex;
     	    justify-content: flex-end;
 	    }
 	    
-	    .categoryList {
+	    .selectList {
 	    	margin-top: 10px;
 	    	width: 100%;
-	    	min-height:100px;
+	    	min-height:83px;
 	    	border: 1px solid var(--brand-color1);
 	    	border-radius: 0.3rem;
+	    	box-sizing: border-box;
+	    }
+	    
+	    .btnArea {
+	    	min-width: 866px;
 	    }
 	</style>
 </head>
@@ -136,7 +141,7 @@
 	                        <th class="alLeft bold">카테고리</th>
 	                        <td>
 	                        	<div id="container" class="categoryContainer">
-	                        		<div id="cateAddBtnArea">
+	                        		<div id="cateAddBtnArea" class="addBtnArea">
 						                <button type="button" class="cate_add_btn" id="cateAddBtn" onClick="selectCateAddBtnClick()">선택 후 추가</button>
 						            </div>
 		                            <div class="categoryTable">
@@ -165,7 +170,7 @@
 							            </div>
 							    	</div>
 							    </div>
-							    <div class="categoryList">
+							    <div class="selectList">
 							    	<div class="cateHead">선택된 상품분류</div>
 							    		<ul class="cateBody"></ul>
 							    </div>
@@ -180,7 +185,7 @@
 	                    <tr>
 	                        <th class="alLeft bold">재고수량</th> <!-- TODO : 재고수량 10개 미만일시 대시보드에 알림 -->
 	                        <td>
-	                        	<input type="text" id="stocks" name="stocks" class="boardInp w15" placeholder="재고수량" maxlength="11">
+	                        	<input type="text" id="stocks" data-type="number" name="stocks" class="boardInp w15" placeholder="재고수량" maxlength="11">
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -210,40 +215,43 @@
 	                    <tr>
 	                        <th class="alLeft bold">옵션 상품코드</th>
 	                        <td>
-	                            <select id="optionId">
-	                            	<option>어떻게 매칭할지 고민</option>
-	                            	<option value="1">상품명 검색하면 상품코드 가져오기?</option>
-	                            </select>
+	                            <div class="addBtnArea">
+	                            	<button type="button" id="openCommonPopup" class="cate_add_btn">옵션 상품 추가</button>
+	                            </div>
+	                            <div class="selectList" style="margin:0;">
+							    	<div class="optionHead">선택된 옵션</div>
+							    	<ul class="optionBody"></ul>
+							    </div>
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">정가</th>
 	                        <td>
-	                           <input type="text" id="price" name="price" class="boardInp w15" placeholder="" maxlength="11"> 원
+	                           <input type="text" id="price" data-type="number" name="price" class="boardInp w15" placeholder="" maxlength="11"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">할인율 설정</th>
 	                        <td>
-	                           <input type="text" id="disRate" name="disRate" class="boardInp w15" placeholder="" value="0" maxlength="11"> %
+	                           <input type="text" id="disRate" data-type="number" name="disRate" class="boardInp w15" placeholder="" value="0" maxlength="11"> %
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">할인가(판매가)</th>
 	                        <td>
-	                           <input type="text" id="disPrice" name="disPrice" class="boardInp w15" placeholder="" maxlength="11"> 원
+	                           <input type="text" id="disPrice" data-type="number" name="disPrice" class="boardInp w15" placeholder="" maxlength="11"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">배송비</th>
 	                        <td>
-	                           <input type="text" id="deliveryFee" name="deliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원
+	                           <input type="text" id="deliveryFee" data-type="number" name="deliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <th class="alLeft bold">무료배송 설정</th>
 	                        <td>
-								<input type="text" id="freeDeliveryFee" name="freeDeliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원 이상 주문시 무료배송
+								<input type="text" id="freeDeliveryFee" data-type="number" name="freeDeliveryFee" class="boardInp w15" placeholder="" maxlength="50"> 원 이상 주문시 무료배송
 	                        	<input type="checkbox" id="freeFeeCheck">
 	                        	<label for="freeFeeCheck">체크시 적용</label>
 	                        </td>
@@ -280,15 +288,15 @@
 	            </table>
 	
 	            <div class="btnArea">
-	            	<div class="btnAreaLeft">
-	            	</div>
+<!-- 	            	<div class="btnAreaLeft"> -->
+<!-- 	            	</div> -->
 	            	<div class="btnAreaCenter">
 		            	<button onClick="javascript:history.back();" type="button" id="backBtn" class="commBtn">이전</button>
 		                <button type="button" id="updateBtn" class="commBtn mgl10 size100">저장</button>
 		                <button type="button" id="deleteBtn" class="commBtn mgl10">삭제</button>
 	                </div>
-	                <div class="btnAreaRight">
-	                </div>
+<!-- 	                <div class="btnAreaRight"> -->
+<!-- 	                </div> -->
 	            </div>
 	        </form>
 	    </div>
@@ -363,12 +371,12 @@ document.addEventListener("DOMContentLoaded",async function () {
 		}
 		
 		if($("#price").val() < 0) {
-			alert("정가가 0원 이하일 수 없습니다.");
+			toast.error("정가가 0원 이하일 수 없습니다.");
 			return;
 		}
 		
 		if($("#disRate").val() >= 100) {
-			alert("할인율이 100% 이상일 수 없습니다.");
+			toast.error("할인율이 100% 이상일 수 없습니다.");
 			return;
 		}
 		
@@ -388,7 +396,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 					
 			const res = await axios.post('/rest/' + siteId + '/product/delete',{productId:productId, delYn:'Y'});
 			if(!res || !res.data) {
-				alert("삭제에 실패하였습니다.");
+				toast.error("삭제에 실패하였습니다.");
 				return;
 			}
 			let url = "/"+siteId+"/product/list";
@@ -440,14 +448,20 @@ document.addEventListener("DOMContentLoaded",async function () {
 						
 						formData.append('jsonFilesList', JSON.stringify(jsonFile))
 						
+						console.log("file check 기존파일:::")
+						console.log(jsonFile)
 					}
 				}
 			}
 			
+			console.log("file check 새로 추가한 파일:::")
+			console.log(filesRep)	
+			
+			
 			formData.append('newJsonFilesList', JSON.stringify(newJsonFilesList));
 			
 			if($("#price").val() < $("#disPrice").val()) {
-				alert("할인가가 정가보다 클 수 없습니다.");
+				toast.error("할인가가 정가보다 클 수 없습니다.");
 				return;
 			}
 			
@@ -466,12 +480,53 @@ document.addEventListener("DOMContentLoaded",async function () {
 			}
 			if(selectCateIdList.size > 0) {
 				formData.append("cateIdList",Array.from(selectCateIdList));
+			}else {
+				toast.error("카테고리를 선택해주세요.");
+				return;
 			}
+			
+			if($(".optionBody li").length > 0) {
+				let oriOptionList = [];
+				
+				$(".optionBody li").each(function() {
+					let oriProductId = $(this).data("productid");
+					let optionDvCd = $(this).data("optiondvcd");
+					let optionName = $(this).data("optionname");
+					let optionVal = $(this).data("optionval");
+					let price = $(this).data("price");
+					let disPrice = $(this).find(".priceInput[data-productid="+oriProductId+"]").val();
+					
+					oriOptionList.push({
+						oriProductId : oriProductId,
+						optionDvCd : optionDvCd, // 기존 상품
+						optionName : optionName,
+						optionVal : optionVal,
+						price : price,
+						disPrice : parseNumber(disPrice) ?? 0,
+					});
+					
+				});
+				
+				oriOptionList.forEach((item, idx) => {
+					formData.append(`oriOptionList[${idx}].oriProductId`, item.oriProductId);
+					formData.append(`oriOptionList[${idx}].optionDvCd`, item.optionDvCd);
+					formData.append(`oriOptionList[${idx}].optionName`, item.optionName);
+					formData.append(`oriOptionList[${idx}].optionVal`, item.optionVal);
+					formData.append(`oriOptionList[${idx}].price`, item.price);
+					formData.append(`oriOptionList[${idx}].disPrice`, item.disPrice);
+				});
+			};
 
 			formData.append("colorIdList",colorIdList ?? []);
 			formData.append("tagIdList",tagIdList ?? []);
 			
 			for(let [key,value] of formData.entries()) {
+				
+				let $input = $("input[id='"+key+"']");
+				
+				if($input.length && $input.data("type") === "number") {
+					formData.set(key, parseNumber(value));
+				}
 				
 				if(key == "freeDeliveryFee") {
 					let deliveryFeeChk = $("#freeFeeCheck").prop("checked");
@@ -481,9 +536,9 @@ document.addEventListener("DOMContentLoaded",async function () {
 					}
 				}
 				
-				if(key != "files" && key != "filesRep" && key != "colorIdList" && key != "tagIdList" && key != "freeDeliveryFee") {
+				if(key != "files" && key != "filesRep" && key != "colorIdList" && key != "tagIdList" && key != "freeDeliveryFee" && key != "optionId") {
 					if(value.trim() == "" || value.trim() == undefined || value.trim() == null) {
-						alert("입력하지 않은 값이 있는지 확인해주세요.");
+						toast.error("입력하지 않은 값이 있는지 확인해주세요.");
 						return;
 					}
 				}
@@ -509,7 +564,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 				let addFile = this.files[i];
 				
 				if(files.length >= 5){
-					alert('최대 5개까지 첨부 가능합니다.');
+					toast.error('최대 5개까지 첨부 가능합니다.');
 					break;
 				}
 
@@ -532,14 +587,14 @@ document.addEventListener("DOMContentLoaded",async function () {
 				})
 				
 				if(isDplChk) {
-					alert('동일한 파일 명이 존재합니다.');
+					toast.error('동일한 파일 명이 존재합니다.');
 					continue;
 				}
 				
 				var uploadSize = this.files[i].size;
 			
 				if(limitSize < uploadSize) {
-					alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
+					toast.error('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
 					continue;
 				}else {
 					
@@ -563,14 +618,14 @@ document.addEventListener("DOMContentLoaded",async function () {
 		}else{ // TODO :: 원래는 대표이미지, 상세이미지 둘 다 비슷한 방식으로 저장하려 했으나, textEditor 도입으로 분기 필요 없어짐. 정리예정
 			for(var i=0; i<this.files.length; i++) {
 				if(files.length >= 5){
-					alert('최대 5개까지 첨부 가능합니다.');
+					toast.error('최대 5개까지 첨부 가능합니다.');
 					break;
 				}
 				
 				var uploadSize = this.files[i].size;
 			
 				if(limitSize < uploadSize) {
-					alert('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
+					toast.error('10MB 사이즈 미만의 파일만 업로드가 가능합니다. \n' +  this.files[i].name +'파일을 업로드할 수 없습니다.');
 				}else {
 					var file = this.files[i];
 								
@@ -583,7 +638,11 @@ document.addEventListener("DOMContentLoaded",async function () {
 		$(this).val('');
 		setFiles(selectId);
 	});
-
+	
+	$("#openCommonPopup").click(function(){
+		openCommonPopup("optionList", "상품 옵션 리스트", "1060", "640");
+	});
+	
 });
 
 async function load() {
@@ -593,6 +652,7 @@ async function load() {
 	await getProductDetail();
 	await getColorMappingList();
 	await getTagMappingList();
+	await getOptionList();
 	
 	await getCodeList();
 	await getColorOption();
@@ -620,7 +680,7 @@ async function getCategories() {
 	const categories = res.data.cateList;
 	
 	if(!res || !res.data) {
-		alert("등록에 실패하였습니다.");
+		toast.error("등록에 실패하였습니다.");
 		return;
 	}
 	
@@ -708,6 +768,42 @@ async function getCategories() {
 	    ul.appendChild(li);
 	    
 	});
+}
+
+async function getOptionList() {
+	let params = {
+		productId : productId,
+	};
+	
+	const res = await axios.post('/rest/' + siteId + '/product/option-list', params);
+	
+	const pdOptionList = res.data.optionList;
+	
+	console.log("pdOtionList:::::: ")
+	console.log(pdOptionList);
+	if(!res || !res.data) {
+		toast.error("등록에 실패하였습니다.");
+		return;
+	}
+	
+	// pdOptionList를 그냥 보내도 되는데 optionList를 만드는이유 :: productId가 등록시에는 선택하는 항목에 따라 달라지지만, 
+	// 여기서 detail정보를 가져올땐 productId는 oriProductId가 되어야함. 형식을 맞춰주기 위해서 구조변경
+	let optionList = [];
+	
+	pdOptionList.forEach(function(option) {
+		optionList.push({
+			optionId : option.optionId,
+			productCd : option.productCd,
+			optionDvCd : option.optionDvCd,
+			optionName : option.optionName,
+			optionVal : option.optionVal,
+			productId : option.oriProductId, // oriProductId 삽입
+			price : option.price,
+			disPrice : option.disPrice
+		});
+	});
+	
+	receiveOptionList(optionList);
 }
 
 // 카테고리 적용 txt fullPath
@@ -1024,7 +1120,7 @@ function imgDragDrop () {
 async function getProductDetail() {
 	const res = await axios.post('/rest/'+siteId+'/product/detail', {productId: productId});
     if(!res || !res.data) {
-    	alert("상품 정보를 불러오는데 실패했습니다.");
+    	toast.error("상품 정보를 불러오는데 실패했습니다.");
     	return;
     }
     
@@ -1082,7 +1178,7 @@ async function getProductDetail() {
 async function getColorMappingList() {
 	const res = await axios.post('/rest/'+siteId+'/product/color-list', {productId: productId});
     if(!res || !res.data) {
-    	alert("color mapping리스트를 불러오는데 실패했습니다.");
+    	toast.error("color mapping리스트를 불러오는데 실패했습니다.");
     	return;
     }
     
@@ -1108,7 +1204,7 @@ async function getColorMappingList() {
 async function getTagMappingList() {
 	const res = await axios.post('/rest/'+siteId+'/product/tag-list', {productId: productId});
     if(!res || !res.data) {
-    	alert("tag mapping리스트를 불러오는데 실패했습니다.");
+    	toast.error("tag mapping리스트를 불러오는데 실패했습니다.");
     	return;
     }
     
@@ -1133,7 +1229,7 @@ async function getTagMappingList() {
 async function getColorOption() {
 	const res = await axios.get('/rest/'+siteId+'/option/list', {params:{optionDvCd:'0001'}});
     if(!res || !res.data) {
-    	alert("color option을 불러오는데 실패했습니다.");
+    	toast.error("color option을 불러오는데 실패했습니다.");
     	return;
     }
     
@@ -1143,29 +1239,12 @@ async function getColorOption() {
 async function getTagOption() {
 	const res = await axios.get('/rest/'+siteId+'/option/list', {params:{optionDvCd:'0000'}});
     if(!res || !res.data) {
-    	alert("tag option을 불러오는데 실패했습니다.");
+    	toast.error("tag option을 불러오는데 실패했습니다.");
     	return;
     }
     
     tagList = res.data.list.content;
 }
-
-function showSecretBox() {
-	$(".secretBox").show();
-}
-
-function hideSecretBox() {
-	$(".secretBox").hide();
-}
-
-function passwordSave() {
-	secretPw = $("#password").val();
-	
-	alert("저장되었습니다.");
-	$(".secretBox").hide();
-	$(".btnSecretImg").attr("src","/images/secretMsg-on.png");
-}
-
 
 // 파일 그리기
 function setFiles(id) {
@@ -1317,10 +1396,135 @@ function deleteTagBtn(elem) {
 async function setData(formData,url) {
 	const res = await axios.post('/rest/' + siteId + '/product/update',formData, {headers: {'Content-Type': 'multipart/form-data'}});
 	if(!res || !res.data) {
-		alert("등록에 실패하였습니다.");
+		toast.error("등록에 실패하였습니다.");
 		return;
 	}
 	moveUrl(url);
 	
 }
+
+//옵션 선택 값 받는 함수
+function receiveOptionList(optionList) {
+	const ul = document.querySelector('.optionBody');
+	
+	optionList.forEach(option => {
+		console.log(option);
+		const productCd = option.productCd ?? 'NO-PRODUCT-CD';
+		const productId = option.productId;
+		const optionDvCd = option.optionDvCd;
+		const optionName = option.optionName;
+		const optionVal = option.optionVal;
+		const price = option.price;
+		const disPrice = option.disPrice;
+		
+		
+		// 중복 확인 (regist에서는 productId가 각각 다름, update에서는 productId가 같은값으로 중복됨 -> detail load시 문제 해결)
+		if(ul.querySelector('li[data-productid="'+ productId +'"]')) {
+			toast.error(optionVal + "은(는) 이미 선택 된 옵션 상품입니다.");
+			return;
+		};
+	
+		const li = document.createElement('li');
+		li.setAttribute('data-productid', productId);
+		li.setAttribute('data-productcd', productCd);
+		li.setAttribute('data-price', price);
+		li.setAttribute('data-optiondvcd', optionDvCd);
+		li.setAttribute('data-optionname', optionName);
+		li.setAttribute('data-optionVal', optionVal);
+		
+		li.style.cssText = `
+			display: flex;
+			align-items: center;
+			padding: 0px 20px;
+			font-size: 14px;
+		`;
+		
+		// 상품 정보 텍스트
+		const label = document.createElement('span');
+		label.innerHTML = `[<span style="color:red">${productCd}</span>] ${optionVal}`;
+		label.style.flex = '1';
+
+		// 원본 가격
+		const oriPrice = document.createElement('span');
+		oriPrice.setAttribute('data-productid', productId);
+		oriPrice.setAttribute('data-price', price);
+		oriPrice.textContent = formatNumberWithComma(price);
+		oriPrice.className = 'oriPrice';
+		
+		const wonDash = document.createElement('span');
+		wonDash.textContent = '원 -';
+		
+		// 가격 입력창
+		const priceInput = document.createElement('input');
+		priceInput.setAttribute('data-productid', productId);
+		priceInput.setAttribute('data-type','number');
+		priceInput.value = formatNumberWithComma(disPrice);
+		priceInput.type = 'text';
+		priceInput.setAttribute('placeholder','할인가격');
+		// priceInput.value = formatNumberWithComma(price);
+		priceInput.min = 0;
+		priceInput.style.cssText = `
+			width: 80px;
+			margin: 0 5px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 13px;
+		`;
+		priceInput.className = 'priceInput';
+		
+		const won = document.createElement('span');
+		won.textContent = '원'
+		won.style.cssText = `margin-right:5px;`;
+		
+		const totalPrice = document.createElement('span');
+		totalPrice.setAttribute('data-productid', productId);
+		totalPrice.textContent = ' = ' + formatNumberWithComma(price) + '원';
+		totalPrice.className = 'totalPrice'; 
+		
+		
+		// 삭제 버튼
+	    const btn = document.createElement('button');
+	    btn.textContent = 'X';
+	    btn.style.cssText = `
+	    	margin-left:10px;
+			color: red;
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			font-weight: bold;
+		`;
+	    
+	    btn.addEventListener('click', () => {
+	        ul.removeChild(li);
+	    });
+	    
+	    li.appendChild(label);
+	    li.appendChild(oriPrice);
+	    li.appendChild(wonDash);
+	    li.appendChild(priceInput);
+	    li.appendChild(won);
+	    li.appendChild(totalPrice);
+	    li.appendChild(btn);
+	
+	    ul.appendChild(li);
+	});
+	
+	$(".priceInput").on('keyup',function() {
+		let productId = $(this).data('productid');
+		
+		let oriPrice = $(".oriPrice[data-productid="+productId+"]").text();
+		let priceInput = $(".priceInput[data-productid="+productId+"]");
+		
+		if(parseNumber(priceInput.val()) > parseNumber(oriPrice)) {
+			toast.error("할인가가 원금을 초과할 수 없습니다.");
+			priceInput.val(0);
+		}
+		
+		let total = parseNumber(oriPrice) - parseNumber(priceInput.val());
+		$(".totalPrice[data-productid="+productId+"]").text(" = " + formatNumberWithComma(total) + "원");
+	});
+	
+	inputNumber();
+}
+
 </script>

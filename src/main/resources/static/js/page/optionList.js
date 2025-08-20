@@ -129,7 +129,9 @@ function setList(data){
 						<div class='chk_box hide_label'>
 							<input type='checkbox' id='chk_${cnt++}' name='chk' 
 							data-productcd='${item.productCd}' 
-							data-productname='${item.productName}'
+							data-optionval='${item.productName}'
+							data-optiondvcd='0000'
+							data-optionname='oriProduct'
 							data-price='${item.disPrice}'
 							 value='${item.productId}'>
                         </div>
@@ -203,7 +205,9 @@ function setList(data){
 				let obj = {
 					productId: $(this).val(),
 					productCd: $(this).data("productcd"),
-					productName: $(this).data("productname"),
+					optionDvCd: $(this).data("optiondvcd"),
+					optionName: $(this).data("optionname"),
+					optionVal: $(this).data("optionval"),
 					price: $(this).data("price"),
 				}
 				checkedList.push(obj);

@@ -45,6 +45,6 @@ public class TbProduct {
 	private List<String> jsonFilesList;
 	private String newJsonFilesList;
 	private List<String> cateIdList = new ArrayList<>();
-	private List<TbProductOption> disPriceList = new ArrayList<>();
+	private List<TbProductOption> oriOptionList = new ArrayList<>();
 	
 }

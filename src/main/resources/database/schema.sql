@@ -342,8 +342,11 @@ create table if not exists TB_PRODUCT_OPTION
 (
     OPTION_ID  int AUTO_INCREMENT not null
         primary key,
-    PRODUCT_NAME   varchar(50) not null,
-    DIS_PRICE     int         not null comment '할인 가격 (할인 적용가격 아님, 얼마만큼 할인할건지 마이너스 가격)',
+    OPTION_DV_CD  varchar(4)  not null comment '0000 : 상품명 / 0001 : 직접 입력한 옵션',
+    OPTION_NAME   varchar(50) not null comment '상품명 or 직접입력한 옵션 이름',
+    OPTION_VAL    varchar(50) not null comment '직접 입력한 옵션의 값',
+    PRICE         int         null comment '정상 판매가',
+    DIS_PRICE     int         null comment '할인 가격 (할인 적용가격 아님, 얼마만큼 할인할건지 마이너스 가격)',
     PRODUCT_ID    int         not null,
     ORI_PRODUCT_ID  int       not null  
     
