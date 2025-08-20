@@ -97,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
         inputFile.setPkId(product.getProductId());
 
     	// pkId에 해당하는 게시물의 파일을 모두 삭제하고 다시 추가
-		fileRepository.deleteFiles(inputFile);
+		fileRepository.deleteFiles(inputFile); 
 	
     	File uploadPath = new File(FILE_UPLOAD_PATH, StringUtils.getData());
     	
@@ -113,26 +113,27 @@ public class ProductServiceImpl implements ProductService {
     		// List<String>의 형태를 List<TbFile>로 변환
     		ObjectMapper mapper = new ObjectMapper();
     		List<TbFile> fileList = new ArrayList<>();
+    		System.out.println("여기 ::::::::::::");
     		
-    		for (String jsonFile : product.getJsonFilesList()) {
+    		System.out.println(product.getJsonFilesList());
+    		
     			
-				try {
-					TbFile file = mapper.readValue(jsonFile, TbFile.class);
-					
-					fileList.add(file);
-					
-				} catch (JsonProcessingException e) {
-		            e.printStackTrace();  // 로깅 또는 예외처리
-		        }
-			}
+			try {
+				fileList = mapper.readValue(
+    	            product.getJsonFilesList(),
+    	            new TypeReference<List<TbFile>>() {}
+    	        );
+    	    } catch (JsonProcessingException e) {
+	            e.printStackTrace();  // 로깅 또는 예외처리
+	        }
     		
     	    // TODO :: 디버깅 출력 추후 삭제
-    	    for (TbFile file : fileList) {
-    	        System.out.println("기존파일 ----");
-    	        System.out.println("파일명: " + file.getFileName());
-    	        System.out.println("경로: " + file.getFilePath());
-    	        System.out.println("시퀀스: " + file.getFileSeq());
-    	    }
+//    	    for (TbFile file : fileList) {
+//    	        System.out.println("기존파일 ----");
+//    	        System.out.println("파일명: " + file.getFileName());
+//    	        System.out.println("경로: " + file.getFilePath());
+//    	        System.out.println("시퀀스: " + file.getFileSeq());
+//    	    }
     		
 	    	// 기존 파일 DB추가
 	    	for (TbFile file : fileList) {
@@ -152,7 +153,6 @@ public class ProductServiceImpl implements ProductService {
         		
         		ObjectMapper objectMapper = new ObjectMapper();
         		List<TbFile> parsedFileList = new ArrayList<>();
-
         		try {
         	        parsedFileList = objectMapper.readValue(
         	            product.getNewJsonFilesList(),

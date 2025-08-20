@@ -2,7 +2,6 @@ package com.lumit.shop.common.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,7 +41,7 @@ public class TbProduct {
 	
 	private List<String> colorIdList = new ArrayList<>();
 	private List<String> tagIdList = new ArrayList<>();
-	private List<String> jsonFilesList;
+	private String jsonFilesList;
 	private String newJsonFilesList;
 	private List<String> cateIdList = new ArrayList<>();
 	private List<TbProductOption> oriOptionList = new ArrayList<>();

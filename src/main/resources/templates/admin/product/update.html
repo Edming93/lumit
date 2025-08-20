@@ -404,6 +404,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 		}
 	});
 
+	let jsonFilesList = [];
 	$("#updateBtn").on('click', function() {
 		if(confirm("저장 하시겠습니까?")) {
 			
@@ -446,18 +447,13 @@ document.addEventListener("DOMContentLoaded",async function () {
 							regId : 'admin'
 						};
 						
-						formData.append('jsonFilesList', JSON.stringify(jsonFile))
-						
-						console.log("file check 기존파일:::")
-						console.log(jsonFile)
+						jsonFilesList.push(jsonFile);
+						//formData.append('jsonFilesList', JSON.stringify(jsonFile))
 					}
 				}
 			}
 			
-			console.log("file check 새로 추가한 파일:::")
-			console.log(filesRep)	
-			
-			
+			formData.append('jsonFilesList', JSON.stringify(jsonFilesList))
 			formData.append('newJsonFilesList', JSON.stringify(newJsonFilesList));
 			
 			if($("#price").val() < $("#disPrice").val()) {
