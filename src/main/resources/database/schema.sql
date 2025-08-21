@@ -347,6 +347,7 @@ create table if not exists TB_PRODUCT_OPTION
     OPTION_VAL    varchar(50) not null comment '직접 입력한 옵션의 값',
     PRICE         int         null comment '정상 판매가',
     DIS_PRICE     int         null comment '할인 가격 (할인 적용가격 아님, 얼마만큼 할인할건지 마이너스 가격)',
+    STOCKS        int         null comment '0000코드 : TB_PRODUCT에서 재고 확인가능 / 0001 : 필수 기입',
     PRODUCT_ID    int         not null,
     ORI_PRODUCT_ID  int       not null  
     
