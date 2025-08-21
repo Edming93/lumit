@@ -46,7 +46,7 @@
     		box-sizing: border-box;
 	    }
 	    
-	    .cate_add_btn {
+	    .addBtn {
 	    	width: 100px;
 		    line-height: 25px;
 		    background: #E7DBCD;
@@ -76,6 +76,24 @@
 	    
 	    .btnArea {
 	    	min-width: 866px;
+	    }
+	    
+	    .selectBoxArea {
+	    	display: flex;
+	    	align-items: center;
+	    }
+	    
+	    .directOptionArea .selectList.active {
+	    	display: flex !important;
+	    	flex-direction: column;
+	    } 
+	    
+	    .optionInput {
+	    	width: 80px;
+			margin: 0 5px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 13px;
 	    }
 	</style>
 </head>
@@ -142,7 +160,7 @@
 	                        <td>
 	                        	<div id="container" class="categoryContainer">
 	                        		<div id="cateAddBtnArea" class="addBtnArea">
-						                <button type="button" class="cate_add_btn" id="cateAddBtn" onClick="selectCateAddBtnClick()">선택 후 추가</button>
+						                <button type="button" class="addBtn" id="cateAddBtn" onClick="selectCateAddBtnClick()">선택 후 추가</button>
 						            </div>
 		                            <div class="categoryTable">
 							            <div class="cate largeCate">
@@ -213,15 +231,36 @@
 	                        </td>
 	                    </tr>
 	                    <tr>
-	                        <th class="alLeft bold">옵션 상품코드</th>
+	                        <th class="alLeft bold">추가 구성상품</th>
 	                        <td>
 	                            <div class="addBtnArea">
-	                            	<button type="button" id="openCommonPopup" class="cate_add_btn">옵션 상품 추가</button>
+	                            	<button type="button" id="openCommonPopup" class="addBtn">옵션 상품 추가</button>
 	                            </div>
 	                            <div class="selectList" style="margin:0;">
 							    	<div class="optionHead">선택된 옵션</div>
 							    	<ul class="optionBody"></ul>
 							    </div>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <th class="alLeft bold">옵션 직접입력</th>
+	                        <td>
+	                            <div class="directOptionArea mgt10">
+	                            	<div class="selectBoxArea">
+	                            		<select name="drOption">
+	                            			<option value="1">1개</option>
+	                            			<option value="2">2개</option>
+	                            			<option value="3">3개</option>
+	                            			<option value="4">4개</option>
+	                            			<option value="5">5개</option>
+	                            		</select>
+	                            		<button type="button" id="drOpAddBtn" class="commAddBtn mgl10" style="width:50px;">추가</button>
+	                            	</div>
+		                            <div class="selectList mgt10" style="display: none;">
+								    	<div class="optionHead">선택된 옵션</div>
+							    		<ul class="drOptionBody"></ul>
+								    </div>
+								</div>
 	                        </td>
 	                    </tr>
 	                    <tr>
@@ -640,7 +679,36 @@ document.addEventListener("DOMContentLoaded",async function () {
 		openCommonPopup("optionList", "상품 옵션 리스트", "1060", "640");
 	});
 	
+	$("#drOpAddBtn").click(function() {
+		$(".directOptionArea .selectList").addClass("active");
+		let selectVal = $("select[name='drOption']").val();
+		
+	    for (let i = 0; i < selectVal; i++) {
+	        const liHtml = `
+	            <li style="display:flex; align-items:center; padding:0 20px; font-size:14px;">
+	                <input type="text" id="optionName" placeholder="옵션명" data-type="number" class="optionInput" style="flex:1;" />
+	                <input type="text" id="optionVal" placeholder="옵션값" data-type="number" class="optionInput" style="flex:1;" />
+	                <button type="button" id="opValAddBtn" class="commAddBtn" style="width:50px;">추가</button>
+	                <input type="text" id="optionPrice" placeholder="옵션가격" data-type="number" class="optionInput" style="flex:1;" />
+	                <span style="margin-right:5px;">원</span>
+	                <input type="text" id="optionStocks" placeholder="재고수량" data-type="number" class="optionInput" style="flex:0.5;" />
+	                <button type="button" id="optionDelBtn" class="rdOpDelBtn" style="margin-left:10px; color:red; border:none; background:transparent; cursor:pointer; font-weight:bold;">X</button>
+	            </li>
+	        `;
 
+	        $(".drOptionBody").append(liHtml);
+	    };
+		
+		$("#opValAddBtn").click(function() {
+			toast.error("aaa");
+		});
+		
+		$(".rdOpDelBtn").click(function() {
+			console.log($(this));
+			$(this).parent().remove();
+		});
+		
+	})
 });
 
 async function load() {

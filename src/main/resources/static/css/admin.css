@@ -805,7 +805,7 @@ input[type='file'] {
     right: 4px;
 }
 
-.form__label--file {
+.form__label--file, .commAddBtn {
     width: 60px;
     line-height: 25px;
     background: #E7DBCD;
