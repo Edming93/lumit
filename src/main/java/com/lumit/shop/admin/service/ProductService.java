@@ -19,4 +19,5 @@ public interface ProductService {
     public HashMap<String, Object> selectProductColorMappingList(TbProduct product);
     public HashMap<String, Object> selectProductTagMappingList(TbProduct product);
     public HashMap<String, Object> selectProductCateMappingList(TbProduct product);
+    public HashMap<String, Object> selectProductOptionList(TbProduct product);
 }

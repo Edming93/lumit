@@ -18,8 +18,14 @@ import java.util.Collection;
 @AllArgsConstructor
 @ToString
 public class TbProductOption {
+	private String productCd;
+	
     private String optionId;
-    private String oriProductId;
-    private String productName;
+    private String optionDvCd;
+    private String optionName;
+    private String optionVal;
+    private String price;
     private String disPrice;
+    private String productId;
+    private String oriProductId;
 }

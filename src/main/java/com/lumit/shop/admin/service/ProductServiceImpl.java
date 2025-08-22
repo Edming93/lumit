@@ -73,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
         retMap.put("insert", productRepository.insertProduct(product));
         retMap.put("proCateIntert", productRepository.insertProductCategoryMap(product));
         
-        if(product.getDisPriceList() != null && !product.getDisPriceList().isEmpty()) {
+        if(product.getOriOptionList() != null && !product.getOriOptionList().isEmpty()) {
         	retMap.put("productOption", productRepository.insertProductOption(product));
         }
 
@@ -263,8 +263,13 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteColorMap(product);
         productRepository.deleteTagMap(product);
         productRepository.deleteCateMap(product);
+        productRepository.deleteProductOption(product);
         
-        retMap.put("proCateIntert", productRepository.insertProductCategoryMap(product));
+        retMap.put("proCateInsert", productRepository.insertProductCategoryMap(product));
+        
+        if(product.getOriOptionList() != null && !product.getOriOptionList().isEmpty()) {
+        	retMap.put("productOptionInsert", productRepository.insertProductOption(product));
+        }
         
         // 옵션 테이블에 데이터 추가
         if (product.getColorIdList().size() != 0) productRepository.insertColorMap(product);
@@ -311,6 +316,14 @@ public class ProductServiceImpl implements ProductService {
     public HashMap<String, Object> selectProductCateMappingList(TbProduct product) {
         HashMap<String, Object> retMap = new HashMap<String, Object>();
         retMap.put("cateList", productRepository.selectCateMapList(product));
+
+        return retMap;
+    }
+    
+    @Override
+    public HashMap<String, Object> selectProductOptionList(TbProduct product) {
+        HashMap<String, Object> retMap = new HashMap<String, Object>();
+        retMap.put("optionList", productRepository.selectProductOptionList(product));
 
         return retMap;
     }

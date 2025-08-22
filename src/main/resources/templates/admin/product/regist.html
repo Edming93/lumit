@@ -466,27 +466,35 @@ document.addEventListener("DOMContentLoaded",async function () {
 			}
 			
 			if($(".optionBody li").length > 0) {
-				let disPriceList = [];
+				let oriOptionList = [];
 				
 				$(".optionBody li").each(function() {
 					let oriProductId = $(this).data("productid");
-					let productName = $(this).data("name");
+					let optionDvCd = $(this).data("optiondvcd");
+					let optionName = $(this).data("optionname");
+					let optionVal = $(this).data("optionval");
+					let price = $(this).data("price");
 					let disPrice = $(this).find(".priceInput[data-productid="+oriProductId+"]").val();
 					
-					disPriceList.push({
+					oriOptionList.push({
 						oriProductId : oriProductId,
-						productName : productName,
+						optionDvCd : optionDvCd, // 기존 상품
+						optionName : optionName,
+						optionVal : optionVal,
+						price : price,
 						disPrice : parseNumber(disPrice) ?? 0,
 					});
 					
 				});
 				
-				disPriceList.forEach((item, idx) => {
-					formData.append(`disPriceList[${idx}].oriProductId`, item.oriProductId);
-					formData.append(`disPriceList[${idx}].productName`, item.productName);
-					formData.append(`disPriceList[${idx}].disPrice`, item.disPrice);
-				})
-				
+				oriOptionList.forEach((item, idx) => {
+					formData.append(`oriOptionList[${idx}].oriProductId`, item.oriProductId);
+					formData.append(`oriOptionList[${idx}].optionDvCd`, item.optionDvCd);
+					formData.append(`oriOptionList[${idx}].optionName`, item.optionName);
+					formData.append(`oriOptionList[${idx}].optionVal`, item.optionVal);
+					formData.append(`oriOptionList[${idx}].price`, item.price);
+					formData.append(`oriOptionList[${idx}].disPrice`, item.disPrice);
+				});
 			};
 
 			formData.append("colorIdList",colorIdList ?? []);
@@ -1129,14 +1137,16 @@ function receiveOptionList(optionList) {
 	optionList.forEach(option => {
 		console.log(option);
 		const productId = option.productId;
-		const productCd = option.productCd;
-		const productName = option.productName;
-		const price = option.price;
+		const productCd = option.productCd ?? 'NO-PRODUCT-CD';
+		const optionDvCd = option.optionDvCd;
+		const optionName = option.optionName;
+		const optionVal = option.optionVal;
+		const price = option.price; // 정가
 		
-		
+		// TODO : price에 정가 넣고, disPrice에 할인가 넣기
 		// 중복 확인
 		if(ul.querySelector('li[data-productid="'+ productId +'"]')) {
-			toast.error(productName + "은(는) 이미 선택 된 옵션 상품입니다.");
+			toast.error(optionVal + "은(는) 이미 선택 된 옵션 상품입니다.");
 			return;
 		};
 	
@@ -1144,7 +1154,9 @@ function receiveOptionList(optionList) {
 		li.setAttribute('data-productid', productId);
 		li.setAttribute('data-productcd', productCd);
 		li.setAttribute('data-price', price);
-		li.setAttribute('data-name', productName);
+		li.setAttribute('data-optiondvcd', optionDvCd);
+		li.setAttribute('data-optionname', optionName);
+		li.setAttribute('data-optionval', optionVal);
 		
 		li.style.cssText = `
 			display: flex;
@@ -1155,12 +1167,13 @@ function receiveOptionList(optionList) {
 		
 		// 상품 정보 텍스트
 		const label = document.createElement('span');
-		label.innerHTML = `[<span style="color:red">${productCd}</span>] ${productName}`;
+		label.innerHTML = `[<span style="color:red">${productCd}</span>] ${optionVal}`;
 		label.style.flex = '1';
 
 		// 원본 가격
 		const oriPrice = document.createElement('span');
 		oriPrice.setAttribute('data-productid', productId);
+		oriPrice.setAttribute('data-price', price);
 		oriPrice.textContent = formatNumberWithComma(price);
 		oriPrice.className = 'oriPrice';
 		

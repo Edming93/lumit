@@ -49,7 +49,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final FileRepository fileRepository;
 
-    @Value("${upload.path}")
+    @Value("${file.upload.path}")
     private String FILE_UPLOAD_PATH;
 
     @Override
@@ -138,8 +138,7 @@ public class BoardServiceImpl implements BoardService {
         // boardId 해당 게시물의 파일을 모두 삭제하고 다시 추가
         fileRepository.deleteFiles(inputFile);
 
-
-        File uploadPath = new File(FILE_UPLOAD_PATH, StringUtils.getData());
+        File uploadPath = new File(FILE_UPLOAD_PATH + "/board", StringUtils.getData());
 
         System.out.println("upload path: " + uploadPath);
 
