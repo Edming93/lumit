@@ -31,146 +31,107 @@
             }
         });
 
-        window.addEventListener("customersLoad", async () => {
-            (function () {
-                // ---------------- Mock Data ----------------
-                const MOCK_FLAGGED = [
-                    {userId: 'lee01', name: '이민수', status: 'WARNING', reportCount: 2, joinedAt: '2025-07-18'},
-                    {userId: 'kim02', name: '김하늘', status: 'SUSPENDED', reportCount: 5, joinedAt: '2025-06-03'},
-                    {userId: 'jung03', name: '정다은', status: 'ACTIVE', reportCount: 1, joinedAt: '2025-05-22'}
-                ];
-                const MOCK_RECENT = [
-                    {userId: 'park77', name: '박서준', status: 'ACTIVE', joinedAt: '2025-08-10'},
-                    {userId: 'choi88', name: '최민지', status: 'ACTIVE', joinedAt: '2025-08-09'},
-                    {userId: 'yoon99', name: '윤하린', status: 'ACTIVE', joinedAt: '2025-08-08'}
-                ];
+        window.addEventListener("customersLoad", () => {
+            loadMemberSummary();
+        })
 
-                // ---------------- Helpers ----------------
-                const toast = (window.__toast || (window.Toast ? window.Toast({position: 'top-right'}) : {
-                    success: (m) => alert(m), error: (m) => alert(m), info: (m) => alert(m)
-                }));
+        async function loadMemberSummary() {
+            const flaggedUl = document.getElementById("flaggedList");
+            const recentUl = document.getElementById("recentList");
 
-                const els = {
-                    flagged: document.getElementById('flaggedList'),
-                    recent: document.getElementById('recentList')
-                };
+            const skeleton = (n = 3) => Array.from({length: n}).map(() =>
+                `<li class="loading"><span class="dot"></span><span class="bar"></span></li>`
+            ).join("");
 
-                const skeletonItem = `
-    <li class="memberItem" aria-busy="true" style="opacity:.6">
-      <div style="width:18px;height:18px;border-radius:50%;background:#eee"></div>
-      <div style="flex:1">
-        <div style="width:160px;height:12px;border-radius:6px;background:#eee;margin-bottom:6px"></div>
-        <div style="width:220px;height:10px;border-radius:6px;background:#f0f0f0"></div>
+            flaggedUl.innerHTML = skeleton();
+            recentUl.innerHTML = skeleton();
+
+            try {
+                const res = await fetch(`/api/admin/users/summary?days=14&minReports=1&limit=10`, {credentials: "same-origin"});
+                if (!res.ok) throw new Error("fail");
+                const data = await res.json();
+
+                flaggedUl.innerHTML = (data.flagged ?? []).map(renderItem).join('') || `<li>데이터 없음</li>`;
+                recentUl.innerHTML = (data.recent ?? []).map(renderItem).join('') || `<li>데이터 없음</li>`;
+            } catch (e) {
+                flaggedUl.innerHTML = `<li>불러오기 실패</li>`;
+                recentUl.innerHTML = `<li>불러오기 실패</li>`;
+                console.error(e);
+            }
+        }
+
+
+        function renderItem(m) {
+            const statusBadge = renderStatus(m.status);
+            const report = m.reportCount ? `신고횟수 ${m.reportCount}` : '';
+            return `
+    <li class="memberItem">
+      <div class="meta">
+        <div class="row1">
+          <span class="name">${escapeHtml(m.name ?? '')}</span>
+          ${statusBadge}
+        </div>
+        <div class="row2">
+          <span class="sub">${escapeHtml(m.email ?? '')}${report ? ' / ' + report : ''}</span>
+        </div>
       </div>
-      <div class="memberActions">
-        <div style="width:56px;height:28px;border-radius:8px;background:#eee"></div>
-        <div style="width:56px;height:28px;border-radius:8px;background:#eee"></div>
+      <div class="actions">
+        <button type="button" class="btn" onclick="openDetail('${m.userId}')">상세</button>
+        ${m.status === '2'
+                ? `<button type="button" class="btn" onclick="unsuspend('${m.userId}')">해제</button>`
+                : `<button type="button" class="btn danger" onclick="suspend('${m.userId}')">정지</button>`}
       </div>
     </li>
   `;
+        }
 
-                function showSkeleton(ul) {
-                    ul.innerHTML = skeletonItem + skeletonItem;
-                }
+        function renderStatus(status) {
+            const cls = status == 2 ? 'badge red'
+                : status == 2 ? 'badge yellow'
+                    : 'badge green';
+            return `<span class="${cls}">${status == 2 ? "정지" : "활성"}</span>`;
+        }
 
-                function badge(status) {
-                    const s = (status || 'ACTIVE').toUpperCase();
-                    const bg = s === 'SUSPENDED' ? '#fde2e2' : s === 'WARNING' ? '#fff0d9' : '#e9f5ec';
-                    const color = s === 'SUSPENDED' ? '#c53030' : s === 'WARNING' ? '#a86207' : '#166534';
-                    return `<span class="memberBadge" style="background:${bg};color:${color}">${s}</span>`;
-                }
+        function openDetail(userId) {
+            // 필요한 상세 페이지로 이동
+            window.location.href = `/admin/user/detail/${encodeURIComponent(userId)}`;
+        }
 
-                function itemTemplate(it, kind) {
-                    const leftIcon = kind === 'flagged'
-                        ? '<i class="fa-solid fa-circle-exclamation" style="color:#d14343;"></i>'
-                        : '<i class="fa-regular fa-user"></i>';
+        async function suspend(userId) {
+            if (!confirm('이 사용자를 정지하시겠습니까?')) return;
+            const res = await fetch(`/api/admin/users/${encodeURIComponent(userId)}/suspend`, {
+                method: 'POST',
+                credentials: 'same-origin'
+            });
+            if (res.ok) {
+                loadMemberSummary();
+            } else {
+                alert('정지 실패');
+            }
+        }
 
-                    const sub = kind === 'flagged'
-                        ? `닉네임/이메일/신고횟수 ${it.reportCount ?? 0}회`
-                        : `닉네임/이메일/가입일 ${it.joinedAt ?? ''}`;
+        async function unsuspend(userId) {
+            if (!confirm('정지를 해제하시겠습니까?')) return;
+            const res = await fetch(`/api/admin/users/${encodeURIComponent(userId)}/unsuspend`, {
+                method: 'POST',
+                credentials: 'same-origin'
+            });
+            if (res.ok) {
+                loadMemberSummary();
+            } else {
+                alert('해제 실패');
+            }
+        }
 
-                    const suspended = String(it.status || '').toUpperCase() === 'SUSPENDED';
-                    const actDetail = `<button class="btn-detail" data-id="${it.userId}">상세</button>`;
-                    const actToggle = suspended
-                        ? `<button class="btn-activate" data-id="${it.userId}">해제</button>`
-                        : `<button class="btn-suspend action-danger" data-id="${it.userId}">정지</button>`;
-
-                    return `
-      <li class="memberItem">
-        ${leftIcon}
-        <div>
-          <div><strong>${it.name || it.userId}</strong> ${badge(it.status)}</div>
-          <div class="memberSub">${sub}</div>
-        </div>
-        <div class="memberActions">${actDetail}${actToggle}</div>
-      </li>
-    `;
-                }
-
-                function renderList(items, ul, kind) {
-                    if (!items.length) {
-                        ul.innerHTML = `<li class="emptyTip">${kind === 'flagged' ? '신고 이력이 있는 회원이 없습니다.' : '최근 가입한 회원이 없습니다.'}</li>`;
-                        return;
-                    }
-                    ul.innerHTML = items.map(it => itemTemplate(it, kind)).join('');
-                    ul.querySelectorAll('.btn-detail').forEach(b => b.addEventListener('click', onDetail));
-                    ul.querySelectorAll('.btn-suspend').forEach(b => b.addEventListener('click', onSuspend));
-                    ul.querySelectorAll('.btn-activate').forEach(b => b.addEventListener('click', onActivate));
-                }
-
-                // ---------- Mock actions (상태만 로컬에서 토글) ----------
-                function findAll() {
-                    return [...MOCK_FLAGGED, ...MOCK_RECENT];
-                }
-
-                function setStatus(userId, status) {
-                    const all = findAll();
-                    const t = all.find(x => x.userId === userId);
-                    if (t) t.status = status;
-                }
-
-                async function onSuspend(e) {
-                    const id = e.currentTarget.dataset.id;
-                    setStatus(id, 'SUSPENDED');
-                    toast.success('정지 처리되었습니다. (mock)');
-                    render();
-                }
-
-                async function onActivate(e) {
-                    const id = e.currentTarget.dataset.id;
-                    setStatus(id, 'ACTIVE');
-                    toast.success('해제되었습니다. (mock)');
-                    render();
-                }
-
-                function onDetail(e) {
-                    const id = e.currentTarget.dataset.id;
-                    const user = findAll().find(x => x.userId === id);
-                    toast.info(`상세 보기 (mock): ${user?.name || id}`);
-                }
-
-                // ---------- Load (mock) ----------
-                async function loadMock() {
-                    showSkeleton(els.flagged);
-                    showSkeleton(els.recent);
-                    // 네트워크 흉내: 500ms 후 렌더
-                    setTimeout(render, 500);
-                }
-
-                function render() {
-                    renderList(MOCK_FLAGGED, els.flagged, 'flagged');
-                    renderList(MOCK_RECENT, els.recent, 'recent');
-                }
-
-                // 초기화 (탭 AJAX 삽입 케이스도 지원)
-                document.addEventListener('managerLoad', loadMock);
-                if (document.readyState === 'complete' || document.readyState === 'interactive') {
-                    setTimeout(loadMock, 0);
-                } else {
-                    document.addEventListener('DOMContentLoaded', loadMock);
-                }
-            })();
-        })
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, m => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[m]));
+        }
 
         function renderActiveAdmins(adminList) {
             const tbody = document.getElementById("activeAdminBody");

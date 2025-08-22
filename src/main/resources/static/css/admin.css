@@ -1262,7 +1262,7 @@ input::-webkit-inner-spin-button {
     align-items: stretch;
     justify-content: space-between;
     /*padding: 0.5rem 0.5rem;*/
-    border-radius: 0.3rem;
+    border-radius: 0.5rem;
     min-height: 520px;
     max-height: 520px;
 
@@ -1301,6 +1301,10 @@ input::-webkit-inner-spin-button {
     width: 25%;
     border-right: 1px solid var(--brand-color1);
     min-height: 100%;
+}
+
+.detailCate {
+    border-right: none;
 }
 
 .cate input {
@@ -1641,6 +1645,8 @@ li.active i {
 .lockedRole {
     display: flex;
     align-items: center;
+    justify-content: center;
+    text-align: center;
     gap: 0.3rem;
     font-size: 1rem; /* 전체 크기 통일 */
 }
@@ -1677,4 +1683,415 @@ li.active i {
     padding: 0.5rem;
     margin: 0;
     color: black;
+}
+
+:root {
+    --bg: #FAF7F2;
+    --ink: #2b2b2b;
+    --muted: #6b6b6b;
+    --brand-1: var(--brand-color1, #5b3e29);
+    --brand-2: var(--brand-color2, #E7DBCD);
+    --brand-3: var(--brand-color3, #CAAB9C);
+    --brand-4: var(--brand-color4, #B27B5C);
+    --surface: #ffffff;
+    --line: #e5e7eb;
+    --shadow: 0 6px 20px rgba(0, 0, 0, .08);
+    --radius: 14px;
+}
+
+/* 1) 페이지 기본 톤 */
+body {
+    background: var(--background-color, var(--bg));
+    color: var(--font-color, var(--ink));
+}
+
+/* 2) KPI 카드(세 장) — 세 화면 공통 */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard-card {
+    background: linear-gradient(160deg, #fff, #f8f6f3);
+    border: 1px solid rgba(0, 0, 0, .04);
+    border-radius: var(--radius);
+    padding: 1.6rem 1.4rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .12);
+}
+
+.dashboard-card i {
+    font-size: 2rem;
+    color: var(--brand-1);
+    margin-bottom: .5rem;
+}
+
+.dashboard-card h3 {
+    font-size: .95rem;
+    color: #7a6f67;
+    margin: 0;
+}
+
+.dashboard-card p {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #222;
+    margin: .2rem 0 0;
+}
+
+/* 3) 탭(상단 버튼) — 모양/상태를 한결같이 */
+.tabMenu {
+    display: flex;
+    gap: .4rem;
+    margin-bottom: -1px;
+}
+
+.tabMenu .linkBtn,
+.tabMenu button {
+    background: #fff;
+    border: 1px solid #e2e0db;
+    color: var(--brand-1);
+    padding: .6rem 1.1rem;
+    border-radius: .6rem .6rem 0 0;
+    font-weight: 600;
+    transition: all .15s ease;
+}
+
+.tabMenu .linkBtn:hover,
+.tabMenu button:hover {
+    background: #f5efe8;
+    transform: translateY(-2px);
+}
+
+.tabMenu .linkBtn.active,
+.tabMenu button.active {
+    background: #fff;
+    color: #222;
+    border-color: var(--brand-1);
+    border-bottom-color: #fff;
+    position: relative;
+    top: 1px;
+    z-index: 1;
+}
+
+.tabContentContainer {
+    border: 1px solid #e2e0db;
+    background: #fff;
+    border-radius: 0 0 .7rem .7rem;
+    padding: 1.6rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+}
+
+/* 4) 표(관리자 편집/회원 관리 공통) */
+.adminTable {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: #fff;
+    border-radius: .8rem;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.adminTable th {
+    background: #f7f3ee;
+    color: #5b4a3f;
+    font-weight: 700;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e7e2dd;
+}
+
+.adminTable td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee6de;
+    color: #333;
+}
+
+.adminTable tbody tr:hover {
+    background: #faf6f1;
+}
+
+.adminTable tbody tr:nth-child(even) {
+    background: #fff;
+}
+
+/* 5) 폼 컨트롤 통일 */
+.container input[type="text"],
+.container input[type="password"],
+.container input[type="number"],
+.container select {
+    background: #fff;
+    border: 1px solid #d9cfc5;
+    border-radius: 10px;
+    height: 38px;
+    padding: 0 14px;
+    transition: box-shadow .12s ease, border-color .12s ease;
+}
+
+.container input:focus,
+.container select:focus {
+    border-color: var(--brand-1);
+    box-shadow: 0 0 0 3px rgba(91, 62, 41, .12);
+    outline: none;
+}
+
+/* 6) 버튼 패턴 3종: 기본/강조/위험 */
+.btn, .commBtn, .adminTable button {
+    --btn-bg: #E7DBCD;
+    --btn-fg: #5b3e29;
+    --btn-bd: #CAAB9C;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    border: 1px solid var(--btn-bd);
+    border-radius: 10px;
+    padding: .55rem .9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .08s ease, filter .12s ease, background-color .12s ease;
+}
+
+.btn:hover, .commBtn:hover, .adminTable button:hover {
+    filter: brightness(.95);
+    transform: translateY(-1px);
+}
+
+.btn.primary {
+    --btn-bg: var(--brand-1);
+    --btn-fg: #fff;
+    --btn-bd: var(--brand-1);
+}
+
+.btn.ghost {
+    --btn-bg: #fff;
+    --btn-fg: var(--brand-1);
+    --btn-bd: #d8cec3;
+}
+
+.btn.danger, .deleteBtn {
+    --btn-bg: #ef4444;
+    --btn-fg: #fff;
+    --btn-bd: #ef4444;
+}
+
+.deleteBtn:hover {
+    background: #dc2626 !important;
+}
+
+/* 7) 관리자 편집 – 이름수정/권한select 정렬 보정 */
+.nameEditWrapper input {
+    max-width: 220px;
+}
+
+.roleEditWrapper select {
+    min-width: 140px;
+}
+
+/* 8) ‘신고 이력/최근 가입’ 블록 — 빈 상태 가독성 */
+.empty-state {
+    color: #8a7c71;
+    background: #fff7f0;
+    border: 1px dashed #e4d8ce;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+}
+
+/* 9) 페이지 래퍼(스크롤/여백 통일) */
+.adminPageWrapper {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+}
+
+/* 10) 카테고리 패널 톤 맞추기 */
+.categoryTable {
+    border: 1px solid #e3d8ce;
+    border-radius: .8rem;
+    box-shadow: var(--shadow);
+}
+
+.cateHead {
+    background: var(--brand-1);
+    color: #fff;
+}
+
+.cate li {
+    border-bottom: 1px solid #f1ece7;
+}
+
+.cate li.active {
+    background: #e9d4c7;
+    color: #3a2a1b;
+}
+
+/* 11) 반응형 */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contentWrap {
+        width: 100%;
+    }
+
+    .categoryContainer {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+.adminScrollableBox i {
+    color: black;
+}
+
+/*******************************
+ * ADMIN Theme — Brown & Beige
+ *******************************/
+:root {
+    --tone-brown: #4A3221; /* 메인 포인트(사이드바색) */
+    --tone-brown-2: #6a4b35; /* hover/darker */
+    --tone-beige: #F9F6F2; /* 카드/테이블 배경 */
+    --tone-line: #E7E2DD; /* 테두리 */
+    --tone-ink: #222; /* 본문 글자 */
+    --tone-muted: #7a6f67; /* 보조 텍스트 */
+    --tone-danger: #D64545; /* 위험 버튼 */
+    --tone-danger-2: #C03939; /* 위험 hover */
+    --radius-1: 8px;
+    --shadow-1: 0 2px 6px rgba(0, 0, 0, .05);
+}
+
+/* ====== 제목/아이콘/포인트 ====== */
+.title, .dashboard-header {
+    color: var(--tone-brown) !important;
+}
+
+.dashboard-card i {
+    color: var(--tone-brown);
+}
+
+/* ====== 카드/테이블 공통 ====== */
+.sectionCard,
+.adminPageWrapper,
+.adminTable,
+.adminTable.compact {
+    background: #fff;
+    border: 1px solid var(--tone-line);
+    border-radius: var(--radius-1);
+    box-shadow: var(--shadow-1);
+}
+
+/* 테이블 헤더 */
+.adminTable th,
+.adminTable.compact th {
+    background: var(--tone-beige);
+    color: var(--tone-brown);
+    border-bottom: 1px solid var(--tone-line);
+}
+
+/* 테이블 바디 */
+.adminTable td,
+.adminTable.compact td {
+    border-bottom: 1px solid #eee6de;
+    color: var(--tone-ink);
+}
+
+.adminTable tbody tr:hover,
+.adminTable.compact tbody tr:hover {
+    background: #faf7f3;
+}
+
+/* 권한 레벨 가운데 정렬 */
+.adminTable th:nth-child(4),
+.adminTable td:nth-child(4) {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.adminTable td:nth-child(4) i {
+    color: var(--tone-brown);
+}
+
+/* 입력/셀렉트 */
+.adminTable input[type="text"],
+.adminTable select {
+    height: 36px;
+    border: 1px solid var(--tone-line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--tone-ink);
+    padding: 0 10px;
+}
+
+.adminTable input[type="text"]:focus,
+.adminTable select:focus {
+    border-color: var(--tone-brown);
+    box-shadow: 0 0 0 3px rgba(74, 50, 33, .12);
+    outline: none;
+}
+
+/* ====== 탭 버튼 ====== */
+.tabMenu .linkBtn,
+.tabMenu button {
+    background: #fff;
+    border: 1px solid var(--tone-line);
+    color: var(--tone-brown);
+    border-bottom: none;
+    border-radius: .6rem .6rem 0 0;
+}
+
+.tabMenu .linkBtn.active,
+.tabMenu button.active {
+    border-color: var(--tone-brown);
+    border-bottom-color: #fff;
+    color: var(--tone-ink);
+}
+
+/* ====== 버튼 스타일 ====== */
+.btn, .commBtn, .adminTable button {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease, transform .05s ease;
+}
+
+/* 기본 버튼 */
+.btn {
+    background: #fff;
+    border: 1px solid var(--tone-line);
+    color: var(--tone-brown);
+}
+
+.btn:hover {
+    border-color: var(--tone-brown-2);
+    background: var(--tone-beige);
+}
+
+/* Danger 버튼 */
+.btn.danger {
+    background: var(--tone-danger);
+    border: none;
+    color: #fff;
+}
+
+.btn.danger:hover {
+    background: var(--tone-danger-2);
+}
+
+/* 회색(비활성/수정) 버튼 */
+.btn[disabled],
+.btn.disabled {
+    background: #f2f0ed;
+    border: 1px solid var(--tone-line);
+    color: var(--tone-muted);
+    cursor: not-allowed;
 }

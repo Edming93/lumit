@@ -64,7 +64,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ServiceCode updateCategory(TbCategory data) {
-        System.out.println("what the..." + data);
         data.setModId(SecurityUtils.getPrincipal().getUserId());
         data.setModDt(LocalDateTime.now());
         return categoryRepository.updateCategory(data) > 0 ? ServiceCode.UPDATED : ServiceCode.UNKNOWN;

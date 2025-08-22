@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lumit.shop.admin.repository.ReportRepository">
+
+    <insert id="insertReport" parameterType="com.lumit.shop.admin.dto.ReportCreateDto">
+        INSERT INTO TB_REPORT
+        (REPORTED_USER_ID, REPORTER_USER_ID, REASON_CODE, REASON_DETAIL, CONTEXT_TYPE, CONTEXT_ID, REG_DT, REG_ID)
+        VALUES (#{reportedUserId}, #{reporterUserId}, #{reason}, #{reasonDetail}, #{contextType}, #{contextId}, now(),
+                #{reporterUserId})
+    </insert>
+
+    <select id="selectLatestReasons" resultType="string">
+        SELECT REASON_CODE
+        FROM TB_REPORT
+        WHERE REPORTED_USER_ID = #{userId}
+        ORDER BY REG_DT DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 여러 유저의 신고 카운트 묶음 조회 -->
+    <select id="selectReportCounts"
+            resultType="com.lumit.shop.admin.repository.UserReportCountRow">
+        SELECT REPORTED_USER_ID AS userId, COUNT(*) AS reportCount
+        FROM TB_REPORT
+        WHERE REPORTED_USER_ID IN
+        <foreach collection="userIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        GROUP BY REPORTED_USER_ID
+    </select>
+
+</mapper>

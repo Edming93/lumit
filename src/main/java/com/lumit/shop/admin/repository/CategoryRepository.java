@@ -25,5 +25,5 @@ public interface CategoryRepository {
 
     int updateCategory(TbCategory data);
 
-    List<TbCategory> searchCategory(String title);
+    List<TbCategory> searchCategory(String name);
 }

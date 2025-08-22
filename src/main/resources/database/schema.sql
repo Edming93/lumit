@@ -29,6 +29,7 @@ drop table if exists TB_OPTION cascade;
 drop table if exists TB_TAG_MAP cascade;
 drop table if exists TB_ADDRESS cascade;
 drop table if exists TB_CODE cascade;
+drop table if exists TB_REPORT cascade;
 SET FOREIGN_KEY_CHECKS = 1;
 
 create table if not exists TB_BOARD
@@ -92,7 +93,7 @@ create table if not exists TB_CATEGORY
     CATEGORY_NAME varchar(50)           not null,
     USE_YN        varchar(2)            not null,
     PARENT        bigint                null comment '0: 최상위, 값이 있으면 부모의 id',
-    DEPTH         tinyint               not null,
+    DEPTH         tinyint               null,
     REG_ID        varchar(50)           null,
     REG_DT        timestamp             null,
     MOD_ID        varchar(50)           null,
@@ -216,7 +217,7 @@ create table if not exists TB_LOGIN
     ADDRESS      varchar(30)       not null,
     SOCIAL_ID    varchar(100)      null,
     DEFAULT_ADDR int               null,
-    STATUS       tinyint default 1 not null comment '1: 활동, 2: 휴면, 3: 탈퇴, 4: 구 관리자',
+    STATUS       tinyint default 1 not null comment '1: 활동, 2: 정지, 3: 휴면, 4: 탈퇴, 5: 구 관리자',
     AUTH_CODE    varchar(200)      null,
     REG_ID       varchar(50)       null,
     REG_DT       timestamp         null,
@@ -269,30 +270,30 @@ create table if not exists TB_ORDER_DETAIL
 (
     ORDER_DETAIL_ID int AUTO_INCREMENT not null
         primary key,
-    PRODUCT_ID      int not null,
-    `ORDER_ID`        int not null,
-    `PRICE`           int not null,
-    QUANTITY        int not null
+    PRODUCT_ID      int                not null,
+    `ORDER_ID`      int                not null,
+    `PRICE`         int                not null,
+    QUANTITY        int                not null
 );
 
 create table if not exists TB_PAYMENT_PLAN
 (
-    PP_ID   int  AUTO_INCREMENT       not null 
+    PP_ID   int AUTO_INCREMENT not null
         primary key,
-    PP_PLAN varchar(30) not null
+    PP_PLAN varchar(30)        not null
 );
 
 create table if not exists TB_PAY_BANK
 (
-    BANK_ID        int AUTO_INCREMENT        not null,
-    PP_ID          int         not null,
-    BANK_NAME      varchar(30) not null,
-    BANK_CODE      int         not null,
-    ORDER_AMOUNT   int         not null,
-    DEPOSIT_AMOUNT int         null,
-    DEPOSIT_DT     timestamp   null,
-    EXPIRATION_DT  timestamp   not null,
-    PAYMENT_STATE  tinyint     not null,
+    BANK_ID        int AUTO_INCREMENT not null,
+    PP_ID          int                not null,
+    BANK_NAME      varchar(30)        not null,
+    BANK_CODE      int                not null,
+    ORDER_AMOUNT   int                not null,
+    DEPOSIT_AMOUNT int                null,
+    DEPOSIT_DT     timestamp          null,
+    EXPIRATION_DT  timestamp          not null,
+    PAYMENT_STATE  tinyint            not null,
     primary key (BANK_ID, PP_ID),
     constraint FK_TB_PAYMENT_PLAN_TO_TB_PAY_BANK_1
         foreign key (PP_ID) references TB_PAYMENT_PLAN (PP_ID)
@@ -300,14 +301,14 @@ create table if not exists TB_PAY_BANK
 
 create table if not exists TB_PAY_CARD
 (
-    PC_ID           int  AUTO_INCREMENT       not null,
-    PP_ID           int         not null,
-    CARD_COMPANY    varchar(30) not null,
-    CARD_COMPANY_CD varchar(2)  not null,
-    ORDER_AMOUNT    int         not null,
-    PAYMENT_AMOUNT  int         not null,
-    REG_DT          timestamp   not null,
-    PAYMENT_STATE   varchar(2)  not null,
+    PC_ID           int AUTO_INCREMENT not null,
+    PP_ID           int                not null,
+    CARD_COMPANY    varchar(30)        not null,
+    CARD_COMPANY_CD varchar(2)         not null,
+    ORDER_AMOUNT    int                not null,
+    PAYMENT_AMOUNT  int                not null,
+    REG_DT          timestamp          not null,
+    PAYMENT_STATE   varchar(2)         not null,
     primary key (PC_ID, PP_ID),
     constraint FK_TB_PAYMENT_PLAN_TO_TB_PAY_CARD_1
         foreign key (PP_ID) references TB_PAYMENT_PLAN (PP_ID)
@@ -340,13 +341,13 @@ create table if not exists TB_PRODUCT
 
 create table if not exists TB_PRODUCT_OPTION
 (
-    OPTION_ID  int AUTO_INCREMENT not null
+    OPTION_ID      int AUTO_INCREMENT not null
         primary key,
-    PRODUCT_NAME   varchar(50) not null,
-    DIS_PRICE     int         not null comment '할인 가격 (할인 적용가격 아님, 얼마만큼 할인할건지 마이너스 가격)',
-    PRODUCT_ID    int         not null,
-    ORI_PRODUCT_ID  int       not null  
-    
+    PRODUCT_NAME   varchar(50)        not null,
+    DIS_PRICE      int                not null comment '할인 가격 (할인 적용가격 아님, 얼마만큼 할인할건지 마이너스 가격)',
+    PRODUCT_ID     int                not null,
+    ORI_PRODUCT_ID int                not null
+
 );
 
 create table if not exists TB_PRODUCT_QNA
@@ -369,29 +370,29 @@ create table if not exists TB_PRODUCT_QNA
 
 create table if not exists TB_REVIEW
 (
-    REVIEW_ID     bigint  AUTO_INCREMENT      not null
+    REVIEW_ID     bigint AUTO_INCREMENT not null
         primary key,
-    PRODUCT_ID    int           not null,
-    USER_ID       varchar(50)   not null,
-    RATING        decimal(2, 1) not null comment '0~5점(0.5 단위)',
-    REVIEW_TEXT   varchar(255)  null,
-    REVIEW_DATE   timestamp     not null,
-    LIKES         int           not null,
-    REVIEW_PHOTOS json          null,
-    ADMIN_NOTES   varchar(255)  null comment '검토나 삭제에 대한 계획'
+    PRODUCT_ID    int                   not null,
+    USER_ID       varchar(50)           not null,
+    RATING        decimal(2, 1)         not null comment '0~5점(0.5 단위)',
+    REVIEW_TEXT   varchar(255)          null,
+    REVIEW_DATE   timestamp             not null,
+    LIKES         int                   not null,
+    REVIEW_PHOTOS json                  null,
+    ADMIN_NOTES   varchar(255)          null comment '검토나 삭제에 대한 계획'
 );
 
 create table if not exists TB_ROLE
 (
     ROLE_ID     int auto_increment not null
         primary key,
-    ROLE_NAME   varchar(50)  not null,
-    ROLE_TYPE   varchar(8)   null,
-    DESCRIPTION varchar(200) null,
-    REG_ID      varchar(50)  null,
-    REG_DT      timestamp    null,
-    MOD_ID      varchar(50)  null,
-    MOD_DT      timestamp    null
+    ROLE_NAME   varchar(50)        not null,
+    ROLE_TYPE   varchar(8)         null,
+    DESCRIPTION varchar(200)       null,
+    REG_ID      varchar(50)        null,
+    REG_DT      timestamp          null,
+    MOD_ID      varchar(50)        null,
+    MOD_DT      timestamp          null
 );
 
 create table if not exists TB_ROLE_MENU
@@ -430,6 +431,23 @@ CREATE TABLE `TB_ADDRESS`
     `USER_ID`      varchar(50)        NOT NULL
 );
 
+CREATE TABLE `TB_REPORT`
+(
+    REPORT_ID        BIGINT AUTO_INCREMENT PRIMARY KEY,
+    REPORTED_USER_ID VARCHAR(64)  NOT NULL,
+    REPORTER_USER_ID VARCHAR(64)  NOT NULL,
+    REASON_CODE      VARCHAR(32)  NOT NULL,
+    REASON_DETAIL    VARCHAR(500) NULL,
+    CONTEXT_TYPE     VARCHAR(32)  NULL, -- 신고 컨텍스트(POST/COMMENT/ORDER 등)
+    CONTEXT_ID       VARCHAR(64)  NULL, -- 컨텍스트 키
+    REG_ID           varchar(50)  null,
+    REG_DT           timestamp    null,
+    MOD_ID           varchar(50)  null,
+    MOD_DT           timestamp    null,
+
+    CONSTRAINT FK_REPORT_REPORTED FOREIGN KEY (REPORTED_USER_ID) REFERENCES TB_LOGIN (USER_ID),
+    CONSTRAINT FK_REPORT_REPORTER FOREIGN KEY (REPORTER_USER_ID) REFERENCES TB_LOGIN (USER_ID)
+);
 
 ALTER TABLE `TB_LOGIN`
     ADD CONSTRAINT `FK_TB_ROLE_TO_TB_LOGIN_1` FOREIGN KEY (

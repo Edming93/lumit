@@ -1,57 +1,67 @@
-<div class="adminFormLayout">
-    <div class="adminListBox">
-        <p>관리자 목록이나 요약 혹은 최근 수정되거나 생성된 관리자</p>
-    </div>
-    <form class="formContainer" id="adminForm" th:object="${tbLogin}">
-        <table class="adminTable">
-            <thead>
-            <tr>
-                <th>관리자 아이디</th>
-                <th>관리자 이름</th>
-                <th>초기 비밀번호</th>
-                <th>성별</th>
-                <th>권한 레벨</th>
-                <th>등록</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>
-                    <input type="text" th:field="*{userId}" id="adminId">
-                    <div id="idCheckResult" class="resultBox"></div>
-                    <p th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}" class="fieldError"></p>
-                </td>
-                <td>
-                    <input type="text" th:field="*{name}" id="name">
-                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError"></p>
-                </td>
-                <td>
-                    <input type="password" th:field="*{password}" id="password">
-                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError"></p>
-                </td>
-                <td>
-                    <select th:field="*{genderCd}">
-                        <option value="1">여성</option>
-                        <option value="2">남성</option>
-                    </select>
-                    <p th:if="${#fields.hasErrors('genderCd')}" th:errors="*{genderCd}" class="fieldError"></p>
-                </td>
-                <td>
-                    <select th:field="*{roleId}">
-                        <option value="1">총괄 관리자</option>
-                        <option value="2">기본 관리자</option>
-                    </select>
-                    <p th:if="${#fields.hasErrors('roleId')}" th:errors="*{roleId}" class="fieldError"></p>
-                </td>
-                <td>
-                    <button type="submit" class="editBtn">등록</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}">
-        <p id="idResultText" th:text="${errorMessage}" class="errorMsg"></p>
+<div>
+    <div class="adminScrollableBox">
+        <div class="adminSection">
+            <h2 class="sectionTitle">요약</h2>
+            <!-- todo
 
-    </form>
+             -->
+            <p>데이터 없음</p>
+        </div>
+        <div class="adminSection">
+            <h2 class="sectionTitle">새로운 관리자 생성하기</h2>
+            <form id="adminForm" th:object="${tbLogin}">
+
+                <table class="adminTable">
+                    <thead>
+                    <tr>
+                        <th>관리자 아이디</th>
+                        <th>관리자 이름</th>
+                        <th>초기 비밀번호</th>
+                        <th>성별</th>
+                        <th>권한 레벨</th>
+                        <th>등록</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <input type="text" th:field="*{userId}" id="adminId">
+                            <div id="idCheckResult" class="resultBox"></div>
+                            <p th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}" class="fieldError"></p>
+                        </td>
+                        <td>
+                            <input type="text" th:field="*{name}" id="name">
+                            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError"></p>
+                        </td>
+                        <td>
+                            <input type="password" th:field="*{password}" id="password">
+                            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError"></p>
+                        </td>
+                        <td>
+                            <select th:field="*{genderCd}">
+                                <option value="1">여성</option>
+                                <option value="2">남성</option>
+                            </select>
+                            <p th:if="${#fields.hasErrors('genderCd')}" th:errors="*{genderCd}" class="fieldError"></p>
+                        </td>
+                        <td>
+                            <select th:field="*{roleId}">
+                                <option value="1">총괄 관리자</option>
+                                <option value="2">기본 관리자</option>
+                            </select>
+                            <p th:if="${#fields.hasErrors('roleId')}" th:errors="*{roleId}" class="fieldError"></p>
+                        </td>
+                        <td>
+                            <button type="submit" class="editBtn">등록</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}">
+                <p id="idResultText" th:text="${errorMessage}" class="errorMsg"></p>
+
+            </form>
+        </div>
+    </div>
     <script th:src="@{/js/functions.js}"></script>
 </div>

@@ -1,87 +1,110 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div class="memberTabContainer">
+<div class="adminScrollableBox">
     <div class="memberSummaryBlock">
-        <h3><i class="fa-solid fa-triangle-exclamation" style="margin-right:6px;"></i> 신고 이력 있는 회원</h3>
+        <h2 class="sectionTitle">신고 이력 있는 회원</h2>
         <ul id="flaggedList" class="memberList"></ul>
     </div>
 
     <hr class="memberDivider">
 
     <div class="memberSummaryBlock">
-        <h3><i class="fa-regular fa-user" style="margin-right:6px;"></i> 최근 가입 회원</h3>
+        <h2 class="sectionTitle">최근 가입 회원</h2>
         <ul id="recentList" class="memberList"></ul>
     </div>
 </div>
 
 <style>
-    .memberTabContainer {
-        padding: 16px;
-    }
-
-    .memberSummaryBlock h3 {
-        margin: 4px 0 10px;
-        font-size: 16px;
-        font-weight: 600;
-    }
-
     .memberList {
         list-style: none;
-        padding: 0;
         margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
     }
 
     .memberItem {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        gap: 10px;
-        padding: 10px 8px;
-        border-radius: 10px;
+        border: 1px solid #e7e2dd;
+        border-radius: 12px;
+        background: #fff;
+        padding: 14px 18px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+        transition: background .2s;
     }
 
     .memberItem:hover {
-        background: #faf7f5;
+        background: #faf8f6;
     }
 
-    .memberBadge {
-        font-size: 12px;
-        padding: 2px 8px;
-        border-radius: 999px;
-        background: #eee;
+    .memberItem .meta {
+        flex: 1;
     }
 
-    .memberActions {
-        margin-left: auto;
+    .memberItem .row1 {
         display: flex;
-        gap: 6px;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #4a3d35;
     }
 
-    .memberActions button {
-        padding: 6px 10px;
+    .memberItem .row2 {
+        font-size: 13px;
+        color: #8a7c71;
+        margin-top: 2px;
+    }
+
+    .memberItem .actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .badge {
+        padding: 2px 8px;
+        font-size: 12px;
         border-radius: 8px;
-        border: 1px solid #ddd;
+        font-weight: 500;
+    }
+
+    .badge.active {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+
+    .badge.suspended {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        font-size: 13px;
+        border-radius: 8px;
+        border: 1px solid #d8cec3;
         background: #fff;
         cursor: pointer;
+        transition: all .2s;
     }
 
-    .memberActions button.action-danger {
-        border-color: #f3b1b1;
+    .btn:hover {
+        background: #f7f3ee;
     }
 
-    .memberDivider {
-        border: none;
-        border-top: 1px solid #ddd;
-        margin: 14px 0;
+    .btn.danger {
+        border: 1px solid #ef4444;
+        background: #ef4444;
+        color: #fff;
     }
 
-    .memberSub {
-        color: #666;
-        font-size: 13px;
+    .btn.danger:hover {
+        background: #dc2626;
     }
 
-    .emptyTip {
-        color: #aaa;
-        font-size: 13px;
-        margin: 8px 0 0 2px;
-    }
 </style>

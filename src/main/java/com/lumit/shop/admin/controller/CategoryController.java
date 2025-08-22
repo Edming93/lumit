@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping("/admin/category")
 public class CategoryController {
     private static String BASE_PATH = "admin/category";
-    private final CategoryService categoryService;
 
     @RequestMapping("/list")
     public String categoryMain() {
