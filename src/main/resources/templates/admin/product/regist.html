@@ -66,7 +66,6 @@
 	    }
 	    
 	    .selectList {
-	    	margin-top: 10px;
 	    	width: 100%;
 	    	min-height:83px;
 	    	border: 1px solid var(--brand-color1);
@@ -89,12 +88,16 @@
 	    } 
 	    
 	    .optionInput {
-	    	width: 80px;
 			margin: 0 5px;
 			border: 1px solid #ccc;
 			border-radius: 4px;
 			font-size: 13px;
+			width: 15%;
 	    }
+	    
+	    .optionInput:first-child {
+			margin-left:0;	
+		}
 	</style>
 </head>
 
@@ -246,19 +249,26 @@
 	                        <th class="alLeft bold">옵션 직접입력</th>
 	                        <td>
 	                            <div class="directOptionArea mgt10">
-	                            	<div class="selectBoxArea">
-	                            		<select name="drOption">
-	                            			<option value="1">1개</option>
-	                            			<option value="2">2개</option>
-	                            			<option value="3">3개</option>
-	                            			<option value="4">4개</option>
-	                            			<option value="5">5개</option>
-	                            		</select>
-	                            		<button type="button" id="drOpAddBtn" class="commAddBtn mgl10" style="width:50px;">추가</button>
+	                            	<div class="btnArea">
+	                            		<div class="btnLeftArea">
+	                            			<div style="display:flex; font-size:14px; align-items: center; width:100%;">
+							    				<input type="text" id="optionCd" placeholder="옵션코드" class="optionInput" style="flex:0.5;" />
+								                <input type="text" id="optionName" placeholder="옵션명" class="optionInput" style="flex:1;" />
+								                <input type="text" id="optionVal" placeholder="옵션값" class="optionInput" style="flex:1;" />
+								                <input type="text" id="optionStocks" placeholder="재고수량" data-type="number" class="optionInput" style="flex:0.5;" />
+								                <input type="text" id="optionPrice" placeholder="옵션가격" data-type="number" class="optionInput" style="flex:1;" />
+								                <span style="margin-right:5px;">원</span>
+								            </div>
+	                            		</div>
+	                            		<div class="btnRightArea">
+	                            			<button type="button" id="drOpAddBtn" class="addBtn">옵션 상품 추가</button>
+	                            		</div>
 	                            	</div>
-		                            <div class="selectList mgt10" style="display: none;">
+	                            	
+		                            <div class="selectList" style="display: none;">
 								    	<div class="optionHead">선택된 옵션</div>
-							    		<ul class="drOptionBody"></ul>
+							    		<ul class="drOptionBody">
+							    		</ul>
 								    </div>
 								</div>
 	                        </td>
@@ -679,25 +689,62 @@ document.addEventListener("DOMContentLoaded",async function () {
 		openCommonPopup("optionList", "상품 옵션 리스트", "1060", "640");
 	});
 	
+	let selectCdList = [];
+	let selectOpList = [];
+	
 	$("#drOpAddBtn").click(function() {
-		$(".directOptionArea .selectList").addClass("active");
-		let selectVal = $("select[name='drOption']").val();
+		let selectOpCd = $("#optionCd").val();
+		let selectOpNm = $("#optionName").val();
+		let selectOpVal = $("#optionVal").val();
+		let selectOpStocks = $("#optionStocks").val();
+		let selectOpPrice = $("#optionPrice").val();
+
+// 		if(!selectOpCd || !selectOpNm || !selectOpVal || !selectOpStocks || !selectOpPrice) {
+// 			toast.error("입력하지 않은 값이 있는지 확인해주세요.");
+// 			return;
+// 		}
 		
-	    for (let i = 0; i < selectVal; i++) {
+		$(".directOptionArea .selectList").addClass("active");
+		
+		if(selectOpList.length == 0 || !selectCdList[selectOpCd]?.optionCd?.includes(selectOpCd)) {
+			selectCdList[selectOpCd] = {optionCd:selectOpCd, optionNm:selectOpNm};
+			
 	        const liHtml = `
-	            <li style="display:flex; align-items:center; padding:0 20px; font-size:14px;">
-	                <input type="text" id="optionName" placeholder="옵션명" data-type="number" class="optionInput" style="flex:1;" />
-	                <input type="text" id="optionVal" placeholder="옵션값" data-type="number" class="optionInput" style="flex:1;" />
-	                <button type="button" id="opValAddBtn" class="commAddBtn" style="width:50px;">추가</button>
-	                <input type="text" id="optionPrice" placeholder="옵션가격" data-type="number" class="optionInput" style="flex:1;" />
-	                <span style="margin-right:5px;">원</span>
-	                <input type="text" id="optionStocks" placeholder="재고수량" data-type="number" class="optionInput" style="flex:0.5;" />
-	                <button type="button" id="optionDelBtn" class="rdOpDelBtn" style="margin-left:10px; color:red; border:none; background:transparent; cursor:pointer; font-weight:bold;">X</button>
+	            <li style="display:flex; flex-direction: column; padding:0 20px; font-size:14px;">
+	            	<div class="optionCdArea" style="display:flex;">
+		      			<div class="mgr10">[<span style="color:red;"> ${selectOpCd} </span>]</div>
+		      			<div><span style="font-weight:bold">${selectOpNm}</span></div>
+		      		</div>
+		      		<div class="selectOpBody ${selectOpCd}">
+		      			<div class="mgl30"> ${selectOpVal} > ${selectOpStocks}개 > ${selectOpPrice}원
+		      		</div>
 	            </li>
 	        `;
-
 	        $(".drOptionBody").append(liHtml);
-	    };
+	        
+		} else {
+			if(selectCdList[selectOpCd].optionNm != selectOpNm) {
+				toast.error("코드값이 같은 경우 같은 옵션명을 입력해주세요.");
+				return;
+			}
+			const selectOpBodyHtml = `
+				<div class="mgl30"> ${selectOpVal} > ${selectOpStocks}개 > ${selectOpPrice}원
+			`;
+				
+			$(`.selectOpBody.${selectOpCd}`).append(selectOpBodyHtml);
+		}
+		
+		selectOpList.push({
+        	optionCd:selectOpCd,
+        	optionNm:selectOpNm,
+        	optionVal:selectOpVal,
+        	optionStocks:selectOpStocks,
+        	optionPrice:selectOpPrice
+        });
+		
+		
+		console.log(selectCdList);
+		console.log(selectOpList);
 		
 		$("#opValAddBtn").click(function() {
 			toast.error("aaa");
@@ -705,6 +752,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 		
 		$(".rdOpDelBtn").click(function() {
 			console.log($(this));
+	        // <button type="button" id="optionDelBtn" class="rdOpDelBtn" style="margin-left:10px; color:red; border:none; background:transparent; cursor:pointer; font-weight:bold;">X</button>
 			$(this).parent().remove();
 		});
 		
