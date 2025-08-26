@@ -689,7 +689,7 @@ document.addEventListener("DOMContentLoaded",async function () {
 		openCommonPopup("optionList", "상품 옵션 리스트", "1060", "640");
 	});
 	
-	let selectCdList = [];
+	let selectCdList = {};
 	let selectOpList = [];
 	
 	$("#drOpAddBtn").click(function() {
@@ -716,7 +716,15 @@ document.addEventListener("DOMContentLoaded",async function () {
 		      			<div><span style="font-weight:bold">${selectOpNm}</span></div>
 		      		</div>
 		      		<div class="selectOpBody ${selectOpCd}">
-		      			<div class="mgl30"> ${selectOpVal} > ${selectOpStocks}개 > ${selectOpPrice}원
+		      			<div class="selectOpArea" style="display:flex;">
+			      			<div class="mgl30"> ${selectOpVal} > ${selectOpStocks}개 > ${selectOpPrice}원 </div>
+			      			<button type="button" class="rdOpDelBtn" 
+			      				data-cd="${selectOpCd}" 
+			      		        data-val="${selectOpVal}" 
+			      		        data-stocks="${selectOpStocks}" 
+			      		        data-price="${selectOpPrice}" 
+			      		        style="margin-left:10px; color:red; border:none; background:transparent; cursor:pointer; font-weight:bold;">X</button>
+			      		</div>
 		      		</div>
 	            </li>
 	        `;
@@ -728,7 +736,15 @@ document.addEventListener("DOMContentLoaded",async function () {
 				return;
 			}
 			const selectOpBodyHtml = `
-				<div class="mgl30"> ${selectOpVal} > ${selectOpStocks}개 > ${selectOpPrice}원
+				<div class="selectOpArea" style="display:flex;">
+					<div class="mgl30"> ${selectOpVal} > ${selectOpStocks}개 > ${selectOpPrice}원 </div>
+					<button type="button" class="rdOpDelBtn" 
+						data-cd="${selectOpCd}" 
+				        data-val="${selectOpVal}" 
+				        data-stocks="${selectOpStocks}" 
+				        data-price="${selectOpPrice}" 
+				        style="margin-left:10px; color:red; border:none; background:transparent; cursor:pointer; font-weight:bold;">X</button>
+				</div>
 			`;
 				
 			$(`.selectOpBody.${selectOpCd}`).append(selectOpBodyHtml);
@@ -746,14 +762,42 @@ document.addEventListener("DOMContentLoaded",async function () {
 		console.log(selectCdList);
 		console.log(selectOpList);
 		
-		$("#opValAddBtn").click(function() {
-			toast.error("aaa");
-		});
+// 		$("#opValAddBtn").click(function() {
+// 			toast.error("aaa");
+// 		});
 		
 		$(".rdOpDelBtn").click(function() {
-			console.log($(this));
-	        // <button type="button" id="optionDelBtn" class="rdOpDelBtn" style="margin-left:10px; color:red; border:none; background:transparent; cursor:pointer; font-weight:bold;">X</button>
-			$(this).parent().remove();
+			let opArea = $(this).parent(); // 삭제버튼이 있는 부모 div
+			let opBody = opArea.parent(); // 옵션정보 영역 .selectOpArea
+			
+			let cd = String($(this).data("cd"));
+		    let val = String($(this).data("val"));
+		    let stocks = String($(this).data("stocks"));
+		    let price = String($(this).data("price"));
+			
+			// 마지막 1개면 li 전체 삭제 + selectCdList에서도 제거
+			if(opBody.children(".selectOpArea").length === 1) {
+				opBody.parent().remove();
+				delete selectCdList[cd];
+				
+				if($(".drOptionBody").children().length === 0){
+					$(".directOptionArea .selectList").removeClass("active");
+				}
+			}else {
+				// 여러개일땐 해당 옵션만 삭제
+				opArea.remove();	
+			};
+			
+			// selectOpList에서 제거
+			selectOpList = selectOpList.filter(item => {
+		        return !(item.optionCd === cd &&
+		                 item.optionVal === val &&
+		                 item.optionStocks === stocks &&
+		                 item.optionPrice === price);
+		    });
+			
+			console.log(selectCdList);
+			console.log(selectOpList);
 		});
 		
 	})
